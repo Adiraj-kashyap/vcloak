@@ -1,0 +1,34 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python:*)",
+      "Bash(python3:*)",
+      "Bash(py:*)",
+      "Bash(pip:*)",
+      "Bash(pytest:*)",
+      "Bash(nvidia-smi:*)",
+      "Bash(nvcc:*)",
+      "Bash(cuobjdump:*)",
+      "Bash(ncu:*)",
+      "Bash(git status:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git log:*)",
+      "Bash(git diff:*)",
+      "Bash(git tag:*)",
+      "Bash(git rev-parse:*)",
+      "Bash(tail:*)",
+      "Bash(head:*)",
+      "Bash(grep:*)",
+      "Bash(sed -n:*)",
+      "Bash(ls:*)",
+      "Bash(mkdir:*)",
+      "Bash(docker compose:*)"
+    ],
+    "deny": [
+      "Bash(git push:*)",
+      "Read(./secrets/**)",
+      "Read(./.env)"
+    ]
+  }
+}
