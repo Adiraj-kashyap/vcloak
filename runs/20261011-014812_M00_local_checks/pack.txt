@@ -1,0 +1,5 @@
+packed  gpujobs/out/20261011-014756_M00/job.zip  (0.04 MB, 22 files)
+job id          20261011-014756_M00
+git sha         a45088b4eadef0a4fe8c40cc904946ae137715c2
+bundle sha256   5107ea648e4fda77923a204638f55a1faafed1e79ea33c4d99fc5ca1658d6dce   (content hash, recorded in job.json)
+zip sha256      05f0cf622014871eb3638fc156bce29470a1285d54e2271c0ac7a0530d602665

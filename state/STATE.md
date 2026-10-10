@@ -3,13 +3,13 @@
 ```yaml
 project: v-cloak
 kit_version: 1.0
-last_session: 0
-last_session_date: null
+last_session: 1
+last_session_date: 2026-10-11
 current_module: M00
-current_step: S1
-status: NOT_STARTED        # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
+current_step: S6
+status: BLOCKED_HUMAN      # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
 next_unit: M00
-last_checkpoint: null
+last_checkpoint: 2026-10-11 S5 passed; S6 job packed, awaiting results (ISSUE-2)
 quick_mode_default: false
 local:                      # the laptop (no GPU) — filled by M00 S7
   os: unknown
@@ -33,7 +33,7 @@ runner:                     # the free remote GPU — filled from the ingested M
   peak_bw_gbs: unknown
   last_session_id: unknown
 gpu_job:                    # set by the gpu-job skill
-  pending: null             # job id awaiting the human's upload, or null
+  pending: 20261011-014756_M00   # job id awaiting the human's upload, or null
   last_ingested: null
 ```
 
@@ -41,7 +41,7 @@ gpu_job:                    # set by the gpu-job skill
 
 | ID | Title | Owner | Depends on | Optional | Status | Step | Sessions |
 |---|---|---|---|---|---|---|---|
-| M00 | Bootstrap & GPU probe | Aditya | — | no | NOT_STARTED | S1 | 0 |
+| M00 | Bootstrap & GPU probe | Aditya | — | no | BLOCKED_HUMAN | S6 | 1 |
 | M01 | Oracle port & golden vectors | Abhishek | M00 | no | NOT_STARTED | S1 | 0 |
 | M02 | CPU crypto & key lifecycle | Abhishek | M01 | no | NOT_STARTED | S1 | 0 |
 | M03 | GPU bitonic kernel | Aditya | M01 | no | NOT_STARTED | S1 | 0 |

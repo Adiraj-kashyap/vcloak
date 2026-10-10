@@ -1,0 +1,31 @@
+$ unzip job.zip; ls
+bench
+gpu_entry.py
+job.json
+kernels
+pyproject.toml
+requirements-gpu.txt
+scripts
+src
+tests
+$ python gpu_entry.py --job job.json --dry-run
+=== V-cloak GPU job 20261011-014756_M00 (M00) ===
+  [1] nvidia-smi
+  [2] python bench/probe_gpu.py --seed 7 --out runs
+  [3] python -m pytest -q -p no:cacheprovider tests/unit
+exit=0
+$ VCLOAK_BACKEND=numpy python bench/probe_gpu.py --seed 7 --quick --out runs   (inside the unpacked bundle; plumbing only)
+run dir     <temp>/runs/...
+backend     numpy   device 12th Gen Intel(R) Core(TM) i7-1255U
+vector-add  n=65536 mismatches=0 (numpy twin (vcloak.gpu.sim))
+ENV-PEAK-BW    NOT_MEASURED GB/s
+ENV-D2D-BW     NOT_MEASURED GB/s
+ENV-MAX-LOG2N  NOT_MEASURED log2(n)
+ENV-VRAM-FREE  NOT_MEASURED GB
+status      NOT_MEASURED
+exit=0
+$ VCLOAK_BACKEND=numpy python -m pytest -q -p no:cacheprovider tests/unit   (inside the unpacked bundle)
+=========================== short test summary info ===========================
+SKIPPED [1] tests\unit\test_check_metrics.py:26: state/ is not shipped in a job bundle
+SKIPPED [1] tests\unit\test_runtime_backend.py:94: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+32 passed, 2 skipped in 8.03s

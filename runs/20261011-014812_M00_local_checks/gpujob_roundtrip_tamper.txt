@@ -1,0 +1,10 @@
+============================= test session starts =============================
+platform win32 -- Python 3.14.0, pytest-9.1.1, pluggy-1.6.0
+rootdir: D:\PJT\vcloak
+configfile: pyproject.toml
+plugins: anyio-4.15.1
+collected 12 items
+
+tests\unit\test_gpujob.py ............                                   [100%]
+
+============================= 12 passed in 5.89s ==============================

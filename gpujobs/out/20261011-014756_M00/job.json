@@ -1,0 +1,32 @@
+{
+  "job_id": "20261011-014756_M00",
+  "module": "M00",
+  "step": "S6",
+  "title": "M00 runner probe: device properties, vector-add RawKernel, D2D copy bandwidth, max_log2n",
+  "quick": false,
+  "params": {},
+  "seed": 7,
+  "git_sha": "a45088b4eadef0a4fe8c40cc904946ae137715c2",
+  "dirty": false,
+  "packed_at": "2026-10-10T20:17:56+00:00",
+  "bundle_sha256": "5107ea648e4fda77923a204638f55a1faafed1e79ea33c4d99fc5ca1658d6dce",
+  "n_files": 22,
+  "commands": [
+    {
+      "name": "nvidia_smi",
+      "cmd": "nvidia-smi",
+      "timeout": 120
+    },
+    {
+      "name": "probe",
+      "cmd": "python bench/probe_gpu.py --seed 7 --out runs",
+      "timeout": 900
+    },
+    {
+      "name": "unit_tests",
+      "cmd": "python -m pytest -q -p no:cacheprovider tests/unit",
+      "timeout": 900,
+      "optional": true
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+$ VCLOAK_BACKEND=numpy python -c "...get_backend().name"
+numpy
+exit=0
+$ VCLOAK_BACKEND=cupy python -c "...get_backend().name"
+V-cloak: VCLOAK_BACKEND=cupy was requested, but this machine has no usable CUDA GPU (CuPy is not installed (ModuleNotFoundError)).
+The laptop has no GPU: CUDA work runs on the free Colab/Kaggle runner.
+  - for local correctness work use VCLOAK_BACKEND=numpy (or leave it unset)
+  - for real GPU numbers run: python scripts/gpujob.py pack <Mxx>   (see ai/GPU_RUNNER.md)
+exit=1
+$ python -c "import vcloak, vcloak.config, vcloak.gpu.sim"
+ok ['vector_add']
+exit=0
+$ git config user.name; git config user.email
+Aditya
+adiraj.kashyap.01@gmail.com

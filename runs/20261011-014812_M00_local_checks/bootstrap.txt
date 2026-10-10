@@ -1,0 +1,24 @@
+
+>> V-cloak setup - folder: D:\PJT\vcloak
+
+>> Found Python 3.14.0
+
+>> Found git version 2.47.1.windows.2
+
+>> Creating the virtual environment (.venv)
+
+>> Installing Python packages (a few minutes the first time)
+
+>> Starting the git repository
+
+>> Commits in this folder will be attributed to: Aditya <adiraj.kashyap.01@gmail.com>
+python packages OK
+
+>> Setup finished.
+
+Next:
+  1. Open THIS folder in Claude Code.
+  2. Type:  continue
+
+Each teammate runs this script once on their own machine, with their own name,
+so the commit history matches who actually did the work.
