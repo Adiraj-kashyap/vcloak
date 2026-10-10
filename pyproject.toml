@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vcloak"
+version = "0.1.0"
+description = "V-cloak: a GPU-resident oblivious-permutation layer that hides the order of stored encrypted messages"
+requires-python = ">=3.10"
+dependencies = ["numpy"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src", "scripts"]
+addopts = "-ra --strict-markers"
+markers = [
+    "gpu: needs a real CUDA device (runs only on the Colab/Kaggle runner)",
+    "integration: needs external services such as PostgreSQL",
+    "slow: long-running; excluded from quick runs",
+]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+src = ["src", "scripts", "tests", "bench"]
+extend-exclude = ["seed", "colab", "web"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]

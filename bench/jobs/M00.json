@@ -1,0 +1,11 @@
+{
+  "title": "M00 runner probe: device properties, vector-add RawKernel, D2D copy bandwidth, max_log2n",
+  "step": "S6",
+  "seed": 7,
+  "commands": [
+    {"name": "nvidia_smi", "cmd": "nvidia-smi", "timeout": 120},
+    {"name": "probe", "cmd": "python bench/probe_gpu.py --seed 7 {quick} --out runs", "timeout": 900},
+    {"name": "unit_tests", "cmd": "python -m pytest -q -p no:cacheprovider tests/unit", "timeout": 900,
+     "optional": true}
+  ]
+}
