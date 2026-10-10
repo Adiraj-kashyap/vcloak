@@ -1,0 +1,104 @@
+/* api.js — the only place that talks to the backend.
+ *
+ * Served over http  -> try the live API, fall back to demo data per call.
+ * Opened from file:// -> demo data only (browsers block fetch of local files),
+ *                        which is also the offline fallback for the review demo.
+ */
+(function (global) {
+  "use strict";
+  var VC = global.VC = global.VC || {};
+  var DEMO = global.VCLOAK_DEMO || {};
+  var canFetch = location.protocol === "http:" || location.protocol === "https:";
+
+  function get(path, opts) {
+    if (!canFetch) return Promise.reject(new Error("file://"));
+    var ctl = new AbortController();
+    var timer = setTimeout(function () { ctl.abort(); }, 4000);
+    return fetch(path, Object.assign({ signal: ctl.signal, headers: { "Accept": "application/json" } }, opts || {}))
+      .then(function (r) {
+        clearTimeout(timer);
+        if (!r.ok) throw new Error(path + " -> " + r.status);
+        return r.json();
+      });
+  }
+  function post(path, body) {
+    return get(path, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      body: JSON.stringify(body || {})
+    });
+  }
+
+  var API = {
+    canFetch: canFetch,
+
+    /* Probe once at startup: decides live vs demo and reveals dev mode. */
+    hello: function () {
+      return get("/v1/stats/live").then(function (s) {
+        VC.state.live = true;
+        VC.state.dev = !!s.dev;
+        VC.state.backend = (s.gpu && s.gpu.backend) || "cpu";
+        VC.state.runner = (s.gpu && s.gpu.runner) || "local";
+        return s;
+      }).catch(function () {
+        VC.state.live = false;
+        return null;
+      });
+    },
+
+    stats: function () {
+      return get("/v1/stats/live").catch(function () {
+        /* demo clock so the strip still ticks offline */
+        var t = Date.now();
+        return { epoch: Math.floor(t / 200) % 100000, win: 41, slots: 64,
+                 queued: Math.floor((t / 200) % 7), mode: VC.state.mode,
+                 gpu: null, demo: true };
+      });
+    },
+
+    dashboard: function () {
+      return get("/v1/dashboard")
+        .catch(function () { return get("data/dashboard.json"); })
+        .catch(function () { return DEMO.dashboard; });
+    },
+
+    dump: function (limit) {
+      return get("/v1/dump?limit=" + (limit || 50)).catch(function () {
+        var d = JSON.parse(JSON.stringify(DEMO.dump || { rows: [] }));
+        if (VC.state.mode === "baseline") {
+          d.rows.sort(function (a, b) { return a.sent - b.sent; });
+          d.rows.forEach(function (r, i) { r.row_id = String(1000 + i); });
+          d.mode = "baseline";
+        }
+        return d;
+      });
+    },
+
+    send: function (user, text) {
+      return post("/v1/messages", { user: user, text: text })
+        .catch(function () { return { accepted: true, demo: true }; });
+    },
+
+    read: function (user, win) {
+      return post("/v1/read", { user: user, win: win })
+        .catch(function () { return { items: [], demo: true }; });
+    },
+
+    logs: function (kind, tail) {
+      return get("/v1/logs?kind=" + kind + "&tail=" + (tail || 400)).catch(function () {
+        return { lines: (DEMO.logs && DEMO.logs[kind]) || ["(no log data in demo mode)"] , demo: true };
+      });
+    },
+
+    setMode: function (mode) {
+      VC.state.mode = mode;
+      return post("/v1/mode", { mode: mode }).catch(function () { return { mode: mode, demo: true }; });
+    },
+
+    attack: function (layout) {
+      return post("/v1/eval/attack", { layout: layout }).catch(function () { return null; });
+    }
+  };
+
+  VC.api = API;
+})(window);

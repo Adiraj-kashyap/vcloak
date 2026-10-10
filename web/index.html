@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>V-cloak</title>
+<link rel="stylesheet" href="css/app.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' rx='4' fill='%232a78d6'/><rect x='3' y='6' width='3' height='4' rx='1' fill='white'/><rect x='10' y='6' width='3' height='4' rx='1' fill='white'/></svg>">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark" aria-hidden="true">
+      <svg viewBox="0 0 28 28" width="26" height="26"><rect width="28" height="28" rx="7" fill="var(--s1)"/>
+      <rect x="5" y="11" width="5" height="6" rx="1.6" fill="#fff" opacity=".95"/>
+      <rect x="11.5" y="11" width="5" height="6" rx="1.6" fill="#fff" opacity=".6"/>
+      <rect x="18" y="11" width="5" height="6" rx="1.6" fill="#fff" opacity=".85"/></svg>
+    </span>
+    <span class="brand-text">V&#8209;cloak<small>metadata-private messaging</small></span>
+  </div>
+
+  <nav class="tabs" role="tablist" aria-label="Views">
+    <button class="tab" role="tab" data-view="chat" aria-selected="true">Chat</button>
+    <button class="tab" role="tab" data-view="dashboard" aria-selected="false">Dashboard</button>
+    <button class="tab" role="tab" data-view="experiments" aria-selected="false">Experiments</button>
+    <button class="tab" role="tab" data-view="logs" aria-selected="false">Logs</button>
+    <button class="tab" role="tab" data-view="arch" aria-selected="false">Architecture</button>
+  </nav>
+
+  <div class="topright">
+    <span id="conn" class="chip chip-demo" title="Data source">checking…</span>
+    <button id="themeBtn" class="iconbtn" aria-label="Toggle dark mode" title="Toggle dark mode">
+      <svg viewBox="0 0 20 20" width="17" height="17" aria-hidden="true"><path d="M16 11.5A7 7 0 018.5 4a6 6 0 108 7.5z" fill="currentColor"/></svg>
+    </button>
+  </div>
+</header>
+
+<div class="livestrip" id="livestrip">
+  <span class="ls-item"><b id="ls-epoch">—</b><i>epoch</i></span>
+  <span class="ls-item"><b id="ls-win">—</b><i>window</i></span>
+  <span class="ls-item ls-fillwrap">
+    <span class="ls-fill" aria-hidden="true"><span id="ls-fillbar"></span></span>
+    <i><span id="ls-queued">—</span> / <span id="ls-slots">—</span> slots this epoch</i>
+  </span>
+  <span class="ls-item"><b id="ls-mode">—</b><i>store mode</i></span>
+  <span class="ls-item ls-right"><b id="ls-backend">—</b><i>compute backend</i></span>
+</div>
+
+<main id="main">
+
+<!-- ═══════════════════════ CHAT ═══════════════════════ -->
+<section class="view" id="view-chat" aria-labelledby="h-chat">
+  <div class="viewhead">
+    <h1 id="h-chat">Two users, one untrusted server</h1>
+    <p>Both sides encrypt locally. The panel underneath shows the rows the database actually holds —
+       in the order it holds them.</p>
+  </div>
+
+  <div class="chatgrid">
+    <div class="panel chatpane" data-user="A">
+      <div class="panel-head"><span class="dot dot-a"></span><h2>User A</h2><span class="muted" id="keyA">device key: —</span></div>
+      <div class="msgs" id="msgsA" role="log" aria-live="polite" aria-label="User A conversation"></div>
+      <form class="composer" id="formA" autocomplete="off">
+        <input id="inA" type="text" placeholder="Message as A…" aria-label="Message as User A">
+        <button class="btn btn-primary" type="submit">Send</button>
+      </form>
+    </div>
+
+    <div class="panel chatpane" data-user="B">
+      <div class="panel-head"><span class="dot dot-b"></span><h2>User B</h2><span class="muted" id="keyB">device key: —</span></div>
+      <div class="msgs" id="msgsB" role="log" aria-live="polite" aria-label="User B conversation"></div>
+      <form class="composer" id="formB" autocomplete="off">
+        <input id="inB" type="text" placeholder="Message as B…" aria-label="Message as User B">
+        <button class="btn btn-primary" type="submit">Send</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="panel serverview">
+    <div class="panel-head">
+      <h2>What the server stores</h2>
+      <div class="panel-actions">
+        <label class="switch"><input type="checkbox" id="modeSwitch"><span></span>
+          <em>Unprotected baseline</em></label>
+        <label class="switch"><input type="checkbox" id="revealSwitch"><span></span>
+          <em>Reveal true order <span class="devmark" title="Developer mode only; disabled in production">dev</span></em></label>
+      </div>
+    </div>
+    <p class="panel-note" id="serverNote"></p>
+    <div class="tablewrap">
+      <table class="rows" id="dumpTable">
+        <thead><tr><th>#</th><th>row_id</th><th>bucket</th><th>win</th><th>seq_enc</th><th>payload</th><th class="reveal-col">sent</th></tr></thead>
+        <tbody id="dumpBody"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ DASHBOARD ═══════════════════════ -->
+<section class="view" id="view-dashboard" hidden aria-labelledby="h-dash">
+  <div class="viewhead">
+    <h1 id="h-dash">Measured results</h1>
+    <p>Every figure here is generated from <code>state/METRICS_INDEX.md</code> and <code>runs/</code>.
+       Nothing on this page is typed by hand.</p>
+  </div>
+  <div class="provbar" id="provbar"></div>
+  <div class="tiles" id="tiles"></div>
+  <div class="charts" id="charts"></div>
+  <div class="panel missing" id="missingPanel" hidden>
+    <div class="panel-head"><h2>Not measured yet</h2></div>
+    <ul id="missingList"></ul>
+  </div>
+</section>
+
+<!-- ═══════════════════════ EXPERIMENTS ═══════════════════════ -->
+<section class="view" id="view-experiments" hidden aria-labelledby="h-exp">
+  <div class="viewhead">
+    <h1 id="h-exp">Order-recovery attack</h1>
+    <p>An attacker holding a database dump tries to put the conversation back in order.
+       50% is a coin flip.</p>
+  </div>
+  <div class="panel">
+    <div class="panel-head">
+      <h2>Run it</h2>
+      <div class="panel-actions">
+        <label class="field"><span>Visible window W</span>
+          <select id="expW">
+            <option value="conventional">Conventional schema</option>
+            <option value="epoch">V-cloak, 200 ms round (Review-1)</option>
+            <option value="1">V-cloak, W = 1 s</option>
+            <option value="10">V-cloak, W = 10 s</option>
+            <option value="60">V-cloak, W = 60 s</option>
+            <option value="300" selected>V-cloak, W = 300 s</option>
+          </select></label>
+        <button class="btn btn-primary" id="runAttack">Run attack</button>
+      </div>
+    </div>
+    <div class="attackgrid">
+      <div class="attackviz" id="attackViz"></div>
+      <div class="attackstats" id="attackStats"></div>
+    </div>
+  </div>
+  <div class="panel" id="ablationPanel"></div>
+</section>
+
+<!-- ═══════════════════════ LOGS ═══════════════════════ -->
+<section class="view" id="view-logs" hidden aria-labelledby="h-logs">
+  <div class="viewhead">
+    <h1 id="h-logs">Build and audit trail</h1>
+    <p>The project's own record: what each session did, what every audit checked, and where each
+       number came from.</p>
+  </div>
+  <div class="panel">
+    <div class="panel-head">
+      <div class="segmented" role="tablist" aria-label="Log kind">
+        <button class="seg on" data-kind="session" role="tab" aria-selected="true">Sessions</button>
+        <button class="seg" data-kind="audit" role="tab" aria-selected="false">Audits</button>
+        <button class="seg" data-kind="metrics" role="tab" aria-selected="false">Metrics</button>
+        <button class="seg" data-kind="issues" role="tab" aria-selected="false">Issues</button>
+      </div>
+      <div class="panel-actions">
+        <input id="logFilter" class="input" type="search" placeholder="Filter…" aria-label="Filter log lines">
+        <label class="switch"><input type="checkbox" id="followSwitch"><span></span><em>Follow</em></label>
+      </div>
+    </div>
+    <pre class="logbox" id="logBox" tabindex="0"></pre>
+  </div>
+</section>
+
+<!-- ═══════════════════════ ARCHITECTURE ═══════════════════════ -->
+<section class="view" id="view-arch" hidden aria-labelledby="h-arch">
+  <div class="viewhead">
+    <h1 id="h-arch">Where a message goes</h1>
+    <p>Press play to follow one message through every form it takes. Only the two dark states are
+       written to disk.</p>
+  </div>
+  <div class="panel">
+    <div class="panel-head"><h2>Data-state flow</h2>
+      <div class="panel-actions"><button class="btn" id="flowPlay">Play</button></div>
+    </div>
+    <div id="flow"></div>
+  </div>
+  <div class="panel">
+    <div class="panel-head"><h2>What a database dump still reveals</h2></div>
+    <p class="panel-note">Stated plainly, because a review panel will ask.</p>
+    <div class="tablewrap"><table class="rows leak" id="leakTable"></table></div>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <span>V-cloak · SCOPE, VIT Chennai</span>
+  <span id="footProv"></span>
+</footer>
+
+<div id="tooltip" class="tooltip" role="status" aria-live="polite"></div>
+
+<script src="data/demo-data.js"></script>
+<script src="js/store.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/api.js"></script>
+<script src="js/chat.js"></script>
+<script src="js/dashboard.js"></script>
+<script src="js/experiments.js"></script>
+<script src="js/logs.js"></script>
+<script src="js/arch.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

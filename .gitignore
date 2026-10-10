@@ -1,0 +1,16 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+secrets/
+runs/**/raw*.csv
+runs/**/*.npy
+runs/**/*.ncu-rep
+*.cubin
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+node_modules/
+gpujobs/out/**/*.zip
+gpujobs/inbox/*.zip
+gpujobs/done/*.zip

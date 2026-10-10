@@ -1,0 +1,83 @@
+# DECISIONS (ADR log) — append only
+
+Format: `## ADR-<n> — <title> — <ACCEPTED|PROPOSED|SUPERSEDED by ADR-m> — <date>` then Context / Decision / Consequences.
+
+## ADR-001 — CUDA through CuPy RawModule — ACCEPTED
+Context: must run on a student laptop (Windows or Linux) with minimal build friction.
+Decision: kernels are `.cu` files compiled at runtime by NVRTC via CuPy; the same files also compile with nvcc for SASS checks.
+Consequences: no CMake or pybind11 build; `nvcc` is only needed for M08.
+
+## ADR-002 — Reference oracle is the correctness ground truth — ACCEPTED
+Context: GPU code must be verifiable. Decision: every GPU function has a CPU `*_ref` twin; tests are bit-exact.
+Consequences: the oracle is ported and updated to the crypto profile of ADR-003 in M01/M02.
+
+## ADR-003 — GPU-native server crypto profile (ChaCha20 / Poly1305 only) — ACCEPTED
+Context: the paper's draft used HKDF, HMAC-SHA256 and AES-GCM for server-side keys. Running those on the
+CPU would put K_order in host memory, contradicting "K_order lives only in GPU memory". AES T-table
+implementations on GPUs are also exactly what Trident and pacSCA attack.
+Decision: all server-side key use runs on the GPU with the ChaCha20 block function (as a PRF and a stream
+cipher) plus Poly1305: tags, subkey derivation, bucket PRF, and ChaCha20-Poly1305 for seq_enc (formats in
+ARCHITECTURE §5). Client-side content crypto stays X25519 + HKDF-SHA256 + AES-256-GCM.
+Consequences: table-free, constant-time-friendly kernels. The paper text (Sec. IV, Table 3, Alg. 1)
+must be updated to this profile; M16 flags it.
+
+## ADR-004 — Coarse visible window with re-shuffle — ACCEPTED
+Context: E1 on the Review-1 design showed a 98.3% turn-order leak across 200 ms epochs.
+Decision: visible round = window W (default 60 s); each closed window is rewritten under a fresh permutation
+into a new partition; WAL retention < W. P1 is stated per window.
+
+## ADR-005 — One thread per compare-exchange pair — ACCEPTED
+Context: the paper's Listing 1 launches one thread per element; the partner thread performs `x ^= 0` writes
+on both elements, which races with the active thread and can write stale values back.
+Decision: launch n/2 threads, each owning exactly one pair (i, i+j). No element is written by two threads in a launch.
+
+## ADR-006 — Payload gather on the host — ACCEPTED
+Context: gathering payloads by permutation index on the GPU makes addresses depend on the secret permutation.
+Decision: the GPU permutes only 24-byte key records; payload reordering happens on the host after D2H.
+Consequences: a co-resident observer of host memory could learn the permutation, but that is a live-server
+compromise, which is out of scope. Documented in the leakage table.
+
+## ADR-007 — Transient host exposure of K_master at boot — ACCEPTED
+Context: the sealed master key must be unsealed with a passphrase (Argon2id KEK).
+Decision: unseal on the host into a `bytearray`, copy to VRAM, derive subkeys on the GPU, overwrite the
+host buffer immediately. Plaintext keys never touch disk. Documented as a boot-time exposure window.
+
+## ADR-008 — PostgreSQL primary, SQLite for tests — ACCEPTED
+Decision: production path uses PostgreSQL 16 (Docker or native) with RANGE partitioning by window.
+Unit and CI tests may use SQLite through the same `Repo` protocol. Evaluation numbers (M14, M15) must come from PostgreSQL.
+
+## ADR-009 — CUDA work runs on a free remote GPU runner — ACCEPTED — 2026-10-10
+Context: the development laptop has no NVIDIA GPU. The project requires CUDA (kernels, SASS, Nsight).
+Decision: kernels are developed and correctness-tested locally with the `numpy` thread-model backend, and all
+CUDA execution and every performance/side-channel measurement runs on Google Colab (primary) or Kaggle
+(long runs) through the zip job protocol in `ai/GPU_RUNNER.md`. Both are free.
+Consequences: GPU modules take two sessions (prep → human uploads → ingest). Numbers carry `runner` and
+`session_id`; results are never mixed across sessions. No code or design changes.
+
+## ADR-010 — An integrated GPU is rejected — ACCEPTED — 2026-10-10
+Context: the laptop's iGPU was considered as a local substitute.
+Decision: rejected. (a) It has no CUDA, so the kernels, SASS evidence and comparisons would all change.
+(b) Decisive: an iGPU shares system RAM with the CPU, so "server keys live in device memory the host
+never sees" is untrue there, and the threat model collapses. A discrete GPU is a requirement of the
+threat model, not a performance preference. Documented in the paper's limitations.
+
+## ADR-011 — `numpy` thread-model backend for local development — ACCEPTED — 2026-10-10
+Context: without a local GPU, iteration would stall waiting on the runner.
+Decision: every kernel gets a NumPy twin in `src/vcloak/gpu/sim.py` implementing the same thread-indexed
+arithmetic. It serves correctness tests only; `check_metrics.py` rejects any performance metric produced
+under it. GPU-vs-simulator bit-exactness is itself an acceptance gate on the runner.
+
+## ADR-012 — One frontend: a real chat app with an evidence dashboard — ACCEPTED — 2026-10-10
+Context: V-cloak is a messaging system, and Review 3 is marked on implementation, results and clarity.
+Decision: a single no-build vanilla JS + SVG frontend (`web/`) served by FastAPI, with five views: Chat
+(two live users), Dashboard (metrics and charts from `results/`), Experiments (attack demo and ablation),
+Logs (live session/audit/metrics logs), Architecture (data-state flow). No React, no bundler, no CDN:
+it must open from `file://` with bundled demo data when the backend is down, which is also the review fallback.
+Consequences: charts are hand-written SVG in `web/js/charts.js`; the palette is CVD-validated in both modes.
+
+## ADR-013 — The dashboard reads generated evidence, never hard-coded numbers — ACCEPTED — 2026-10-10
+Context: the dashboard must not become a second place where numbers can drift or be invented.
+Decision: the dashboard renders `web/data/dashboard.json`, generated by `scripts/export_dashboard.py`
+from `state/METRICS_INDEX.md` and `runs/**/summary.json` only. Every tile carries its METRIC-ID, run dir
+and `backend`/`runner` provenance, and shows `NOT MEASURED` where a metric is absent. A number typed by
+hand into the frontend is an audit failure (G2).
