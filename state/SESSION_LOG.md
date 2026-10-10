@@ -15,5 +15,5 @@
   because the runner bundle ships src/ but must write manifests; (b) scripts/ is added to the bundle so the
   bundled tests import; (c) bundle_sha256 is a content hash excluding job.json (a file cannot hold its own hash);
   (d) manifest status gains FAIL; (e) docs/ENV.md and STATE env are deferred to S7 (need the ingested probe).
-- Commit: (see next line)
+- Commit: 092fd4a
 - Next: M00 S6 ingest → S7 → audit ; human action: ISSUE-2
