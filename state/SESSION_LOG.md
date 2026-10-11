@@ -314,6 +314,6 @@
   low-clock points are labelled, not UNSTABLE; extra baseline (views) and extra metric IDs; 200 calls for p99.
 - Not verified: everything on a GPU — `__nanosleep` under nvrtc, the event timing loop, pinned transfers in
   sort_e2e, numba, the run time of the job (the CPU baselines at 2^21 and 2^22 are the long part), every number.
-- Commit: c40696b (code), see the next commit (job, logs, state)
+- Commit: c40696b (code), 4673a5d (job, logs, state)
 - Next: M07 ingest (gates, metrics, S6 plots and notes) ; human action: ISSUE-13 — upload the job, drop the
   results zip in gpujobs/inbox/
