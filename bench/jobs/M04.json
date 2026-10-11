@@ -1,0 +1,17 @@
+{
+  "title": "M04 ChaCha20 kernels: compile, RFC 8439 vectors, bit-exact tags/subkeys/buckets vs M02 and simulator, obliviousness check, throughput smoke",
+  "step": "S4",
+  "seed": 4,
+  "commands": [
+    {"name": "nvidia_smi", "cmd": "nvidia-smi", "timeout": 120},
+    {"name": "check_oblivious", "cmd": "python scripts/check_oblivious.py kernels/", "timeout": 300},
+    {"name": "pytest_chacha", "cmd": "python -m pytest -p no:cacheprovider -rs -v -m \"not slow\" tests/gpu/test_chacha.py",
+     "timeout": 1800},
+    {"name": "pytest_bitonic_regression", "cmd": "python -m pytest -p no:cacheprovider -rs -q -m \"not slow\" tests/gpu/test_bitonic.py",
+     "timeout": 1800, "stop_on_fail": false},
+    {"name": "chacha_smoke", "cmd": "python bench/chacha_smoke.py --seed 4 {quick} --out runs", "timeout": 1800,
+     "stop_on_fail": false},
+    {"name": "pytest_chacha_max_log2n", "cmd": "python -m pytest -p no:cacheprovider -rs -v -m slow tests/gpu/test_chacha.py",
+     "timeout": 3600, "stop_on_fail": false}
+  ]
+}

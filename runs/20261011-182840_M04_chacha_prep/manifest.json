@@ -1,0 +1,45 @@
+{
+  "run_id": "20261011-182840_M04_chacha_prep",
+  "module": "M04",
+  "step": "S4",
+  "owner": "Aditya",
+  "git_sha": "ef61703f5823b5055661f36bcc38d8c5d38635b8",
+  "dirty": true,
+  "command": "pytest tests/gpu/test_chacha.py tests/gpu/test_chacha_cpu_shim.py; pytest (full suite); check_oblivious.py kernels/; check_oblivious.py --self-test; bench/chacha_smoke.py (numpy plumbing)",
+  "seed": 0,
+  "quick": false,
+  "params": {},
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261011-182840",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U"
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791723520.6581347
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791723626.99944
+  },
+  "outputs": [
+    "audit_a4.txt",
+    "chacha_smoke_numpy.txt",
+    "check_metrics.txt",
+    "check_oblivious.txt",
+    "check_oblivious_selftest.txt",
+    "check_secrets.txt",
+    "deliverables_ls.txt",
+    "pytest.txt",
+    "pytest_all.txt",
+    "pytest_repeat.txt",
+    "ruff.txt"
+  ],
+  "status": "OK",
+  "notes": "prep session, numpy backend and g++ CPU shim: correctness only, no number here is a performance result; CUDA compile, GPU execution, GPU-vs-twin parity and the throughput smoke are pending in the M04 GPU job; ruff: 1 E501 in scripts/record_env.py that predates this session"
+}

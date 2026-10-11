@@ -40,6 +40,21 @@ __device__ __forceinline__ void xor_swap32(u32& a, u32& b, u64 m)
     b ^= d;
 }
 
+// w mod B for a public modulus B >= 1, without dividing by data. Barrett reduction with the public
+// constant m = floor((2^64 - 1) / B): q = floor(w * m / 2^64) is floor(w / B) or one less, so
+// r = w - q * B lies in [0, 2B) and one masked subtraction finishes. The only division has public
+// operands. w < 2^32, so the high half of w * m is built from two 32 x 32 -> 64 products.
+__device__ __forceinline__ u32 mod_public(u32 w, u32 B)
+{
+    u64 m = 0xFFFFFFFFFFFFFFFFull / (u64)B;
+    u64 m_hi = m >> 32;
+    u64 m_lo = m & 0xFFFFFFFFull;
+    u64 q = ((u64)w * m_hi + (((u64)w * m_lo) >> 32)) >> 32;
+    u64 r = (u64)w - q * (u64)B;
+    r -= (u64)B & mask64((u64)(r >= (u64)B));
+    return (u32)r;
+}
+
 // One compare-exchange on the pair (i, l) of the SoA record (hi, lo, slot, pay). `asc` is the public
 // direction mask of the pair. The payload moves under the same mask as its key columns. The caller
 // guarantees that no other thread touches elements i and l in this launch or stage (ADR-005).

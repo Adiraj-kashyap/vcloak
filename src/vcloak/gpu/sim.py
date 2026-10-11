@@ -146,3 +146,110 @@ def bitonic_shared_full(hi: np.ndarray, lo: np.ndarray, slot: np.ndarray, pay: n
             j >>= 1
         k <<= 1
     _store(cols, s, live, block)
+
+
+# ── ChaCha20 (kernels/chacha20.cuh, chacha_tags.cu, prf.cu) ──────────────────
+# The twins repeat the kernels' word arithmetic over a vector of thread ids. They are written from
+# the kernel source, not from vcloak.crypto.chacha_ref, so that the tests compare two implementations.
+# A simulator is for correctness on test keys only: NumPy is not constant-time (hard rule 4).
+
+N_SUBKEYS = 3  # same constant as kernels/prf.cu
+_CHACHA_SIGMA = (0x61707865, 0x3320646E, 0x79622D32, 0x6B206574)
+_CHACHA_QR = ((0, 4, 8, 12), (1, 5, 9, 13), (2, 6, 10, 14), (3, 7, 11, 15),
+              (0, 5, 10, 15), (1, 6, 11, 12), (2, 7, 8, 13), (3, 4, 9, 14))
+LABEL_WORDS = ((0x6F6C6376, 0x742D6B61, 0x00006761),  # the LABELS table of derive_subkeys: tag, seq, bkt
+               (0x6F6C6376, 0x732D6B61, 0x00007165),
+               (0x6F6C6376, 0x622D6B61, 0x0000746B))
+
+
+def _threads(grid: int, block: int, limit: int) -> np.ndarray:
+    """Thread ids of a launch that pass the kernel's `if (t >= limit) return;` guard."""
+    t = np.arange(grid * block, dtype=np.uint32)
+    return t[t < np.uint32(limit)]
+
+
+def _rotl32(x: np.ndarray, r: int) -> np.ndarray:
+    return (x << np.uint32(r)) | (x >> np.uint32(32 - r))
+
+
+def _chacha_block(key: np.ndarray, ctr: Any, nonce: tuple[Any, Any, Any], m: int) -> np.ndarray:
+    """chacha_block for m threads: (16, m) uint32, column t = the 16 output words of thread t.
+    `ctr` and the three nonce words are scalars or per-thread vectors."""
+    s = np.empty((16, m), dtype=np.uint32)
+    for w in range(4):
+        s[w] = np.uint32(_CHACHA_SIGMA[w])
+    for w in range(8):
+        s[4 + w] = key[w]
+    s[12] = ctr
+    for w in range(3):
+        s[13 + w] = nonce[w]
+    x = s.copy()
+    for _ in range(10):
+        for a, b, c, d in _CHACHA_QR:
+            x[a] += x[b]
+            x[d] = _rotl32(x[d] ^ x[a], 16)
+            x[c] += x[d]
+            x[b] = _rotl32(x[b] ^ x[c], 12)
+            x[a] += x[b]
+            x[d] = _rotl32(x[d] ^ x[a], 8)
+            x[c] += x[d]
+            x[b] = _rotl32(x[b] ^ x[c], 7)
+    x += s
+    return x
+
+
+def _mod_public(w: np.ndarray, B: int) -> np.ndarray:  # noqa: N803 - B is the spec's name
+    """mod_public of kernels/common.cuh: Barrett reduction of uint32 w by the public modulus B."""
+    m = 0xFFFFFFFFFFFFFFFF // int(B)
+    m_hi, m_lo = np.uint64(m >> 32), np.uint64(m & 0xFFFFFFFF)
+    w64 = w.astype(np.uint64)
+    q = (w64 * m_hi + ((w64 * m_lo) >> np.uint64(32))) >> np.uint64(32)
+    r = w64 - q * np.uint64(B)
+    r -= np.uint64(B) & _mask64(r >= np.uint64(B))
+    return r.astype(np.uint32)
+
+
+@register("chacha_blocks")
+def chacha_blocks(key: np.ndarray, nonce: np.ndarray, out: np.ndarray, counter0: int, nblocks: int,
+                  *, grid: int, block: int) -> None:
+    """Twin of the raw block kernel: thread t writes block counter0 + t to out[16t .. 16t + 15]."""
+    t = _threads(grid, block, nblocks)
+    ks = _chacha_block(key, np.uint32(counter0) + t, (nonce[0], nonce[1], nonce[2]), t.shape[0])
+    for w in range(16):
+        out[np.uint32(16) * t + np.uint32(w)] = ks[w]
+
+
+@register("chacha_tags")
+def chacha_tags(key: np.ndarray, nonce_lo: int, nonce_hi: int, out_hi: np.ndarray, out_lo: np.ndarray,
+                nblocks: int, *, grid: int, block: int) -> None:
+    """Twin of the tag kernel: thread t owns block t = the (hi, lo) tags of slots 4t .. 4t + 3."""
+    t = _threads(grid, block, nblocks)
+    nonce = (np.uint32(int(nonce_lo) & 0xFFFFFFFF), np.uint32(int(nonce_lo) >> 32), np.uint32(nonce_hi))
+    ks = _chacha_block(key, t, nonce, t.shape[0]).astype(np.uint64)
+    for q in range(4):
+        i = np.uint32(4) * t + np.uint32(q)
+        out_hi[i] = ks[4 * q] | (ks[4 * q + 1] << np.uint64(32))
+        out_lo[i] = ks[4 * q + 2] | (ks[4 * q + 3] << np.uint64(32))
+
+
+@register("derive_subkeys")
+def derive_subkeys(master: np.ndarray, out_keys: np.ndarray, *, grid: int, block: int) -> None:
+    """Twin of the subkey kernel: thread t writes subkey t (tag, seq, bkt) to out_keys[8t .. 8t + 7]."""
+    t = _threads(grid, block, N_SUBKEYS)
+    labels = np.asarray(LABEL_WORDS, dtype=np.uint32).reshape(-1)
+    nonce = tuple(labels[np.uint32(3) * t + np.uint32(w)] for w in range(3))
+    ks = _chacha_block(master, np.uint32(0), nonce, t.shape[0])  # type: ignore[arg-type]
+    for w in range(8):
+        out_keys[np.uint32(8) * t + np.uint32(w)] = ks[w]
+
+
+@register("bucket_prf")
+def bucket_prf(kbkt: np.ndarray, conv_ids: np.ndarray, out_bucket: np.ndarray, n: int, B: int,  # noqa: N803
+               *, grid: int, block: int) -> None:
+    """Twin of the bucket kernel: one thread per conversation id, word 0 of its block reduced mod B."""
+    t = _threads(grid, block, n)
+    conv = conv_ids[t]
+    nonce = ((conv & np.uint64(0xFFFFFFFF)).astype(np.uint32), (conv >> np.uint64(32)).astype(np.uint32),
+             np.uint32(0))
+    ks = _chacha_block(kbkt, np.uint32(0), nonce, t.shape[0])
+    out_bucket[t] = _mod_public(ks[0], B)

@@ -48,3 +48,30 @@ wrappers in `gpu/kernels.py`, `tests/gpu/test_chacha.py`.
 3. Why is ChaCha20 safer than table-based AES on a GPU?
 
 ## Next: M05
+
+## Amendments
+2026-10-11 (session 7, prep). Where the build differs from the text above, and why:
+- **Types and nonce split.** The kernels use the `u32`/`u64` typedefs of `common.cuh`. `chacha_tags` takes
+  `u64 nonce_lo` (the epoch or the window, nonce words 0-1) and `u32 nonce_hi` (the domain word, nonce word 2:
+  0 for epoch tags, 0x80000000 for re-shuffle tags, i.e. LE32 of the suffixes in ARCHITECTURE §5).
+- **S1 kernel.** The RFC vector needs counter 1 and a free nonce, so the one-thread kernel is a general
+  `chacha_blocks(key, nonce, out, counter0, nblocks)` in `chacha_tags.cu` (wrapper `gpu_chacha_blocks`).
+- **Guards.** Every kernel keeps `if (t >= nblocks | n | 3) return;` on the thread id and a public bound, so a
+  launch rounded up to whole blocks cannot write out of bounds.
+- **Bucket reduction.** `bucket_prf` does not use `%` on the PRF output. `mod_public(w, B)` in `common.cuh` is a
+  Barrett reduction whose only division has public operands (2^64 - 1 and B), followed by one masked subtraction.
+  It equals `w % B` for every 32-bit w (tested at the edge values, in the twin and in the C source).
+- **Ranges.** `B` is a `u32`, so the wrapper accepts n_buckets in [1, 2^32 - 1]; M02's reference also accepts
+  2^32. Tag columns must hold a multiple of 4 slots (one block is 4 tags); M02's reference accepts any n.
+- **Wrappers.** `gpu_tags(key_dev, nonce64, domain, hi, lo)` fills existing columns in place;
+  `gpu_tags_for_epoch` / `gpu_reshuffle_tags` allocate them. `gpu_derive_subkeys` returns one 24-word device buffer
+  and `subkey(keys_dev, SUBKEY_TAG | SUBKEY_SEQ | SUBKEY_BKT)` is a view of it. A4 is enforced, not only followed:
+  a key given as `bytes`, `bytearray` or `memoryview` raises `TypeError`.
+- **Twins.** As in M03 they take `grid=` and `block=`. They are written from the kernel source and do not call
+  `chacha_ref`, so the local tests compare two implementations.
+- **CPU stand-in.** `tests/cuda_shim/chacha_host.cpp` compiles the real `chacha_tags.cu` and `prf.cu` with g++
+  (`tests/gpu/test_chacha_cpu_shim.py`). It checks the C++ logic, not what nvcc emits; the GPU job is the gate.
+- **Largest size.** At n = 2^max_log2n the tags are compared with the reference for seeds 1-3 and with the twin
+  once (seed 1); buckets are compared with the reference in chunks of 2^20 ids to bound host memory.
+- **S4.** `bench/chacha_smoke.py` takes its clock-stability snapshots after the warm-up and after the last timed
+  run (the fix proposed in ISSUE-7), because 30 runs at 2^20 are shorter than one telemetry sampling period.

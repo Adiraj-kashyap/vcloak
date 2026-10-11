@@ -1,0 +1,29 @@
+A4: key parameters of the production wrappers (src/vcloak/gpu/kernels.py)
+139:def gpu_bitonic_sort(d_hi: Any, d_lo: Any, d_slot: Any, d_pay: Any, *, T: int = DEFAULT_T) -> None:  # noqa: N803
+195:def gpu_chacha_blocks(key_dev: Any, nonce_dev: Any, counter0: int, nblocks: int) -> Any:
+200:    _check_buffer("key_dev", key_dev, np.uint32, KEY_WORDS)
+209:def gpu_tags(key_dev: Any, nonce64: int, domain: int, d_hi: Any, d_lo: Any) -> None:
+212:    _check_buffer("key_dev", key_dev, np.uint32, KEY_WORDS)
+226:    _check_buffer("key_dev", key_dev, np.uint32, KEY_WORDS)
+233:def gpu_tags_for_epoch(ktag_dev: Any, epoch: int, n: int) -> tuple[Any, Any]:
+238:def gpu_reshuffle_tags(ktag_dev: Any, win: int, n: int) -> tuple[Any, Any]:
+243:def gpu_derive_subkeys(master_dev: Any) -> Any:
+246:    _check_buffer("master_dev", master_dev, np.uint32, KEY_WORDS)
+252:def subkey(keys_dev: Any, index: int) -> Any:
+254:    _check_buffer("keys_dev", keys_dev, np.uint32, N_SUBKEYS * KEY_WORDS)
+260:def gpu_bucket_prf(kbkt_dev: Any, conv_ids_dev: Any, n_buckets: int) -> Any:
+262:    _check_buffer("kbkt_dev", kbkt_dev, np.uint32, KEY_WORDS)
+
+host-bytes rejection:
+174:        raise TypeError(f"{name} must be a device buffer, not host bytes (ADR-003)")
+
+kernel signatures (keys are pointers):
+kernels/chacha_tags.cu:10:void chacha_blocks(const u32* key, const u32* nonce, u32* out, u32 counter0, u32 nblocks)
+kernels/chacha_tags.cu:28:void chacha_tags(const u32* key, u64 nonce_lo, u32 nonce_hi, u64* out_hi, u64* out_lo, u32 nblocks)
+kernels/prf.cu:12:void derive_subkeys(const u32* master, u32* out_keys)
+kernels/prf.cu:36:void bucket_prf(const u32* kbkt, const u64* conv_ids, u32* out_bucket, u32 n, u32 B)
+
+tests:
+289:tests/gpu/test_chacha.py::test_chain_from_master_on_the_device[numpy] PASSED [ 76%]
+290:tests/gpu/test_chacha.py::test_chain_from_master_on_the_device[cupy] SKIPPED [ 77%]
+291:tests/gpu/test_chacha.py::test_wrappers_reject_key_bytes PASSED          [ 77%]

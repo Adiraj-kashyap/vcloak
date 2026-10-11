@@ -1,0 +1,8 @@
+run dir     (scratch, not kept: numpy plumbing check)
+backend     numpy   executed by numpy twins (vcloak.gpu.sim)
+tags        n=2^20 mismatches=0
+K-CHACHA-TAGS-SMOKE-GBS-2^20     NOT_MEASURED GB/s
+K-CHACHA-TAGS-SMOKE-MS-2^20      NOT_MEASURED ms
+K-CHACHA-TAGS-SMOKE-CV-2^20      NOT_MEASURED -
+clock       NOT_MEASURED (numpy backend: no GPU on this machine)
+status      NOT_MEASURED

@@ -1,0 +1,17 @@
+.s.s...............sssssssssssssss....................................ss [ 19%]
+ssssssssssssssssssssssssssssssssss..................ssssssssssssssssss.s [ 39%]
+.s......ssssss..............................................ssssssssssss [ 58%]
+sssssssssssssssssssssssssssssssss.........sssssssss...............s..... [ 78%]
+..ssssssssssss.......................................................... [ 98%]
+.......                                                                  [100%]
+=========================== short test summary info ===========================
+SKIPPED [5] tests\gpu\test_chacha.py: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [15] tests\gpu\test_chacha.py:119: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [36] tests\gpu\test_chacha.py:131: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [18] tests\gpu\test_chacha.py:142: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [6] tests\gpu\test_chacha.py:175: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [45] tests\gpu\test_chacha.py:193: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [9] tests\gpu\test_chacha.py:204: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [9] tests\gpu\test_chacha.py:316: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [3] tests\gpu\test_chacha.py:335: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+221 passed, 146 skipped in 22.93s

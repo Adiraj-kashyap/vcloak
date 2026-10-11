@@ -1,0 +1,5 @@
+-rw-r--r-- 1 HP 197121  1831 Oct 11 18:22 kernels/chacha20.cuh
+-rw-r--r-- 1 HP 197121  1827 Oct 11 18:22 kernels/chacha_tags.cu
+-rw-r--r-- 1 HP 197121  1953 Oct 11 18:22 kernels/prf.cu
+-rw-r--r-- 1 HP 197121 12116 Oct 11 18:28 src/vcloak/gpu/kernels.py
+-rw-r--r-- 1 HP 197121 17966 Oct 11 18:28 tests/gpu/test_chacha.py

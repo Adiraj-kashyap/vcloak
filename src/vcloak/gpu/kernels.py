@@ -1,8 +1,12 @@
-"""Host driver for the CUDA kernels (ai/GPU_GUIDE.md §2-§3). M03: the bitonic sorting network.
+"""Host driver for the CUDA kernels (ai/GPU_GUIDE.md §2-§3).
 
-The launch sequence is a function of the public values n and T only (`launch_plan`); the data never
-influences which kernel runs, with which grid, or how often. Device arrays (CuPy) run the kernels in
-`kernels/bitonic.cu`; NumPy arrays run their twins in `vcloak.gpu.sim` with the same launch plan.
+M03, the bitonic sorting network: the launch sequence is a function of the public values n and T only
+(`launch_plan`); the data never influences which kernel runs, with which grid, or how often.
+M04, ChaCha20 tags, subkeys and bucket PRF: every key argument is a device buffer of 8 uint32 words;
+no wrapper accepts key bytes (ADR-003, audit A4).
+
+Device arrays (CuPy) run the kernels in `kernels/*.cu`; NumPy arrays run their twins in
+`vcloak.gpu.sim` with the same launch configuration.
 """
 from __future__ import annotations
 
@@ -17,6 +21,10 @@ from vcloak.gpu import sim
 
 KERNEL_DIR = Path(__file__).resolve().parents[3] / "kernels"
 BITONIC_KERNELS = ("bitonic_pairs_global", "bitonic_shared", "bitonic_shared_full")
+CHACHA_KERNELS = ("chacha_blocks", "chacha_tags")
+PRF_KERNELS = ("derive_subkeys", "bucket_prf")
+KERNEL_FILES = {**dict.fromkeys(BITONIC_KERNELS, "bitonic.cu"), **dict.fromkeys(CHACHA_KERNELS, "chacha_tags.cu"),
+                **dict.fromkeys(PRF_KERNELS, "prf.cu")}
 DEFAULT_T = 256  # threads per block in the shared kernels; a tile is 2T records. Public.
 GLOBAL_BLOCK = 256
 COLUMN_DTYPES = (np.uint64, np.uint64, np.uint32, np.uint32)  # hi, lo, slot, pay
@@ -91,11 +99,11 @@ def _pow2_down(hi: int) -> list[int]:
     return out
 
 
-@lru_cache(maxsize=1)
-def _bitonic_module() -> Any:
+@lru_cache(maxsize=8)
+def _module(filename: str) -> Any:
     import cupy as cp  # type: ignore[import-not-found]
 
-    src = (KERNEL_DIR / "bitonic.cu").read_text(encoding="utf-8")
+    src = (KERNEL_DIR / filename).read_text(encoding="utf-8")
     return cp.RawModule(code=src, options=("-std=c++17", "-I" + str(KERNEL_DIR)))
 
 
@@ -124,7 +132,7 @@ def run_launch(cols: tuple[Any, ...], launch: Launch) -> None:
     if isinstance(cols[0], np.ndarray):
         sim.get(launch.kernel)(*cols, *scalars, grid=launch.grid, block=launch.block)
     else:
-        fn = _bitonic_module().get_function(launch.kernel)
+        fn = _module(KERNEL_FILES[launch.kernel]).get_function(launch.kernel)
         fn((launch.grid,), (launch.block,), (*cols, *(np.uint32(s) for s in scalars)))
 
 
@@ -138,3 +146,126 @@ def gpu_bitonic_sort(d_hi: Any, d_lo: Any, d_slot: Any, d_pay: Any, *, T: int = 
     n = _check_columns(cols)
     for launch in launch_plan(n, T):
         run_launch(cols, launch)
+
+
+# ── ChaCha20: tags, subkeys, bucket PRF (kernels/chacha_tags.cu, kernels/prf.cu) ──
+
+CHACHA_BLOCK = 256  # threads per block of the one-thread-per-item kernels. Public.
+KEY_WORDS = 8
+NONCE_WORDS = 3
+TAGS_PER_BLOCK = 4  # a 64-byte block is four 16-byte (hi, lo) tags
+N_SUBKEYS = sim.N_SUBKEYS
+SUBKEY_TAG, SUBKEY_SEQ, SUBKEY_BKT = range(N_SUBKEYS)  # order of derive_subkeys' output
+DOMAIN_EPOCH = 0x00000000  # nonce word 2: LE32 of the suffix 00000000 (ai/ARCHITECTURE.md §5)
+DOMAIN_RESHUFFLE = 0x80000000  # LE32 of the suffix 00000080
+
+
+def _xp(a: Any) -> Any:
+    """The array module of `a`: numpy for host arrays, cupy for device arrays."""
+    if isinstance(a, np.ndarray):
+        return np
+    import cupy as cp  # type: ignore[import-not-found]
+
+    return cp
+
+
+def _check_buffer(name: str, a: Any, dtype: Any, size: int | None = None) -> None:
+    if isinstance(a, (bytes, bytearray, memoryview)):
+        raise TypeError(f"{name} must be a device buffer, not host bytes (ADR-003)")
+    if not hasattr(a, "dtype") or a.dtype != dtype:
+        raise TypeError(f"{name} must be a {np.dtype(dtype).name} array, got {getattr(a, 'dtype', type(a).__name__)}")
+    if a.ndim != 1 or (size is not None and int(a.shape[0]) != size):
+        raise ValueError(f"{name} must be one-dimensional" + (f" with {size} elements" if size is not None else "")
+                         + f", got shape {a.shape}")
+    if not a.flags.c_contiguous:
+        raise ValueError(f"{name} must be contiguous")
+
+
+def _run_threads(kernel: str, nthreads: int, args: tuple[Any, ...]) -> None:
+    """Launch `kernel` with at least `nthreads` threads: the CUDA kernel for device arrays, its NumPy
+    twin for host arrays. The grid depends on the public thread count only."""
+    block = min(CHACHA_BLOCK, nthreads)
+    grid = -(-nthreads // block)
+    if isinstance(args[0], np.ndarray):
+        sim.get(kernel)(*args, grid=grid, block=block)
+    else:
+        _module(KERNEL_FILES[kernel]).get_function(kernel)((grid,), (block,), args)
+
+
+def gpu_chacha_blocks(key_dev: Any, nonce_dev: Any, counter0: int, nblocks: int) -> Any:
+    """`nblocks` ChaCha20 blocks from block `counter0` on, as 16 * nblocks little-endian uint32 words.
+
+    `key_dev` holds the 8 key words and `nonce_dev` the 3 nonce words, on the device of the result.
+    """
+    _check_buffer("key_dev", key_dev, np.uint32, KEY_WORDS)
+    _check_buffer("nonce_dev", nonce_dev, np.uint32, NONCE_WORDS)
+    if nblocks < 1 or counter0 < 0 or counter0 + nblocks > 1 << 32:
+        raise ValueError("ChaCha20 block counter out of range")
+    out = _xp(key_dev).empty(16 * nblocks, dtype=np.uint32)
+    _run_threads("chacha_blocks", nblocks, (key_dev, nonce_dev, out, np.uint32(counter0), np.uint32(nblocks)))
+    return out
+
+
+def gpu_tags(key_dev: Any, nonce64: int, domain: int, d_hi: Any, d_lo: Any) -> None:
+    """Fill the tag columns in place: slot i gets the LE64 halves of keystream bytes [16i, 16i + 16) under
+    nonce LE64(nonce64) || LE32(domain). The columns are uint64 with the same multiple-of-4 length."""
+    _check_buffer("key_dev", key_dev, np.uint32, KEY_WORDS)
+    _check_buffer("hi", d_hi, np.uint64)
+    n = int(d_hi.shape[0])
+    _check_buffer("lo", d_lo, np.uint64, n)
+    if n < TAGS_PER_BLOCK or n % TAGS_PER_BLOCK or n > 1 << 31:
+        raise ValueError(f"the number of slots must be a multiple of {TAGS_PER_BLOCK} in [4, 2^31], got {n}")
+    if not 0 <= nonce64 < 1 << 64:
+        raise ValueError("the epoch or window must fit in 64 bits")
+    nblocks = n // TAGS_PER_BLOCK
+    _run_threads("chacha_tags", nblocks,
+                 (key_dev, np.uint64(nonce64), np.uint32(domain), d_hi, d_lo, np.uint32(nblocks)))
+
+
+def _new_tags(key_dev: Any, nonce64: int, domain: int, n: int) -> tuple[Any, Any]:
+    _check_buffer("key_dev", key_dev, np.uint32, KEY_WORDS)
+    xp = _xp(key_dev)
+    d_hi, d_lo = xp.empty(n, dtype=np.uint64), xp.empty(n, dtype=np.uint64)
+    gpu_tags(key_dev, nonce64, domain, d_hi, d_lo)
+    return d_hi, d_lo
+
+
+def gpu_tags_for_epoch(ktag_dev: Any, epoch: int, n: int) -> tuple[Any, Any]:
+    """(hi, lo) tag columns of slots 0..n-1 for `epoch` (the device counterpart of chacha_ref.tags_for_epoch)."""
+    return _new_tags(ktag_dev, epoch, DOMAIN_EPOCH, n)
+
+
+def gpu_reshuffle_tags(ktag_dev: Any, win: int, n: int) -> tuple[Any, Any]:
+    """As `gpu_tags_for_epoch` for the re-shuffle of window `win` (domain-separated by the nonce suffix)."""
+    return _new_tags(ktag_dev, win, DOMAIN_RESHUFFLE, n)
+
+
+def gpu_derive_subkeys(master_dev: Any) -> Any:
+    """Derive (K_tag, K_seq, K_bkt) from the master key on its device: 3 x 8 uint32 words in one buffer.
+    Use `subkey(keys_dev, SUBKEY_TAG)` etc. to address one key; nothing is copied to the host."""
+    _check_buffer("master_dev", master_dev, np.uint32, KEY_WORDS)
+    out = _xp(master_dev).empty(N_SUBKEYS * KEY_WORDS, dtype=np.uint32)
+    _run_threads("derive_subkeys", N_SUBKEYS, (master_dev, out))
+    return out
+
+
+def subkey(keys_dev: Any, index: int) -> Any:
+    """The view of subkey `index` inside the buffer returned by `gpu_derive_subkeys`."""
+    _check_buffer("keys_dev", keys_dev, np.uint32, N_SUBKEYS * KEY_WORDS)
+    if not 0 <= index < N_SUBKEYS:
+        raise ValueError(f"subkey index must be in [0, {N_SUBKEYS}), got {index}")
+    return keys_dev[index * KEY_WORDS:(index + 1) * KEY_WORDS]
+
+
+def gpu_bucket_prf(kbkt_dev: Any, conv_ids_dev: Any, n_buckets: int) -> Any:
+    """Bucket of each conversation id (uint64 column) as uint32: the block PRF under K_bkt, mod `n_buckets`."""
+    _check_buffer("kbkt_dev", kbkt_dev, np.uint32, KEY_WORDS)
+    _check_buffer("conv_ids", conv_ids_dev, np.uint64)
+    n = int(conv_ids_dev.shape[0])
+    if not 0 < n_buckets < 1 << 32:
+        raise ValueError("n_buckets must be in [1, 2^32 - 1]")
+    if not 0 < n < 1 << 32:
+        raise ValueError("the number of conversation ids must be in [1, 2^32 - 1]")
+    out = _xp(kbkt_dev).empty(n, dtype=np.uint32)
+    _run_threads("bucket_prf", n, (kbkt_dev, conv_ids_dev, out, np.uint32(n), np.uint32(n_buckets)))
+    return out
