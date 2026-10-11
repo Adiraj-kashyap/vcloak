@@ -1,0 +1,5 @@
+kernels/chacha20.cuh
+kernels/chacha_tags.cu
+kernels/prf.cu
+src/vcloak/gpu/kernels.py
+tests/gpu/test_chacha.py

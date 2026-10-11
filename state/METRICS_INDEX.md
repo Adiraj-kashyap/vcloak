@@ -13,3 +13,6 @@
 | K-BITONIC-SMOKE-MS-2^16 | 0.5243 | ms | median | M03 | runs/20261011-122303_M03_bitonic_smoke | python bench/bitonic_smoke.py --seed 3 --out runs | 20261011 | no | cupy | kaggle |
 | K-BITONIC-SMOKE-CV-2^16 | 0.0118 | - | cv | M03 | runs/20261011-122303_M03_bitonic_smoke | python bench/bitonic_smoke.py --seed 3 --out runs | 20261011 | no | cupy | kaggle |
 | K-BITONIC-RACECHECK-HAZARDS | 0 | count | value | M03 | runs/20261011-122303_M03_bitonic_smoke | python bench/bitonic_smoke.py --seed 3 --out runs | 20261011 | no | cupy | kaggle |
+| K-CHACHA-TAGS-SMOKE-GBS-2^20 | 85.0427 | GB/s | median | M04 | runs/20261011-134013_M04_chacha_smoke | python bench/chacha_smoke.py --seed 4 --out runs | 20261011 | no | cupy | kaggle |
+| K-CHACHA-TAGS-SMOKE-MS-2^20 | 0.1973 | ms | median | M04 | runs/20261011-134013_M04_chacha_smoke | python bench/chacha_smoke.py --seed 4 --out runs | 20261011 | no | cupy | kaggle |
+| K-CHACHA-TAGS-SMOKE-CV-2^20 | 0.083 | - | cv | M04 | runs/20261011-134013_M04_chacha_smoke | python bench/chacha_smoke.py --seed 4 --out runs | 20261011 | no | cupy | kaggle |

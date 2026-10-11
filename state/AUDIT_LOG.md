@@ -188,3 +188,35 @@ not show that nvrtc compiles the files, that the device produces the same bytes,
 for the rotates is an M08 (SASS) question, not answered here. ruff reports 1 E501 in scripts/record_env.py, which
 predates this session (runs/20261011-182840_M04_chacha_prep/ruff.txt); the files of this session are clean. The run manifest has dirty:true because
 the run was taken before the commit; the code it tested is commit 680c28d.
+
+## Audit M04 — 2026-10-11 — session 8 — result: PASS
+Evidence dirs: runs/20261011-134013_M04_chacha_smoke (cupy, Kaggle Tesla T4, GPU job 20261011-183051_M04, git 680c28d),
+runs/20261011-191448_M04_ingest_audit (local checks, numpy), gpujobs/out/20261011-183051_M04/{result.json,logs/}
+
+| Item | Result | Evidence |
+|---|---|---|
+| A1 RFC vectors pass on the GPU | PASS | gpujobs/out/20261011-183051_M04/logs/03_pytest_chacha.txt: test_rfc8439_2_3_2_block_from_a_one_thread_kernel[cupy] and test_rfc8439_2_4_2_keystream[cupy] PASSED on the T4 (gates.txt: A1_rfc8439_2_3_2_on_gpu, A1_rfc8439_2_4_2_on_gpu) |
+| A2 bit-exact tags/subkeys/buckets vs M02 across sizes and seeds | PASS | logs/03: 299 passed, 0 failed, 0 skipped (tags, subkeys, buckets, blocks vs chacha_ref on numpy and cupy; test_gpu_equals_simulator at 3 sizes x seeds 1-3); logs/06: test_max_log2n[1..3] passed at n = 2^24; smoke: 0 mismatches at 2^20 (gates.txt) |
+| A3 check_oblivious.py is clean | PASS | runs/20261011-191448_M04_ingest_audit/check_oblivious.txt (6 files, 0 findings); the same on the runner (logs/02); self-test 11/11 (check_oblivious_selftest.txt); planted leaks flagged (test_check_oblivious_flags_a_leak_planted_in_the_chacha_kernels, logs/03 and pytest.txt) |
+| A4 no key passed by value from the host in production wrappers | PASS | runs/20261011-191448_M04_ingest_audit/audit_a4.txt: every kernel takes its key as `const u32*`; the wrappers raise TypeError on host bytes; test_wrappers_reject_key_bytes and test_chain_from_master_on_the_device[cupy] PASSED on the runner; code unchanged since 680c28d |
+| G1 | PASS | runs/20261011-191448_M04_ingest_audit/pytest.txt (413 passed, 230 gpu-skipped locally); full suite pytest_all.txt (653 passed, 232 skipped); on the T4: logs/03 (299 passed), logs/06 (3 passed), logs/04 (bitonic regression, 212 passed) |
+| G2 | PASS | check_metrics.txt: 14 metric rows, 0 problems |
+| G2b | PASS | the 3 new rows come from a manifest with backend cupy and a gpu_job block (gates.txt: backend_cupy_gpu_job_block); indexed by `gpujob.py ingest`, not by hand |
+| G3 | PASS | same as A3 |
+| G4 | PASS | check_secrets.txt: 314 files, 0 key-like runs; this is the run taken after the evidence copies and logs, before the commit |
+| G5 | PASS | GPU vs chacha_ref and GPU vs NumPy twin, byte equality, 3 sizes x seeds 1-3, plus 2^24 x seeds 1-3 (logs/03, logs/06) |
+| G6 | PASS | deliverables_ls.txt |
+| G7 | PASS | checked after the closing commit |
+| G8 | PASS | STATE: M04 DONE at S4, sessions 2, next_unit M05, gpu_job.pending null, last_ingested 20261011-183051_M04 |
+| G9 | PASS | SESSION_LOG session 8 and its GPU-JOB line, this entry, ISSUE-8 closed, ISSUE-7 updated |
+| G10 | PASS | both run manifests validate (new_run.py --validate); the local module tests gave the same outcome as in session 7 |
+Notes: the S4 gates are in runs/20261011-191448_M04_ingest_audit/gates.txt, computed from the ingested files.
+- The smoke ran with the SM clock at 810-840 MHz (util 3-6%); the M03 job saw the same T4 model reach 1590 MHz under
+  load. The 30 timed runs total about 6 ms of kernel time, so the GPU never left its low-clock state. The 15% gate
+  compares the snapshot after the warm-up with the one after the runs (+3.7%), so the run is OK by the rule, but the
+  value describes a T4 at roughly half clock. It is a sanity value, not an M07 result, and is not to be quoted as one.
+- CV 0.083 passes the 0.10 limit with little margin; the first timed run (0.2796 ms) is the largest sample.
+- GB/s here is generated tag bytes (16 n) over the median kernel time, not memory traffic.
+- At n = 2^max_log2n the tags are compared with the reference for seeds 1-3 and with the twin once (Amendments).
+- Whether nvcc emits branch-free code for mod_public and the rotates is an M08 (SASS) question, not answered here.
+- The runner's Python is 3.13.15 and the laptop's 3.14.0 (ISSUE-3 covers the package-set difference).

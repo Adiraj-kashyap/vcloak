@@ -1,0 +1,77 @@
+{
+  "run_id": "20261011-134013_M04_chacha_smoke",
+  "module": "M04",
+  "step": "S4",
+  "owner": "Aditya",
+  "git_sha": "680c28d484ab48fff76122c7c2d676a4dd82a00b",
+  "dirty": false,
+  "command": "python bench/chacha_smoke.py --seed 4 --out runs",
+  "seed": 4,
+  "quick": false,
+  "params": {
+    "n": 1048576,
+    "blocks": 262144,
+    "threads_per_block": 256,
+    "tag_bytes": 16777216,
+    "warmup": 10,
+    "runs": 30
+  },
+  "env": {
+    "os": "Linux-6.6.122+-x86_64-with-glibc2.39",
+    "python": "3.13.15",
+    "backend": "cupy",
+    "runner": "kaggle",
+    "session_id": "20261011-133942",
+    "gpu": "Tesla T4",
+    "cc": "7.5",
+    "cuda": "13000",
+    "cupy": "14.0.1",
+    "driver": "580.82.07"
+  },
+  "telemetry_start": {
+    "available": true,
+    "gpu": "Tesla T4",
+    "driver": "580.82.07",
+    "clocks": "unlocked",
+    "ts": 1791726013.6816285,
+    "sm_clock_mhz": 810,
+    "mem_clock_mhz": 5000,
+    "temperature_c": 69,
+    "power_w": 31.076,
+    "power_limit_w": 70.0,
+    "util_gpu_pct": 6,
+    "util_mem_pct": 0,
+    "throttle_reasons": 0,
+    "pstate": 0,
+    "mem_used_mb": 654.1875
+  },
+  "telemetry_end": {
+    "available": true,
+    "gpu": "Tesla T4",
+    "driver": "580.82.07",
+    "clocks": "unlocked",
+    "ts": 1791726014.083517,
+    "sm_clock_mhz": 840,
+    "mem_clock_mhz": 5000,
+    "temperature_c": 69,
+    "power_w": 30.087,
+    "power_limit_w": 70.0,
+    "util_gpu_pct": 1,
+    "util_mem_pct": 1,
+    "throttle_reasons": 0,
+    "pstate": 0,
+    "mem_used_mb": 672.1875
+  },
+  "outputs": [
+    "raw.csv",
+    "summary.json",
+    "telemetry.csv"
+  ],
+  "status": "OK",
+  "notes": "",
+  "gpu_job": {
+    "job_id": "20261011-183051_M04",
+    "bundle_sha256": "1d9a2d8029bf294261bde1f5fa79fd81acaea1f35e620c29290133560dda5ba2",
+    "packed_from_git_sha": "680c28d484ab48fff76122c7c2d676a4dd82a00b"
+  }
+}

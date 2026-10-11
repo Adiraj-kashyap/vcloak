@@ -1,0 +1,107 @@
+{
+  "metrics": [
+    {
+      "id": "K-CHACHA-TAGS-SMOKE-GBS-2^20",
+      "value": 85.0427,
+      "unit": "GB/s",
+      "stat": "median",
+      "note": "16777216 tag bytes / median kernel time; smoke, not an M07 result"
+    },
+    {
+      "id": "K-CHACHA-TAGS-SMOKE-MS-2^20",
+      "value": 0.1973,
+      "unit": "ms",
+      "stat": "median",
+      "note": "chacha_tags kernel only, 30 runs, CUDA events"
+    },
+    {
+      "id": "K-CHACHA-TAGS-SMOKE-CV-2^20",
+      "value": 0.083,
+      "unit": "-",
+      "stat": "cv",
+      "note": "std / mean of the timed runs"
+    }
+  ],
+  "executed_by": "cupy.RawModule (nvrtc)",
+  "mismatches": 0,
+  "attempts": [
+    {
+      "attempt": 1,
+      "mismatches": 0,
+      "clock": {
+        "status": "OK",
+        "before_mhz": 810,
+        "after_mhz": 840,
+        "relative_change": 0.037037037037037035
+      },
+      "telemetry_after_warmup": {
+        "available": true,
+        "gpu": "Tesla T4",
+        "driver": "580.82.07",
+        "clocks": "unlocked",
+        "ts": 1791726013.7726316,
+        "sm_clock_mhz": 810,
+        "mem_clock_mhz": 5000,
+        "temperature_c": 69,
+        "power_w": 34.909,
+        "power_limit_w": 70.0,
+        "util_gpu_pct": 6,
+        "util_mem_pct": 0,
+        "throttle_reasons": 0,
+        "pstate": 0,
+        "mem_used_mb": 672.1875
+      },
+      "telemetry_after_runs": {
+        "available": true,
+        "gpu": "Tesla T4",
+        "driver": "580.82.07",
+        "clocks": "unlocked",
+        "ts": 1791726013.8278422,
+        "sm_clock_mhz": 840,
+        "mem_clock_mhz": 5000,
+        "temperature_c": 69,
+        "power_w": 34.909,
+        "power_limit_w": 70.0,
+        "util_gpu_pct": 3,
+        "util_mem_pct": 2,
+        "throttle_reasons": 0,
+        "pstate": 0,
+        "mem_used_mb": 672.1875
+      },
+      "runs": 30,
+      "median_ms": 0.19728000462055206,
+      "p5_ms": 0.19066879898309708,
+      "p95_ms": 0.21658880189061164,
+      "mean_ms": 0.20183466821908952,
+      "std_ms": 0.016761147977557494,
+      "cv": 0.08304394941390067,
+      "gbs": 85.04265818661787
+    }
+  ],
+  "clock": {
+    "status": "OK",
+    "before_mhz": 810,
+    "after_mhz": 840,
+    "relative_change": 0.037037037037037035
+  },
+  "telemetry_samples": 3,
+  "timer": "cupy.cuda.Event",
+  "device": {
+    "backend": "cupy",
+    "is_gpu": true,
+    "device": "Tesla T4",
+    "gpu": "Tesla T4",
+    "cc": "7.5",
+    "sm_count": 40,
+    "vram_total_bytes": 15637086208,
+    "vram_free_bytes": 15401287680,
+    "mem_clock_khz": 5001000,
+    "mem_bus_width_bits": 256,
+    "peak_bw_gbs": 320.064,
+    "max_log2n": 24,
+    "cuda": "13000",
+    "cupy": "14.0.1",
+    "os": "Linux-6.6.122+-x86_64-with-glibc2.39",
+    "python": "3.13.15"
+  }
+}

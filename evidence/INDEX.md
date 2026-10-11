@@ -16,3 +16,8 @@
 | TERM-M03-GPUTESTS | terminal/M03_gpu_tests.txt — pytest on the T4 (bit-exact vs oracle and twin, incl. 2^24) and the smoke script output | M03 | 2026-10-11 | gpujobs/out/20261011-173759_M03/logs (job 20261011-173759_M03, git d91bfd6) | measured | — |
 | TERM-M03-GATES | terminal/M03_gates.txt — S6 acceptance gates applied to the ingested run | M03 | 2026-10-11 | runs/20261011-181052_M03_ingest_audit (git b6fe20d, dirty) | measured | — |
 | TERM-M03-AUDIT | terminal/M03_audit.txt — M03 audit table A1–A4, G1–G10 | M03 | 2026-10-11 | runs/20261011-181052_M03_ingest_audit (git b6fe20d, dirty) | measured | — |
+| GPU-M04-SMI | gpu/M04_nvidia_smi.txt — nvidia-smi on the runner at the start of the M04 job | M04 | 2026-10-11 | gpujobs/out/20261011-183051_M04/logs (job 20261011-183051_M04, git 680c28d) | measured | — |
+| GPU-M04-SMOKE | gpu/M04_chacha_smoke_summary.json — ChaCha20 tag generation at n = 2^20 on the T4: 0 mismatches, smoke timing at a low SM clock (not an M07 result), both clock snapshots | M04 | 2026-10-11 | runs/20261011-134013_M04_chacha_smoke (git 680c28d) | measured | — |
+| TERM-M04-GPUTESTS | terminal/M04_gpu_tests.txt — pytest on the T4 (RFC 8439 vectors, bit-exact vs M02 and twin, incl. 2^24), bitonic regression, smoke output, check_oblivious | M04 | 2026-10-11 | gpujobs/out/20261011-183051_M04/logs (job 20261011-183051_M04, git 680c28d) | measured | — |
+| TERM-M04-GATES | terminal/M04_gates.txt — S4 acceptance gates applied to the ingested run | M04 | 2026-10-11 | runs/20261011-191448_M04_ingest_audit (git 462bf09, dirty) | measured | — |
+| TERM-M04-AUDIT | terminal/M04_audit.txt — M04 audit table A1–A4, G1–G10 | M04 | 2026-10-11 | runs/20261011-191448_M04_ingest_audit (git 462bf09, dirty) | measured | — |

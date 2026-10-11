@@ -166,3 +166,28 @@
 - Not verified: CUDA compilation, GPU execution, simulator parity on a device, 2^max_log2n, any timing.
 - Commit: 680c28d (code), ba4ab4c (job, logs, state)
 - Next: M04 ingest (S4 gates, audit A1/A2/G5) ; human action: ISSUE-8 — upload the job, drop the results zip in gpujobs/inbox/
+
+- GPU-JOB 20261011-183051_M04 ingested 2026-10-11 19:13: runner kaggle, gpu Tesla T4, session 20261011-133942, overall exit 0, runs 20261011-134013_M04_chacha_smoke, 3 metrics indexed.
+
+## Session 8 — 2026-10-11 19:35 — M04 GPU ChaCha20 tags/PRF (ingest) — owner:Aditya
+- Steps: S4, GPU half of S1-S4 (status after: DONE)
+- Did: `gpujob.py verify` and `ingest` on results_20261011-183051_M04.zip (job id, bundle sha and git sha 680c28d
+  match); applied the S4 gates and the audit to the ingested files; no source file changed.
+- Evidence: runs/20261011-134013_M04_chacha_smoke (cupy, Kaggle Tesla T4, session 20261011-133942),
+  runs/20261011-191448_M04_ingest_audit (local, gates.txt), gpujobs/out/20261011-183051_M04/{result.json,logs/},
+  evidence/gpu/M04_*, evidence/terminal/M04_*.
+- Checks: all 6 runner commands exit 0. A1 RFC 8439 §2.3.2 and §2.4.2 pass on the T4. A2 299 passed / 0 failed /
+  0 skipped (tags, subkeys, buckets, blocks = M02; GPU = NumPy twin at 3 sizes x seeds 1-3) and 3 passed at 2^24.
+  Bitonic regression 212 passed. S4 smoke at 2^20: 0 mismatches, CUDA events, warm-up 10, 30 runs, CV under the
+  10% limit, no throttle reason. Local: 413 passed / 230 gpu-skipped, full suite 653 / 232; check_oblivious clean,
+  self-test 11/11; check_metrics 14 rows PASS; check_secrets PASS.
+- Metrics added: K-CHACHA-TAGS-SMOKE-GBS-2^20, K-CHACHA-TAGS-SMOKE-MS-2^20, K-CHACHA-TAGS-SMOKE-CV-2^20 (cupy,
+  kaggle; indexed by `gpujob.py ingest`). Sanity values, not M07 results.
+- Decisions: none
+- Issues: closed ISSUE-8 (job uploaded and ingested); ISSUE-7 updated (the snapshot pair works, but the smoke ran
+  at a low SM clock because the timed section is only a few ms; M07 must warm up to the working clock)
+- Deviations from spec: none new.
+- Not verified: the smoke at the GPU's working clock (the SM clock stayed near half of what the M03 job reached);
+  branch-free machine code for mod_public and the rotates (M08, SASS); any performance claim (M07).
+- Commit: @@HASH@@
+- Next: M05 S1 ; human action: none

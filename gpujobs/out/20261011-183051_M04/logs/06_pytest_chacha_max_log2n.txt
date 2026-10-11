@@ -1,0 +1,12 @@
+============================= test session starts ==============================
+platform linux -- Python 3.13.15, pytest-8.4.2, pluggy-1.6.0 -- /usr/bin/python3
+rootdir: /content/vcloak_job
+configfile: pyproject.toml
+plugins: langsmith-0.14.2, typeguard-4.6.0, anyio-4.15.1, platformdirs-4.12.2
+collecting ... collected 302 items / 299 deselected / 3 selected
+
+tests/gpu/test_chacha.py::test_max_log2n[1] PASSED                       [ 33%]
+tests/gpu/test_chacha.py::test_max_log2n[2] PASSED                       [ 66%]
+tests/gpu/test_chacha.py::test_max_log2n[3] PASSED                       [100%]
+
+================= 3 passed, 299 deselected in 92.69s (0:01:32) =================

@@ -1,0 +1,21 @@
+runs/20261011-134013_M04_chacha_smoke session 20261011-133942 runner kaggle gpu Tesla T4 median_ms 0.1973 cv 0.0830 csv_rows 30
+    PASS all_commands_exit_0 - 6 commands
+    PASS git_sha_matches_pack - 680c28d
+    PASS backend_cupy_gpu_job_block
+    PASS compiles_via_RawModule - cupy.RawModule (nvrtc)
+    PASS A1_rfc8439_2_3_2_on_gpu
+    PASS A1_rfc8439_2_4_2_on_gpu
+    PASS A2_pytest_chacha_gpu - 299 passed, 3 deselected in 10.24s; PASSED lines naming cupy: 134
+    PASS A2_gpu_equals_simulator_3x3 - sizes 64, 1024, 65536 x seeds 1-3
+    PASS A2_pytest_max_log2n - 3 passed, 299 deselected in 92.69s (0:01:32)
+    PASS bitonic_regression - 212 passed, 7 deselected in 14.91s
+    PASS check_oblivious_on_runner
+    PASS smoke_tags_correct - mismatches 0 at n 1048576
+    PASS timer_cuda_event
+    PASS warmup_ge_10_runs_ge_30 - warmup 10 runs 30
+    PASS cv_le_0.10 - 0.0830, attempts 1
+    PASS no_throttle
+    PASS sm_clock_not_dropped_gt_15pct - after warm-up 810 MHz, after the runs 840 MHz
+    NOTE sm_clock [810, 840] MHz in 3 sampler rows; util_gpu 6% -> 3%; the timed section spans 55.2 ms between the two snapshots
+    NOTE first timed run 0.2796 ms, max 0.2796 ms, min 0.1876 ms
+gates: PASS

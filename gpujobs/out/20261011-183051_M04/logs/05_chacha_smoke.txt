@@ -1,0 +1,8 @@
+run dir     /content/vcloak_job/runs/20261011-134013_M04_chacha_smoke
+backend     cupy   executed by cupy.RawModule (nvrtc)
+tags        n=2^20 mismatches=0
+K-CHACHA-TAGS-SMOKE-GBS-2^20     85.0427 GB/s
+K-CHACHA-TAGS-SMOKE-MS-2^20      0.1973 ms
+K-CHACHA-TAGS-SMOKE-CV-2^20      0.083 -
+clock       OK
+status      OK

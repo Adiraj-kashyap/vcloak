@@ -97,8 +97,14 @@ after the last timed run, write both to summary.json, and apply the 15% gate to 
 Update session 7: the proposed fix is in bench/chacha_smoke.py (snapshots after the warm-up and after the last timed
 run, 15% gate in either direction, both written to summary.json). Unverified until GPU job 20261011-183051_M04 is
 ingested; bench/bitonic_smoke.py and the M07 sweeps still use the old scheme, so the issue stays open.
+Update session 8: the new scheme worked in runs/20261011-134013_M04_chacha_smoke (after warm-up 810 MHz, after the
+runs 840 MHz, +3.7%, 3 sampler rows). It also showed a second problem: the whole timed section is about 6 ms of
+kernel time, so the T4 stayed at 810-840 MHz (util 3-6%) instead of the 1590 MHz seen under load in the M03 job. A
+stable pair of snapshots therefore does not mean the GPU was at its working clock. For M07: besides porting the
+snapshot pair to bench/bitonic_smoke.py and the sweeps, warm up until the SM clock stops rising (or for a fixed
+wall time), record the clock with every metric, and treat a low-clock run as UNSTABLE. Still open.
 
-### ISSUE-8 [OPEN] HUMAN ACTION REQUIRED — GPU JOB READY: M04 ChaCha20 kernels (job 20261011-183051_M04)
+### ISSUE-8 [CLOSED @@HASH@@] HUMAN ACTION REQUIRED — GPU JOB READY: M04 ChaCha20 kernels (job 20261011-183051_M04)
 BLOCKS: M04   SEVERITY: high   OPENED: 2026-10-11 session 7
 Why: the laptop has no GPU and no nvcc. The ChaCha20 kernels (tags, subkeys, bucket PRF) have only run as NumPy
 twins and through a g++ CPU stand-in; M04 needs one real run to compile them with CUDA, check the RFC 8439 vector,
@@ -123,3 +129,5 @@ Bring back only the results zip, even if a cell reports a failure: a failed run 
   kernels/, tests/, bench/ or scripts/ makes the result stale and it will be rejected.
 Confirm by running: .venv\Scripts\python scripts\gpujob.py verify gpujobs\inbox\results_20261011-183051_M04.zip
 Then open a new session and type: continue
+Resolved session 8: the human ran the job on Kaggle (Tesla T4, session 20261011-133942) and dropped the results zip
+in gpujobs/inbox/; `gpujob.py ingest` verified it and all 6 commands exited 0 (runs/20261011-134013_M04_chacha_smoke).
