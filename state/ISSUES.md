@@ -136,7 +136,7 @@ Then open a new session and type: continue
 Resolved session 8: the human ran the job on Kaggle (Tesla T4, session 20261011-133942) and dropped the results zip
 in gpujobs/inbox/; `gpujob.py ingest` verified it and all 6 commands exited 0 (runs/20261011-134013_M04_chacha_smoke).
 
-### ISSUE-9 [CLOSED PENDING_HASH] HUMAN ACTION REQUIRED — GPU JOB READY: M05 AEAD, restore sort, compaction (job 20261011-193547_M05)
+### ISSUE-9 [CLOSED c2cefaa] HUMAN ACTION REQUIRED — GPU JOB READY: M05 AEAD, restore sort, compaction (job 20261011-193547_M05)
 BLOCKS: M05   SEVERITY: high   OPENED: 2026-10-11 session 9
 Why: the laptop has no GPU and no nvcc. The Poly1305 and seq_enc AEAD kernels (seal, open) and the restore and
 compaction sorts have only run as NumPy twins and through a g++ CPU stand-in; M05 needs one real run to compile

@@ -237,6 +237,6 @@
   terminal and GPU proofs were copied anyway, as for M03 and M04.
 - Not verified: any timing of the AEAD, restore or compaction path (M07); branch-free machine code for the tag
   compare, `conv != q_conv` and the Poly1305 select (M08, SASS); behaviour on the older runner image (CUDA 13.0).
-- Commit: PENDING_HASH
+- Commit: c2cefaa
 - Next: M06 S1 ; human action: none
 
