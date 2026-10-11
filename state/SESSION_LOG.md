@@ -368,6 +368,6 @@
 - Not verified: everything on a GPU — the planted leak being detected, every verdict, the event loop under CuPy,
   nvcc/cuobjdump on the runner and the format of their output, whether the runner permits the ncu counters, the
   names of its branch metrics, the nvrtc listing path, the run time of the job.
-- Commit: fe51656 (code), <closing> (job, logs, state)
+- Commit: fe51656 (code), 901c171 (job, logs, state)
 - Next: M08 ingest (gates A1-A5, metrics, evidence, S5 report) ; human action: ISSUE-16 — upload the job, drop the
   results zip in gpujobs/inbox/
