@@ -263,6 +263,6 @@
   host gather; extra stage keys `open` and `host`; read_window pads to K; bench is --dev only (no passphrase).
 - Not verified: anything on a GPU — the stream, pinned transfers, copy_from_host, memset, CUDA-event timings,
   engine parity with the simulator, SLOTS = 2^max_log2n, every timing.
-- Commit: 67504cd (code), see the next commit (job, logs, state)
+- Commit: 67504cd (code), 2ecfd59 (job, logs, state)
 - Next: M06 ingest (A1, A2, A4, G5, smoke metrics) ; human action: ISSUE-10 — upload the job, drop the results zip
   in gpujobs/inbox/
