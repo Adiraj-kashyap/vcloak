@@ -1,0 +1,216 @@
+===== 02_check_oblivious =====
+check_oblivious: 11 file(s), 0 finding(s) - PASS
+
+===== 03_pytest_engine =====
+============================= test session starts ==============================
+platform linux -- Python 3.13.15, pytest-8.4.2, pluggy-1.6.0 -- /usr/bin/python3
+rootdir: /content/vcloak_job
+configfile: pyproject.toml
+plugins: typeguard-4.6.0, anyio-4.14.2, langsmith-0.12.1
+collecting ... collected 36 items
+
+tests/gpu/test_engine.py::test_load_master_zeroizes_the_host_buffer_and_derives_the_m02_subkeys[numpy] PASSED [  2%]
+tests/gpu/test_engine.py::test_load_master_zeroizes_the_host_buffer_and_derives_the_m02_subkeys[cupy] PASSED [  5%]
+tests/gpu/test_engine.py::test_zeroize_clears_the_device_buffer_and_empties_the_store[numpy] PASSED [  8%]
+tests/gpu/test_engine.py::test_zeroize_clears_the_device_buffer_and_empties_the_store[cupy] PASSED [ 11%]
+tests/gpu/test_engine.py::test_reload_replaces_the_keys_and_clears_the_old_buffer[numpy] PASSED [ 13%]
+tests/gpu/test_engine.py::test_reload_replaces_the_keys_and_clears_the_old_buffer[cupy] PASSED [ 16%]
+tests/gpu/test_engine.py::test_load_master_refuses_anything_but_a_bytearray[\x00\x01\x02\x03\x04\x05\x06\x07\x08\t\n\x0b\x0c\r\x0e\x0f\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1a\x1b\x1c\x1d\x1e\x1f] PASSED [ 19%]
+tests/gpu/test_engine.py::test_load_master_refuses_anything_but_a_bytearray[bad1] PASSED [ 22%]
+tests/gpu/test_engine.py::test_load_master_refuses_anything_but_a_bytearray[xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx] PASSED [ 25%]
+tests/gpu/test_engine.py::test_load_master_refuses_anything_but_a_bytearray[None] PASSED [ 27%]
+tests/gpu/test_engine.py::test_load_master_refuses_a_wrong_length_and_leaves_the_store_empty[0] PASSED [ 30%]
+tests/gpu/test_engine.py::test_load_master_refuses_a_wrong_length_and_leaves_the_store_empty[16] PASSED [ 33%]
+tests/gpu/test_engine.py::test_load_master_refuses_a_wrong_length_and_leaves_the_store_empty[31] PASSED [ 36%]
+tests/gpu/test_engine.py::test_load_master_refuses_a_wrong_length_and_leaves_the_store_empty[33] PASSED [ 38%]
+tests/gpu/test_engine.py::test_the_host_buffer_is_zeroized_even_when_derivation_fails PASSED [ 41%]
+tests/gpu/test_engine.py::test_the_store_does_not_leak_through_repr_or_pickle PASSED [ 44%]
+tests/gpu/test_engine.py::test_a3_the_key_store_has_no_device_to_host_path PASSED [ 47%]
+tests/gpu/test_engine.py::test_a3_the_engine_downloads_only_through_d2h_and_never_a_key_buffer PASSED [ 50%]
+tests/gpu/test_engine.py::test_the_constructor_checks_the_public_parameters[kwargs0] PASSED [ 52%]
+tests/gpu/test_engine.py::test_the_constructor_checks_the_public_parameters[kwargs1] PASSED [ 55%]
+tests/gpu/test_engine.py::test_the_constructor_checks_the_public_parameters[kwargs2] PASSED [ 58%]
+tests/gpu/test_engine.py::test_the_constructor_checks_the_public_parameters[kwargs3] PASSED [ 61%]
+tests/gpu/test_engine.py::test_the_constructor_checks_the_public_parameters[kwargs4] PASSED [ 63%]
+tests/gpu/test_engine.py::test_the_constructor_checks_the_public_parameters[kwargs5] PASSED [ 66%]
+tests/gpu/test_engine.py::test_the_constructor_checks_the_public_parameters[kwargs6] PASSED [ 69%]
+tests/gpu/test_engine.py::test_an_engine_without_keys_cannot_run PASSED  [ 72%]
+tests/gpu/test_engine.py::test_a_batch_larger_than_slots_is_refused PASSED [ 75%]
+tests/gpu/test_engine.py::test_a_short_entropy_source_is_refused PASSED  [ 77%]
+tests/gpu/test_engine.py::test_last_timings_of_every_call[numpy] PASSED  [ 80%]
+tests/gpu/test_engine.py::test_last_timings_of_every_call[cupy] PASSED   [ 83%]
+tests/gpu/test_engine.py::test_an_empty_epoch_runs_the_permutation_and_returns_no_row[numpy] PASSED [ 86%]
+tests/gpu/test_engine.py::test_an_empty_epoch_runs_the_permutation_and_returns_no_row[cupy] PASSED [ 88%]
+tests/gpu/test_engine.py::test_bucket_of_checks_its_input_and_handles_no_ids PASSED [ 91%]
+tests/gpu/test_engine.py::test_read_window_refuses_too_many_candidates_and_malformed_rows PASSED [ 94%]
+tests/gpu/test_engine.py::test_reshuffle_refuses_rows_of_another_window PASSED [ 97%]
+tests/gpu/test_engine.py::test_the_entropy_contract_is_one_call_of_28_bytes_per_row PASSED [100%]
+
+============================== 36 passed in 3.40s ==============================
+
+===== 04_pytest_engine_vs_oracle =====
+============================= test session starts ==============================
+platform linux -- Python 3.13.15, pytest-8.4.2, pluggy-1.6.0 -- /usr/bin/python3
+rootdir: /content/vcloak_job
+configfile: pyproject.toml
+plugins: typeguard-4.6.0, anyio-4.14.2, langsmith-0.12.1
+collecting ... collected 114 items / 3 deselected / 111 selected
+
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_equals_the_oracle[numpy-64-1] PASSED [  0%]
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_equals_the_oracle[numpy-64-2] PASSED [  1%]
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_equals_the_oracle[numpy-64-3] PASSED [  2%]
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_equals_the_oracle[numpy-1024-1] PASSED [  3%]
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_equals_the_oracle[numpy-1024-2] PASSED [  4%]
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_equals_the_oracle[numpy-1024-3] PASSED [  5%]
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_equals_the_oracle[numpy-65536-1] PASSED [  6%]
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_equals_the_oracle[numpy-65536-2] PASSED [  7%]
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_equals_the_oracle[numpy-65536-3] PASSED [  8%]
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_equals_the_oracle[cupy-64-1] PASSED [  9%]
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_equals_the_oracle[cupy-64-2] PASSED [  9%]
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_equals_the_oracle[cupy-64-3] PASSED [ 10%]
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_equals_the_oracle[cupy-1024-1] PASSED [ 11%]
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_equals_the_oracle[cupy-1024-2] PASSED [ 12%]
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_equals_the_oracle[cupy-1024-3] PASSED [ 13%]
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_equals_the_oracle[cupy-65536-1] PASSED [ 14%]
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_equals_the_oracle[cupy-65536-2] PASSED [ 15%]
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_equals_the_oracle[cupy-65536-3] PASSED [ 16%]
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_equals_the_oracle_on_adversarial_batches[numpy-random] PASSED [ 17%]
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_equals_the_oracle_on_adversarial_batches[numpy-all_equal] PASSED [ 18%]
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_equals_the_oracle_on_adversarial_batches[numpy-sorted] PASSED [ 18%]
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_equals_the_oracle_on_adversarial_batches[numpy-reverse] PASSED [ 19%]
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_equals_the_oracle_on_adversarial_batches[numpy-two_value] PASSED [ 20%]
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_equals_the_oracle_on_adversarial_batches[cupy-random] PASSED [ 21%]
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_equals_the_oracle_on_adversarial_batches[cupy-all_equal] PASSED [ 22%]
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_equals_the_oracle_on_adversarial_batches[cupy-sorted] PASSED [ 23%]
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_equals_the_oracle_on_adversarial_batches[cupy-reverse] PASSED [ 24%]
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_equals_the_oracle_on_adversarial_batches[cupy-two_value] PASSED [ 25%]
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_equals_the_oracle_for_any_epoch[numpy-0] PASSED [ 26%]
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_equals_the_oracle_for_any_epoch[numpy-1] PASSED [ 27%]
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_equals_the_oracle_for_any_epoch[numpy-299] PASSED [ 27%]
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_equals_the_oracle_for_any_epoch[numpy-300] PASSED [ 28%]
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_equals_the_oracle_for_any_epoch[numpy-4294967296] PASSED [ 29%]
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_equals_the_oracle_for_any_epoch[numpy-18446744073709551615] PASSED [ 30%]
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_equals_the_oracle_for_any_epoch[cupy-0] PASSED [ 31%]
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_equals_the_oracle_for_any_epoch[cupy-1] PASSED [ 32%]
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_equals_the_oracle_for_any_epoch[cupy-299] PASSED [ 33%]
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_equals_the_oracle_for_any_epoch[cupy-300] PASSED [ 34%]
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_equals_the_oracle_for_any_epoch[cupy-4294967296] PASSED [ 35%]
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_equals_the_oracle_for_any_epoch[cupy-18446744073709551615] PASSED [ 36%]
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_equals_the_oracle_for_any_public_parameters[numpy-1-1-200] PASSED [ 36%]
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_equals_the_oracle_for_any_public_parameters[numpy-7-10-200] PASSED [ 37%]
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_equals_the_oracle_for_any_public_parameters[numpy-64-60-200] PASSED [ 38%]
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_equals_the_oracle_for_any_public_parameters[numpy-1000-300-50] PASSED [ 39%]
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_equals_the_oracle_for_any_public_parameters[numpy-4294967295-60-1000] PASSED [ 40%]
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_equals_the_oracle_for_any_public_parameters[cupy-1-1-200] PASSED [ 41%]
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_equals_the_oracle_for_any_public_parameters[cupy-7-10-200] PASSED [ 42%]
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_equals_the_oracle_for_any_public_parameters[cupy-64-60-200] PASSED [ 43%]
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_equals_the_oracle_for_any_public_parameters[cupy-1000-300-50] PASSED [ 44%]
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_equals_the_oracle_for_any_public_parameters[cupy-4294967295-60-1000] PASSED [ 45%]
+tests/integration/test_engine_vs_oracle.py::test_the_stored_order_does_not_depend_on_slots[numpy] PASSED [ 45%]
+tests/integration/test_engine_vs_oracle.py::test_the_stored_order_does_not_depend_on_slots[cupy] PASSED [ 46%]
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_is_a_permutation_with_the_window_of_the_epoch[numpy] PASSED [ 47%]
+tests/integration/test_engine_vs_oracle.py::test_write_epoch_is_a_permutation_with_the_window_of_the_epoch[cupy] PASSED [ 48%]
+tests/integration/test_engine_vs_oracle.py::test_reshuffle_equals_the_oracle[numpy-0] PASSED [ 49%]
+tests/integration/test_engine_vs_oracle.py::test_reshuffle_equals_the_oracle[numpy-1] PASSED [ 50%]
+tests/integration/test_engine_vs_oracle.py::test_reshuffle_equals_the_oracle[numpy-2] PASSED [ 51%]
+tests/integration/test_engine_vs_oracle.py::test_reshuffle_equals_the_oracle[numpy-3] PASSED [ 52%]
+tests/integration/test_engine_vs_oracle.py::test_reshuffle_equals_the_oracle[numpy-4] PASSED [ 53%]
+tests/integration/test_engine_vs_oracle.py::test_reshuffle_equals_the_oracle[numpy-5] PASSED [ 54%]
+tests/integration/test_engine_vs_oracle.py::test_reshuffle_equals_the_oracle[numpy-8] PASSED [ 54%]
+tests/integration/test_engine_vs_oracle.py::test_reshuffle_equals_the_oracle[numpy-63] PASSED [ 55%]
+tests/integration/test_engine_vs_oracle.py::test_reshuffle_equals_the_oracle[numpy-64] PASSED [ 56%]
+tests/integration/test_engine_vs_oracle.py::test_reshuffle_equals_the_oracle[numpy-65] PASSED [ 57%]
+tests/integration/test_engine_vs_oracle.py::test_reshuffle_equals_the_oracle[numpy-1000] PASSED [ 58%]
+tests/integration/test_engine_vs_oracle.py::test_reshuffle_equals_the_oracle[numpy-4096] PASSED [ 59%]
+tests/integration/test_engine_vs_oracle.py::test_reshuffle_equals_the_oracle[cupy-0] PASSED [ 60%]
+tests/integration/test_engine_vs_oracle.py::test_reshuffle_equals_the_oracle[cupy-1] PASSED [ 61%]
+tests/integration/test_engine_vs_oracle.py::test_reshuffle_equals_the_oracle[cupy-2] PASSED [ 62%]
+tests/integration/test_engine_vs_oracle.py::test_reshuffle_equals_the_oracle[cupy-3] PASSED [ 63%]
+tests/integration/test_engine_vs_oracle.py::test_reshuffle_equals_the_oracle[cupy-4] PASSED [ 63%]
+tests/integration/test_engine_vs_oracle.py::test_reshuffle_equals_the_oracle[cupy-5] PASSED [ 64%]
+tests/integration/test_engine_vs_oracle.py::test_reshuffle_equals_the_oracle[cupy-8] PASSED [ 65%]
+tests/integration/test_engine_vs_oracle.py::test_reshuffle_equals_the_oracle[cupy-63] PASSED [ 66%]
+tests/integration/test_engine_vs_oracle.py::test_reshuffle_equals_the_oracle[cupy-64] PASSED [ 67%]
+tests/integration/test_engine_vs_oracle.py::test_reshuffle_equals_the_oracle[cupy-65] PASSED [ 68%]
+tests/integration/test_engine_vs_oracle.py::test_reshuffle_equals_the_oracle[cupy-1000] PASSED [ 69%]
+tests/integration/test_engine_vs_oracle.py::test_reshuffle_equals_the_oracle[cupy-4096] PASSED [ 70%]
+tests/integration/test_engine_vs_oracle.py::test_bucket_of_equals_the_reference[numpy-64-1] PASSED [ 71%]
+tests/integration/test_engine_vs_oracle.py::test_bucket_of_equals_the_reference[numpy-64-2] PASSED [ 72%]
+tests/integration/test_engine_vs_oracle.py::test_bucket_of_equals_the_reference[numpy-64-3] PASSED [ 72%]
+tests/integration/test_engine_vs_oracle.py::test_bucket_of_equals_the_reference[numpy-1024-1] PASSED [ 73%]
+tests/integration/test_engine_vs_oracle.py::test_bucket_of_equals_the_reference[numpy-1024-2] PASSED [ 74%]
+tests/integration/test_engine_vs_oracle.py::test_bucket_of_equals_the_reference[numpy-1024-3] PASSED [ 75%]
+tests/integration/test_engine_vs_oracle.py::test_bucket_of_equals_the_reference[numpy-65536-1] PASSED [ 76%]
+tests/integration/test_engine_vs_oracle.py::test_bucket_of_equals_the_reference[numpy-65536-2] PASSED [ 77%]
+tests/integration/test_engine_vs_oracle.py::test_bucket_of_equals_the_reference[numpy-65536-3] PASSED [ 78%]
+tests/integration/test_engine_vs_oracle.py::test_bucket_of_equals_the_reference[cupy-64-1] PASSED [ 79%]
+tests/integration/test_engine_vs_oracle.py::test_bucket_of_equals_the_reference[cupy-64-2] PASSED [ 80%]
+tests/integration/test_engine_vs_oracle.py::test_bucket_of_equals_the_reference[cupy-64-3] PASSED [ 81%]
+tests/integration/test_engine_vs_oracle.py::test_bucket_of_equals_the_reference[cupy-1024-1] PASSED [ 81%]
+tests/integration/test_engine_vs_oracle.py::test_bucket_of_equals_the_reference[cupy-1024-2] PASSED [ 82%]
+tests/integration/test_engine_vs_oracle.py::test_bucket_of_equals_the_reference[cupy-1024-3] PASSED [ 83%]
+tests/integration/test_engine_vs_oracle.py::test_bucket_of_equals_the_reference[cupy-65536-1] PASSED [ 84%]
+tests/integration/test_engine_vs_oracle.py::test_bucket_of_equals_the_reference[cupy-65536-2] PASSED [ 85%]
+tests/integration/test_engine_vs_oracle.py::test_bucket_of_equals_the_reference[cupy-65536-3] PASSED [ 86%]
+tests/integration/test_engine_vs_oracle.py::test_read_window_equals_the_oracle_for_50_windows[numpy] PASSED [ 87%]
+tests/integration/test_engine_vs_oracle.py::test_read_window_equals_the_oracle_for_50_windows[cupy] PASSED [ 88%]
+tests/integration/test_engine_vs_oracle.py::test_read_window_pads_to_k_with_misses[numpy] PASSED [ 89%]
+tests/integration/test_engine_vs_oracle.py::test_read_window_pads_to_k_with_misses[cupy] PASSED [ 90%]
+tests/integration/test_engine_vs_oracle.py::test_write_reshuffle_read_round_trip[numpy] PASSED [ 90%]
+tests/integration/test_engine_vs_oracle.py::test_write_reshuffle_read_round_trip[cupy] PASSED [ 91%]
+tests/integration/test_engine_vs_oracle.py::test_gpu_engine_equals_the_simulator_engine[64-1] PASSED [ 92%]
+tests/integration/test_engine_vs_oracle.py::test_gpu_engine_equals_the_simulator_engine[64-2] PASSED [ 93%]
+tests/integration/test_engine_vs_oracle.py::test_gpu_engine_equals_the_simulator_engine[64-3] PASSED [ 94%]
+tests/integration/test_engine_vs_oracle.py::test_gpu_engine_equals_the_simulator_engine[1024-1] PASSED [ 95%]
+tests/integration/test_engine_vs_oracle.py::test_gpu_engine_equals_the_simulator_engine[1024-2] PASSED [ 96%]
+tests/integration/test_engine_vs_oracle.py::test_gpu_engine_equals_the_simulator_engine[1024-3] PASSED [ 97%]
+tests/integration/test_engine_vs_oracle.py::test_gpu_engine_equals_the_simulator_engine[65536-1] PASSED [ 98%]
+tests/integration/test_engine_vs_oracle.py::test_gpu_engine_equals_the_simulator_engine[65536-2] PASSED [ 99%]
+tests/integration/test_engine_vs_oracle.py::test_gpu_engine_equals_the_simulator_engine[65536-3] PASSED [100%]
+
+================= 111 passed, 3 deselected in 60.90s (0:01:00) =================
+
+===== 05_pipeline_smoke =====
+run dir     /content/vcloak_job/runs/20261011-163049_M06_pipeline_smoke_quick
+backend     cupy   timer cupy.cuda.Event
+P-WRITE-EPOCH-MS-S64         1.5749 ms  oracle_mismatches=0  cv=0.064 clock=OK
+P-WRITE-EPOCH-MS-S4096       10.8422 ms  oracle_mismatches=0  cv=0.043 clock=OK
+P-WRITE-EPOCH-MS-S65536      208.1128 ms  oracle_mismatches=0  cv=0.086 clock=OK
+P-READ-WINDOW-MS-K128        0.5045 ms  oracle_mismatches=0  cv=0.119 clock=OK
+P-READ-WINDOW-MS-K1024       0.5821 ms  oracle_mismatches=0  cv=0.083 clock=OK
+status      UNSTABLE
+
+===== 06_pytest_regression =====
+........................................................................ [  5%]
+........................................................................ [ 11%]
+........................................................................ [ 17%]
+........................................................................ [ 23%]
+........................................................................ [ 29%]
+........................................................................ [ 35%]
+........................................................................ [ 41%]
+........................................................................ [ 47%]
+........................................................................ [ 53%]
+........................................................................ [ 58%]
+........................................................................ [ 64%]
+........................................................................ [ 70%]
+........................................................................ [ 76%]
+........................................................................ [ 82%]
+........................................................................ [ 88%]
+........................................................................ [ 94%]
+.....................................................................    [100%]
+1221 passed, 16 deselected in 84.80s (0:01:24)
+
+===== 07_pytest_max_log2n =====
+============================= test session starts ==============================
+platform linux -- Python 3.13.15, pytest-8.4.2, pluggy-1.6.0 -- /usr/bin/python3
+rootdir: /content/vcloak_job
+configfile: pyproject.toml
+plugins: typeguard-4.6.0, anyio-4.14.2, langsmith-0.12.1
+collecting ... collected 114 items / 111 deselected / 3 selected
+
+tests/integration/test_engine_vs_oracle.py::test_max_log2n[1] PASSED     [ 33%]
+tests/integration/test_engine_vs_oracle.py::test_max_log2n[2] PASSED     [ 66%]
+tests/integration/test_engine_vs_oracle.py::test_max_log2n[3] PASSED     [100%]
+
+====================== 3 passed, 111 deselected in 34.98s ======================
+

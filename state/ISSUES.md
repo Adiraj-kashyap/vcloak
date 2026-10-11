@@ -39,6 +39,8 @@ Update session 10: the risk happened. The M05 job (session 20261011-141833) ran 
 driver 580.178.04, nvcc CUDA 12.8, CUDA runtime 12090, kernel 6.18.48, against 580.82.07 / CUDA 13.0 / 13000 /
 6.6.122 for the M00, M03 and M04 jobs. Same Tesla T4 and CuPy 14.0.1. M05 has no timing, so nothing is affected yet;
 M07 must take all timings it compares from one image (or re-run the M00 probe first) and state the image per metric.
+Update session 12: the M06 job (20261011-215111_M06) ran on the same newer image as the M05 job (driver
+580.178.04, CUDA runtime 12090, nvcc 12.8). Its smoke timings must not be compared with the M03/M04 ones. Still open.
 
 ### ISSUE-4 [CLOSED] M02 secrets scanner must allow-list the golden vectors
 BLOCKS: none   SEVERITY: low   OPENED: 2026-10-11 session 3
@@ -169,7 +171,7 @@ Resolved session 10: the human ran the job on Kaggle (Tesla T4, session 20261011
 in gpujobs/inbox/; `gpujob.py ingest` verified it and all 6 commands exited 0 (gpujobs/out/20261011-193547_M05/logs,
 gates in runs/20261011-213200_M05_ingest_audit/gates.txt). `cryptography` was already on the runner.
 
-### ISSUE-10 [OPEN] HUMAN ACTION REQUIRED — GPU JOB READY: M06 GPU engine (job 20261011-215111_M06)
+### ISSUE-10 [CLOSED PENDING_SHA] HUMAN ACTION REQUIRED — GPU JOB READY: M06 GPU engine (job 20261011-215111_M06)
 BLOCKS: M06   SEVERITY: high   OPENED: 2026-10-11 session 11
 Why: the laptop has no GPU. The engine (key store, write_epoch, reshuffle_window, read_window) has only run on the
 NumPy twins. M06 needs one real run to execute it on CUDA, compare it byte for byte with the oracle and with the
@@ -197,3 +199,31 @@ Bring back only the results zip, even if a cell reports a failure. Do not commit
 No passphrase is needed: the job uses the fixed TEST key (`--dev`).
 Confirm by running: .venv\Scripts\python scripts\gpujob.py verify gpujobs\inbox\results_20261011-215111_M06.zip
 Then open a new session and type: continue
+Closed session 12: the results zip was uploaded and ingested (overall exit 0, 7 commands); gates PASS in
+runs/20261011-221434_M06_ingest_audit/gates.txt.
+
+### ISSUE-11 [OPEN] M06 smoke timings are UNSTABLE / taken at a low SM clock
+BLOCKS: none   SEVERITY: medium   OPENED: 2026-10-11 session 12
+Symptom: runs/20261011-163049_M06_pipeline_smoke_quick has status UNSTABLE. P-READ-WINDOW-MS-K128 had CV 0.106 and
+0.119 on its two attempts (limit 0.10); P-WRITE-EPOCH-MS-S4096 needed its second attempt (CV 0.354, then 0.043).
+In all five configs the SM clock was 585 MHz after the warm-up and after the runs (1590 MHz under load in the M03
+job), so the clock gate says OK while the GPU never left its low clock. 15 runs per config (quick).
+Cause (not verified): a read_window call is about 0.5 ms and a write at small SLOTS is mostly host work, so the
+device is idle most of the time and the 2 s warm-up does not raise the clock. Same finding as ISSUE-7 (session 8).
+Effect: the five P-* rows in METRICS_INDEX are smoke values (quick-tagged). Do not quote them as results or put
+them in a figure; M07 replaces them.
+Proposed fix (M07 prep): with the ISSUE-7 fix, warm up until the SM clock stops rising, record the clock with each
+metric, >= 30 runs, and report a config that stays above the CV limit as UNSTABLE instead of indexing its median.
+
+### ISSUE-12 [OPEN] write_epoch is dominated by host work; at SLOTS 65536 the smoke median is above EPOCH_MS
+BLOCKS: none   SEVERITY: medium   OPENED: 2026-10-11 session 12
+Symptom: in runs/20261011-163049_M06_pipeline_smoke_quick the `host` stage is 199.78 ms of a 208.11 ms median total
+at SLOTS 65536 (9.64 of 10.84 ms at 4096; 0.51 of 1.57 ms at 64). The device stages together are about 8 ms at
+65536 (d2h 5.7 ms, sort 0.88, compact 0.77, h2d 0.57). EPOCH_MS is 200.
+Cause (not profiled): `host` is the engine's Python work between device stages: the payload gather (ADR-006), the
+random bytes, and building one StoredRow object with a uuid per message. The runner CPU is a 4-vCPU Xeon at 2.0 GHz.
+Caveats: one quick run, 15 calls, full epochs (n_real = SLOTS), 8-byte payload stand-ins, GPU at 585 MHz. It is
+not a real-time verdict (p99 < EPOCH_MS is M07/M15).
+Proposed fix: in M07, report the host stage separately from the device pipeline, so that GPU metrics are not
+hidden by Python overhead, and profile it. If it stays the bottleneck, vectorise the row building (column arrays
+instead of one object per row) before M10/M15; that changes engine.py, so it needs its own unit and a new GPU job.

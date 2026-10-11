@@ -3,13 +3,13 @@
 ```yaml
 project: v-cloak
 kit_version: 1.0
-last_session: 11
+last_session: 12
 last_session_date: 2026-10-11
 current_module: M06
 current_step: S5
-status: BLOCKED_HUMAN      # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
-next_unit: M06
-last_checkpoint: 2026-10-11 M06 S1-S5 local half passed on numpy; GPU job 20261011-215111_M06 packed from 67504cd; waiting for the results zip (ISSUE-10)
+status: DONE               # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
+next_unit: M07
+last_checkpoint: 2026-10-11 M06 DONE: GPU job 20261011-215111_M06 ingested, gates and audit PASS; smoke timings indexed (quick, UNSTABLE: ISSUE-11, ISSUE-12)
 quick_mode_default: false
 local:                      # the laptop (no GPU) — filled by M00 S7
   os: "Windows-11-10.0.26200-SP0"
@@ -33,8 +33,8 @@ runner:                     # the free remote GPU — filled from the ingested M
   peak_bw_gbs: 320.064
   last_session_id: "20261011-141833"
 gpu_job:                    # set by the gpu-job skill
-  pending: 20261011-215111_M06   # job id awaiting the upload of the human, or null
-  last_ingested: 20261011-193547_M05
+  pending: null   # job id awaiting the upload of the human, or null
+  last_ingested: 20261011-215111_M06
 ```
 
 ## Modules
@@ -47,7 +47,7 @@ gpu_job:                    # set by the gpu-job skill
 | M03 | GPU bitonic kernel | Aditya | M01 | no | DONE | S6 | 2 |
 | M04 | GPU ChaCha20 tags/PRF | Aditya | M02, M03 | no | DONE | S4 | 2 |
 | M05 | GPU AEAD-open, restore, compaction | Aditya | M04 | no | DONE | S4 | 2 |
-| M06 | GPU engine | Aditya | M05 | no | BLOCKED_HUMAN | S5 | 1 |
+| M06 | GPU engine | Aditya | M05 | no | DONE | S5 | 2 |
 | M07 | GPU performance metrics (E4) | Aditya | M06 | no | NOT_STARTED | S1 | 0 |
 | M08 | GPU obliviousness audit (E3) | Aditya | M06 | no | NOT_STARTED | S1 | 0 |
 | M09 | Storage (PostgreSQL) | Divyansh | M06 | no | NOT_STARTED | S1 | 0 |
@@ -75,7 +75,9 @@ gpu_job:                    # set by the gpu-job skill
   adds M19–M21. See `ai/REVIEW_RUBRICS.md`.
 - G4 runs `python scripts/check_secrets.py`. `gpujob.py pack` allow-lists the new `bundle_sha256` itself (ISSUE-5, closed):
   commit `scripts/secrets_allowlist.json` with the session; it is not bundled, so that commit does not make a job stale.
-- The M05 job ran on a newer Kaggle image (driver 580.178.04, CUDA 12.8 / runtime 12090) than the `runner` block
+- The M05 and M06 jobs ran on a newer Kaggle image (driver 580.178.04, CUDA 12.8 / runtime 12090) than the `runner` block
   above (M00 probe). Do not mix timings across the two images (ISSUE-3).
 - **M19 is calendar-bound.** Once M16 has real results, treat M19 as the highest-priority unmet unit
   even if other modules look more urgent — criterion 9 awards nothing without a dated submission proof.
+- The five `P-*` rows from M06 are smoke values (15 runs, SM clock 585 MHz, one config above the CV limit).
+  M07 must re-measure them and must report the host stage apart from the device stages (ISSUE-11, ISSUE-12).

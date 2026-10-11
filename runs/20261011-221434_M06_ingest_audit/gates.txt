@@ -1,0 +1,49 @@
+job 20261011-215111_M06 session 20261011-162938 runner kaggle gpu Tesla T4 driver 580.178.04 cupy 14.0.1 cuda_runtime 12090 nvcc Build cuda_12.8.r12.8/compiler.35583870_0
+    PASS all commands exit 0 - 7 commands
+    PASS git sha matches pack - 67504cd
+    PASS bundle sha matches pack
+    PASS backend cupy
+    PASS no fail/error/skip: pytest_engine - 36 passed in 3.40s
+    PASS no fail/error/skip: pytest_engine_vs_oracle - 111 passed, 3 deselected in 60.90s (0:01:00)
+    PASS no fail/error/skip: pytest_regression - 1221 passed, 16 deselected in 84.80s (0:01:24)
+    PASS no fail/error/skip: pytest_max_log2n - 3 passed, 111 deselected in 34.98s
+    PASS A1 cupy: test write epoch equals the oracle - 9 cupy cases passed
+    PASS A1 cupy: test write epoch equals the oracle for any epoch - 6 cupy cases passed
+    PASS A1 cupy: test write epoch equals the oracle for any public parameters - 5 cupy cases passed
+    PASS A1 cupy: test write epoch equals the oracle on adversarial batches - 5 cupy cases passed
+    PASS A1 cupy: test reshuffle equals the oracle - 12 cupy cases passed
+    PASS A1 cupy: test read window equals the oracle for 50 windows - 1 cupy cases passed
+    PASS A1 cupy: test read window pads to k with misses - 1 cupy cases passed
+    PASS A1 cupy: test bucket of equals the reference - 9 cupy cases passed
+    PASS A1 cupy: test write reshuffle read round trip - 1 cupy cases passed
+    PASS A1 cupy: test the stored order does not depend on slots - 1 cupy cases passed
+    PASS A1 smoke bench: 0 oracle mismatches - 5 configs
+    PASS A2 cupy: test load master zeroizes the host buffer and derives the m02 subkeys - 1 cupy case passed
+    PASS A2 cupy: test zeroize clears the device buffer and empties the store - 1 cupy case passed
+    PASS A2 cupy: test reload replaces the keys and clears the old buffer - 1 cupy case passed
+    PASS A2 host buffer zeroized when derivation fails
+    PASS A3 on the runner: test a3 the key store has no device to host path
+    PASS A3 on the runner: test a3 the engine downloads only through d2h and never a key buffer
+    PASS A4 cupy: test last timings of every call - 1 cupy case passed
+    PASS A4 cupy: test an empty epoch runs the permutation and returns no row - 1 cupy case passed
+    PASS A4 timer is CUDA events - cupy.cuda.Event
+    PASS A4 raw.csv: stages add up to total in every timed call - 105 calls, worst relative gap 7.06e-08
+    PASS A4 raw.csv: every stage a call uses is positive, the others are 0
+    PASS G5 gpu engine equals simulator engine - sizes [64, 1024, 65536] x seeds ['1', '2', '3']
+    PASS G5 max log2n - 3 passed: 3 passed, 111 deselected in 34.98s
+    PASS regression M03-M05 - 1221 passed, 16 deselected in 84.80s (0:01:24)
+    PASS check oblivious on runner - check_oblivious: 11 file(s), 0 finding(s) - PASS
+    PASS G2b smoke manifest: backend cupy with a gpu_job block of this job
+    PASS metric equals the median of raw.csv: P-WRITE-EPOCH-MS-S64 - 1.5749 ms, 15 runs, attempt 1 of 1
+    NOTE P-WRITE-EPOCH-MS-S64: CV 0.064 (limit 0.1), clock OK 585->585 MHz, largest stage host 0.511 ms = 32% of the median total
+    PASS metric equals the median of raw.csv: P-WRITE-EPOCH-MS-S4096 - 10.8422 ms, 15 runs, attempt 2 of 2
+    NOTE P-WRITE-EPOCH-MS-S4096: CV 0.043 (limit 0.1), clock OK 585->585 MHz, largest stage host 9.639 ms = 89% of the median total
+    PASS metric equals the median of raw.csv: P-WRITE-EPOCH-MS-S65536 - 208.1128 ms, 15 runs, attempt 1 of 1
+    NOTE P-WRITE-EPOCH-MS-S65536: CV 0.086 (limit 0.1), clock OK 585->585 MHz, largest stage host 199.784 ms = 96% of the median total
+    PASS metric equals the median of raw.csv: P-READ-WINDOW-MS-K128 - 0.5045 ms, 15 runs, attempt 2 of 2
+    WARN P-READ-WINDOW-MS-K128: CV 0.119 (limit 0.1), clock OK 585->585 MHz, largest stage sort 0.296 ms = 59% of the median total
+    PASS metric equals the median of raw.csv: P-READ-WINDOW-MS-K1024 - 0.5821 ms, 15 runs, attempt 1 of 1
+    NOTE P-READ-WINDOW-MS-K1024: CV 0.083 (limit 0.1), clock OK 585->585 MHz, largest stage sort 0.338 ms = 58% of the median total
+    NOTE smoke run status in its manifest: UNSTABLE (CV above the limit or SM clock change on both attempts: P-READ-WINDOW-MS-K128)
+    NOTE telemetry rows: 146; runs per config: 15 (quick)
+gates: PASS

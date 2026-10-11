@@ -266,3 +266,30 @@
 - Commit: 67504cd (code), 2ecfd59 (job, logs, state)
 - Next: M06 ingest (A1, A2, A4, G5, smoke metrics) ; human action: ISSUE-10 — upload the job, drop the results zip
   in gpujobs/inbox/
+
+- GPU-JOB 20261011-215111_M06 ingested 2026-10-11 22:13: runner kaggle, gpu Tesla T4, session 20261011-162938, overall exit 0, runs 20261011-163049_M06_pipeline_smoke_quick, 5 metrics indexed.
+
+
+## Session 12 — 2026-10-11 22:25 — M06 GPU engine (ingest) — owner:Aditya
+- Steps: S5 ingest (status after: DONE)
+- Did: verified and ingested GPU job 20261011-215111_M06 (job id, bundle sha and git sha 67504cd match; 7 commands,
+  overall exit 0); applied the gates with runs/20261011-221434_M06_ingest_audit/gates_m06.py; re-ran the local
+  checks; captured terminal and GPU evidence. No code change.
+- Evidence: runs/20261011-163049_M06_pipeline_smoke_quick (T4, cupy, CUDA events, 105 timed calls, 146 telemetry
+  rows, status UNSTABLE); runs/20261011-221434_M06_ingest_audit (gates.txt, pytest.txt, pytest_all.txt,
+  check_*.txt); gpujobs/out/20261011-215111_M06/logs; evidence/terminal/M06_*.txt, evidence/gpu/M06_*.
+- Checks: A1 on the T4: write_epoch, reshuffle_window, read_window (50 windows) and bucket_of = oracle, 111 passed,
+  and 0 oracle mismatches in the 5 timed configs. A2 host master buffer zeroized, device buffer cleared by memset
+  ([cupy] tests). A4 CUDA-event stages add up to total in all 105 calls. G5 GPU engine = simulator engine at 64,
+  1024, 65536 x seeds 1-3, and 3 passed at SLOTS 2^24. Regression M03-M05 1221 passed. check_oblivious 11 files,
+  0 findings. Local: 82 passed / 68 gpu-skipped, full suite 1139 / 663; check_metrics 19 rows PASS; check_secrets PASS.
+- Metrics added (smoke, quick, cupy, kaggle T4): P-WRITE-EPOCH-MS-S64, -S4096, -S65536; P-READ-WINDOW-MS-K128, -K1024.
+- Decisions: none
+- Issues: closed ISSUE-10; opened ISSUE-11 (smoke run UNSTABLE: K128 CV 0.119, SM clock 585 MHz throughout) and
+  ISSUE-12 (host stage is 96% of write_epoch at SLOTS 65536; median total 208 ms against EPOCH_MS 200); ISSUE-3 updated.
+- Deviations from spec: none new (see the Amendments note of session 11). The UNSTABLE K128 median is indexed as
+  ingested, because the module asks for smoke values and sets no CV gate; it is flagged in ISSUE-11.
+- Not verified: any performance claim. The five values come from 15 runs at a non-ramped SM clock and are not M07
+  results. Not profiled: what the host stage spends its time on. Not checked: branch-free machine code (M08).
+- Commit: PENDING_SHA
+- Next: M07 S1 ; human action: none

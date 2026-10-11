@@ -1,0 +1,45 @@
+============================= test session starts ==============================
+platform linux -- Python 3.13.15, pytest-8.4.2, pluggy-1.6.0 -- /usr/bin/python3
+rootdir: /content/vcloak_job
+configfile: pyproject.toml
+plugins: typeguard-4.6.0, anyio-4.14.2, langsmith-0.12.1
+collecting ... collected 36 items
+
+tests/gpu/test_engine.py::test_load_master_zeroizes_the_host_buffer_and_derives_the_m02_subkeys[numpy] PASSED [  2%]
+tests/gpu/test_engine.py::test_load_master_zeroizes_the_host_buffer_and_derives_the_m02_subkeys[cupy] PASSED [  5%]
+tests/gpu/test_engine.py::test_zeroize_clears_the_device_buffer_and_empties_the_store[numpy] PASSED [  8%]
+tests/gpu/test_engine.py::test_zeroize_clears_the_device_buffer_and_empties_the_store[cupy] PASSED [ 11%]
+tests/gpu/test_engine.py::test_reload_replaces_the_keys_and_clears_the_old_buffer[numpy] PASSED [ 13%]
+tests/gpu/test_engine.py::test_reload_replaces_the_keys_and_clears_the_old_buffer[cupy] PASSED [ 16%]
+tests/gpu/test_engine.py::test_load_master_refuses_anything_but_a_bytearray[\x00\x01\x02\x03\x04\x05\x06\x07\x08\t\n\x0b\x0c\r\x0e\x0f\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1a\x1b\x1c\x1d\x1e\x1f] PASSED [ 19%]
+tests/gpu/test_engine.py::test_load_master_refuses_anything_but_a_bytearray[bad1] PASSED [ 22%]
+tests/gpu/test_engine.py::test_load_master_refuses_anything_but_a_bytearray[xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx] PASSED [ 25%]
+tests/gpu/test_engine.py::test_load_master_refuses_anything_but_a_bytearray[None] PASSED [ 27%]
+tests/gpu/test_engine.py::test_load_master_refuses_a_wrong_length_and_leaves_the_store_empty[0] PASSED [ 30%]
+tests/gpu/test_engine.py::test_load_master_refuses_a_wrong_length_and_leaves_the_store_empty[16] PASSED [ 33%]
+tests/gpu/test_engine.py::test_load_master_refuses_a_wrong_length_and_leaves_the_store_empty[31] PASSED [ 36%]
+tests/gpu/test_engine.py::test_load_master_refuses_a_wrong_length_and_leaves_the_store_empty[33] PASSED [ 38%]
+tests/gpu/test_engine.py::test_the_host_buffer_is_zeroized_even_when_derivation_fails PASSED [ 41%]
+tests/gpu/test_engine.py::test_the_store_does_not_leak_through_repr_or_pickle PASSED [ 44%]
+tests/gpu/test_engine.py::test_a3_the_key_store_has_no_device_to_host_path PASSED [ 47%]
+tests/gpu/test_engine.py::test_a3_the_engine_downloads_only_through_d2h_and_never_a_key_buffer PASSED [ 50%]
+tests/gpu/test_engine.py::test_the_constructor_checks_the_public_parameters[kwargs0] PASSED [ 52%]
+tests/gpu/test_engine.py::test_the_constructor_checks_the_public_parameters[kwargs1] PASSED [ 55%]
+tests/gpu/test_engine.py::test_the_constructor_checks_the_public_parameters[kwargs2] PASSED [ 58%]
+tests/gpu/test_engine.py::test_the_constructor_checks_the_public_parameters[kwargs3] PASSED [ 61%]
+tests/gpu/test_engine.py::test_the_constructor_checks_the_public_parameters[kwargs4] PASSED [ 63%]
+tests/gpu/test_engine.py::test_the_constructor_checks_the_public_parameters[kwargs5] PASSED [ 66%]
+tests/gpu/test_engine.py::test_the_constructor_checks_the_public_parameters[kwargs6] PASSED [ 69%]
+tests/gpu/test_engine.py::test_an_engine_without_keys_cannot_run PASSED  [ 72%]
+tests/gpu/test_engine.py::test_a_batch_larger_than_slots_is_refused PASSED [ 75%]
+tests/gpu/test_engine.py::test_a_short_entropy_source_is_refused PASSED  [ 77%]
+tests/gpu/test_engine.py::test_last_timings_of_every_call[numpy] PASSED  [ 80%]
+tests/gpu/test_engine.py::test_last_timings_of_every_call[cupy] PASSED   [ 83%]
+tests/gpu/test_engine.py::test_an_empty_epoch_runs_the_permutation_and_returns_no_row[numpy] PASSED [ 86%]
+tests/gpu/test_engine.py::test_an_empty_epoch_runs_the_permutation_and_returns_no_row[cupy] PASSED [ 88%]
+tests/gpu/test_engine.py::test_bucket_of_checks_its_input_and_handles_no_ids PASSED [ 91%]
+tests/gpu/test_engine.py::test_read_window_refuses_too_many_candidates_and_malformed_rows PASSED [ 94%]
+tests/gpu/test_engine.py::test_reshuffle_refuses_rows_of_another_window PASSED [ 97%]
+tests/gpu/test_engine.py::test_the_entropy_contract_is_one_call_of_28_bytes_per_row PASSED [100%]
+
+============================== 36 passed in 3.40s ==============================

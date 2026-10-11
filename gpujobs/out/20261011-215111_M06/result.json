@@ -1,0 +1,96 @@
+{
+  "job_id": "20261011-215111_M06",
+  "module": "M06",
+  "step": "S5",
+  "quick": false,
+  "packed_from_git_sha": "67504cd647382caf0faa37738bdee05fd940b59b",
+  "bundle_sha256": "78b78615b8106229a339f5c5a1e6fee2ee05b8e724430974b33620bc968f0692",
+  "finished_at": "2026-10-11T16:33:13.858312+00:00",
+  "env": {
+    "collected_at": "2026-10-11T16:29:38.857407+00:00",
+    "python": "3.13.15",
+    "platform": "Linux-6.18.48+-x86_64-with-glibc2.39",
+    "backend": "cupy",
+    "runner": "kaggle",
+    "session_id": "20261011-162938",
+    "gpu": "Tesla T4",
+    "driver": "580.178.04",
+    "vram_total": "15360 MiB",
+    "compute_capability": "7.5",
+    "nvcc": "Build cuda_12.8.r12.8/compiler.35583870_0",
+    "ncu": "NVIDIA (R) Nsight Compute Command Line Profiler",
+    "cupy": "14.0.1",
+    "cuda_runtime": "12090",
+    "cpu": "Intel(R) Xeon(R) CPU @ 2.00GHz",
+    "cpu_count": "4"
+  },
+  "requirements": {
+    "file": "requirements-gpu.txt",
+    "installed": [],
+    "skipped": [
+      "cupy-cuda12x",
+      "nvidia-ml-py",
+      "cryptography"
+    ],
+    "failed": []
+  },
+  "commands": [
+    {
+      "n": 1,
+      "name": "nvidia_smi",
+      "cmd": "nvidia-smi",
+      "exit_code": 0,
+      "log": "logs/01_nvidia_smi.txt",
+      "optional": false
+    },
+    {
+      "n": 2,
+      "name": "check_oblivious",
+      "cmd": "python scripts/check_oblivious.py kernels/",
+      "exit_code": 0,
+      "log": "logs/02_check_oblivious.txt",
+      "optional": false
+    },
+    {
+      "n": 3,
+      "name": "pytest_engine",
+      "cmd": "python -m pytest -p no:cacheprovider -rs -v -m \"not slow\" tests/gpu/test_engine.py",
+      "exit_code": 0,
+      "log": "logs/03_pytest_engine.txt",
+      "optional": false
+    },
+    {
+      "n": 4,
+      "name": "pytest_engine_vs_oracle",
+      "cmd": "python -m pytest -p no:cacheprovider -rs -v -m \"not slow\" tests/integration/test_engine_vs_oracle.py",
+      "exit_code": 0,
+      "log": "logs/04_pytest_engine_vs_oracle.txt",
+      "optional": false
+    },
+    {
+      "n": 5,
+      "name": "pipeline_smoke",
+      "cmd": "python bench/run_pipeline.py --dev --seed 6 --quick --out runs",
+      "exit_code": 0,
+      "log": "logs/05_pipeline_smoke.txt",
+      "optional": false
+    },
+    {
+      "n": 6,
+      "name": "pytest_regression",
+      "cmd": "python -m pytest -p no:cacheprovider -rs -q -m \"not slow\" tests/gpu/test_chacha.py tests/gpu/test_bitonic.py tests/gpu/test_aead.py tests/gpu/test_restore.py",
+      "exit_code": 0,
+      "log": "logs/06_pytest_regression.txt",
+      "optional": false
+    },
+    {
+      "n": 7,
+      "name": "pytest_max_log2n",
+      "cmd": "python -m pytest -p no:cacheprovider -rs -v -m slow tests/integration/test_engine_vs_oracle.py",
+      "exit_code": 0,
+      "log": "logs/07_pytest_max_log2n.txt",
+      "optional": false
+    }
+  ],
+  "overall_exit": 0
+}

@@ -1,0 +1,8 @@
+run dir     /content/vcloak_job/runs/20261011-163049_M06_pipeline_smoke_quick
+backend     cupy   timer cupy.cuda.Event
+P-WRITE-EPOCH-MS-S64         1.5749 ms  oracle_mismatches=0  cv=0.064 clock=OK
+P-WRITE-EPOCH-MS-S4096       10.8422 ms  oracle_mismatches=0  cv=0.043 clock=OK
+P-WRITE-EPOCH-MS-S65536      208.1128 ms  oracle_mismatches=0  cv=0.086 clock=OK
+P-READ-WINDOW-MS-K128        0.5045 ms  oracle_mismatches=0  cv=0.119 clock=OK
+P-READ-WINDOW-MS-K1024       0.5821 ms  oracle_mismatches=0  cv=0.083 clock=OK
+status      UNSTABLE

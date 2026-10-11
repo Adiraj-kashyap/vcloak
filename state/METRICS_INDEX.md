@@ -16,3 +16,8 @@
 | K-CHACHA-TAGS-SMOKE-GBS-2^20 | 85.0427 | GB/s | median | M04 | runs/20261011-134013_M04_chacha_smoke | python bench/chacha_smoke.py --seed 4 --out runs | 20261011 | no | cupy | kaggle |
 | K-CHACHA-TAGS-SMOKE-MS-2^20 | 0.1973 | ms | median | M04 | runs/20261011-134013_M04_chacha_smoke | python bench/chacha_smoke.py --seed 4 --out runs | 20261011 | no | cupy | kaggle |
 | K-CHACHA-TAGS-SMOKE-CV-2^20 | 0.083 | - | cv | M04 | runs/20261011-134013_M04_chacha_smoke | python bench/chacha_smoke.py --seed 4 --out runs | 20261011 | no | cupy | kaggle |
+| P-WRITE-EPOCH-MS-S64 | 1.5749 | ms | median | M06 | runs/20261011-163049_M06_pipeline_smoke_quick | python bench/run_pipeline.py --dev --seed 6 --quick --out runs | 20261011 | yes | cupy | kaggle |
+| P-WRITE-EPOCH-MS-S4096 | 10.8422 | ms | median | M06 | runs/20261011-163049_M06_pipeline_smoke_quick | python bench/run_pipeline.py --dev --seed 6 --quick --out runs | 20261011 | yes | cupy | kaggle |
+| P-WRITE-EPOCH-MS-S65536 | 208.1128 | ms | median | M06 | runs/20261011-163049_M06_pipeline_smoke_quick | python bench/run_pipeline.py --dev --seed 6 --quick --out runs | 20261011 | yes | cupy | kaggle |
+| P-READ-WINDOW-MS-K128 | 0.5045 | ms | median | M06 | runs/20261011-163049_M06_pipeline_smoke_quick | python bench/run_pipeline.py --dev --seed 6 --quick --out runs | 20261011 | yes | cupy | kaggle |
+| P-READ-WINDOW-MS-K1024 | 0.5821 | ms | median | M06 | runs/20261011-163049_M06_pipeline_smoke_quick | python bench/run_pipeline.py --dev --seed 6 --quick --out runs | 20261011 | yes | cupy | kaggle |

@@ -1,0 +1,12 @@
+============================= test session starts ==============================
+platform linux -- Python 3.13.15, pytest-8.4.2, pluggy-1.6.0 -- /usr/bin/python3
+rootdir: /content/vcloak_job
+configfile: pyproject.toml
+plugins: typeguard-4.6.0, anyio-4.14.2, langsmith-0.12.1
+collecting ... collected 114 items / 111 deselected / 3 selected
+
+tests/integration/test_engine_vs_oracle.py::test_max_log2n[1] PASSED     [ 33%]
+tests/integration/test_engine_vs_oracle.py::test_max_log2n[2] PASSED     [ 66%]
+tests/integration/test_engine_vs_oracle.py::test_max_log2n[3] PASSED     [100%]
+
+====================== 3 passed, 111 deselected in 34.98s ======================

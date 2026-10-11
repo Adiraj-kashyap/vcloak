@@ -1,0 +1,536 @@
+{
+  "metrics": [
+    {
+      "id": "P-WRITE-EPOCH-MS-S64",
+      "value": 1.5749,
+      "unit": "ms",
+      "stat": "median",
+      "note": "write_epoch total per call, 15 runs, CUDA events, CV 0.064, SM clock 585 MHz; smoke, not an M07 result"
+    },
+    {
+      "id": "P-WRITE-EPOCH-MS-S4096",
+      "value": 10.8422,
+      "unit": "ms",
+      "stat": "median",
+      "note": "write_epoch total per call, 15 runs, CUDA events, CV 0.043, SM clock 585 MHz; smoke, not an M07 result"
+    },
+    {
+      "id": "P-WRITE-EPOCH-MS-S65536",
+      "value": 208.1128,
+      "unit": "ms",
+      "stat": "median",
+      "note": "write_epoch total per call, 15 runs, CUDA events, CV 0.086, SM clock 585 MHz; smoke, not an M07 result"
+    },
+    {
+      "id": "P-READ-WINDOW-MS-K128",
+      "value": 0.5045,
+      "unit": "ms",
+      "stat": "median",
+      "note": "read_window total per call, 15 runs, CUDA events, CV 0.119, SM clock 585 MHz; smoke, not an M07 result"
+    },
+    {
+      "id": "P-READ-WINDOW-MS-K1024",
+      "value": 0.5821,
+      "unit": "ms",
+      "stat": "median",
+      "note": "read_window total per call, 15 runs, CUDA events, CV 0.083, SM clock 585 MHz; smoke, not an M07 result"
+    }
+  ],
+  "executed_by": "cupy.RawModule (nvrtc)",
+  "mismatches": 0,
+  "configs": [
+    {
+      "kind": "write_epoch",
+      "size": 64,
+      "metric": "P-WRITE-EPOCH-MS-S64",
+      "n_real": 64,
+      "mismatches": 0,
+      "attempts": [
+        {
+          "attempt": 1,
+          "clock": {
+            "status": "OK",
+            "before_mhz": 585,
+            "after_mhz": 585,
+            "relative_change": 0.0
+          },
+          "telemetry_after_warmup": {
+            "available": true,
+            "gpu": "Tesla T4",
+            "driver": "580.178.04",
+            "clocks": "unlocked",
+            "ts": 1791736251.8982842,
+            "sm_clock_mhz": 585,
+            "mem_clock_mhz": 5000,
+            "temperature_c": 48,
+            "power_w": 28.127,
+            "power_limit_w": 70.0,
+            "util_gpu_pct": 11,
+            "util_mem_pct": 0,
+            "throttle_reasons": 0,
+            "pstate": 0,
+            "mem_used_mb": 659.1875
+          },
+          "telemetry_after_runs": {
+            "available": true,
+            "gpu": "Tesla T4",
+            "driver": "580.178.04",
+            "clocks": "unlocked",
+            "ts": 1791736251.9891376,
+            "sm_clock_mhz": 585,
+            "mem_clock_mhz": 5000,
+            "temperature_c": 48,
+            "power_w": 28.309,
+            "power_limit_w": 70.0,
+            "util_gpu_pct": 11,
+            "util_mem_pct": 0,
+            "throttle_reasons": 0,
+            "pstate": 0,
+            "mem_used_mb": 659.1875
+          },
+          "runs": 15,
+          "median_ms": 1.5748800039291382,
+          "p5_ms": 1.4895392298698424,
+          "p95_ms": 1.7558463811874387,
+          "mean_ms": 1.5804693301518757,
+          "std_ms": 0.10142786737986328,
+          "cv": 0.06417578971312056,
+          "stage_median_ms": {
+            "h2d": 0.11161600053310394,
+            "tags": 0.12121599912643433,
+            "sort": 0.16380800306797028,
+            "compact": 0.3290880024433136,
+            "d2h": 0.15135999768972397,
+            "seal": 0.08780799806118011,
+            "bucket": 0.06838399916887283,
+            "open": 0.0,
+            "host": 0.5108800083398819
+          }
+        }
+      ]
+    },
+    {
+      "kind": "write_epoch",
+      "size": 4096,
+      "metric": "P-WRITE-EPOCH-MS-S4096",
+      "n_real": 4096,
+      "mismatches": 0,
+      "attempts": [
+        {
+          "attempt": 1,
+          "clock": {
+            "status": "OK",
+            "before_mhz": 585,
+            "after_mhz": 585,
+            "relative_change": 0.0
+          },
+          "telemetry_after_warmup": {
+            "available": true,
+            "gpu": "Tesla T4",
+            "driver": "580.178.04",
+            "clocks": "unlocked",
+            "ts": 1791736254.152889,
+            "sm_clock_mhz": 585,
+            "mem_clock_mhz": 5000,
+            "temperature_c": 48,
+            "power_w": 28.605,
+            "power_limit_w": 70.0,
+            "util_gpu_pct": 3,
+            "util_mem_pct": 0,
+            "throttle_reasons": 0,
+            "pstate": 0,
+            "mem_used_mb": 659.1875
+          },
+          "telemetry_after_runs": {
+            "available": true,
+            "gpu": "Tesla T4",
+            "driver": "580.178.04",
+            "clocks": "unlocked",
+            "ts": 1791736254.4134543,
+            "sm_clock_mhz": 585,
+            "mem_clock_mhz": 5000,
+            "temperature_c": 48,
+            "power_w": 28.621,
+            "power_limit_w": 70.0,
+            "util_gpu_pct": 2,
+            "util_mem_pct": 0,
+            "throttle_reasons": 0,
+            "pstate": 0,
+            "mem_used_mb": 659.1875
+          },
+          "runs": 15,
+          "median_ms": 10.796671867370605,
+          "p5_ms": 10.298050880432129,
+          "p95_ms": 18.9305694580078,
+          "mean_ms": 12.201608403523762,
+          "std_ms": 4.324310491752216,
+          "cv": 0.35440495619441265,
+          "stage_median_ms": {
+            "h2d": 0.10595200210809708,
+            "tags": 0.11478400230407715,
+            "sort": 0.23555199801921844,
+            "compact": 0.32179200649261475,
+            "d2h": 0.2311360016465187,
+            "seal": 0.08086399734020233,
+            "bucket": 0.033376000821590424,
+            "open": 0.0,
+            "host": 9.601248383522034
+          }
+        },
+        {
+          "attempt": 2,
+          "clock": {
+            "status": "OK",
+            "before_mhz": 585,
+            "after_mhz": 585,
+            "relative_change": 0.0
+          },
+          "telemetry_after_warmup": {
+            "available": true,
+            "gpu": "Tesla T4",
+            "driver": "580.178.04",
+            "clocks": "unlocked",
+            "ts": 1791736256.480057,
+            "sm_clock_mhz": 585,
+            "mem_clock_mhz": 5000,
+            "temperature_c": 49,
+            "power_w": 28.408,
+            "power_limit_w": 70.0,
+            "util_gpu_pct": 3,
+            "util_mem_pct": 0,
+            "throttle_reasons": 0,
+            "pstate": 0,
+            "mem_used_mb": 659.1875
+          },
+          "telemetry_after_runs": {
+            "available": true,
+            "gpu": "Tesla T4",
+            "driver": "580.178.04",
+            "clocks": "unlocked",
+            "ts": 1791736256.723798,
+            "sm_clock_mhz": 585,
+            "mem_clock_mhz": 5000,
+            "temperature_c": 49,
+            "power_w": 28.506,
+            "power_limit_w": 70.0,
+            "util_gpu_pct": 2,
+            "util_mem_pct": 0,
+            "throttle_reasons": 0,
+            "pstate": 0,
+            "mem_used_mb": 659.1875
+          },
+          "runs": 15,
+          "median_ms": 10.84217643737793,
+          "p5_ms": 10.46823034286499,
+          "p95_ms": 11.790761756896972,
+          "mean_ms": 10.917013422648113,
+          "std_ms": 0.4684821057485907,
+          "cv": 0.042913028280856705,
+          "stage_median_ms": {
+            "h2d": 0.1021760031580925,
+            "tags": 0.10803200304508209,
+            "sort": 0.23609599471092224,
+            "compact": 0.3519040048122406,
+            "d2h": 0.24028799682855606,
+            "seal": 0.08275199681520462,
+            "bucket": 0.03404799848794937,
+            "open": 0.0,
+            "host": 9.638848304748535
+          }
+        }
+      ]
+    },
+    {
+      "kind": "write_epoch",
+      "size": 65536,
+      "metric": "P-WRITE-EPOCH-MS-S65536",
+      "n_real": 65536,
+      "mismatches": 0,
+      "attempts": [
+        {
+          "attempt": 1,
+          "clock": {
+            "status": "OK",
+            "before_mhz": 585,
+            "after_mhz": 585,
+            "relative_change": 0.0
+          },
+          "telemetry_after_warmup": {
+            "available": true,
+            "gpu": "Tesla T4",
+            "driver": "580.178.04",
+            "clocks": "unlocked",
+            "ts": 1791736260.932654,
+            "sm_clock_mhz": 585,
+            "mem_clock_mhz": 5000,
+            "temperature_c": 49,
+            "power_w": 28.408,
+            "power_limit_w": 70.0,
+            "util_gpu_pct": 0,
+            "util_mem_pct": 0,
+            "throttle_reasons": 0,
+            "pstate": 0,
+            "mem_used_mb": 675.1875
+          },
+          "telemetry_after_runs": {
+            "available": true,
+            "gpu": "Tesla T4",
+            "driver": "580.178.04",
+            "clocks": "unlocked",
+            "ts": 1791736264.439717,
+            "sm_clock_mhz": 585,
+            "mem_clock_mhz": 5000,
+            "temperature_c": 49,
+            "power_w": 28.309,
+            "power_limit_w": 70.0,
+            "util_gpu_pct": 1,
+            "util_mem_pct": 0,
+            "throttle_reasons": 0,
+            "pstate": 0,
+            "mem_used_mb": 675.1875
+          },
+          "runs": 15,
+          "median_ms": 208.11279296875,
+          "p5_ms": 200.1308822631836,
+          "p95_ms": 249.63617248535155,
+          "mean_ms": 219.5041269938151,
+          "std_ms": 18.93980437576575,
+          "cv": 0.08628450241529814,
+          "stage_median_ms": {
+            "h2d": 0.5723519921302795,
+            "tags": 0.21062399446964264,
+            "sort": 0.8755519986152649,
+            "compact": 0.7722240090370178,
+            "d2h": 5.705023765563965,
+            "seal": 0.13094399869441986,
+            "bucket": 0.04303999990224838,
+            "open": 0.0,
+            "host": 199.78444290161133
+          }
+        }
+      ]
+    },
+    {
+      "kind": "read_window",
+      "size": 128,
+      "metric": "P-READ-WINDOW-MS-K128",
+      "hits": 16,
+      "mismatches": 0,
+      "attempts": [
+        {
+          "attempt": 1,
+          "clock": {
+            "status": "OK",
+            "before_mhz": 585,
+            "after_mhz": 585,
+            "relative_change": 0.0
+          },
+          "telemetry_after_warmup": {
+            "available": true,
+            "gpu": "Tesla T4",
+            "driver": "580.178.04",
+            "clocks": "unlocked",
+            "ts": 1791736266.5203571,
+            "sm_clock_mhz": 585,
+            "mem_clock_mhz": 5000,
+            "temperature_c": 49,
+            "power_w": 28.506,
+            "power_limit_w": 70.0,
+            "util_gpu_pct": 14,
+            "util_mem_pct": 0,
+            "throttle_reasons": 0,
+            "pstate": 0,
+            "mem_used_mb": 675.1875
+          },
+          "telemetry_after_runs": {
+            "available": true,
+            "gpu": "Tesla T4",
+            "driver": "580.178.04",
+            "clocks": "unlocked",
+            "ts": 1791736266.6000483,
+            "sm_clock_mhz": 585,
+            "mem_clock_mhz": 5000,
+            "temperature_c": 49,
+            "power_w": 29.198,
+            "power_limit_w": 70.0,
+            "util_gpu_pct": 9,
+            "util_mem_pct": 0,
+            "throttle_reasons": 0,
+            "pstate": 0,
+            "mem_used_mb": 675.1875
+          },
+          "runs": 15,
+          "median_ms": 0.44787201285362244,
+          "p5_ms": 0.4121920108795166,
+          "p95_ms": 0.5288351953029632,
+          "mean_ms": 0.4537770728270213,
+          "std_ms": 0.048064953354907396,
+          "cv": 0.10592195206219605,
+          "stage_median_ms": {
+            "h2d": 0.0382080003619194,
+            "tags": 0.0,
+            "sort": 0.2865599989891052,
+            "compact": 0.0,
+            "d2h": 0.039712000638246536,
+            "seal": 0.0,
+            "bucket": 0.0,
+            "open": 0.06915199756622314,
+            "host": 0.004352000076323748
+          }
+        },
+        {
+          "attempt": 2,
+          "clock": {
+            "status": "OK",
+            "before_mhz": 585,
+            "after_mhz": 585,
+            "relative_change": 0.0
+          },
+          "telemetry_after_warmup": {
+            "available": true,
+            "gpu": "Tesla T4",
+            "driver": "580.178.04",
+            "clocks": "unlocked",
+            "ts": 1791736268.6696012,
+            "sm_clock_mhz": 585,
+            "mem_clock_mhz": 5000,
+            "temperature_c": 49,
+            "power_w": 28.408,
+            "power_limit_w": 70.0,
+            "util_gpu_pct": 15,
+            "util_mem_pct": 0,
+            "throttle_reasons": 0,
+            "pstate": 0,
+            "mem_used_mb": 675.1875
+          },
+          "telemetry_after_runs": {
+            "available": true,
+            "gpu": "Tesla T4",
+            "driver": "580.178.04",
+            "clocks": "unlocked",
+            "ts": 1791736268.748795,
+            "sm_clock_mhz": 585,
+            "mem_clock_mhz": 5000,
+            "temperature_c": 49,
+            "power_w": 28.408,
+            "power_limit_w": 70.0,
+            "util_gpu_pct": 15,
+            "util_mem_pct": 0,
+            "throttle_reasons": 0,
+            "pstate": 0,
+            "mem_used_mb": 675.1875
+          },
+          "runs": 15,
+          "median_ms": 0.5045120120048523,
+          "p5_ms": 0.43012799620628356,
+          "p95_ms": 0.5816511809825897,
+          "mean_ms": 0.4974442640940348,
+          "std_ms": 0.05918125990445224,
+          "cv": 0.1189706348554154,
+          "stage_median_ms": {
+            "h2d": 0.040672000497579575,
+            "tags": 0.0,
+            "sort": 0.2956480085849762,
+            "compact": 0.0,
+            "d2h": 0.042080000042915344,
+            "seal": 0.0,
+            "bucket": 0.0,
+            "open": 0.0737600028514862,
+            "host": 0.004416000097990036
+          }
+        }
+      ]
+    },
+    {
+      "kind": "read_window",
+      "size": 1024,
+      "metric": "P-READ-WINDOW-MS-K1024",
+      "hits": 128,
+      "mismatches": 0,
+      "attempts": [
+        {
+          "attempt": 1,
+          "clock": {
+            "status": "OK",
+            "before_mhz": 585,
+            "after_mhz": 585,
+            "relative_change": 0.0
+          },
+          "telemetry_after_warmup": {
+            "available": true,
+            "gpu": "Tesla T4",
+            "driver": "580.178.04",
+            "clocks": "unlocked",
+            "ts": 1791736270.8356504,
+            "sm_clock_mhz": 585,
+            "mem_clock_mhz": 5000,
+            "temperature_c": 50,
+            "power_w": 28.704,
+            "power_limit_w": 70.0,
+            "util_gpu_pct": 19,
+            "util_mem_pct": 0,
+            "throttle_reasons": 0,
+            "pstate": 0,
+            "mem_used_mb": 675.1875
+          },
+          "telemetry_after_runs": {
+            "available": true,
+            "gpu": "Tesla T4",
+            "driver": "580.178.04",
+            "clocks": "unlocked",
+            "ts": 1791736270.9119935,
+            "sm_clock_mhz": 585,
+            "mem_clock_mhz": 5000,
+            "temperature_c": 50,
+            "power_w": 29.297,
+            "power_limit_w": 70.0,
+            "util_gpu_pct": 19,
+            "util_mem_pct": 0,
+            "throttle_reasons": 0,
+            "pstate": 0,
+            "mem_used_mb": 675.1875
+          },
+          "runs": 15,
+          "median_ms": 0.582144021987915,
+          "p5_ms": 0.501494413614273,
+          "p95_ms": 0.628246408700943,
+          "mean_ms": 0.5686848044395447,
+          "std_ms": 0.047118017024165654,
+          "cv": 0.08285436265630804,
+          "stage_median_ms": {
+            "h2d": 0.057472001761198044,
+            "tags": 0.0,
+            "sort": 0.33823999762535095,
+            "compact": 0.0,
+            "d2h": 0.0461760014295578,
+            "seal": 0.0,
+            "bucket": 0.0,
+            "open": 0.08380799740552902,
+            "host": 0.012095999903976917
+          }
+        }
+      ]
+    }
+  ],
+  "timer": "cupy.cuda.Event",
+  "telemetry_samples": 146,
+  "cv_limit": 0.1,
+  "device": {
+    "backend": "cupy",
+    "is_gpu": true,
+    "device": "Tesla T4",
+    "gpu": "Tesla T4",
+    "cc": "7.5",
+    "sm_count": 40,
+    "vram_total_bytes": 15636037632,
+    "vram_free_bytes": 15398141952,
+    "mem_clock_khz": 5001000,
+    "mem_bus_width_bits": 256,
+    "peak_bw_gbs": 320.064,
+    "max_log2n": 24,
+    "cuda": "12090",
+    "cupy": "14.0.1",
+    "os": "Linux-6.18.48+-x86_64-with-glibc2.39",
+    "python": "3.13.15"
+  }
+}
