@@ -4,6 +4,8 @@ M03, the bitonic sorting network: the launch sequence is a function of the publi
 (`launch_plan`); the data never influences which kernel runs, with which grid, or how often.
 M04, ChaCha20 tags, subkeys and bucket PRF: every key argument is a device buffer of 8 uint32 words;
 no wrapper accepts key bytes (ADR-003, audit A4).
+M05, Poly1305 and the seq_enc AEAD (seal, open), the restore sort and the oblivious compaction; the two
+sorts are the M03 network on other key columns.
 
 Device arrays (CuPy) run the kernels in `kernels/*.cu`; NumPy arrays run their twins in
 `vcloak.gpu.sim` with the same launch configuration.
@@ -23,8 +25,11 @@ KERNEL_DIR = Path(__file__).resolve().parents[3] / "kernels"
 BITONIC_KERNELS = ("bitonic_pairs_global", "bitonic_shared", "bitonic_shared_full")
 CHACHA_KERNELS = ("chacha_blocks", "chacha_tags")
 PRF_KERNELS = ("derive_subkeys", "bucket_prf")
+POLY_KERNELS = ("poly1305_mac", "aead_tag")
+AEAD_KERNELS = ("aead_open_seq", "aead_seal_seq")
 KERNEL_FILES = {**dict.fromkeys(BITONIC_KERNELS, "bitonic.cu"), **dict.fromkeys(CHACHA_KERNELS, "chacha_tags.cu"),
-                **dict.fromkeys(PRF_KERNELS, "prf.cu")}
+                **dict.fromkeys(PRF_KERNELS, "prf.cu"), **dict.fromkeys(POLY_KERNELS, "poly1305.cu"),
+                "aead_open_seq": "aead_open.cu", "aead_seal_seq": "aead_seal.cu"}
 DEFAULT_T = 256  # threads per block in the shared kernels; a tile is 2T records. Public.
 GLOBAL_BLOCK = 256
 COLUMN_DTYPES = (np.uint64, np.uint64, np.uint32, np.uint32)  # hi, lo, slot, pay
@@ -269,3 +274,125 @@ def gpu_bucket_prf(kbkt_dev: Any, conv_ids_dev: Any, n_buckets: int) -> Any:
     out = _xp(kbkt_dev).empty(n, dtype=np.uint32)
     _run_threads("bucket_prf", n, (kbkt_dev, conv_ids_dev, out, np.uint32(n), np.uint32(n_buckets)))
     return out
+
+
+# ── Poly1305, seq_enc AEAD, restore sort, compaction (kernels/poly1305.cu, aead_open.cu, aead_seal.cu) ──
+
+SEQ_WORDS = sim.SEQ_WORDS  # a 44-byte seq_enc is 11 little-endian words: nonce(3) || ciphertext(4) || tag(4)
+SEQ_ENC_LEN = 4 * SEQ_WORDS
+TAG_WORDS = 4
+MAX_ROWS = 1 << 28  # keeps every word index of a row below 2^32. Public.
+MAX_MSG_BYTES = 1 << 16  # the general Poly1305 kernels are test surfaces; the service uses 16-byte rows
+
+
+def pack_seq_enc(blobs: Any) -> np.ndarray:
+    """Host: 44-byte seq_enc values (stored rows, public ciphertext) as the uint32 words the kernels read."""
+    if any(len(b) != SEQ_ENC_LEN for b in blobs):
+        raise ValueError(f"every seq_enc must be {SEQ_ENC_LEN} bytes")
+    return np.frombuffer(b"".join(blobs), dtype="<u4").astype(np.uint32)
+
+
+def unpack_seq_enc(words: Any) -> list[bytes]:
+    """Host: the inverse of `pack_seq_enc` for a device or host word buffer (D2H of public ciphertext)."""
+    host = words if isinstance(words, np.ndarray) else words.get()
+    raw = host.astype("<u4").tobytes()
+    return [raw[i:i + SEQ_ENC_LEN] for i in range(0, len(raw), SEQ_ENC_LEN)]
+
+
+def _rows(name: str, a: Any, dtype: Any, per_row: int) -> int:
+    _check_buffer(name, a, dtype)
+    n, rest = divmod(int(a.shape[0]), per_row)
+    if rest or not 0 < n <= MAX_ROWS:
+        raise ValueError(f"{name} must hold {per_row} elements for each of 1 to 2^28 rows, got {int(a.shape[0])}")
+    return n
+
+
+def gpu_poly1305(keys_dev: Any, msgs_dev: Any, nbytes: int) -> Any:
+    """Poly1305 tags (4 uint32 words each) of n messages of `nbytes` bytes: message t under the one-time
+    key words keys[8t .. 8t + 7]. `msgs_dev` is the uint8 concatenation of the messages."""
+    n = _rows("keys_dev", keys_dev, np.uint32, KEY_WORDS)
+    if not 0 <= nbytes < MAX_MSG_BYTES:
+        raise ValueError("the message length must be in [0, 2^16)")
+    _check_buffer("msgs", msgs_dev, np.uint8, n * nbytes)
+    out = _xp(keys_dev).empty(TAG_WORDS * n, dtype=np.uint32)
+    _run_threads("poly1305_mac", n, (keys_dev, msgs_dev, out, np.uint32(nbytes), np.uint32(n)))
+    return out
+
+
+def gpu_aead_tag(key_dev: Any, nonces_dev: Any, aad_dev: Any, boxes_dev: Any, box_nbytes: int) -> Any:
+    """RFC 8439 §2.8 tags (4 uint32 words each) of n ciphertexts of `box_nbytes` bytes: ciphertext t under
+    (key, nonce words 3t .. 3t + 2), all with the same aad (uint8). The ciphertexts are a uint8 concatenation."""
+    _check_buffer("key_dev", key_dev, np.uint32, KEY_WORDS)
+    n = _rows("nonces", nonces_dev, np.uint32, NONCE_WORDS)
+    _check_buffer("aad", aad_dev, np.uint8)
+    aad_nbytes = int(aad_dev.shape[0])
+    if not 0 <= box_nbytes < MAX_MSG_BYTES or aad_nbytes >= MAX_MSG_BYTES:
+        raise ValueError("the aad and ciphertext lengths must be in [0, 2^16)")
+    _check_buffer("boxes", boxes_dev, np.uint8, n * box_nbytes)
+    out = _xp(key_dev).empty(TAG_WORDS * n, dtype=np.uint32)
+    _run_threads("aead_tag", n, (key_dev, nonces_dev, aad_dev, boxes_dev, out, np.uint32(aad_nbytes),
+                                 np.uint32(box_nbytes), np.uint32(n)))
+    return out
+
+
+def gpu_seal_seq(kseq_dev: Any, conv_ids_dev: Any, seqs_dev: Any, nonces_dev: Any) -> Any:
+    """seq_enc of each (conv_id, seq) row under K_seq and the host-supplied nonce (3 uint32 words per row):
+    11 uint32 words per row, the device counterpart of aead_ref.seal_seq."""
+    _check_buffer("kseq_dev", kseq_dev, np.uint32, KEY_WORDS)
+    n = _rows("conv_ids", conv_ids_dev, np.uint64, 1)
+    _check_buffer("seqs", seqs_dev, np.uint64, n)
+    _check_buffer("nonces", nonces_dev, np.uint32, NONCE_WORDS * n)
+    out = _xp(kseq_dev).empty(SEQ_WORDS * n, dtype=np.uint32)
+    _run_threads("aead_seal_seq", n, (kseq_dev, conv_ids_dev, seqs_dev, nonces_dev, out, np.uint32(n)))
+    return out
+
+
+def gpu_open_and_key(kseq_dev: Any, blobs_dev: Any, q_conv: int) -> tuple[Any, Any, Any]:
+    """Open every seq_enc row (11 uint32 words each) and return the restore-sort columns (hi, lo, ok):
+    hi = 0 for an authentic row of conversation `q_conv` and 1 for a miss, lo = its seq (0 on a miss),
+    ok = 1 where the tag verified. Nothing is copied to the host."""
+    _check_buffer("kseq_dev", kseq_dev, np.uint32, KEY_WORDS)
+    n = _rows("blobs", blobs_dev, np.uint32, SEQ_WORDS)
+    if not 0 <= q_conv < 1 << 64:
+        raise ValueError("the conversation id must fit in 64 bits")
+    xp = _xp(kseq_dev)
+    d_hi, d_lo, d_ok = xp.empty(n, dtype=np.uint64), xp.empty(n, dtype=np.uint64), xp.empty(n, dtype=np.uint32)
+    _run_threads("aead_open_seq", n, (kseq_dev, blobs_dev, np.uint32(n), np.uint64(q_conv), d_hi, d_lo, d_ok))
+    return d_hi, d_lo, d_ok
+
+
+def gpu_restore_sort(d_hi: Any, d_lo: Any, *, T: int = DEFAULT_T) -> tuple[Any, int]:  # noqa: N803
+    """Sort K candidate rows by (hi = miss, lo = seq, slot = row index) with the M03 network.
+
+    Returns (perm, hits): perm[p] is the input row at output position p (uint32, on the device of the
+    input) and the first `hits` positions are the conversation in sequence order. K need not be a power
+    of two: the columns are padded with misses up to the next one, which is a function of K only. `hits`
+    is the count j of matching rows, public at the database level (ai/modules/M05, presenter note 3).
+    """
+    _check_buffer("hi", d_hi, np.uint64)
+    k = int(d_hi.shape[0])
+    _check_buffer("lo", d_lo, np.uint64, k)
+    if not 0 < k <= MAX_ROWS:
+        raise ValueError("the number of candidate rows must be in [1, 2^28]")
+    xp = _xp(d_hi)
+    n = 1 << (k - 1).bit_length()
+    s_hi, s_lo = xp.ones(n, dtype=np.uint64), xp.zeros(n, dtype=np.uint64)
+    s_hi[:k] = d_hi
+    s_lo[:k] = d_lo
+    slot, perm = xp.arange(n, dtype=np.uint32), xp.arange(n, dtype=np.uint32)
+    gpu_bitonic_sort(s_hi, s_lo, slot, perm, T=T)
+    return perm, int(xp.count_nonzero(s_hi == 0))
+
+
+def gpu_compact(d_is_dummy: Any, d_order: Any, *, T: int = DEFAULT_T) -> Any:  # noqa: N803
+    """Oblivious compaction: sort by (is_dummy, current position, slot) with the M03 network and return
+    the `order` column in the new arrangement. Real rows come first and keep their relative order.
+    `d_is_dummy` (uint32, 0 or 1) and `d_order` (uint32) have the same power-of-two length; neither is modified."""
+    _check_buffer("is_dummy", d_is_dummy, np.uint32)
+    n = int(d_is_dummy.shape[0])
+    _check_buffer("order", d_order, np.uint32, n)
+    xp = _xp(d_is_dummy)
+    hi, lo = d_is_dummy.astype(np.uint64), xp.arange(n, dtype=np.uint64)
+    slot, pay = xp.arange(n, dtype=np.uint32), d_order.copy()
+    gpu_bitonic_sort(hi, lo, slot, pay, T=T)
+    return pay

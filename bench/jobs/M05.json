@@ -1,0 +1,17 @@
+{
+  "title": "M05 Poly1305 / AEAD seal-open kernels, restore sort and compaction: compile, RFC 8439 vectors, bit-exact vs the reference, the oracle and the simulator, obliviousness check",
+  "step": "S4",
+  "seed": 5,
+  "commands": [
+    {"name": "nvidia_smi", "cmd": "nvidia-smi", "timeout": 120},
+    {"name": "check_oblivious", "cmd": "python scripts/check_oblivious.py kernels/", "timeout": 300},
+    {"name": "pytest_aead", "cmd": "python -m pytest -p no:cacheprovider -rs -v -m \"not slow\" tests/gpu/test_aead.py",
+     "timeout": 1800},
+    {"name": "pytest_restore", "cmd": "python -m pytest -p no:cacheprovider -rs -v -m \"not slow\" tests/gpu/test_restore.py",
+     "timeout": 1800, "stop_on_fail": false},
+    {"name": "pytest_regression", "cmd": "python -m pytest -p no:cacheprovider -rs -q -m \"not slow\" tests/gpu/test_chacha.py tests/gpu/test_bitonic.py",
+     "timeout": 1800, "stop_on_fail": false},
+    {"name": "pytest_max_log2n", "cmd": "python -m pytest -p no:cacheprovider -rs -v -m slow tests/gpu/test_aead.py tests/gpu/test_restore.py",
+     "timeout": 3600, "stop_on_fail": false}
+  ]
+}

@@ -1,0 +1,22 @@
+# A3 manual review input: every control construct in the M05 kernel sources (grep -nE 'if \(|while \(|for \(|\?|&&|\|\||switch|goto')
+kernels/poly1305.cuh:22:    for (u32 w = 0; w < 5; ++w) {
+kernels/poly1305.cuh:79:    for (u32 b = 0; b < full; ++b) {
+kernels/poly1305.cuh:80:        for (u32 w = 0; w < 4; ++w) {
+kernels/poly1305.cuh:85:    if (rem > 0) {
+kernels/poly1305.cuh:87:        for (u32 b = 0; b < 16; ++b) {
+kernels/poly1305.cuh:90:        for (u32 b = 0; b < rem; ++b) {
+kernels/poly1305.cuh:94:        for (u32 w = 0; w < 4; ++w) {
+kernels/poly1305.cu:16:    if (t >= n) {
+kernels/poly1305.cu:25:    for (u32 w = 0; w < 4; ++w) {
+kernels/poly1305.cu:38:    if (t >= n) {
+kernels/poly1305.cu:42:    for (u32 w = 0; w < 3; ++w) {
+kernels/poly1305.cu:60:    for (u32 w = 0; w < 4; ++w) {
+kernels/aead_seq.cuh:19:    const u32 LENS[4] = {13u, 0u, 16u, 0u};                                    // LE64(13) || LE64(16)
+kernels/aead_open.cu:18:    if (t >= n) {
+kernels/aead_open.cu:22:    for (u32 w = 0; w < 3; ++w) {
+kernels/aead_open.cu:31:    for (u32 w = 0; w < 4; ++w) {
+kernels/aead_open.cu:36:    for (u32 w = 0; w < 4; ++w) {
+kernels/aead_seal.cu:13:    if (t >= n) {
+kernels/aead_seal.cu:17:    for (u32 w = 0; w < 3; ++w) {
+kernels/aead_seal.cu:33:    for (u32 w = 0; w < 3; ++w) {
+kernels/aead_seal.cu:36:    for (u32 w = 0; w < 4; ++w) {

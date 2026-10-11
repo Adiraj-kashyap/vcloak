@@ -41,7 +41,7 @@ DATA_NAME = re.compile(
     r"^(?:[a-z]_)?(?:hi|lo|slot|pay|key|keys|ks|tag|tags|nonce|ct|pt|mac|msg|state|perm|bucket|dummy|secret|data)"
     r"(?:_[a-z0-9]+)*$")
 PUBLIC_PARAMS = frozenset({"n", "k", "j", "t", "i", "l", "T", "S", "K", "B", "npairs", "j_start", "base", "nblocks",
-                           "counter0", "epoch", "win"})
+                           "counter0", "epoch", "win", "nbytes", "aad_nbytes", "box_nbytes"})
 BUILTINS = frozenset({"threadIdx", "blockIdx", "blockDim", "gridDim"})
 NOT_VARIABLES = frozenset("""
     u8 u16 u32 u64 i32 i64 unsigned signed int long short char bool float double void const volatile static

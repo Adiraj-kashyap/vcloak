@@ -1,0 +1,44 @@
+{
+  "run_id": "20261011-193238_M05_aead_restore_prep",
+  "module": "M05",
+  "step": "S4",
+  "owner": "Aditya",
+  "git_sha": "eeade73cf562c6dd97496b34ac10e048803e18b6",
+  "dirty": true,
+  "command": "pytest tests/gpu/test_aead.py tests/gpu/test_restore.py tests/gpu/test_aead_cpu_shim.py; pytest (full suite); check_oblivious.py kernels/; check_oblivious.py --self-test; check_secrets.py; check_metrics.py; ruff",
+  "seed": 0,
+  "quick": false,
+  "params": {},
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261011-193238",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U"
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791727359.1108685
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791727529.2520843
+  },
+  "outputs": [
+    "audit_a3.txt",
+    "check_metrics.txt",
+    "check_oblivious.txt",
+    "check_oblivious_selftest.txt",
+    "check_secrets.txt",
+    "deliverables_ls.txt",
+    "pytest.txt",
+    "pytest_all.txt",
+    "pytest_repeat.txt",
+    "ruff.txt"
+  ],
+  "status": "OK",
+  "notes": "prep session, numpy backend and g++ CPU shim: correctness only, no number here is a performance result; CUDA compile, GPU execution and GPU-vs-twin parity are pending in the M05 GPU job; ruff: 1 E501 in scripts/record_env.py that predates this session"
+}

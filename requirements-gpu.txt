@@ -2,3 +2,4 @@
 # Never install these on the laptop: CuPy needs an NVIDIA GPU (ai/GPU_RUNNER.md).
 cupy-cuda12x
 nvidia-ml-py
+cryptography

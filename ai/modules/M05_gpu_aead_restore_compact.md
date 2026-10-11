@@ -51,3 +51,26 @@ real bug in one of the two — never "close enough".
 3. What does the server learn when it reads a window? (count j: public at the DB level anyway)
 
 ## Next: M06
+
+## Amendments
+2026-10-11 (session 9, prep). Where the build differs from the text above, and why:
+- **Row layout.** A 44-byte seq_enc is passed as 11 little-endian `u32` words per row (nonce 0..2, ciphertext
+  3..6, tag 7..10), so `blobs` is `const u32*` and `q_conv` a `u64`. Host helpers `pack_seq_enc` /
+  `unpack_seq_enc` convert the stored bytes (public ciphertext).
+- **Two extra kernel files.** `kernels/aead_seq.cuh` holds the fixed-size tag (`seq_tag`: three 16-byte blocks)
+  shared by `aead_open.cu` and `aead_seal.cu`. `kernels/poly1305.cu` holds two general-length kernels,
+  `poly1305_mac` and `aead_tag` (wrappers `gpu_poly1305`, `gpu_aead_tag`): the RFC 8439 §2.5.2 message is 34
+  bytes and the §2.8.2 one 114 bytes with a 12-byte AAD, which the fixed 16-byte row kernels cannot take. Their
+  branches and subscripts depend on the public byte counts only. The service path does not use them.
+- **`out_ok`** is the authentication result alone; `out_hi` is the miss key of S2 (`(1 - ok) | (conv != q)`).
+- **Wrapper shapes.** `gpu_open_and_key(kseq_dev, blobs_dev, q_conv) -> (hi, lo, ok)`.
+  `gpu_restore_sort(hi, lo) -> (perm, hits)` pads K rows with misses to the next power of two (a function of K
+  only), sorts with slot = row index and returns the row permutation plus the hit count j, which is read on the
+  host (public, presenter note 3). `gpu_compact(is_dummy, order) -> order` sorts copies by
+  (is_dummy, position, slot). Seal: `gpu_seal_seq(kseq_dev, conv_ids, seqs, nonces) -> blobs`.
+- **check_oblivious.** `nbytes`, `aad_nbytes` and `box_nbytes` were added to its list of public parameter names.
+- **Local stand-in for nvcc.** `tests/gpu/test_aead_cpu_shim.py` compiles the real `.cu` files with g++ through
+  `tests/cuda_shim` and compares them with the reference and the twins. It checks the source logic only.
+- **Runner requirement.** `requirements-gpu.txt` gained `cryptography` (the reference used by these tests);
+  `gpu_entry.py` installs it only when the runner lacks it.
+- **No bench.** The steps ask for no measurement, so the job runs tests only and adds no metric.

@@ -253,3 +253,229 @@ def bucket_prf(kbkt: np.ndarray, conv_ids: np.ndarray, out_bucket: np.ndarray, n
              np.uint32(0))
     ks = _chacha_block(kbkt, np.uint32(0), nonce, t.shape[0])
     out_bucket[t] = _mod_public(ks[0], B)
+
+
+# ── Poly1305 and the seq_enc AEAD (kernels/poly1305.cuh, poly1305.cu, aead_seq.cuh, aead_open.cu, aead_seal.cu) ──
+# Limbs are rows of a (5, m) uint32 array, one column per thread. Like the ChaCha20 twins, these are
+# written from the kernel source, not from a reference implementation.
+
+SEQ_WORDS = 11  # same constants as kernels/aead_seq.cuh
+SEQ_CT = 3
+SEQ_TAG = 7
+SEQ_AAD_WORDS = (0x6F6C6376, 0x732D6B61, 0x762D7165, 0x00000031)  # the AAD table of seq_tag
+SEQ_LEN_WORDS = (13, 0, 16, 0)  # the LENS table of seq_tag
+_POLY_LIMB = np.uint32(0x3FFFFFF)
+_POLY_LIMB64 = np.uint64(0x3FFFFFF)
+_POLY_HIBIT = np.uint32(0x1000000)
+_POLY_CLAMP = (0x3FFFFFF, 0x3FFFF03, 0x3FFC0FF, 0x3F03FFF, 0x00FFFFF)
+
+
+def _u32(x: Any) -> np.ndarray:
+    return np.asarray(x, dtype=np.uint32)
+
+
+def _limbs(w: Any) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    """The 26-bit windows 0..3 of four little-endian words (uint32 shifts drop the high bits, as in C)."""
+    w0, w1, w2, w3 = (_u32(x) for x in w)
+    return (w0, (w0 >> np.uint32(26)) | (w1 << np.uint32(6)), (w1 >> np.uint32(20)) | (w2 << np.uint32(12)),
+            (w2 >> np.uint32(14)) | (w3 << np.uint32(18)))
+
+
+def _poly_init(key: Any, m: int) -> tuple[np.ndarray, np.ndarray]:
+    """poly1305_init for m threads: (r, h) as (5, m) uint32; `key` holds at least the 4 words of r."""
+    r = np.empty((5, m), dtype=np.uint32)
+    for w, limb in enumerate((*_limbs(key[:4]), _u32(key[3]) >> np.uint32(8))):
+        r[w] = limb & np.uint32(_POLY_CLAMP[w])
+    return r, np.zeros((5, m), dtype=np.uint32)
+
+
+def _poly_block(r: np.ndarray, h: np.ndarray, msg: Any, hibit: Any) -> None:
+    """poly1305_block: h = (h + block) * r, partially reduced, in place."""
+    r0, r1, r2, r3, r4 = (r[w].astype(np.uint64) for w in range(5))
+    five = np.uint64(5)
+    s1, s2, s3, s4 = r1 * five, r2 * five, r3 * five, r4 * five
+    m0, m1, m2, m3 = _limbs(msg)
+    h0 = (h[0] + (m0 & _POLY_LIMB)).astype(np.uint64)
+    h1 = (h[1] + (m1 & _POLY_LIMB)).astype(np.uint64)
+    h2 = (h[2] + (m2 & _POLY_LIMB)).astype(np.uint64)
+    h3 = (h[3] + (m3 & _POLY_LIMB)).astype(np.uint64)
+    h4 = (h[4] + ((_u32(msg[3]) >> np.uint32(8)) | np.uint32(hibit))).astype(np.uint64)
+    d0 = h0 * r0 + h1 * s4 + h2 * s3 + h3 * s2 + h4 * s1
+    d1 = h0 * r1 + h1 * r0 + h2 * s4 + h3 * s3 + h4 * s2
+    d2 = h0 * r2 + h1 * r1 + h2 * r0 + h3 * s4 + h4 * s3
+    d3 = h0 * r3 + h1 * r2 + h2 * r1 + h3 * r0 + h4 * s4
+    d4 = h0 * r4 + h1 * r3 + h2 * r2 + h3 * r1 + h4 * r0
+    sh = np.uint64(26)
+    d1 = d1 + (d0 >> sh)
+    d2 = d2 + (d1 >> sh)
+    d3 = d3 + (d2 >> sh)
+    d4 = d4 + (d3 >> sh)
+    e0 = (d0 & _POLY_LIMB64) + (d4 >> sh) * five
+    h[0] = (e0 & _POLY_LIMB64).astype(np.uint32)
+    h[1] = ((d1 & _POLY_LIMB64) + (e0 >> sh)).astype(np.uint32)
+    h[2] = (d2 & _POLY_LIMB64).astype(np.uint32)
+    h[3] = (d3 & _POLY_LIMB64).astype(np.uint32)
+    h[4] = (d4 & _POLY_LIMB64).astype(np.uint32)
+
+
+def _load_le32(msg: np.ndarray, i: int) -> np.ndarray:
+    """load_le32 for every thread: `msg` is (m, nbytes) uint8, i a public byte offset."""
+    b = msg[:, i:i + 4].astype(np.uint32)
+    return b[:, 0] | (b[:, 1] << np.uint32(8)) | (b[:, 2] << np.uint32(16)) | (b[:, 3] << np.uint32(24))
+
+
+def _poly_bytes(r: np.ndarray, h: np.ndarray, msg: np.ndarray, nbytes: int, pad_byte: int, pad_hibit: int) -> None:
+    """poly1305_bytes: `msg` is (m, nbytes) uint8 (or (1, nbytes), shared by every thread)."""
+    full = nbytes // 16
+    rem = nbytes - 16 * full
+    for b in range(full):
+        _poly_block(r, h, [_load_le32(msg, 16 * b + 4 * w) for w in range(4)], _POLY_HIBIT)
+    if rem > 0:
+        buf = np.zeros((msg.shape[0], 16), dtype=np.uint8)
+        buf[:, :rem] = msg[:, 16 * full:]
+        buf[:, rem] = pad_byte
+        _poly_block(r, h, [_load_le32(buf, 4 * w) for w in range(4)], pad_hibit)
+
+
+def _poly_finish(key: Any, h: np.ndarray) -> np.ndarray:
+    """poly1305_finish: the tag as (4, m) uint32. key[4..7] are the words of s."""
+    sh = np.uint32(26)
+    h0, h1, h2, h3, h4 = (h[w].copy() for w in range(5))
+    c = h1 >> sh
+    h1 &= _POLY_LIMB
+    h2 += c
+    c = h2 >> sh
+    h2 &= _POLY_LIMB
+    h3 += c
+    c = h3 >> sh
+    h3 &= _POLY_LIMB
+    h4 += c
+    c = h4 >> sh
+    h4 &= _POLY_LIMB
+    h0 += c * np.uint32(5)
+    c = h0 >> sh
+    h0 &= _POLY_LIMB
+    h1 += c
+    g0 = h0 + np.uint32(5)
+    c = g0 >> sh
+    g0 &= _POLY_LIMB
+    g1 = h1 + c
+    c = g1 >> sh
+    g1 &= _POLY_LIMB
+    g2 = h2 + c
+    c = g2 >> sh
+    g2 &= _POLY_LIMB
+    g3 = h3 + c
+    c = g3 >> sh
+    g3 &= _POLY_LIMB
+    g4 = h4 + c - np.uint32(1 << 26)  # wraps below zero in uint32, like the kernel
+    sel = (g4 >> np.uint32(31)) - np.uint32(1)
+    h0 = (h0 & ~sel) | (g0 & sel)
+    h1 = (h1 & ~sel) | (g1 & sel)
+    h2 = (h2 & ~sel) | (g2 & sel)
+    h3 = (h3 & ~sel) | (g3 & sel)
+    h4 = (h4 & ~sel) | (g4 & sel)
+    words = (h0 | (h1 << sh), (h1 >> np.uint32(6)) | (h2 << np.uint32(20)),
+             (h2 >> np.uint32(12)) | (h3 << np.uint32(14)), (h3 >> np.uint32(18)) | (h4 << np.uint32(8)))
+    tag = np.empty((4, h.shape[1]), dtype=np.uint32)
+    f = np.zeros(h.shape[1], dtype=np.uint64)
+    for w in range(4):
+        f = words[w].astype(np.uint64) + _u32(key[4 + w]).astype(np.uint64) + (f >> np.uint64(32))
+        tag[w] = f.astype(np.uint32)  # the low word
+    return tag
+
+
+def _seq_tag(otk: np.ndarray, ct: Any) -> np.ndarray:
+    """seq_tag: the tag of the 4 ciphertext words of each thread under its one-time key block, (4, m) uint32."""
+    r, h = _poly_init(otk, otk.shape[1])
+    _poly_block(r, h, [np.uint32(w) for w in SEQ_AAD_WORDS], _POLY_HIBIT)
+    _poly_block(r, h, ct, _POLY_HIBIT)
+    _poly_block(r, h, [np.uint32(w) for w in SEQ_LEN_WORDS], _POLY_HIBIT)
+    return _poly_finish(otk, h)
+
+
+def _row_words(a: np.ndarray, per_row: int, t: np.ndarray, first: int, count: int) -> list[np.ndarray]:
+    """a[per_row * t + first + w] for w < count: `count` word columns of the rows of the threads t."""
+    return [a[np.uint32(per_row) * t + np.uint32(first + w)] for w in range(count)]
+
+
+def _row_bytes(a: np.ndarray, nbytes: int, t: np.ndarray) -> np.ndarray:
+    """The nbytes-byte message of each thread t as (m, nbytes) uint8."""
+    if nbytes == 0:
+        return np.empty((t.shape[0], 0), dtype=np.uint8)
+    return a.reshape(-1, nbytes)[t]
+
+
+@register("poly1305_mac")
+def poly1305_mac(keys: np.ndarray, msgs: np.ndarray, out_tags: np.ndarray, nbytes: int, n: int,
+                 *, grid: int, block: int) -> None:
+    """Twin of the general Poly1305 kernel: thread t tags message t (nbytes bytes) under key words 8t .. 8t + 7."""
+    t = _threads(grid, block, n)
+    key = _row_words(keys, 8, t, 0, 8)
+    r, h = _poly_init(key, t.shape[0])
+    _poly_bytes(r, h, _row_bytes(msgs, nbytes, t), nbytes, 1, 0)
+    tag = _poly_finish(key, h)
+    for w in range(4):
+        out_tags[np.uint32(4) * t + np.uint32(w)] = tag[w]
+
+
+@register("aead_tag")
+def aead_tag(key: np.ndarray, nonces: np.ndarray, aad: np.ndarray, boxes: np.ndarray, out_tags: np.ndarray,
+             aad_nbytes: int, box_nbytes: int, n: int, *, grid: int, block: int) -> None:
+    """Twin of the general AEAD-tag kernel: one shared aad, per-thread nonce and ciphertext."""
+    t = _threads(grid, block, n)
+    m = t.shape[0]
+    otk = _chacha_block(key, np.uint32(0), tuple(_row_words(nonces, 3, t, 0, 3)), m)  # type: ignore[arg-type]
+    r, h = _poly_init(otk, m)
+    _poly_bytes(r, h, aad[:aad_nbytes].reshape(1, -1), aad_nbytes, 0, int(_POLY_HIBIT))
+    _poly_bytes(r, h, _row_bytes(boxes, box_nbytes, t), box_nbytes, 0, int(_POLY_HIBIT))
+    _poly_block(r, h, [np.uint32(aad_nbytes), np.uint32(0), np.uint32(box_nbytes), np.uint32(0)], _POLY_HIBIT)
+    tag = _poly_finish(otk, h)
+    for w in range(4):
+        out_tags[np.uint32(4) * t + np.uint32(w)] = tag[w]
+
+
+@register("aead_open_seq")
+def aead_open_seq(kseq: np.ndarray, blobs: np.ndarray, n: int, q_conv: int, out_hi: np.ndarray,
+                  out_lo: np.ndarray, out_ok: np.ndarray, *, grid: int, block: int) -> None:
+    """Twin of the open kernel: per row, ok = tag verifies; hi = miss; lo = seq, zeroed on a miss."""
+    t = _threads(grid, block, n)
+    m = t.shape[0]
+    nonce = tuple(_row_words(blobs, SEQ_WORDS, t, 0, 3))
+    otk = _chacha_block(kseq, np.uint32(0), nonce, m)  # type: ignore[arg-type]
+    ks = _chacha_block(kseq, np.uint32(1), nonce, m)  # type: ignore[arg-type]
+    ct = _row_words(blobs, SEQ_WORDS, t, SEQ_CT, 4)
+    tag = _seq_tag(otk, ct)
+    diff = np.zeros(m, dtype=np.uint32)
+    for w, stored in enumerate(_row_words(blobs, SEQ_WORDS, t, SEQ_TAG, 4)):
+        diff |= tag[w] ^ stored
+    ok = (diff == 0).astype(np.uint64)
+    pt = [(ct[w] ^ ks[w]).astype(np.uint64) for w in range(4)]
+    conv = pt[0] | (pt[1] << np.uint64(32))
+    seq = pt[2] | (pt[3] << np.uint64(32))
+    miss = (np.uint64(1) - ok) | (conv != np.uint64(q_conv)).astype(np.uint64)
+    out_hi[t] = miss
+    out_lo[t] = seq & ~_mask64(miss)
+    out_ok[t] = ok.astype(np.uint32)
+
+
+@register("aead_seal_seq")
+def aead_seal_seq(kseq: np.ndarray, conv_ids: np.ndarray, seqs: np.ndarray, nonces: np.ndarray,
+                  out_blobs: np.ndarray, n: int, *, grid: int, block: int) -> None:
+    """Twin of the seal kernel: row t = nonce t || (LE64(conv) || LE64(seq)) xor keystream block 1 || tag."""
+    t = _threads(grid, block, n)
+    m = t.shape[0]
+    nonce = tuple(_row_words(nonces, 3, t, 0, 3))
+    otk = _chacha_block(kseq, np.uint32(0), nonce, m)  # type: ignore[arg-type]
+    ks = _chacha_block(kseq, np.uint32(1), nonce, m)  # type: ignore[arg-type]
+    conv, seq = conv_ids[t], seqs[t]
+    lo32, sh = np.uint64(0xFFFFFFFF), np.uint64(32)
+    ct = [(conv & lo32).astype(np.uint32) ^ ks[0], (conv >> sh).astype(np.uint32) ^ ks[1],
+          (seq & lo32).astype(np.uint32) ^ ks[2], (seq >> sh).astype(np.uint32) ^ ks[3]]
+    tag = _seq_tag(otk, ct)
+    base = np.uint32(SEQ_WORDS) * t
+    for w in range(3):
+        out_blobs[base + np.uint32(w)] = nonce[w]
+    for w in range(4):
+        out_blobs[base + np.uint32(SEQ_CT + w)] = ct[w]
+        out_blobs[base + np.uint32(SEQ_TAG + w)] = tag[w]

@@ -1,0 +1,46 @@
+bench/jobs:
+total 13
+drwxr-xr-x 1 HP 197121    0 Oct 11 19:31 .
+drwxr-xr-x 1 HP 197121    0 Oct 11 18:28 ..
+-rw-r--r-- 1 HP 197121  451 Oct 11 01:46 M00.json
+-rw-r--r-- 1 HP 197121  825 Oct 11 17:33 M03.json
+-rw-r--r-- 1 HP 197121 1020 Oct 11 18:28 M04.json
+-rw-r--r-- 1 HP 197121 1114 Oct 11 19:31 M05.json
+
+kernels:
+total 53
+drwxr-xr-x 1 HP 197121    0 Oct 11 19:23 .
+drwxr-xr-x 1 HP 197121    0 Oct 11 16:52 ..
+-rw-r--r-- 1 HP 197121 2036 Oct 11 19:23 aead_open.cu
+-rw-r--r-- 1 HP 197121 1522 Oct 11 19:23 aead_seal.cu
+-rw-r--r-- 1 HP 197121 1313 Oct 11 19:23 aead_seq.cuh
+-rw-r--r-- 1 HP 197121 4001 Oct 11 17:26 bitonic.cu
+-rw-r--r-- 1 HP 197121 1831 Oct 11 18:22 chacha20.cuh
+-rw-r--r-- 1 HP 197121 1827 Oct 11 18:22 chacha_tags.cu
+-rw-r--r-- 1 HP 197121 3211 Oct 11 18:28 common.cuh
+-rw-r--r-- 1 HP 197121 2424 Oct 11 19:23 poly1305.cu
+-rw-r--r-- 1 HP 197121 5554 Oct 11 19:23 poly1305.cuh
+-rw-r--r-- 1 HP 197121 1953 Oct 11 18:22 prf.cu
+-rw-r--r-- 1 HP 197121  432 Oct 11 01:46 vector_add.cu
+
+tests/cuda_shim:
+total 24
+drwxr-xr-x 1 HP 197121    0 Oct 11 19:31 .
+drwxr-xr-x 1 HP 197121    0 Oct 11 17:29 ..
+-rw-r--r-- 1 HP 197121 4200 Oct 11 19:31 aead_host.cpp
+-rw-r--r-- 1 HP 197121 1926 Oct 11 17:29 bitonic_host.cpp
+-rw-r--r-- 1 HP 197121 3857 Oct 11 18:26 chacha_host.cpp
+-rw-r--r-- 1 HP 197121 2323 Oct 11 17:29 cuda_shim.h
+
+tests/gpu:
+total 96
+drwxr-xr-x 1 HP 197121     0 Oct 11 19:32 .
+drwxr-xr-x 1 HP 197121     0 Oct 11 17:29 ..
+drwxr-xr-x 1 HP 197121     0 Oct 11 19:32 __pycache__
+-rw-r--r-- 1 HP 197121 20409 Oct 11 19:32 test_aead.py
+-rw-r--r-- 1 HP 197121  6936 Oct 11 19:32 test_aead_cpu_shim.py
+-rw-r--r-- 1 HP 197121 11069 Oct 11 17:27 test_bitonic.py
+-rw-r--r-- 1 HP 197121  3652 Oct 11 17:29 test_bitonic_cpu_shim.py
+-rw-r--r-- 1 HP 197121 17966 Oct 11 18:28 test_chacha.py
+-rw-r--r-- 1 HP 197121  6615 Oct 11 18:28 test_chacha_cpu_shim.py
+-rw-r--r-- 1 HP 197121 12199 Oct 11 19:32 test_restore.py
