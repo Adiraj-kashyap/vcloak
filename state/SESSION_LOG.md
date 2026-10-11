@@ -91,3 +91,29 @@
   (f) chacha_ref is a second, independent NumPy implementation; oracle/chacha_np.py stays as the cross-check.
 - Commit: 686954e
 - Next: M03 S1 ; human action: none
+
+## Session 5 — 2026-10-11 17:40 — M03 GPU bitonic kernel (prep) — owner:Aditya
+- Steps: S1→S5 written and checked locally; S6 packed (status after: BLOCKED_HUMAN, waiting for the GPU job)
+- Did: kernels/common.cuh (mask64, lex_gt3, xor_swap64/32, cmp_exchange), kernels/bitonic.cu (bitonic_pairs_global,
+  bitonic_shared, bitonic_shared_full), their NumPy twins in src/vcloak/gpu/sim.py.
+- Did: src/vcloak/gpu/kernels.py (launch_plan(n, T) as data, run_launch, gpu_bitonic_sort for CuPy or NumPy arrays),
+  scripts/check_oblivious.py (G3: data/public/unknown classification, self-test with 10 planted leaks).
+- Did: tests/gpu/test_bitonic.py (each test on NumPy and, marked `gpu`, on CuPy), tests/cuda_shim + 
+  tests/gpu/test_bitonic_cpu_shim.py (g++ compiles the real bitonic.cu and runs it on the CPU),
+  tests/unit/test_check_oblivious.py, bench/bitonic_smoke.py (CUDA-event timing, racecheck), bench/jobs/M03.json.
+- Evidence: runs/20261011-173514_M03_bitonic_prep (pytest 192 passed / 84 gpu-skipped; full suite 432 passed /
+  86 skipped; check_oblivious clean, planted branch exit 1, self-test 11/11; check_secrets and check_metrics PASS).
+- Checks: S1 helpers compile under g++ only (RawModule check is in the job); S2 global kernel alone at 2^10 = oracle
+  (twin and CPU stand-in); S3 every launch = the oracle's intermediate state; S4 twins = oracle at 2^6, 2^10, 2^16 x
+  seeds 1-3 + 4 adversarial inputs; S5 clean on kernels/, planted `if (hi[i] > hi[l])` flagged; S6 not run.
+- GPU job: 20261011-173759_M03 packed from d91bfd6 (1.30 MB, 66 files), full mode, 5 commands.
+- Metrics added: none (numpy backend; nothing timed)
+- Decisions: none
+- Issues: closed ISSUE-5 (pack allow-lists its bundle digest; the allow-list is left out of the bundle and of the
+  staleness check); opened ISSUE-6 (HUMAN ACTION: GPU JOB READY, M03)
+- Deviations from spec: see the Amendments note in ai/modules/M03_gpu_bitonic_kernel.md — guards on t/npairs and
+  base/n; twins take grid= and block=; np.lexsort is the reference at 2^max_log2n; racecheck lives in the bench
+  script; a CPU stand-in for nvcc was added; tests/conftest.py skipped all of tests/gpu/ by directory name (fixed).
+- Not verified: CUDA compilation, GPU execution, simulator parity on a device, racecheck, any timing.
+- Commit: d91bfd6 (code), closing commit below
+- Next: M03 ingest (S6, audit A1/A2/G5) ; human action: ISSUE-6 — upload the job, drop the results zip in gpujobs/inbox/

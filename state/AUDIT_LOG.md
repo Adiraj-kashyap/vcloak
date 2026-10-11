@@ -100,3 +100,34 @@ now imports it under try/except and reports IMPLEMENTED False without it). Not v
 runner has `cryptography` (ISSUE-3 covers its package set); without it the oracle silently uses its NumPy
 stand-in, visible only through crypto_hooks.backend_name(). `ruff` still reports the one pre-existing E501 in
 scripts/record_env.py (ruff.txt). The run manifest's git_sha is the HEAD at run creation, before this commit.
+
+## Audit M03 — 2026-10-11 — session 5 — result: PARTIAL (prep: local checks PASS; A1, A2, G5 and S1/S6 wait for GPU job 20261011-173759_M03; module not DONE)
+Evidence dir: runs/20261011-173514_M03_bitonic_prep (numpy backend, correctness only)
+
+| Check | Result | Evidence / note |
+|---|---|---|
+| A1 | PENDING (GPU) | Local half PASS: NumPy twins byte-equal to the oracle for n in {2^6, 2^10, 2^16} x {random seeds 1-3, all-equal, sorted, reverse, two-value}, 21/21, plus 24 small (n, T) cases x 3 seeds, the global kernel alone at 2^10, and every launch against the oracle's intermediate state (pytest.txt). The real bitonic.cu source, compiled by g++ and run on the CPU, is byte-equal to the twins, 37/37 (same file, test_bitonic_cpu_shim). No CUDA device has run the kernels yet: the 84 `gpu` tests are skipped locally and are the job's `pytest_bitonic` and `pytest_bitonic_max_log2n` commands |
+| A2 | PENDING (GPU) | By construction: test_no_element_is_written_by_two_threads passes 4/4 (each global launch, and each stage and the load/store of the shared kernels, partitions its elements into one pair per thread); barriers listed in audit_a2_a4.txt. `compute-sanitizer --tool racecheck` runs inside bench/bitonic_smoke.py on the runner and is recorded as a count or NOT_MEASURED with the reason |
+| A3 | PASS | check_oblivious.txt: 3 files, 0 findings, exit 0. check_oblivious_planted.txt: a planted `if (hi[i] > hi[l])` gives 1 BRANCH finding, exit 1. check_oblivious_selftest.txt: 10/10 planted leaks flagged on their own lines, clean copy clean |
+| A4 | PASS | audit_a2_a4.txt: launch_plan, clamp_tile and _global take n, T, k, j only; the driver reads `.shape`, `.dtype`, `.ndim`, `.flags` of the columns and never their contents; test_plan_covers_every_stage_once_in_order 72/72 |
+| G1 | PASS | pytest.txt: 192 passed, 84 skipped (all 84 are `gpu`-marked); pytest_all.txt: 432 passed, 86 skipped |
+| G2 | PASS | check_metrics.txt: 8 rows, 0 problems. This session adds no metric; the launch-plan counts in audit_a2_a4.txt are derived from n and T, not measured |
+| G2b | N/A (prep) | nothing was timed; the smoke script wrote NOT_MEASURED under numpy (not kept as a run) |
+| G3 | PASS | same evidence as A3. First run of this check in the project: vector_add.cu, common.cuh and bitonic.cu are clean |
+| G4 | PASS | check_secrets.txt before the pack; after the pack `check_secrets.py` still exits 0 (237 files), because pack now allow-lists its bundle digest |
+| G5 | PENDING (GPU) | see A1; local half over 3 sizes x 3 seeds x 4 adversarial inputs passes |
+| G6 | PASS | deliverables_ls.txt: common.cuh, bitonic.cu, kernels.py, check_oblivious.py, tests/gpu/test_bitonic.py, plus sim.py, bitonic_smoke.py, jobs/M03.json |
+| G7 | PASS | d91bfd6 carries [owner:Aditya]; checked again after the closing commit |
+| G8 | PASS | STATE: M03 BLOCKED_HUMAN at S6, sessions 1, next_unit M03, gpu_job.pending 20261011-173759_M03 |
+| G9 | PASS | SESSION_LOG session 5, this entry, ISSUE-5 closed, ISSUE-6 opened |
+| G10 | PASS | manifest validates; the module tests ran three times this session with the same outcome (pytest.txt, pytest_repeat.txt, and once more after the last edit) |
+Notes: what is and is not verified. Verified locally: the index arithmetic and mask logic of the kernels (twins vs
+oracle) and the C++ source itself (g++ at -std=c++14, fibers for threads, a real barrier for __syncthreads). Not
+verified: that nvrtc compiles the source with -std=c++17 and the `-I` include, that the generated code behaves the
+same, and anything about speed. The CPU stand-in runs a block's threads in a fixed round-robin order, so it cannot
+expose a race that depends on thread interleaving; the racecheck on the runner is the test for that.
+check_oblivious.py reads source text: it cannot see a branch the compiler introduces (M08 covers SASS and Nsight)
+and does not check data-dependent division latency. At n = 2^max_log2n the job compares the GPU with np.lexsort
+for all seven inputs and with the twin for one (see the Amendments note in the module file). `ruff` reports only
+the pre-existing E501 in scripts/record_env.py (ruff.txt). The run manifest's git_sha is the HEAD at run creation,
+before commit d91bfd6.

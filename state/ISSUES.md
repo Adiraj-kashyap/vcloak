@@ -46,7 +46,7 @@ IMPLEMENTED = True in vcloak.crypto.{chacha_ref,aead_ref} and run `python script
 golden files must come out identical, since the byte formats do not change.
 Resolved session 4: scripts/secrets_allowlist.json lists the golden files by file hash; IMPLEMENTED is True in both references and `make_golden.py --check` reports the three files identical.
 
-### ISSUE-5 [OPEN] Each GPU job's bundle_sha256 must be allow-listed for G4
+### ISSUE-5 [CLOSED d91bfd6] Each GPU job's bundle_sha256 must be allow-listed for G4
 BLOCKS: none   SEVERITY: low   OPENED: 2026-10-11 session 4
 `scripts/gpujob.py` writes a 64-hex `bundle_sha256` into job.json, result.json, pack logs and run manifests. It is
 a content hash, not the SHA-256 of job.zip, so `scripts/check_secrets.py` cannot verify it and reports it as a
@@ -55,3 +55,28 @@ G4 fail until its digest is allow-listed.
 Workaround (any session that packs a job): run `python scripts/check_secrets.py`, copy the `id=` of the finding, then
 `python scripts/check_secrets.py --allow <id> --reason "bundle_sha256 of GPU job <job id>"`.
 Proposed fix (M03 prep session, owner of scripts/gpujob.py): have `gpujob.py pack` add that allow-list entry itself.
+Resolved session 5: `gpujob.py pack` adds the digest to scripts/secrets_allowlist.json itself; that file is no longer bundled or part of the staleness check, so the write cannot invalidate the job (tests/unit/test_gpujob.py).
+
+### ISSUE-6 [OPEN] HUMAN ACTION REQUIRED — GPU JOB READY: M03 bitonic kernels (job 20261011-173759_M03)
+BLOCKS: M03   SEVERITY: high   OPENED: 2026-10-11 session 5
+Why: the laptop has no GPU and no nvcc. The bitonic kernels have only run as NumPy twins and through a g++ CPU
+stand-in; M03 needs one real run to compile them with CUDA, compare them byte for byte with the oracle and the
+simulator up to n = 2^24, run the race check and take the timing smoke (about 20 minutes on the runner).
+File to upload: D:\PJT\vcloak\gpujobs\out\20261011-173759_M03\job.zip
+Notebook:       D:\PJT\vcloak\colab\VCloak_GPU_Runner.ipynb
+Do this (Google Colab; needs a Google account, nothing to install):
+  1. Open https://colab.research.google.com -> File -> Upload notebook -> pick colab\VCloak_GPU_Runner.ipynb.
+  2. Runtime -> Change runtime type -> Hardware accelerator: T4 GPU -> Save.   (the step everyone forgets)
+  3. Run Cell 1. It must print a GPU name (e.g. Tesla T4). If it prints NO GPU, redo step 2.
+  4. Run Cell 2. When the file picker appears, choose gpujobs\out\20261011-173759_M03\job.zip.
+  5. Run Cell 3 and keep the tab open (about 20 minutes; the last command sorts 16 million records on the CPU too).
+  6. Run Cell 4. results_20261011-173759_M03.zip downloads.
+  7. Move that file into D:\PJT\vcloak\gpujobs\inbox\   (do not unzip or rename it).
+Or use Kaggle, as for the M00 probe: kaggle.com -> Create -> New Notebook -> File -> Import Notebook -> the same
+  .ipynb; Settings -> Accelerator -> GPU T4 x2; + Add Input -> Upload -> job.zip as a dataset; in Cell 2 set
+  KAGGLE_INPUT = "/kaggle/input/<your-dataset>/job.zip"; run all; download the results zip from the Output panel.
+Bring back only the results zip, even if a cell reports a failure: a failed run is still evidence and is fixed in
+  the next session. Do not commit or edit anything in the repo before the next session: a change to src/,
+  kernels/, tests/, bench/ or scripts/ makes the result stale and it will be rejected.
+Confirm by running: .venv\Scripts\python scripts\gpujob.py verify gpujobs\inbox\results_20261011-173759_M03.zip
+Then open a new session and type: continue

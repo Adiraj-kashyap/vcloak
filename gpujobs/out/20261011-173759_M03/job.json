@@ -1,0 +1,43 @@
+{
+  "job_id": "20261011-173759_M03",
+  "module": "M03",
+  "step": "S6",
+  "title": "M03 bitonic kernels: compile, bit-exact vs oracle and simulator, obliviousness check, racecheck, timing smoke",
+  "quick": false,
+  "params": {},
+  "seed": 3,
+  "git_sha": "d91bfd6431908d44f2186d77e2ea820ade7e61ee",
+  "dirty": false,
+  "packed_at": "2026-10-11T12:07:59+00:00",
+  "bundle_sha256": "a2daf421fcf8cfcf0297c47713eb3d4c1defa33c5b3ab050a83909d6fa250101",
+  "n_files": 66,
+  "commands": [
+    {
+      "name": "nvidia_smi",
+      "cmd": "nvidia-smi",
+      "timeout": 120
+    },
+    {
+      "name": "check_oblivious",
+      "cmd": "python scripts/check_oblivious.py kernels/",
+      "timeout": 300
+    },
+    {
+      "name": "pytest_bitonic",
+      "cmd": "python -m pytest -p no:cacheprovider -rs -m \"not slow\" tests/gpu tests/unit/test_check_oblivious.py",
+      "timeout": 1800
+    },
+    {
+      "name": "bitonic_smoke",
+      "cmd": "python bench/bitonic_smoke.py --seed 3 --out runs",
+      "timeout": 1800,
+      "stop_on_fail": false
+    },
+    {
+      "name": "pytest_bitonic_max_log2n",
+      "cmd": "python -m pytest -p no:cacheprovider -rs -m slow tests/gpu/test_bitonic.py",
+      "timeout": 3600,
+      "stop_on_fail": false
+    }
+  ]
+}
