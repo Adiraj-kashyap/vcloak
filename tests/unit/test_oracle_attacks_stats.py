@@ -6,8 +6,8 @@ import math
 import numpy as np
 import pytest
 from scipy import stats as sps
-from testkeys import TEST_K_MASTER
 
+from testkeys import TEST_K_MASTER
 from vcloak.oracle.attacks import order_recovery_attack
 from vcloak.oracle.reference import RefKeys, epoch_permutation_ref, reshuffle_permutation_ref
 from vcloak.oracle.stats import (
@@ -143,7 +143,8 @@ def test_chi2_correction_factor_and_table_validation() -> None:
 def test_kendall_sigma_and_band() -> None:
     assert kendall_sigma(2) == pytest.approx(1.0)
     assert kendall_sigma(65536) == pytest.approx(math.sqrt(2 * (2 * 65536 + 5) / (9 * 65536 * 65535)))
-    assert kendall_tau(np.arange(100)) == pytest.approx(1.0) and kendall_tau(np.arange(100)[::-1]) == pytest.approx(-1.0)
+    assert kendall_tau(np.arange(100)) == pytest.approx(1.0)
+    assert kendall_tau(np.arange(100)[::-1]) == pytest.approx(-1.0)
     n, epochs = 1024, 60
     band = kendall_band((kendall_tau(epoch_permutation_ref(KEYS.k_tag, e, n)) for e in range(epochs)), n)
     assert band["epochs"] == epochs and band["band_3sigma"] == pytest.approx(3 * kendall_sigma(n))

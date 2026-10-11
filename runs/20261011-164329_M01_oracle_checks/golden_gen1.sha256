@@ -1,0 +1,3 @@
+3da2b1dbf1cf26824547fe83ccaf995b9c7c007b62b0feef8cadad9a33e994df *tests/golden/oracle_perm_n1024.json
+0e245e2e94a1b222de1b405c43d27ab900f9caba4639935fe8fc016c2a46ff5d *tests/golden/oracle_perm_n64.json
+cc8bfa6bdc0366aba4a8e35748aba2d719bbf14e83998316daaefdfd17b3efcc *tests/golden/oracle_perm_n65536.json

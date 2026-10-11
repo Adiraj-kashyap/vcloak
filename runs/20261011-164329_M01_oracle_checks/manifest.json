@@ -22,8 +22,25 @@
     "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
     "ts": 1791717209.354163
   },
-  "telemetry_end": null,
-  "outputs": [],
-  "status": "NOT_MEASURED",
-  "notes": "run started; not finalised"
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791717915.7428956
+  },
+  "outputs": [
+    "a4_grep.txt",
+    "audit_a1_a2.txt",
+    "check_metrics.txt",
+    "deliverables_ls.txt",
+    "golden_gen1.sha256",
+    "golden_gen2.sha256",
+    "pytest.txt",
+    "pytest_all.txt",
+    "pytest_as_runner.txt",
+    "ruff.txt",
+    "s5_golden.txt",
+    "test_counts.txt"
+  ],
+  "status": "OK",
+  "notes": "M01 S1-S5 checks, numpy backend, correctness only (no metrics). pytest.txt = 148 oracle tests; pytest_all.txt = full local suite (181); s5_golden.txt = two generations hash-identical + --check. Manifest git_sha is HEAD when the run dir was created (before the M01 commits)."
 }

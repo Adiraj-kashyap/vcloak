@@ -1,0 +1,13 @@
+scripts/make_golden.py
+src/vcloak/oracle/attacks.py
+src/vcloak/oracle/chacha_np.py
+src/vcloak/oracle/reference.py
+src/vcloak/oracle/stats.py
+tests/golden/oracle_perm_n1024.json
+tests/golden/oracle_perm_n64.json
+tests/golden/oracle_perm_n65536.json
+tests/unit/test_oracle_attacks_stats.py
+tests/unit/test_oracle_bitonic.py
+tests/unit/test_oracle_chacha.py
+tests/unit/test_oracle_golden.py
+tests/unit/test_oracle_paths.py

@@ -29,14 +29,14 @@ def test_pairs_equal_schedule(n: int) -> None:
     pairs = list(bitonic_pairs(n))
     assert [(k, j) for k, j, *_ in pairs] == list(bitonic_stages(n))
     assert len(sched) == len(pairs) == (n.bit_length() - 1) * n.bit_length() // 2
-    for (lo, hi, asc), (_, _, i, l, a) in zip(sched, pairs, strict=True):
-        assert np.array_equal(lo, i) and np.array_equal(hi, l) and np.array_equal(asc, a)
+    for (lo, hi, asc), (_, _, i, ell, a) in zip(sched, pairs, strict=True):
+        assert np.array_equal(lo, i) and np.array_equal(hi, ell) and np.array_equal(asc, a)
 
 
 @pytest.mark.parametrize("n", SIZES)
 def test_each_stage_touches_every_element_once(n: int) -> None:
-    for _, _, i, l, _ in bitonic_pairs(n):  # ADR-005: no two threads write the same element
-        assert np.array_equal(np.sort(np.concatenate([i, l])), np.arange(n))
+    for _, _, i, ell, _ in bitonic_pairs(n):  # ADR-005: no two threads write the same element
+        assert np.array_equal(np.sort(np.concatenate([i, ell])), np.arange(n))
 
 
 @pytest.mark.parametrize("kind", KINDS)

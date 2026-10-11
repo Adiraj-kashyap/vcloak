@@ -3,8 +3,8 @@ from __future__ import annotations
 
 import numpy as np
 import pytest
-from testkeys import TEST_K_MASTER
 
+from testkeys import TEST_K_MASTER
 from vcloak.oracle import crypto_hooks
 from vcloak.oracle.reference import (
     RefKeys,

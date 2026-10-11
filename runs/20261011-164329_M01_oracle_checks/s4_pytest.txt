@@ -1,5 +1,0 @@
-..........                                                               [100%]
-============================= slowest 2 durations =============================
-3.88s call     tests/unit/test_oracle_attacks_stats.py::test_chi2_accepts_oracle_and_ideal_sampler_and_rejects_bias
-0.39s call     tests/unit/test_oracle_attacks_stats.py::test_kendall_sigma_and_band
-10 passed in 5.21s

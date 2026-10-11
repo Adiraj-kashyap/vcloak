@@ -8,8 +8,8 @@ from pathlib import Path
 
 import numpy as np
 import pytest
-from testkeys import TEST_K_MASTER
 
+from testkeys import TEST_K_MASTER
 from vcloak.crypto import aead_ref, chacha_ref
 from vcloak.oracle import chacha_np, crypto_hooks
 

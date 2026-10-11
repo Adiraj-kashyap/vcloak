@@ -1,0 +1,5 @@
+bitonic 90
+chacha 18
+paths 22
+attacks_stats 10
+golden 8

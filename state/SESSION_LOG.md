@@ -36,3 +36,31 @@
   (2 test bugs, fixed here); (d) ncu_counters_permitted left unknown — not probed in M00.
 - Commit: 5cff14d
 - Next: M01 S1 ; human action: none
+
+## Session 3 — 2026-10-11 16:55 — M01 Oracle port & golden vectors — owner:Abhishek
+- Steps: S1→S5 (status after: DONE)
+- Did: src/vcloak/oracle/reference.py — bitonic_stages/schedule/pairs/sort, epoch/reshuffle permutation refs,
+  oblivious_compact_ref, write_epoch_ref, reshuffle_ref, read_window_ref, dummy_row_ref (ARCHITECTURE §5 formats).
+- Did: oracle/chacha_np.py (NumPy ChaCha20 + Poly1305 + AEAD), oracle/crypto_hooks.py (the one door to server
+  crypto), src/vcloak/crypto/{chacha_ref,aead_ref}.py stubs with IMPLEMENTED = False for M02 to fill.
+- Did: oracle/attacks.py (order_recovery_attack with turn-order accuracy and f), oracle/stats.py (corrected χ²,
+  ideal-sampler calibration, Kendall band), scripts/make_golden.py, tests/golden/oracle_perm_n{64,1024,65536}.json.
+- Evidence: runs/20261011-164329_M01_oracle_checks (pytest 148/148 oracle: bitonic 90, chacha 18, paths 22,
+  attacks_stats 10, golden 8; full suite 181 local and 181 as runner; golden two generations hash-identical).
+- Checks: S1 lexsort n=2..2^12; S2 RFC 8439 §2.3.2 block, §2.5.2 Poly1305, §2.8.2 AEAD + equality with
+  `cryptography`; S3 20-conversation round trip with and without re-shuffle; S4 conventional layout τ = 1.0 and
+  turn accuracy 1.0; S5 hash compare.
+- Metrics added: none (correctness only; numpy backend)
+- Decisions: none
+- Issues: opened ISSUE-4 (M02 secrets scanner must allow-list tests/golden)
+- Deviations from spec: (a) extra files oracle/crypto_hooks.py, tests/testkeys.py (the fixed test key lives under
+  tests/ and make_golden imports it from there), .gitattributes (golden JSON stored byte-exact despite autocrlf),
+  and `tests` added to pytest pythonpath; (b) the crypto stubs are created now, inside M02's package, as S2 asks;
+  (c) the stand-in also implements Poly1305/AEAD in pure Python so seq_enc follows §5 without HKDF/HMAC/AES and
+  the oracle imports without `cryptography`; a single block takes an integer path (parity-tested) for speed;
+  (d) golden files also hold the re-shuffle permutations and tag hashes, and the 65536 file is 2.1 MB;
+  (e) Submission/StoredRow/RefKeys are defined in the oracle until M06 owns them; order_recovery_attack takes
+  arrays (wins, truth, conv) instead of the seed's Row list, and is checked against the seed's formulation;
+  (f) the seed's traffic simulator and build_database were not ported (they belong to eval/, M14).
+- Commit: PENDING
+- Next: M02 S1 ; human action: none

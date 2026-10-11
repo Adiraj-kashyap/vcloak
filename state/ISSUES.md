@@ -35,3 +35,12 @@ requirements-gpu.txt names cupy-cuda12x, but the Kaggle T4 runner already ships 
 Risk: a Colab session may ship a different CuPy/CUDA pair, and the file no longer describes what actually ran.
 Proposed fix (M03 prep): make the requirement runtime-agnostic or record the installed wheel name in result.json;
 keep comparing `cupy`/`cuda` in each manifest before mixing timings from different sessions.
+
+### ISSUE-4 [OPEN] M02 secrets scanner must allow-list the golden vectors
+BLOCKS: none   SEVERITY: low   OPENED: 2026-10-11 session 3
+tests/golden/oracle_perm_n*.json hold base64 permutations and sha256 hex digests. They contain no key material
+(tests/unit/test_oracle_golden.py asserts this), but `scripts/check_secrets.py` (M02 S6) is specified to flag any
+32-byte hex/base64 run in tracked files, so it will flag every one of them.
+Proposed fix (M02 S6): allow-list tests/golden/*.json by file hash, next to the RFC vectors. Also in M02 S7: set
+IMPLEMENTED = True in vcloak.crypto.{chacha_ref,aead_ref} and run `python scripts/make_golden.py --check`; the
+golden files must come out identical, since the byte formats do not change.
