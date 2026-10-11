@@ -212,5 +212,5 @@
   check_oblivious; `cryptography` added to requirements-gpu.txt; no bench.
 - Not verified: CUDA compilation, GPU execution, simulator parity on a device, 2^max_log2n, that the runner has or
   can install `cryptography`, any timing.
-- Commit: 69a2cc3 (code), pending (job, logs, state)
+- Commit: 69a2cc3 (code), 24b10da (job, logs, state)
 - Next: M05 ingest (A1, A2, A4, G5) ; human action: ISSUE-9 — upload the job, drop the results zip in gpujobs/inbox/
