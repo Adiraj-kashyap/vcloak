@@ -144,3 +144,25 @@
   size; any performance claim (M07).
 - Commit: 121dc0b
 - Next: M04 S1 ; human action: none
+
+## Session 7 — 2026-10-11 18:32 — M04 GPU ChaCha20 tags/PRF (prep) — owner:Aditya
+- Steps: S1→S4, local half of each (status after: BLOCKED_HUMAN, GPU JOB READY)
+- Did: kernels/chacha20.cuh (quarter round, 20-round block), kernels/chacha_tags.cu (chacha_blocks, chacha_tags),
+  kernels/prf.cu (derive_subkeys, bucket_prf), mod_public in common.cuh; NumPy twins in gpu/sim.py; wrappers in
+  gpu/kernels.py that take keys as device buffers only.
+- Did: tests/gpu/test_chacha.py (numpy now, cupy on the runner), tests/cuda_shim/chacha_host.cpp +
+  test_chacha_cpu_shim.py (the real .cu files compiled with g++), bench/chacha_smoke.py, bench/jobs/M04.json.
+- Evidence: runs/20261011-182840_M04_chacha_prep (pytest 221 passed / 146 gpu-skipped; full suite 653 / 232;
+  check_oblivious 0 findings; check_secrets PASS; check_metrics 11 rows PASS).
+- Checks: S1 RFC 8439 §2.3.2 block (twin and C source); S2 tags = tags_for_epoch / reshuffle_tags at 64, 2^10, 2^16;
+  S3 subkeys and buckets = M02; S4 not run (the bench reports NOT_MEASURED under numpy).
+- GPU job: 20261011-183051_M04 packed from 680c28d (1.32 MB, 74 files), full mode, 6 commands.
+- Metrics added: none (numpy backend; nothing timed)
+- Decisions: none
+- Issues: opened ISSUE-8 (HUMAN ACTION: GPU JOB READY, M04); ISSUE-7 updated (fix applied in the new bench only)
+- Deviations from spec: see the Amendments note in ai/modules/M04_gpu_chacha_tags.md — nonce split u64 + u32;
+  a general chacha_blocks kernel for S1; guards on the thread id; Barrett reduction instead of `%` in bucket_prf;
+  n_buckets up to 2^32 - 1 and tag counts in multiples of 4; a CPU stand-in for nvcc.
+- Not verified: CUDA compilation, GPU execution, simulator parity on a device, 2^max_log2n, any timing.
+- Commit: 680c28d (code), PENDING (job, logs, state)
+- Next: M04 ingest (S4 gates, audit A1/A2/G5) ; human action: ISSUE-8 — upload the job, drop the results zip in gpujobs/inbox/

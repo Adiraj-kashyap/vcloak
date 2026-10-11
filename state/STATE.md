@@ -3,13 +3,13 @@
 ```yaml
 project: v-cloak
 kit_version: 1.0
-last_session: 6
+last_session: 7
 last_session_date: 2026-10-11
 current_module: M04
 current_step: S4
-status: IN_PROGRESS        # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
+status: BLOCKED_HUMAN      # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
 next_unit: M04
-last_checkpoint: 2026-10-11 M03 DONE (GPU job 20261011-173759_M03 ingested, audit PASS, session 6)
+last_checkpoint: 2026-10-11 M04 prep done, GPU JOB READY 20261011-183051_M04 (ISSUE-8, session 7)
 quick_mode_default: false
 local:                      # the laptop (no GPU) — filled by M00 S7
   os: "Windows-11-10.0.26200-SP0"
@@ -33,7 +33,7 @@ runner:                     # the free remote GPU — filled from the ingested M
   peak_bw_gbs: 320.064
   last_session_id: "20261011-122243"
 gpu_job:                    # set by the gpu-job skill
-  pending: null   # job id awaiting the human's upload, or null
+  pending: 20261011-183051_M04   # job id awaiting the human's upload, or null
   last_ingested: 20261011-173759_M03
 ```
 
@@ -45,7 +45,7 @@ gpu_job:                    # set by the gpu-job skill
 | M01 | Oracle port & golden vectors | Abhishek | M00 | no | DONE | S5 | 1 |
 | M02 | CPU crypto & key lifecycle | Abhishek | M01 | no | DONE | S7 | 1 |
 | M03 | GPU bitonic kernel | Aditya | M01 | no | DONE | S6 | 2 |
-| M04 | GPU ChaCha20 tags/PRF | Aditya | M02, M03 | no | NOT_STARTED | S1 | 0 |
+| M04 | GPU ChaCha20 tags/PRF | Aditya | M02, M03 | no | BLOCKED_HUMAN | S4 | 1 |
 | M05 | GPU AEAD-open, restore, compaction | Aditya | M04 | no | NOT_STARTED | S1 | 0 |
 | M06 | GPU engine | Aditya | M05 | no | NOT_STARTED | S1 | 0 |
 | M07 | GPU performance metrics (E4) | Aditya | M06 | no | NOT_STARTED | S1 | 0 |

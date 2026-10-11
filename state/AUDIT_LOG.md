@@ -163,3 +163,28 @@ Notes: S6 gates are in runs/20261011-181052_M03_ingest_audit/gates.txt, computed
   kept as OK. But the sampler caught 1 sample, taken before the ramp, so clock stability *during* the timed
   section is not shown by telemetry, only suggested by the CV (ISSUE-7, to fix before M07).
 - The smoke time is a sanity value for one n on a shared T4. It is not an M07 result and is not to be quoted as one.
+
+## Audit M04 — 2026-10-11 — session 7 — result: PARTIAL (prep: local checks PASS; A1, A2, G5 on the GPU and S4 wait for GPU job 20261011-183051_M04; module not DONE)
+| Item | Result | Evidence |
+|---|---|---|
+| A1 RFC vectors pass on the GPU | PENDING | ISSUE-8. Local half PASS: RFC 8439 §2.3.2 and §2.4.2 through the NumPy twin (test_rfc8439_2_3_2_block_from_a_one_thread_kernel[numpy], test_rfc8439_2_4_2_keystream[numpy]) and §2.3.2 through the real chacha_tags.cu compiled with g++ (test_cu_block_is_rfc8439_2_3_2): runs/20261011-182840_M04_chacha_prep/pytest.txt |
+| A2 bit-exact tags/subkeys/buckets vs M02 across sizes and seeds | PENDING | ISSUE-8. Local half PASS: twins = chacha_ref for tags (epoch and re-shuffle) at 2^6, 2^10, 2^16 x seeds 1-3 x 4 epochs, subkeys for 6 master keys, buckets at 2^6, 2^10, 2^16 x seeds 1-3 x 5 input kinds and 9 moduli; the C source = chacha_ref = twin (65 shim tests): runs/20261011-182840_M04_chacha_prep/pytest.txt (221 passed, 146 gpu-skipped) |
+| A3 check_oblivious.py is clean | PASS | runs/20261011-182840_M04_chacha_prep/check_oblivious.txt (6 files, 0 findings, exit 0); a leak planted in each of chacha_tags.cu, prf.cu, chacha20.cuh and common.cuh is flagged at its line (test_check_oblivious_flags_a_leak_planted_in_the_chacha_kernels, runs/20261011-182840_M04_chacha_prep/pytest.txt); self-test 11/11 (runs/20261011-182840_M04_chacha_prep/check_oblivious_selftest.txt) |
+| A4 no key passed by value from the host in production wrappers | PASS | runs/20261011-182840_M04_chacha_prep/audit_a4.txt: every kernel takes its key as `const u32*`; every wrapper checks a uint32[8] buffer and raises TypeError on bytes/bytearray/memoryview (test_wrappers_reject_key_bytes); the tests upload TEST keys only |
+| G1 | PASS (local) | runs/20261011-182840_M04_chacha_prep/pytest.txt (221 passed, 146 skipped: gpu); full suite runs/20261011-182840_M04_chacha_prep/pytest_all.txt (653 passed, 232 skipped) |
+| G2 | PASS | runs/20261011-182840_M04_chacha_prep/check_metrics.txt (11 rows, 0 problems); no number recorded this session |
+| G2b | PASS | no metric added; bench/chacha_smoke.py under numpy reports NOT_MEASURED for all three metrics (runs/20261011-182840_M04_chacha_prep/chacha_smoke_numpy.txt) |
+| G3 | PASS | as A3 |
+| G4 | PASS | runs/20261011-182840_M04_chacha_prep/check_secrets.txt (0 key-like runs); re-run after the pack: 287 files, PASS (the bundle digest is allow-listed by pack) |
+| G5 | PENDING | ISSUE-8: the GPU side of test_chacha.py (146 tests, incl. test_gpu_equals_simulator at 3 sizes x 3 seeds and test_max_log2n) runs in the job |
+| G6 | PASS | runs/20261011-182840_M04_chacha_prep/deliverables_ls.txt (chacha20.cuh, chacha_tags.cu, prf.cu, gpu/kernels.py, tests/gpu/test_chacha.py) |
+| G7 | PASS | checked after commit (clean tree, [owner:Aditya]) |
+| G8 | PASS | STATE: M04 BLOCKED_HUMAN at S4, gpu_job.pending 20261011-183051_M04, sessions 1 |
+| G9 | PASS | SESSION_LOG session 7, this entry, ISSUE-8 opened, ISSUE-7 updated |
+| G10 | PASS | manifest validates (new_run.py --validate); the module tests re-run in a fresh process give the same result (runs/20261011-182840_M04_chacha_prep/pytest_repeat.txt: 221 passed, 146 skipped) |
+Notes: nothing on this page ran on a GPU. The twins and the g++ build show that the kernel logic is right; they do
+not show that nvrtc compiles the files, that the device produces the same bytes, or any speed. mod_public replaces
+`%` on the PRF output with a Barrett reduction on a public modulus; whether nvcc emits branch-free code for it and
+for the rotates is an M08 (SASS) question, not answered here. ruff reports 1 E501 in scripts/record_env.py, which
+predates this session (runs/20261011-182840_M04_chacha_prep/ruff.txt); the files of this session are clean. The run manifest has dirty:true because
+the run was taken before the commit; the code it tested is commit 680c28d.

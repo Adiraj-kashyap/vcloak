@@ -94,3 +94,32 @@ Cause: `telemetry.Sampler` polls slower than the timed section lasts (30 sorts a
 start snapshot is taken before the warm-up.
 Proposed fix (M07 prep, or the first module that reports timings): take a snapshot after the warm-up and one
 after the last timed run, write both to summary.json, and apply the 15% gate to that pair in either direction.
+Update session 7: the proposed fix is in bench/chacha_smoke.py (snapshots after the warm-up and after the last timed
+run, 15% gate in either direction, both written to summary.json). Unverified until GPU job 20261011-183051_M04 is
+ingested; bench/bitonic_smoke.py and the M07 sweeps still use the old scheme, so the issue stays open.
+
+### ISSUE-8 [OPEN] HUMAN ACTION REQUIRED — GPU JOB READY: M04 ChaCha20 kernels (job 20261011-183051_M04)
+BLOCKS: M04   SEVERITY: high   OPENED: 2026-10-11 session 7
+Why: the laptop has no GPU and no nvcc. The ChaCha20 kernels (tags, subkeys, bucket PRF) have only run as NumPy
+twins and through a g++ CPU stand-in; M04 needs one real run to compile them with CUDA, check the RFC 8439 vector,
+compare them byte for byte with the M02 reference and the simulator up to n = 2^24, and take the throughput smoke.
+The time on the runner has not been measured; expect roughly as long as the M03 job (about 20 minutes).
+File to upload: D:\PJT\vcloak\gpujobs\out\20261011-183051_M04\job.zip
+Notebook:       D:\PJT\vcloak\colab\VCloak_GPU_Runner.ipynb
+Do this (Kaggle, as for the M00 and M03 jobs):
+  1. kaggle.com -> Create -> New Notebook -> File -> Import Notebook -> pick colab\VCloak_GPU_Runner.ipynb.
+  2. Settings -> Accelerator -> GPU T4 x2.   (the step everyone forgets)
+  3. + Add Input -> Upload -> gpujobs\out\20261011-183051_M04\job.zip as a dataset.
+  4. In Cell 2 set KAGGLE_INPUT = "/kaggle/input/<your-dataset>/job.zip".
+  5. Run Cell 1. It must print a GPU name (e.g. Tesla T4). If it prints NO GPU, redo step 2.
+  6. Run the remaining cells and keep the tab open until the last one finishes.
+  7. Download results_20261011-183051_M04.zip from the Output panel.
+  8. Move that file into D:\PJT\vcloak\gpujobs\inbox\   (do not unzip or rename it).
+Or use Google Colab: colab.research.google.com -> File -> Upload notebook -> the same .ipynb; Runtime -> Change
+  runtime type -> T4 GPU -> Save; run Cell 1 (GPU name), Cell 2 (upload job.zip), Cell 3 (keep the tab open),
+  Cell 4 (downloads the results zip).
+Bring back only the results zip, even if a cell reports a failure: a failed run is still evidence and is fixed in
+  the next session. Do not commit or edit anything in the repo before the next session: a change to src/,
+  kernels/, tests/, bench/ or scripts/ makes the result stale and it will be rejected.
+Confirm by running: .venv\Scripts\python scripts\gpujob.py verify gpujobs\inbox\results_20261011-183051_M04.zip
+Then open a new session and type: continue

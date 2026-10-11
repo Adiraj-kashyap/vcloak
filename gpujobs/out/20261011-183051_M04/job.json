@@ -1,0 +1,49 @@
+{
+  "job_id": "20261011-183051_M04",
+  "module": "M04",
+  "step": "S4",
+  "title": "M04 ChaCha20 kernels: compile, RFC 8439 vectors, bit-exact tags/subkeys/buckets vs M02 and simulator, obliviousness check, throughput smoke",
+  "quick": false,
+  "params": {},
+  "seed": 4,
+  "git_sha": "680c28d484ab48fff76122c7c2d676a4dd82a00b",
+  "dirty": false,
+  "packed_at": "2026-10-11T13:00:51+00:00",
+  "bundle_sha256": "1d9a2d8029bf294261bde1f5fa79fd81acaea1f35e620c29290133560dda5ba2",
+  "n_files": 74,
+  "commands": [
+    {
+      "name": "nvidia_smi",
+      "cmd": "nvidia-smi",
+      "timeout": 120
+    },
+    {
+      "name": "check_oblivious",
+      "cmd": "python scripts/check_oblivious.py kernels/",
+      "timeout": 300
+    },
+    {
+      "name": "pytest_chacha",
+      "cmd": "python -m pytest -p no:cacheprovider -rs -v -m \"not slow\" tests/gpu/test_chacha.py",
+      "timeout": 1800
+    },
+    {
+      "name": "pytest_bitonic_regression",
+      "cmd": "python -m pytest -p no:cacheprovider -rs -q -m \"not slow\" tests/gpu/test_bitonic.py",
+      "timeout": 1800,
+      "stop_on_fail": false
+    },
+    {
+      "name": "chacha_smoke",
+      "cmd": "python bench/chacha_smoke.py --seed 4 --out runs",
+      "timeout": 1800,
+      "stop_on_fail": false
+    },
+    {
+      "name": "pytest_chacha_max_log2n",
+      "cmd": "python -m pytest -p no:cacheprovider -rs -v -m slow tests/gpu/test_chacha.py",
+      "timeout": 3600,
+      "stop_on_fail": false
+    }
+  ]
+}
