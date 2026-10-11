@@ -115,5 +115,5 @@
   base/n; twins take grid= and block=; np.lexsort is the reference at 2^max_log2n; racecheck lives in the bench
   script; a CPU stand-in for nvcc was added; tests/conftest.py skipped all of tests/gpu/ by directory name (fixed).
 - Not verified: CUDA compilation, GPU execution, simulator parity on a device, racecheck, any timing.
-- Commit: d91bfd6 (code), closing commit below
+- Commit: d91bfd6 (code), 32b46ae (job, logs, state)
 - Next: M03 ingest (S6, audit A1/A2/G5) ; human action: ISSUE-6 — upload the job, drop the results zip in gpujobs/inbox/
