@@ -1,0 +1,29 @@
+{
+  "run_id": "20261011-164329_M01_oracle_checks",
+  "module": "M01",
+  "step": "S1",
+  "owner": "Abhishek",
+  "git_sha": "29f58f164ab9f2a0e92d0123b0f73d25f3544cd0",
+  "dirty": true,
+  "command": "python -m pytest -q tests/unit/test_oracle_*.py; python scripts/make_golden.py --check",
+  "seed": 0,
+  "quick": false,
+  "params": {},
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261011-164329",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U"
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791717209.354163
+  },
+  "telemetry_end": null,
+  "outputs": [],
+  "status": "NOT_MEASURED",
+  "notes": "run started; not finalised"
+}
