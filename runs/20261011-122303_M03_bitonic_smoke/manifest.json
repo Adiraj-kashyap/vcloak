@@ -1,0 +1,77 @@
+{
+  "run_id": "20261011-122303_M03_bitonic_smoke",
+  "module": "M03",
+  "step": "S6",
+  "owner": "Aditya",
+  "git_sha": "d91bfd6431908d44f2186d77e2ea820ade7e61ee",
+  "dirty": false,
+  "command": "python bench/bitonic_smoke.py --seed 3 --out runs",
+  "seed": 3,
+  "quick": false,
+  "params": {
+    "n": 65536,
+    "T": 256,
+    "warmup": 10,
+    "runs": 30,
+    "racecheck_n": 4096
+  },
+  "env": {
+    "os": "Linux-6.6.122+-x86_64-with-glibc2.39",
+    "python": "3.13.15",
+    "backend": "cupy",
+    "runner": "kaggle",
+    "session_id": "20261011-122243",
+    "gpu": "Tesla T4",
+    "cc": "7.5",
+    "cuda": "13000",
+    "cupy": "14.0.1",
+    "driver": "580.82.07"
+  },
+  "telemetry_start": {
+    "available": true,
+    "gpu": "Tesla T4",
+    "driver": "580.82.07",
+    "clocks": "unlocked",
+    "ts": 1791721384.2676687,
+    "sm_clock_mhz": 900,
+    "mem_clock_mhz": 5000,
+    "temperature_c": 56,
+    "power_w": 29.477,
+    "power_limit_w": 70.0,
+    "util_gpu_pct": 6,
+    "util_mem_pct": 0,
+    "throttle_reasons": 0,
+    "pstate": 0,
+    "mem_used_mb": 654.1875
+  },
+  "telemetry_end": {
+    "available": true,
+    "gpu": "Tesla T4",
+    "driver": "580.82.07",
+    "clocks": "unlocked",
+    "ts": 1791721386.520118,
+    "sm_clock_mhz": 1590,
+    "mem_clock_mhz": 5000,
+    "temperature_c": 57,
+    "power_w": 39.418,
+    "power_limit_w": 70.0,
+    "util_gpu_pct": 34,
+    "util_mem_pct": 0,
+    "throttle_reasons": 0,
+    "pstate": 0,
+    "mem_used_mb": 658.1875
+  },
+  "outputs": [
+    "racecheck.txt",
+    "raw.csv",
+    "summary.json",
+    "telemetry.csv"
+  ],
+  "status": "OK",
+  "notes": "",
+  "gpu_job": {
+    "job_id": "20261011-173759_M03",
+    "bundle_sha256": "a2daf421fcf8cfcf0297c47713eb3d4c1defa33c5b3ab050a83909d6fa250101",
+    "packed_from_git_sha": "d91bfd6431908d44f2186d77e2ea820ade7e61ee"
+  }
+}

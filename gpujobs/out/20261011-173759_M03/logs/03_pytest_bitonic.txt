@@ -1,0 +1,20 @@
+============================= test session starts ==============================
+platform linux -- Python 3.13.15, pytest-8.4.2, pluggy-1.6.0
+rootdir: /content/vcloak_job
+configfile: pyproject.toml
+plugins: langsmith-0.14.2, typeguard-4.6.0, anyio-4.15.1, platformdirs-4.12.2
+collected 263 items / 7 deselected / 256 selected
+
+tests/gpu/test_bitonic.py .............................................. [ 17%]
+........................................................................ [ 46%]
+........................................................................ [ 74%]
+......................                                                   [ 82%]
+tests/gpu/test_bitonic_cpu_shim.py sssssssssssssssssssssssssssssssssssss [ 97%]
+                                                                         [ 97%]
+tests/unit/test_check_oblivious.py .......                               [100%]
+
+=========================== short test summary info ============================
+SKIPPED [35] tests/gpu/test_bitonic_cpu_shim.py:50: needs Windows fibers and g++ (the stand-in for nvcc on the laptop)
+SKIPPED [1] tests/gpu/test_bitonic_cpu_shim.py:59: needs Windows fibers and g++ (the stand-in for nvcc on the laptop)
+SKIPPED [1] tests/gpu/test_bitonic_cpu_shim.py:67: needs Windows fibers and g++ (the stand-in for nvcc on the laptop)
+================ 219 passed, 37 skipped, 7 deselected in 15.75s ================

@@ -117,3 +117,30 @@
 - Not verified: CUDA compilation, GPU execution, simulator parity on a device, racecheck, any timing.
 - Commit: d91bfd6 (code), 32b46ae (job, logs, state)
 - Next: M03 ingest (S6, audit A1/A2/G5) ; human action: ISSUE-6 — upload the job, drop the results zip in gpujobs/inbox/
+
+- GPU-JOB 20261011-173759_M03 ingested 2026-10-11 18:10: runner kaggle, gpu Tesla T4, session 20261011-122243, overall exit 0, runs 20261011-122303_M03_bitonic_smoke, 3 metrics indexed.
+
+## Session 6 — 2026-10-11 18:11 — M03 GPU bitonic kernel (ingest) — owner:Aditya
+- Steps: S6 (ingest and gates); S1's RawModule check closed by the same job (status after: DONE)
+- Did: verified and ingested results_20261011-173759_M03.zip (job id, bundle sha and git sha d91bfd6 match the pack);
+  5/5 commands exit 0. No code changed this session.
+- Did: applied the S6 gates from the ingested files (gates.txt), re-ran the local checks, captured evidence.
+- Evidence: runs/20261011-122303_M03_bitonic_smoke (cupy, Kaggle Tesla T4, session 20261011-122243),
+  runs/20261011-181052_M03_ingest_audit (local), gpujobs/out/20261011-173759_M03/{result.json,logs/},
+  evidence/gpu/M03_*, evidence/terminal/M03_*.
+- Checks: S1 the kernels compile through cupy.RawModule (nvrtc); A1 on the T4 219 passed / 0 failed (GPU = oracle =
+  NumPy twin, byte equality, 2^6, 2^10, 2^16 x seeds 1-3 x adversarial inputs) and 7 passed at 2^24; A2 racecheck
+  0 hazards at 2^12; S6 smoke at 2^16: 0 mismatches, CUDA events, warm-up 10, 30 runs, CV under the 10% limit,
+  no throttle reason. Local: 192 passed / 84 gpu-skipped, full suite 432 / 86; check_oblivious clean, planted
+  branch exit 1, self-test 11/11; check_metrics 11 rows PASS; check_secrets PASS.
+- Metrics added: K-BITONIC-SMOKE-MS-2^16, K-BITONIC-SMOKE-CV-2^16, K-BITONIC-RACECHECK-HAZARDS (cupy, kaggle;
+  indexed by `gpujob.py ingest`). The smoke time is a sanity value, not an M07 result.
+- Decisions: none
+- Issues: closed ISSUE-6 (job uploaded and ingested); opened ISSUE-7 (telemetry sampler caught 1 sample, taken
+  at idle, so the SM-clock gate has no in-run baseline; fix before M07)
+- Deviations from spec: none new. The SM clock rose 900 -> 1590 MHz between the idle start snapshot and the end
+  snapshot; the gate is a drop of more than 15%, so the run stands as OK, with the caveat in the audit notes.
+- Not verified: per-test names on the runner (the logs are -q summaries); race freedom beyond the one racecheck
+  size; any performance claim (M07).
+- Commit: PENDING_HASH
+- Next: M04 S1 ; human action: none

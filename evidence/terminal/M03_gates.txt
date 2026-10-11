@@ -1,0 +1,16 @@
+runs/20261011-122303_M03_bitonic_smoke session 20261011-122243 runner kaggle gpu Tesla T4 median_ms 0.5243 cv 0.0118 csv_rows 30
+    PASS all_commands_exit_0 - 5 commands
+    PASS git_sha_matches_pack - d91bfd6
+    PASS backend_cupy_gpu_job_block
+    PASS S1_compiles_via_RawModule - cupy.RawModule (nvrtc)
+    PASS A1_pytest_bitonic_gpu - 219 passed, 37 skipped, 7 deselected in 15.75s
+    PASS A1_pytest_max_log2n - 7 passed, 212 deselected in 837.18s (0:13:57)
+    PASS smoke_sorted_output_correct - mismatches 0 at n 65536
+    PASS A2_racecheck - hazards 0 at n 4096
+    PASS timer_cuda_event
+    PASS warmup_ge_10_runs_ge_30 - warmup 10 runs 30
+    PASS cv_le_0.10 - 0.0118, attempts 1
+    PASS no_throttle
+    PASS sm_clock_not_dropped_gt_15pct - start 900 MHz (util 6%) end 1590 MHz (util 34%)
+    NOTE sm_clock moved +76.7% upward between the idle start snapshot and the end snapshot; telemetry_samples 1
+gates: PASS

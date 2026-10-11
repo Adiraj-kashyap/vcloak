@@ -57,7 +57,7 @@ Workaround (any session that packs a job): run `python scripts/check_secrets.py`
 Proposed fix (M03 prep session, owner of scripts/gpujob.py): have `gpujob.py pack` add that allow-list entry itself.
 Resolved session 5: `gpujob.py pack` adds the digest to scripts/secrets_allowlist.json itself; that file is no longer bundled or part of the staleness check, so the write cannot invalidate the job (tests/unit/test_gpujob.py).
 
-### ISSUE-6 [OPEN] HUMAN ACTION REQUIRED — GPU JOB READY: M03 bitonic kernels (job 20261011-173759_M03)
+### ISSUE-6 [CLOSED PENDING_HASH] HUMAN ACTION REQUIRED — GPU JOB READY: M03 bitonic kernels (job 20261011-173759_M03)
 BLOCKS: M03   SEVERITY: high   OPENED: 2026-10-11 session 5
 Why: the laptop has no GPU and no nvcc. The bitonic kernels have only run as NumPy twins and through a g++ CPU
 stand-in; M03 needs one real run to compile them with CUDA, compare them byte for byte with the oracle and the
@@ -80,3 +80,17 @@ Bring back only the results zip, even if a cell reports a failure: a failed run 
   kernels/, tests/, bench/ or scripts/ makes the result stale and it will be rejected.
 Confirm by running: .venv\Scripts\python scripts\gpujob.py verify gpujobs\inbox\results_20261011-173759_M03.zip
 Then open a new session and type: continue
+Resolved session 6: the human ran the job on Kaggle (Tesla T4, session 20261011-122243) and dropped the results zip
+in gpujobs/inbox/; `gpujob.py ingest` verified it and all 5 commands exited 0 (runs/20261011-122303_M03_bitonic_smoke).
+
+### ISSUE-7 [OPEN] Telemetry during a timed section: 1 sample, taken at idle
+BLOCKS: none   SEVERITY: medium   OPENED: 2026-10-11 session 6
+Symptom: in runs/20261011-122303_M03_bitonic_smoke the manifest's start snapshot shows the SM clock at 900 MHz
+(idle, util 6%) and the end snapshot 1590 MHz; telemetry.csv holds 1 sample, also from before the ramp. The gate
+"SM clock dropped more than 15% during the run" therefore compares against an idle baseline and cannot detect a
+throttle that happens inside the timed runs; only the CV speaks for stability. Harmless for the M03 smoke value,
+not acceptable for M07 sweeps (ai/GPU_RUNNER.md §7).
+Cause: `telemetry.Sampler` polls slower than the timed section lasts (30 sorts at 2^16 take about 20 ms), and the
+start snapshot is taken before the warm-up.
+Proposed fix (M07 prep, or the first module that reports timings): take a snapshot after the warm-up and one
+after the last timed run, write both to summary.json, and apply the 15% gate to that pair in either direction.

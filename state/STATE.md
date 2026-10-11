@@ -3,13 +3,13 @@
 ```yaml
 project: v-cloak
 kit_version: 1.0
-last_session: 5
+last_session: 6
 last_session_date: 2026-10-11
-current_module: M03
-current_step: S6
-status: BLOCKED_HUMAN      # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
-next_unit: M03
-last_checkpoint: 2026-10-11 M03 prep done (S1-S5 local PASS, d91bfd6); GPU job 20261011-173759_M03 packed, waiting for results (ISSUE-6)
+current_module: M04
+current_step: S1
+status: NOT_STARTED        # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
+next_unit: M04
+last_checkpoint: 2026-10-11 M03 DONE (GPU job 20261011-173759_M03 ingested, audit PASS, session 6)
 quick_mode_default: false
 local:                      # the laptop (no GPU) — filled by M00 S7
   os: "Windows-11-10.0.26200-SP0"
@@ -31,10 +31,10 @@ runner:                     # the free remote GPU — filled from the ingested M
   ncu_counters_permitted: "unknown"
   max_log2n: 24
   peak_bw_gbs: 320.064
-  last_session_id: "20261011-110131"
+  last_session_id: "20261011-122243"
 gpu_job:                    # set by the gpu-job skill
-  pending: 20261011-173759_M03   # job id awaiting the human's upload, or null
-  last_ingested: 20261011-014756_M00
+  pending: null   # job id awaiting the human's upload, or null
+  last_ingested: 20261011-173759_M03
 ```
 
 ## Modules
@@ -44,7 +44,7 @@ gpu_job:                    # set by the gpu-job skill
 | M00 | Bootstrap & GPU probe | Aditya | — | no | DONE | S7 | 2 |
 | M01 | Oracle port & golden vectors | Abhishek | M00 | no | DONE | S5 | 1 |
 | M02 | CPU crypto & key lifecycle | Abhishek | M01 | no | DONE | S7 | 1 |
-| M03 | GPU bitonic kernel | Aditya | M01 | no | BLOCKED_HUMAN | S6 | 1 |
+| M03 | GPU bitonic kernel | Aditya | M01 | no | DONE | S6 | 2 |
 | M04 | GPU ChaCha20 tags/PRF | Aditya | M02, M03 | no | NOT_STARTED | S1 | 0 |
 | M05 | GPU AEAD-open, restore, compaction | Aditya | M04 | no | NOT_STARTED | S1 | 0 |
 | M06 | GPU engine | Aditya | M05 | no | NOT_STARTED | S1 | 0 |

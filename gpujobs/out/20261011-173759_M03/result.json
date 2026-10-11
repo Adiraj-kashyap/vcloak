@@ -1,0 +1,79 @@
+{
+  "job_id": "20261011-173759_M03",
+  "module": "M03",
+  "step": "S6",
+  "quick": false,
+  "packed_from_git_sha": "d91bfd6431908d44f2186d77e2ea820ade7e61ee",
+  "bundle_sha256": "a2daf421fcf8cfcf0297c47713eb3d4c1defa33c5b3ab050a83909d6fa250101",
+  "finished_at": "2026-10-11T12:37:05.334262+00:00",
+  "env": {
+    "collected_at": "2026-10-11T12:22:43.716400+00:00",
+    "python": "3.13.15",
+    "platform": "Linux-6.6.122+-x86_64-with-glibc2.39",
+    "backend": "cupy",
+    "runner": "kaggle",
+    "session_id": "20261011-122243",
+    "gpu": "Tesla T4",
+    "driver": "580.82.07",
+    "vram_total": "15360 MiB",
+    "compute_capability": "7.5",
+    "nvcc": "Build cuda_13.0.r13.0/compiler.36424714_0",
+    "ncu": "NVIDIA (R) Nsight Compute Command Line Profiler",
+    "cupy": "14.0.1",
+    "cuda_runtime": "13000",
+    "cpu": "Intel(R) Xeon(R) CPU @ 2.00GHz",
+    "cpu_count": "2"
+  },
+  "requirements": {
+    "file": "requirements-gpu.txt",
+    "installed": [],
+    "skipped": [
+      "cupy-cuda12x",
+      "nvidia-ml-py"
+    ],
+    "failed": []
+  },
+  "commands": [
+    {
+      "n": 1,
+      "name": "nvidia_smi",
+      "cmd": "nvidia-smi",
+      "exit_code": 0,
+      "log": "logs/01_nvidia_smi.txt",
+      "optional": false
+    },
+    {
+      "n": 2,
+      "name": "check_oblivious",
+      "cmd": "python scripts/check_oblivious.py kernels/",
+      "exit_code": 0,
+      "log": "logs/02_check_oblivious.txt",
+      "optional": false
+    },
+    {
+      "n": 3,
+      "name": "pytest_bitonic",
+      "cmd": "python -m pytest -p no:cacheprovider -rs -m \"not slow\" tests/gpu tests/unit/test_check_oblivious.py",
+      "exit_code": 0,
+      "log": "logs/03_pytest_bitonic.txt",
+      "optional": false
+    },
+    {
+      "n": 4,
+      "name": "bitonic_smoke",
+      "cmd": "python bench/bitonic_smoke.py --seed 3 --out runs",
+      "exit_code": 0,
+      "log": "logs/04_bitonic_smoke.txt",
+      "optional": false
+    },
+    {
+      "n": 5,
+      "name": "pytest_bitonic_max_log2n",
+      "cmd": "python -m pytest -p no:cacheprovider -rs -m slow tests/gpu/test_bitonic.py",
+      "exit_code": 0,
+      "log": "logs/05_pytest_bitonic_max_log2n.txt",
+      "optional": false
+    }
+  ],
+  "overall_exit": 0
+}

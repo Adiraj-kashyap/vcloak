@@ -10,3 +10,9 @@
 | TERM-M00-PYTEST | terminal/M00_pytest.txt — local pytest summary, numpy backend, no GPU | M00 | 2026-10-11 | runs/20261011-163648_M00_ingest_checks (git d721f72, dirty) | measured | — |
 | TERM-M00-GATES | terminal/M00_probe_gates.txt — acceptance gates applied to both ingested probe runs | M00 | 2026-10-11 | runs/20261011-163648_M00_ingest_checks (git d721f72, dirty) | measured | — |
 | TERM-M00-AUDIT | terminal/M00_audit.txt — M00 audit table A1–A5, G1–G10 | M00 | 2026-10-11 | runs/20261011-163648_M00_ingest_checks (git d721f72, dirty) | measured | — |
+| GPU-M03-SMI | gpu/M03_nvidia_smi.txt — nvidia-smi on the runner at the start of the M03 job | M03 | 2026-10-11 | gpujobs/out/20261011-173759_M03/logs (job 20261011-173759_M03, git d91bfd6) | measured | — |
+| GPU-M03-SMOKE | gpu/M03_bitonic_smoke_summary.json — bitonic sort at n = 2^16 on the T4: 0 mismatches, smoke timing (not an M07 result), launch plan, racecheck block | M03 | 2026-10-11 | runs/20261011-122303_M03_bitonic_smoke (git d91bfd6) | measured | — |
+| GPU-M03-RACE | gpu/M03_racecheck.txt — compute-sanitizer racecheck summary, n = 2^12: 0 hazards | M03 | 2026-10-11 | runs/20261011-122303_M03_bitonic_smoke (git d91bfd6) | measured | — |
+| TERM-M03-GPUTESTS | terminal/M03_gpu_tests.txt — pytest on the T4 (bit-exact vs oracle and twin, incl. 2^24) and the smoke script output | M03 | 2026-10-11 | gpujobs/out/20261011-173759_M03/logs (job 20261011-173759_M03, git d91bfd6) | measured | — |
+| TERM-M03-GATES | terminal/M03_gates.txt — S6 acceptance gates applied to the ingested run | M03 | 2026-10-11 | runs/20261011-181052_M03_ingest_audit (git b6fe20d, dirty) | measured | — |
+| TERM-M03-AUDIT | terminal/M03_audit.txt — M03 audit table A1–A4, G1–G10 | M03 | 2026-10-11 | runs/20261011-181052_M03_ingest_audit (git b6fe20d, dirty) | measured | — |

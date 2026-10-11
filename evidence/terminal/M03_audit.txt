@@ -1,0 +1,31 @@
+## Audit M03 — 2026-10-11 — session 6 — result: PASS
+Evidence dirs: runs/20261011-122303_M03_bitonic_smoke (cupy, Kaggle Tesla T4, GPU job 20261011-173759_M03, git d91bfd6),
+runs/20261011-181052_M03_ingest_audit (local checks, numpy), gpujobs/out/20261011-173759_M03/{result.json,logs/}
+
+| Item | Result | Evidence |
+|---|---|---|
+| A1 Bit-exact vs the oracle | PASS | logs/03_pytest_bitonic.txt: 219 passed, 0 failed on the T4 (the 37 skips are the Windows-only g++ stand-in); logs/05_pytest_bitonic_max_log2n.txt: 7 passed at n = 2^max_log2n; smoke summary.json: mismatches 0 at 2^16. Local half unchanged: runs/20261011-181052_M03_ingest_audit/pytest.txt (192 passed, 84 gpu-skipped) |
+| A2 No element written twice per launch | PASS | racecheck.txt: `RACECHECK SUMMARY: 0 hazards displayed (0 errors, 0 warnings)` at n = 2^12, compute-sanitizer exit 0, the child sort reported CHILD_SORT_OK; by-construction test passes on both backends (pytest logs above) |
+| A3 check_oblivious clean, planted branch flagged | PASS | check_oblivious.txt (3 files, 0 findings, exit 0; also exit 0 on the runner, logs/02_check_oblivious.txt); check_oblivious_planted.txt (1 BRANCH finding, exit 1); check_oblivious_selftest.txt (11/11) |
+| A4 Launch configuration depends only on n and T | PASS | runs/20261011-173514_M03_bitonic_prep/audit_a2_a4.txt; the driver is unchanged since d91bfd6 (the job would be stale otherwise, and ingest verified the sha) |
+| G1 | PASS | pytest.txt (192 passed, 84 skipped), pytest_all.txt (432 passed, 86 skipped); every skip is `gpu`-marked and ran on the runner |
+| G2 | PASS | check_metrics.txt: 11 rows, 0 problems |
+| G2b | PASS | the 3 new rows come from a manifest with backend cupy and a gpu_job block (gates.txt: backend_cupy_gpu_job_block) |
+| G3 | PASS | same as A3 |
+| G4 | PASS | check_secrets.txt: 256 files, 0 key-like runs; run again after the evidence copies and logs, before the commit |
+| G5 | PASS | GPU vs oracle and GPU vs NumPy twin, byte equality, n in {2^6, 2^10, 2^16} x seeds {1, 2, 3} x 4 adversarial inputs, plus 2^24 (logs/03, logs/05) |
+| G6 | PASS | deliverables_ls.txt |
+| G7 | PASS | checked after the closing commit |
+| G8 | PASS | STATE: M03 DONE at S6, sessions 2, next_unit M04, gpu_job.pending null, last_ingested 20261011-173759_M03 |
+| G9 | PASS | SESSION_LOG session 6 and its GPU-JOB line, this entry, ISSUE-6 closed, ISSUE-7 opened |
+| G10 | PASS | both run manifests validate (new_run.py --validate); the local module tests gave the same outcome as in session 5 |
+Notes: S6 gates are in runs/20261011-181052_M03_ingest_audit/gates.txt, computed from the ingested files.
+- The runner's pytest logs are `-q` summaries: they give counts, not test names. That all 84 `gpu` tests ran is
+  inferred from the counts (no `needs a CUDA device` skip appears on the runner; 77 + 7 = the 84 skipped locally).
+- At n = 2^max_log2n the reference is np.lexsort for seven inputs and the twin for one (module Amendments).
+- Racecheck covers one size (2^12) and one input; it is a dynamic check of that run, not a proof.
+- SM clock: 900 MHz in the start snapshot (idle, util 6%) and 1590 MHz in the end snapshot; no throttle reason,
+  CV 0.0118 over the 30 timed runs. The gate is a drop of more than 15%; this is a rise from idle, so the run is
+  kept as OK. But the sampler caught 1 sample, taken before the ramp, so clock stability *during* the timed
+  section is not shown by telemetry, only suggested by the CV (ISSUE-7, to fix before M07).
+- The smoke time is a sanity value for one n on a shared T4. It is not an M07 result and is not to be quoted as one.

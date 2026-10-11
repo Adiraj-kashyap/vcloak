@@ -1,0 +1,2 @@
+ts,sm_clock_mhz,mem_clock_mhz,temperature_c,power_w,power_limit_w,util_gpu_pct,util_mem_pct,throttle_reasons,pstate,mem_used_mb
+1791721384.3022661,900,5000,56,29.477,70.0,6,0,0,0,656.1875

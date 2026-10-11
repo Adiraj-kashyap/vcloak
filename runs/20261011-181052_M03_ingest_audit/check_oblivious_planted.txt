@@ -1,0 +1,3 @@
+<temp copy>/bitonic.cu:23: BRANCH: `if` condition depends on data (hi) in bitonic_pairs_global()
+    if (hi[i] > hi[l]) return;
+check_oblivious: 2 file(s), 1 finding(s) - FAIL

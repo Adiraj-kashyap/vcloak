@@ -1,0 +1,91 @@
+{
+  "metrics": [
+    {
+      "id": "K-BITONIC-SMOKE-MS-2^16",
+      "value": 0.5243,
+      "unit": "ms",
+      "stat": "median",
+      "note": "sort only, 30 runs, CUDA events; smoke, not an M07 result"
+    },
+    {
+      "id": "K-BITONIC-SMOKE-CV-2^16",
+      "value": 0.0118,
+      "unit": "-",
+      "stat": "cv",
+      "note": "std / mean of the timed runs"
+    },
+    {
+      "id": "K-BITONIC-RACECHECK-HAZARDS",
+      "value": 0,
+      "unit": "count",
+      "stat": "value",
+      "note": "compute-sanitizer racecheck, n = 2^12"
+    }
+  ],
+  "executed_by": "cupy.RawModule (nvrtc)",
+  "mismatches": 0,
+  "attempts": [
+    {
+      "attempt": 1,
+      "mismatches": 0,
+      "runs": 30,
+      "median_ms": 0.5242879986763,
+      "p5_ms": 0.522390392422676,
+      "p95_ms": 0.5367808014154434,
+      "mean_ms": 0.5264831999937694,
+      "std_ms": 0.006207056585471883,
+      "cv": 0.011789657458291813
+    }
+  ],
+  "racecheck": {
+    "status": "OK",
+    "hazards": 0,
+    "errors": 0,
+    "warnings": 0,
+    "n": 4096,
+    "command": [
+      "/usr/local/cuda/bin/compute-sanitizer",
+      "--tool",
+      "racecheck",
+      "--racecheck-report",
+      "all",
+      "/usr/bin/python3",
+      "/content/vcloak_job/bench/bitonic_smoke.py",
+      "--child-sort",
+      "--seed",
+      "3",
+      "--log2n",
+      "12"
+    ],
+    "exit_code": 0
+  },
+  "plan": {
+    "n": 65536,
+    "T": 256,
+    "launches": 36,
+    "stages": 136,
+    "stages_in_shared_memory": 108,
+    "stages_global": 28,
+    "compare_exchanges": 4456448
+  },
+  "telemetry_samples": 1,
+  "timer": "cupy.cuda.Event",
+  "device": {
+    "backend": "cupy",
+    "is_gpu": true,
+    "device": "Tesla T4",
+    "gpu": "Tesla T4",
+    "cc": "7.5",
+    "sm_count": 40,
+    "vram_total_bytes": 15637086208,
+    "vram_free_bytes": 15415967744,
+    "mem_clock_khz": 5001000,
+    "mem_bus_width_bits": 256,
+    "peak_bw_gbs": 320.064,
+    "max_log2n": 24,
+    "cuda": "13000",
+    "cupy": "14.0.1",
+    "os": "Linux-6.6.122+-x86_64-with-glibc2.39",
+    "python": "3.13.15"
+  }
+}

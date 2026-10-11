@@ -1,0 +1,43 @@
+{
+  "run_id": "20261011-181052_M03_ingest_audit",
+  "module": "M03",
+  "step": "S6",
+  "owner": "Aditya",
+  "git_sha": "b6fe20d5301000f0c0f60b2ed63044f1a073af49",
+  "dirty": true,
+  "command": "gpujob.py ingest; pytest tests/gpu tests/unit/test_check_oblivious.py tests/unit/test_gpujob.py; check_oblivious.py kernels/; check_metrics.py; check_secrets.py",
+  "seed": 0,
+  "quick": false,
+  "params": {},
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261011-181051",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U"
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791722452.2709494
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791722587.0325036
+  },
+  "outputs": [
+    "check_metrics.txt",
+    "check_oblivious.txt",
+    "check_oblivious_planted.txt",
+    "check_oblivious_selftest.txt",
+    "check_secrets.txt",
+    "deliverables_ls.txt",
+    "gates.txt",
+    "pytest.txt",
+    "pytest_all.txt"
+  ],
+  "status": "OK",
+  "notes": "M03 ingest audit: gates.txt computed from the ingested run; local checks on the numpy backend, no metric measured here"
+}
