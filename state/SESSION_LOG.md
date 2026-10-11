@@ -62,5 +62,5 @@
   (e) Submission/StoredRow/RefKeys are defined in the oracle until M06 owns them; order_recovery_attack takes
   arrays (wins, truth, conv) instead of the seed's Row list, and is checked against the seed's formulation;
   (f) the seed's traffic simulator and build_database were not ported (they belong to eval/, M14).
-- Commit: PENDING
+- Commit: 6e6f57f
 - Next: M02 S1 ; human action: none
