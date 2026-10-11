@@ -1,0 +1,41 @@
+{
+  "metrics": [
+    {
+      "id": "X-CROSSOVER-N",
+      "value": "NOT_MEASURED",
+      "unit": "n",
+      "stat": "value",
+      "note": "no measured M07 kernel_sweep run of session 20261011-224044 (quick=False) in runs/ (1 other); no measured M07 cpu_baselines run of session 20261011-224044 (quick=False) in runs/ (1 other)"
+    },
+    {
+      "id": "X-SPEEDUP-2^16",
+      "value": "NOT_MEASURED",
+      "unit": "x",
+      "stat": "value",
+      "note": "no measured M07 kernel_sweep run of session 20261011-224044 (quick=False) in runs/ (1 other); no measured M07 cpu_baselines run of session 20261011-224044 (quick=False) in runs/ (1 other)"
+    },
+    {
+      "id": "X-SPEEDUP-2^20",
+      "value": "NOT_MEASURED",
+      "unit": "x",
+      "stat": "value",
+      "note": "no measured M07 kernel_sweep run of session 20261011-224044 (quick=False) in runs/ (1 other); no measured M07 cpu_baselines run of session 20261011-224044 (quick=False) in runs/ (1 other)"
+    },
+    {
+      "id": "X-SPEEDUP-VS-LEXSORT-2^16",
+      "value": "NOT_MEASURED",
+      "unit": "x",
+      "stat": "value",
+      "note": "no measured M07 kernel_sweep run of session 20261011-224044 (quick=False) in runs/ (1 other); no measured M07 cpu_baselines run of session 20261011-224044 (quick=False) in runs/ (1 other)"
+    },
+    {
+      "id": "X-SPEEDUP-VS-LEXSORT-2^20",
+      "value": "NOT_MEASURED",
+      "unit": "x",
+      "stat": "value",
+      "note": "no measured M07 kernel_sweep run of session 20261011-224044 (quick=False) in runs/ (1 other); no measured M07 cpu_baselines run of session 20261011-224044 (quick=False) in runs/ (1 other)"
+    }
+  ],
+  "inputs": null,
+  "reason": "no measured M07 kernel_sweep run of session 20261011-224044 (quick=False) in runs/ (1 other); no measured M07 cpu_baselines run of session 20261011-224044 (quick=False) in runs/ (1 other)"
+}

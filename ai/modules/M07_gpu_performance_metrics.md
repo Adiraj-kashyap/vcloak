@@ -78,3 +78,42 @@ paper's setup section and the panel will ask to see. Follow `ai/EVIDENCE.md`.
 3. Does write_epoch fit the 200 ms epoch at 2^16 slots (p99)?
 
 ## Next: M08
+
+## Amendments
+
+### 2026-10-11 (session 13, prep) — how the steps were implemented, and where that differs from the text above
+- **No new kernel.** S2 times kernels that M03–M06 already delivered with their NumPy twins (the global-only
+  plan and the fused plan of `kernels/bitonic.cu`, `chacha_tags`, `aead_open_seq`, `bucket_prf`), so the
+  "simulator parity for every kernel this module adds" gate has nothing new to cover. The sweep still checks
+  every timed output (np.lexsort, `chacha_ref`, the sealed inputs) and that fused = global-only at every n (A5).
+- **S1 sleep kernel.** `tests/gpu/test_timing.py` checks the event timer in two parts: the CUDA-event time of a
+  `__nanosleep` launch against the host clock around the same synchronised launch (±10%, a hard assert), and
+  against the nominal sleep (±10%; a miss is reported as XFAIL with the measured ratio). Reason: the nanosleep
+  instruction promises only an approximate sleep, so a nominal miss would say nothing about the timer.
+- **S2 warm-up and clock (ISSUE-7, ISSUE-11).** The warm-up of each configuration lasts until the SM clock has
+  stopped rising (at least 10 launches and 0.5 s, at most 4 s); the clock is read after the warm-up and after the
+  last timed run without a subprocess. CV > 10% or a clock change > 15% on two attempts → the metric value is
+  `UNSTABLE` (both attempts stay in raw.csv and summary.json). A steady clock below 85% of the device maximum is
+  repeated once after a ramp load; if it is still low the number is kept and its note says `LOW clock`.
+  ISSUE-7 had proposed to call a low-clock run UNSTABLE; that would discard the small-n points, which is where a
+  short kernel cannot keep a GPU busy and where the crossover is expected.
+- **S2 metric names.** Besides the listed IDs: `K-BITONIC-E2E-MS-2^n` (pinned H2D + fused sort + pinned D2H, the
+  series S4 uses), per-n `K-CHACHA-MS-2^n`, `K-AEADOPEN-MS-2^n`, `K-BUCKETPRF-MS-2^n`, and `K-BUCKETPRF-ROWS-S`.
+  `K-CHACHA-GBS`, `K-AEADOPEN-ROWS-S` and `K-BUCKETPRF-ROWS-S` are taken at the largest swept n.
+  `K-BITONIC-BW-PCT-2^n` is the global-only variant, for which the bytes-moved model of GPU_GUIDE §5 holds.
+- **S3 baselines.** The oracle network is timed through `vcloak.bench.baselines.oracle_bitonic`: the same
+  per-stage arithmetic as `oracle.reference.bitonic_sort` (tested equal), with the schedule built one stage at a
+  time, because the oracle's precomputed schedule needs about 8 GB of index arrays at 2^22. Added
+  `CPU-BITONIC-VIEWS-MS-2^n`, the same network on reshaped views, so that the "best oblivious CPU baseline" of S4
+  is not just the slowest way to write it. numba is `CPU-BITONIC-NUMBA-MS-2^n` (NOT_MEASURED when absent). A
+  configuration that would exceed 20 min has its run count cut (noted in the metric).
+- **S3–S4 session rule.** `run_kernels.py --part crossover` only accepts a GPU sweep and a CPU sweep whose
+  manifest `session_id` equals its own; otherwise every X metric is NOT_MEASURED.
+  n* is the smallest compared n from which the GPU is faster at every larger compared n.
+  Added `X-SPEEDUP-VS-LEXSORT-2^16` / `-2^20` (np.lexsort is not oblivious: a lower bound, not the comparison).
+- **S5.** 200 timed calls per configuration (30 with quick) instead of 50, so that a p99 is not the maximum.
+  Besides `P-…-P99-…`: `-MS-` (median), `-DEVICE-MS-`, `-DEVICE-P99-` (the device stages only) and `-HOST-MS-`
+  (ISSUE-12). The gate is evaluated for the whole call and for the device part. The SM clock is recorded and not
+  forced up. `host_profile.txt` is a cProfile of three write_epoch calls at SLOTS 65536.
+- **S6 is not prepared in this session**: `src/vcloak/bench/report.py`, the figures and `docs/REPORT_CH4_NOTES.md`
+  are written in the ingest session from the ingested run dirs.

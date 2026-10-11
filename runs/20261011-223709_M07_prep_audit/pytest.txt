@@ -1,0 +1,5 @@
+........................................................................ [ 80%]
+..............sss                                                        [100%]
+=========================== short test summary info ===========================
+SKIPPED [3] tests\gpu\test_timing.py: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+86 passed, 3 skipped in 25.53s

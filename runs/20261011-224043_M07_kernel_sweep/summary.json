@@ -1,0 +1,258 @@
+{
+  "metrics": [
+    {
+      "id": "K-BITONIC-GLOBAL-MS-2^10",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "K-BITONIC-BW-PCT-2^10",
+      "value": "NOT_MEASURED",
+      "unit": "%",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "K-BITONIC-GLOBAL-MS-2^12",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "K-BITONIC-BW-PCT-2^12",
+      "value": "NOT_MEASURED",
+      "unit": "%",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "K-BITONIC-FUSED-MS-2^10",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "K-BITONIC-FUSED-MS-2^12",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "K-BITONIC-E2E-MS-2^10",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "K-BITONIC-E2E-MS-2^12",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "K-CHACHA-MS-2^10",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "K-CHACHA-MS-2^12",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "K-AEADOPEN-MS-2^10",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "K-AEADOPEN-MS-2^12",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "K-BUCKETPRF-MS-2^10",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "K-BUCKETPRF-MS-2^12",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "K-CHACHA-GBS",
+      "value": "NOT_MEASURED",
+      "unit": "GB/s",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "K-AEADOPEN-ROWS-S",
+      "value": "NOT_MEASURED",
+      "unit": "rows/s",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "K-BUCKETPRF-ROWS-S",
+      "value": "NOT_MEASURED",
+      "unit": "rows/s",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "TEL-SMCLK-MEDIAN",
+      "value": "NOT_MEASURED",
+      "unit": "MHz",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "TEL-POWER-W-MEDIAN",
+      "value": "NOT_MEASURED",
+      "unit": "W",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    }
+  ],
+  "executed_by": "numpy twins (vcloak.gpu.sim)",
+  "timer": null,
+  "mismatches": 0,
+  "fused_differs_from_global": [],
+  "unstable": [],
+  "low_clock": [],
+  "sweeps": {
+    "bitonic_global": [
+      {
+        "n": 1024,
+        "log2n": 10,
+        "mismatches": 0,
+        "compared_with": "np.lexsort"
+      },
+      {
+        "n": 4096,
+        "log2n": 12,
+        "mismatches": 0,
+        "compared_with": "np.lexsort"
+      }
+    ],
+    "bitonic_fused": [
+      {
+        "n": 1024,
+        "log2n": 10,
+        "mismatches": 0,
+        "compared_with": "np.lexsort"
+      },
+      {
+        "n": 4096,
+        "log2n": 12,
+        "mismatches": 0,
+        "compared_with": "np.lexsort"
+      }
+    ],
+    "sort_e2e": [
+      {
+        "n": 1024,
+        "log2n": 10,
+        "mismatches": 0,
+        "compared_with": "np.lexsort"
+      },
+      {
+        "n": 4096,
+        "log2n": 12,
+        "mismatches": 0,
+        "compared_with": "np.lexsort"
+      }
+    ],
+    "chacha_tags": [
+      {
+        "n": 1024,
+        "log2n": 10,
+        "mismatches": 0,
+        "compared_with": "chacha_ref"
+      },
+      {
+        "n": 4096,
+        "log2n": 12,
+        "mismatches": 0,
+        "compared_with": "chacha_ref"
+      }
+    ],
+    "aead_open": [
+      {
+        "n": 1024,
+        "log2n": 10,
+        "mismatches": 0,
+        "compared_with": "sealed inputs"
+      },
+      {
+        "n": 4096,
+        "log2n": 12,
+        "mismatches": 0,
+        "compared_with": "sealed inputs"
+      }
+    ],
+    "bucket_prf": [
+      {
+        "n": 1024,
+        "log2n": 10,
+        "mismatches": 0,
+        "compared_with": "chacha_ref"
+      },
+      {
+        "n": 4096,
+        "log2n": 12,
+        "mismatches": 0,
+        "compared_with": "chacha_ref"
+      }
+    ]
+  },
+  "telemetry": {
+    "samples": 0,
+    "sm_clock_mhz": null,
+    "power_w": null,
+    "temperature_c": null,
+    "util_gpu_pct": null
+  },
+  "telemetry_samples": 0,
+  "ramps": [],
+  "peak_bw_gbs": null,
+  "cv_limit": 0.1,
+  "device": {
+    "backend": "numpy",
+    "is_gpu": false,
+    "device": "12th Gen Intel(R) Core(TM) i7-1255U",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U",
+    "cpu_count": 12,
+    "ram_gb": 15.6,
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0"
+  },
+  "host": {
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U",
+    "cpu_count": 12,
+    "ram_gb": 15.6,
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0"
+  },
+  "bw_model": "rounds(n) x n x 24 B x 2 (read + write); rounds = log2(n)(log2(n)+1)/2 (ai/GPU_GUIDE.md \u00a75)"
+}

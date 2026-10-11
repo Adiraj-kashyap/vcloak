@@ -1,0 +1,35 @@
+{
+  "run_id": "20261011-224044_M07_crossover",
+  "module": "M07",
+  "step": "S4",
+  "owner": "Aditya",
+  "git_sha": "710454b22db28e948a1c366110db7187bcb03f64",
+  "dirty": true,
+  "command": "python bench/run_kernels.py --part crossover --seed 7 --out runs",
+  "seed": 7,
+  "quick": false,
+  "params": {},
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261011-224044",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U"
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791738644.9498599
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791738644.9624004
+  },
+  "outputs": [
+    "summary.json"
+  ],
+  "status": "NOT_MEASURED",
+  "notes": "no measured M07 kernel_sweep run of session 20261011-224044 (quick=False) in runs/ (1 other); no measured M07 cpu_baselines run of session 20261011-224044 (quick=False) in runs/ (1 other)"
+}

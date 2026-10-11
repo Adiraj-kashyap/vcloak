@@ -164,3 +164,9 @@ def _gpu_info(cp: ModuleType) -> dict[str, Any]:
         "os": platform.platform(),
         "python": platform.python_version(),
     }
+
+
+def host_info() -> dict[str, Any]:
+    """The host CPU, whatever the backend: CPU baselines run beside the GPU on the runner."""
+    info = _host_info()
+    return {k: info[k] for k in ("cpu", "cpu_count", "ram_gb", "os", "python")}

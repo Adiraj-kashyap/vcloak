@@ -1,0 +1,29 @@
+{
+  "run_id": "20261011-223709_M07_prep_audit",
+  "module": "M07",
+  "step": "S5",
+  "owner": "Aditya",
+  "git_sha": "710454b22db28e948a1c366110db7187bcb03f64",
+  "dirty": true,
+  "command": "local checks of the M07 prep session (pytest, ruff, check_*.py, plumbing runs)",
+  "seed": 7,
+  "quick": false,
+  "params": {},
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261011-223709",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U"
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791738429.2631478
+  },
+  "telemetry_end": null,
+  "outputs": [],
+  "status": "NOT_MEASURED",
+  "notes": "run started; not finalised"
+}

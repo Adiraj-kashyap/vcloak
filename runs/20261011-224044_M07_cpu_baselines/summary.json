@@ -1,0 +1,122 @@
+{
+  "metrics": [
+    {
+      "id": "CPU-BITONIC-MS-2^10",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "not on the runner: the CPU baselines must come from the runner session of the GPU sweep (ai/GPU_RUNNER.md \u00a77)"
+    },
+    {
+      "id": "CPU-BITONIC-MS-2^12",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "not on the runner: the CPU baselines must come from the runner session of the GPU sweep (ai/GPU_RUNNER.md \u00a77)"
+    },
+    {
+      "id": "CPU-BITONIC-VIEWS-MS-2^10",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "not on the runner: the CPU baselines must come from the runner session of the GPU sweep (ai/GPU_RUNNER.md \u00a77)"
+    },
+    {
+      "id": "CPU-BITONIC-VIEWS-MS-2^12",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "not on the runner: the CPU baselines must come from the runner session of the GPU sweep (ai/GPU_RUNNER.md \u00a77)"
+    },
+    {
+      "id": "CPU-BITONIC-NUMBA-MS-2^10",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numba is not available (ModuleNotFoundError)"
+    },
+    {
+      "id": "CPU-BITONIC-NUMBA-MS-2^12",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numba is not available (ModuleNotFoundError)"
+    },
+    {
+      "id": "CPU-LEXSORT-MS-2^10",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "not on the runner: the CPU baselines must come from the runner session of the GPU sweep (ai/GPU_RUNNER.md \u00a77)"
+    },
+    {
+      "id": "CPU-LEXSORT-MS-2^12",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "not on the runner: the CPU baselines must come from the runner session of the GPU sweep (ai/GPU_RUNNER.md \u00a77)"
+    }
+  ],
+  "timer": null,
+  "mismatches": 0,
+  "unstable": [],
+  "sweeps": {
+    "oracle_bitonic": [
+      {
+        "n": 1024,
+        "log2n": 10,
+        "mismatches": 0
+      },
+      {
+        "n": 4096,
+        "log2n": 12,
+        "mismatches": 0
+      }
+    ],
+    "views_bitonic": [
+      {
+        "n": 1024,
+        "log2n": 10,
+        "mismatches": 0
+      },
+      {
+        "n": 4096,
+        "log2n": 12,
+        "mismatches": 0
+      }
+    ],
+    "numba_bitonic": [],
+    "lexsort": [
+      {
+        "n": 1024,
+        "log2n": 10,
+        "mismatches": 0
+      },
+      {
+        "n": 4096,
+        "log2n": 12,
+        "mismatches": 0
+      }
+    ]
+  },
+  "numba": {
+    "reason": "numba is not available (ModuleNotFoundError)"
+  },
+  "host": {
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U",
+    "cpu_count": 12,
+    "ram_gb": 15.6,
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0"
+  },
+  "numpy": "2.5.4",
+  "cv_limit": 0.1,
+  "oblivious": [
+    "oracle_bitonic",
+    "views_bitonic",
+    "numba_bitonic"
+  ],
+  "not_oblivious": [
+    "lexsort"
+  ]
+}

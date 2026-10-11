@@ -1,0 +1,33 @@
+run dir     D:\PJT\vcloak\runs\20261011-224043_M07_kernel_sweep
+backend     numpy   sizes 2^10..2^12   runs 50
+checks      mismatches=0 fused_differs_from_global=[]
+unstable    0: 
+low clock   0: 
+metrics     19   telemetry samples 0
+status      NOT_MEASURED
+exit 0
+run dir     D:\PJT\vcloak\runs\20261011-224044_M07_cpu_baselines
+host        12th Gen Intel(R) Core(TM) i7-1255U x12   numba {'reason': 'numba is not available (ModuleNotFoundError)'}
+checks      mismatches=0   unstable 0: 
+metrics     8
+status      NOT_MEASURED
+exit 0
+run dir     D:\PJT\vcloak\runs\20261011-224044_M07_crossover
+status      NOT_MEASURED (no measured M07 kernel_sweep run of session 20261011-224044 (quick=False) in runs/ (1 other); no measured M07 cpu_baselines run of session 20261011-224044 (quick=False) in runs/ (1 other))
+exit 0
+run dir     D:\PJT\vcloak\runs\20261011-224045_M07_pipeline
+backend     numpy   timer time.perf_counter (numpy simulator: not a performance result)   calls 200
+write_epoch      64  oracle_mismatches=0
+write_epoch    1024  oracle_mismatches=0
+write_epoch    4096  oracle_mismatches=0
+write_epoch   16384  oracle_mismatches=0
+write_epoch   65536  oracle_mismatches=0
+read_window      64  oracle_mismatches=0
+read_window     128  oracle_mismatches=0
+read_window     256  oracle_mismatches=0
+read_window     512  oracle_mismatches=0
+read_window    1024  oracle_mismatches=0
+read_window    2048  oracle_mismatches=0
+read_window    4096  oracle_mismatches=0
+status      NOT_MEASURED
+exit 0

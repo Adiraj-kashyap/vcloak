@@ -1,0 +1,16 @@
+bench/run_kernels.py:20:cpu        The same records sorted on the host with perf_counter_ns: the M01 oracle network, the same
+bench/run_kernels.py:254:        times = timing.time_gpu(fn, 0, n_runs, stream, setup=setup, cp=cp)
+bench/run_kernels.py:422:        "timer": "cupy.cuda.Event" if backend.is_gpu else None, "mismatches": bad, "fused_differs_from_global": differ,
+bench/run_kernels.py:492:                                   "baselines": list(fns), "timer": "time.perf_counter_ns", "cv_limit": CV_LIMIT,
+bench/run_kernels.py:501:            t0 = time.perf_counter()
+bench/run_kernels.py:503:            first_s = time.perf_counter() - t0
+bench/run_kernels.py:507:                    t0 = time.perf_counter()
+bench/run_kernels.py:509:                    first_s = time.perf_counter() - t0  # without the compilation
+bench/run_kernels.py:538:                note = f"{name} ({kind}), {last['runs']} runs, perf_counter_ns, CV {p['cv']:.3f}"
+bench/run_kernels.py:545:    write_summary(run_dir, {"metrics": metrics, "timer": "time.perf_counter_ns" if measured else None,
+src/vcloak/bench/timing.py:3:GPU work is timed with CUDA events on one stream (`time_gpu`), CPU work with `perf_counter_ns`
+src/vcloak/bench/timing.py:54:def time_gpu(fn: Callable[[], Any], warmup: int, runs: int, stream: Any = None, *,
+src/vcloak/bench/timing.py:66:    start, end = cp.cuda.Event(), cp.cuda.Event()
+src/vcloak/bench/timing.py:86:    """Per-run milliseconds of `fn` on the host, with `time.perf_counter_ns`. `setup` is not timed."""
+src/vcloak/bench/timing.py:96:        t0 = time.perf_counter_ns()
+src/vcloak/bench/timing.py:98:        times.append((time.perf_counter_ns() - t0) / 1e6)

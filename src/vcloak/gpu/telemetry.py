@@ -79,11 +79,26 @@ def snapshot(index: int = 0) -> dict[str, Any]:
         snap: dict[str, Any] = {"available": True,
                                 "gpu": _text(_try(nv.nvmlDeviceGetName, h)),
                                 "driver": _text(_try(nv.nvmlSystemGetDriverVersion)),
-                                "clocks": _clock_lock()}
+                                "clocks": _clock_lock(),
+                                "sm_clock_max_mhz": _try(nv.nvmlDeviceGetMaxClockInfo, h, nv.NVML_CLOCK_SM)}
         snap.update(_sample(nv, h))
         return snap
     except Exception as e:  # noqa: BLE001
         return {"available": False, "reason": f"NVML error: {type(e).__name__}", "ts": time.time()}
+
+
+def sample(index: int = 0) -> dict[str, Any]:
+    """A cheap reading for use between timed runs: the sampler fields plus the maximum SM clock, with no
+    subprocess (unlike `snapshot`), so the device is not left idle while it is taken."""
+    nv = _nvml()
+    if nv is None:
+        return {"available": False, "ts": time.time()}
+    h = _try(nv.nvmlDeviceGetHandleByIndex, index)
+    if h is None:
+        return {"available": False, "ts": time.time()}
+    out: dict[str, Any] = {"available": True, **_sample(nv, h)}
+    out["sm_clock_max_mhz"] = _try(nv.nvmlDeviceGetMaxClockInfo, h, nv.NVML_CLOCK_SM)
+    return out
 
 
 class Sampler:

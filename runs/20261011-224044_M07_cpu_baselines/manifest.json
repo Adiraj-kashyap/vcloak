@@ -1,0 +1,54 @@
+{
+  "run_id": "20261011-224044_M07_cpu_baselines",
+  "module": "M07",
+  "step": "S3",
+  "owner": "Aditya",
+  "git_sha": "710454b22db28e948a1c366110db7187bcb03f64",
+  "dirty": true,
+  "command": "python bench/run_kernels.py --part cpu --seed 7 --out runs",
+  "seed": 7,
+  "quick": false,
+  "params": {
+    "n_log2": [
+      10,
+      12
+    ],
+    "warmup": 1,
+    "runs": {
+      "<=2^20": 10,
+      ">2^20": 5
+    },
+    "baselines": [
+      "oracle_bitonic",
+      "views_bitonic",
+      "numba_bitonic",
+      "lexsort"
+    ],
+    "timer": "time.perf_counter_ns",
+    "cv_limit": 0.1,
+    "budget_s": 1200.0
+  },
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261011-224044",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U"
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791738644.5458071
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791738644.5777931
+  },
+  "outputs": [
+    "summary.json"
+  ],
+  "status": "NOT_MEASURED",
+  "notes": "numba baseline NOT_MEASURED: numba is not available (ModuleNotFoundError); plumbing and output checks only: not on the runner: the CPU baselines must come from the runner session of the GPU sweep (ai/GPU_RUNNER.md \u00a77)"
+}

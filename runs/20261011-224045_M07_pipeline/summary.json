@@ -1,0 +1,524 @@
+{
+  "metrics": [
+    {
+      "id": "P-WRITE-EPOCH-P99-S64",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "p99",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-WRITE-EPOCH-MS-S64",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-WRITE-EPOCH-DEVICE-MS-S64",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-WRITE-EPOCH-DEVICE-P99-S64",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "p99",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-WRITE-EPOCH-HOST-MS-S64",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-WRITE-EPOCH-P99-S1024",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "p99",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-WRITE-EPOCH-MS-S1024",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-WRITE-EPOCH-DEVICE-MS-S1024",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-WRITE-EPOCH-DEVICE-P99-S1024",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "p99",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-WRITE-EPOCH-HOST-MS-S1024",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-WRITE-EPOCH-P99-S4096",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "p99",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-WRITE-EPOCH-MS-S4096",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-WRITE-EPOCH-DEVICE-MS-S4096",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-WRITE-EPOCH-DEVICE-P99-S4096",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "p99",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-WRITE-EPOCH-HOST-MS-S4096",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-WRITE-EPOCH-P99-S16384",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "p99",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-WRITE-EPOCH-MS-S16384",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-WRITE-EPOCH-DEVICE-MS-S16384",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-WRITE-EPOCH-DEVICE-P99-S16384",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "p99",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-WRITE-EPOCH-HOST-MS-S16384",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-WRITE-EPOCH-P99-S65536",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "p99",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-WRITE-EPOCH-MS-S65536",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-WRITE-EPOCH-DEVICE-MS-S65536",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-WRITE-EPOCH-DEVICE-P99-S65536",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "p99",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-WRITE-EPOCH-HOST-MS-S65536",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-READ-WINDOW-P99-K64",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "p99",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-READ-WINDOW-MS-K64",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-READ-WINDOW-DEVICE-MS-K64",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-READ-WINDOW-DEVICE-P99-K64",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "p99",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-READ-WINDOW-HOST-MS-K64",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-READ-WINDOW-P99-K128",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "p99",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-READ-WINDOW-MS-K128",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-READ-WINDOW-DEVICE-MS-K128",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-READ-WINDOW-DEVICE-P99-K128",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "p99",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-READ-WINDOW-HOST-MS-K128",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-READ-WINDOW-P99-K256",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "p99",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-READ-WINDOW-MS-K256",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-READ-WINDOW-DEVICE-MS-K256",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-READ-WINDOW-DEVICE-P99-K256",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "p99",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-READ-WINDOW-HOST-MS-K256",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-READ-WINDOW-P99-K512",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "p99",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-READ-WINDOW-MS-K512",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-READ-WINDOW-DEVICE-MS-K512",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-READ-WINDOW-DEVICE-P99-K512",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "p99",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-READ-WINDOW-HOST-MS-K512",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-READ-WINDOW-P99-K1024",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "p99",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-READ-WINDOW-MS-K1024",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-READ-WINDOW-DEVICE-MS-K1024",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-READ-WINDOW-DEVICE-P99-K1024",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "p99",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-READ-WINDOW-HOST-MS-K1024",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-READ-WINDOW-P99-K2048",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "p99",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-READ-WINDOW-MS-K2048",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-READ-WINDOW-DEVICE-MS-K2048",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-READ-WINDOW-DEVICE-P99-K2048",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "p99",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-READ-WINDOW-HOST-MS-K2048",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-READ-WINDOW-P99-K4096",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "p99",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-READ-WINDOW-MS-K4096",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-READ-WINDOW-DEVICE-MS-K4096",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-READ-WINDOW-DEVICE-P99-K4096",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "p99",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-READ-WINDOW-HOST-MS-K4096",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    }
+  ],
+  "executed_by": "numpy twins (vcloak.gpu.sim)",
+  "mismatches": 0,
+  "unstable": [],
+  "realtime_gate": [],
+  "configs": [
+    {
+      "kind": "write_epoch",
+      "size": 64,
+      "n_real": 64,
+      "mismatches": 0
+    },
+    {
+      "kind": "write_epoch",
+      "size": 1024,
+      "n_real": 1024,
+      "mismatches": 0
+    },
+    {
+      "kind": "write_epoch",
+      "size": 4096,
+      "n_real": 4096,
+      "mismatches": 0
+    },
+    {
+      "kind": "write_epoch",
+      "size": 16384,
+      "n_real": 16384,
+      "mismatches": 0
+    },
+    {
+      "kind": "write_epoch",
+      "size": 65536,
+      "n_real": 65536,
+      "mismatches": 0
+    },
+    {
+      "kind": "read_window",
+      "size": 64,
+      "hits": 8,
+      "mismatches": 0
+    },
+    {
+      "kind": "read_window",
+      "size": 128,
+      "hits": 16,
+      "mismatches": 0
+    },
+    {
+      "kind": "read_window",
+      "size": 256,
+      "hits": 32,
+      "mismatches": 0
+    },
+    {
+      "kind": "read_window",
+      "size": 512,
+      "hits": 64,
+      "mismatches": 0
+    },
+    {
+      "kind": "read_window",
+      "size": 1024,
+      "hits": 128,
+      "mismatches": 0
+    },
+    {
+      "kind": "read_window",
+      "size": 2048,
+      "hits": 256,
+      "mismatches": 0
+    },
+    {
+      "kind": "read_window",
+      "size": 4096,
+      "hits": 512,
+      "mismatches": 0
+    }
+  ],
+  "host_profile": null,
+  "timer": null,
+  "telemetry_samples": 0,
+  "cv_limit": 0.1,
+  "device": {
+    "backend": "numpy",
+    "is_gpu": false,
+    "device": "12th Gen Intel(R) Core(TM) i7-1255U",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U",
+    "cpu_count": 12,
+    "ram_gb": 15.6,
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0"
+  },
+  "host": {
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U",
+    "cpu_count": 12,
+    "ram_gb": 15.6,
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0"
+  },
+  "payload_note": "8-byte payload stand-ins: payload bytes never go to the device (ADR-006)"
+}

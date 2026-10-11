@@ -1,0 +1,59 @@
+{
+  "run_id": "20261011-224043_M07_kernel_sweep",
+  "module": "M07",
+  "step": "S2",
+  "owner": "Aditya",
+  "git_sha": "710454b22db28e948a1c366110db7187bcb03f64",
+  "dirty": true,
+  "command": "python bench/run_kernels.py --part gpu --seed 7 --out runs",
+  "seed": 7,
+  "quick": false,
+  "params": {
+    "n_log2": [
+      10,
+      12
+    ],
+    "runs": 50,
+    "warmup": 10,
+    "kernels": [
+      "bitonic_global",
+      "bitonic_fused",
+      "sort_e2e",
+      "chacha_tags",
+      "aead_open",
+      "bucket_prf"
+    ],
+    "T": 256,
+    "warm_seconds": [
+      0.5,
+      4.0
+    ],
+    "cv_limit": 0.1,
+    "clock_limit": 0.15,
+    "low_clock_fraction": 0.85,
+    "buckets": 64
+  },
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261011-224043",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U"
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791738644.0453746
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791738644.178101
+  },
+  "outputs": [
+    "summary.json"
+  ],
+  "status": "NOT_MEASURED",
+  "notes": "numpy backend: plumbing and output checks only, no GPU metric measured"
+}
