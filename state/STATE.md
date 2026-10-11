@@ -6,10 +6,10 @@ kit_version: 1.0
 last_session: 14
 last_session_date: 2026-10-12
 current_module: M08
-current_step: S1
-status: NOT_STARTED        # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
+current_step: S5
+status: IN_PROGRESS        # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
 next_unit: M08
-last_checkpoint: 2026-10-12 M07 DONE (job 20261011-224124_M07 ingested, S6 figures and notes, audit PASS); next M08 S1
+last_checkpoint: 2026-10-12 M08 S1-S2 code and local tests done (dudect harness, controls, five targets); GPU checks pending; S3 sass_check.py written and unit-tested on a hand-written listing; S4 ncu driver written and unit-tested on hand-written ncu output; next pack the GPU job
 quick_mode_default: false
 local:                      # the laptop (no GPU) — filled by M00 S7
   os: "Windows-11-10.0.26200-SP0"

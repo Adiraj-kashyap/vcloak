@@ -479,3 +479,18 @@ def aead_seal_seq(kseq: np.ndarray, conv_ids: np.ndarray, seqs: np.ndarray, nonc
     for w in range(4):
         out_blobs[base + np.uint32(SEQ_CT + w)] = ct[w]
         out_blobs[base + np.uint32(SEQ_TAG + w)] = tag[w]
+
+
+# ── M08: the planted leak of the dudect harness (bench/planted/planted_leak.cu) ──
+
+
+@register("planted_leak")
+def planted_leak(x: np.ndarray, out: np.ndarray, n: int, spins: int, *, grid: int, block: int) -> None:
+    """Twin of the positive-control kernel: out[t] = x[t] if it is zero, else `spins` LCG steps from it.
+    The twin computes the same values; the kernel's data-dependent running time has no counterpart here."""
+    t = _threads(grid, block, n)
+    acc = x[t].astype(np.uint32)
+    live = acc != 0
+    for _ in range(int(spins)):
+        acc[live] = acc[live] * np.uint32(1664525) + np.uint32(1013904223)
+    out[t] = acc

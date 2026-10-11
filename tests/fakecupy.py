@@ -46,12 +46,26 @@ def _dev(a: Any) -> Dev:
     return np.ascontiguousarray(a).view(Dev)
 
 
+class _Stream:
+    def __init__(self, non_blocking: bool = False) -> None:  # noqa: ARG002
+        pass
+
+    def synchronize(self) -> None:
+        pass
+
+    def __enter__(self) -> _Stream:
+        return self
+
+    def __exit__(self, *exc: object) -> None:
+        pass
+
+
 def module() -> SimpleNamespace:
-    stream = SimpleNamespace(synchronize=lambda: None)
+    stream = _Stream()
     props = {"name": b"Fake GPU (numpy)", "major": 0, "minor": 0, "multiProcessorCount": 1,
              "memoryClockRate": 1_000_000, "memoryBusWidth": 64}
     cuda = SimpleNamespace(
-        Event=_Event, get_current_stream=lambda: stream,
+        Event=_Event, Stream=_Stream, get_current_stream=lambda: stream,
         get_elapsed_time=lambda a, b: (b.t - a.t) * 1e3,
         alloc_pinned_memory=lambda nbytes: bytearray(nbytes),
         Device=lambda: SimpleNamespace(id=0),
