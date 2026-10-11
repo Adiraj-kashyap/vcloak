@@ -164,5 +164,5 @@
   a general chacha_blocks kernel for S1; guards on the thread id; Barrett reduction instead of `%` in bucket_prf;
   n_buckets up to 2^32 - 1 and tag counts in multiples of 4; a CPU stand-in for nvcc.
 - Not verified: CUDA compilation, GPU execution, simulator parity on a device, 2^max_log2n, any timing.
-- Commit: 680c28d (code), PENDING (job, logs, state)
+- Commit: 680c28d (code), ba4ab4c (job, logs, state)
 - Next: M04 ingest (S4 gates, audit A1/A2/G5) ; human action: ISSUE-8 — upload the job, drop the results zip in gpujobs/inbox/
