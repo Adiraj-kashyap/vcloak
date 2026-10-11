@@ -131,3 +131,33 @@ Confirm by running: .venv\Scripts\python scripts\gpujob.py verify gpujobs\inbox\
 Then open a new session and type: continue
 Resolved session 8: the human ran the job on Kaggle (Tesla T4, session 20261011-133942) and dropped the results zip
 in gpujobs/inbox/; `gpujob.py ingest` verified it and all 6 commands exited 0 (runs/20261011-134013_M04_chacha_smoke).
+
+### ISSUE-9 [OPEN] HUMAN ACTION REQUIRED — GPU JOB READY: M05 AEAD, restore sort, compaction (job 20261011-193547_M05)
+BLOCKS: M05   SEVERITY: high   OPENED: 2026-10-11 session 9
+Why: the laptop has no GPU and no nvcc. The Poly1305 and seq_enc AEAD kernels (seal, open) and the restore and
+compaction sorts have only run as NumPy twins and through a g++ CPU stand-in; M05 needs one real run to compile
+them with CUDA, check the RFC 8439 Poly1305 and AEAD vectors on the device, and compare them byte for byte with the
+reference, the oracle and the simulator up to n = 2^24. The job runs tests only (no timing).
+The time on the runner has not been measured; the earlier jobs were planned at about 20 minutes and this one has
+more tests at n = 2^24, so allow longer and keep the tab open.
+File to upload: D:\PJT\vcloak\gpujobs\out\20261011-193547_M05\job.zip
+Notebook:       D:\PJT\vcloak\colab\VCloak_GPU_Runner.ipynb
+Do this (Kaggle, as for the M00, M03 and M04 jobs):
+  1. kaggle.com -> Create -> New Notebook -> File -> Import Notebook -> pick colab\VCloak_GPU_Runner.ipynb.
+  2. Settings -> Accelerator -> GPU T4 x2.   (the step everyone forgets)
+  3. + Add Input -> Upload -> gpujobs\out\20261011-193547_M05\job.zip as a dataset.
+  4. In Cell 2 set KAGGLE_INPUT = "/kaggle/input/<your-dataset>/job.zip".
+  5. Run Cell 1. It must print a GPU name (e.g. Tesla T4). If it prints NO GPU, redo step 2.
+  6. Run the remaining cells and keep the tab open until the last one finishes.
+  7. Download results_20261011-193547_M05.zip from the Output panel.
+  8. Move that file into D:\PJT\vcloak\gpujobs\inbox\   (do not unzip or rename it).
+Or use Google Colab: colab.research.google.com -> File -> Upload notebook -> the same .ipynb; Runtime -> Change
+  runtime type -> T4 GPU -> Save; run Cell 1 (GPU name), Cell 2 (upload job.zip), Cell 3 (keep the tab open),
+  Cell 4 (downloads the results zip).
+Bring back only the results zip, even if a cell reports a failure: a failed run is still evidence and is fixed in
+  the next session. Do not commit or edit anything in the repo before the next session: a change to src/,
+  kernels/, tests/, bench/ or scripts/ makes the result stale and it will be rejected.
+Note: this job is the first whose tests import the `cryptography` package on the runner. gpu_entry installs it if
+  the runner lacks it (it needs internet in the notebook: Kaggle Settings -> Internet -> On).
+Confirm by running: .venv\Scripts\python scripts\gpujob.py verify gpujobs\inbox\results_20261011-193547_M05.zip
+Then open a new session and type: continue

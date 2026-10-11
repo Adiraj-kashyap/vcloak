@@ -3,13 +3,13 @@
 ```yaml
 project: v-cloak
 kit_version: 1.0
-last_session: 8
+last_session: 9
 last_session_date: 2026-10-11
 current_module: M05
-current_step: S1
-status: NOT_STARTED        # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
+current_step: S4
+status: BLOCKED_HUMAN      # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
 next_unit: M05
-last_checkpoint: 2026-10-11 M04 DONE (GPU job 20261011-183051_M04 ingested, audit PASS, session 8)
+last_checkpoint: 2026-10-11 M05 S1-S4 local half done, GPU job 20261011-193547_M05 packed from 69a2cc3 (session 9)
 quick_mode_default: false
 local:                      # the laptop (no GPU) — filled by M00 S7
   os: "Windows-11-10.0.26200-SP0"
@@ -33,7 +33,7 @@ runner:                     # the free remote GPU — filled from the ingested M
   peak_bw_gbs: 320.064
   last_session_id: "20261011-133942"
 gpu_job:                    # set by the gpu-job skill
-  pending: null   # job id awaiting the human's upload, or null
+  pending: 20261011-193547_M05   # job id awaiting the upload of the human, or null
   last_ingested: 20261011-183051_M04
 ```
 
@@ -46,7 +46,7 @@ gpu_job:                    # set by the gpu-job skill
 | M02 | CPU crypto & key lifecycle | Abhishek | M01 | no | DONE | S7 | 1 |
 | M03 | GPU bitonic kernel | Aditya | M01 | no | DONE | S6 | 2 |
 | M04 | GPU ChaCha20 tags/PRF | Aditya | M02, M03 | no | DONE | S4 | 2 |
-| M05 | GPU AEAD-open, restore, compaction | Aditya | M04 | no | NOT_STARTED | S1 | 0 |
+| M05 | GPU AEAD-open, restore, compaction | Aditya | M04 | no | BLOCKED_HUMAN | S4 | 1 |
 | M06 | GPU engine | Aditya | M05 | no | NOT_STARTED | S1 | 0 |
 | M07 | GPU performance metrics (E4) | Aditya | M06 | no | NOT_STARTED | S1 | 0 |
 | M08 | GPU obliviousness audit (E3) | Aditya | M06 | no | NOT_STARTED | S1 | 0 |

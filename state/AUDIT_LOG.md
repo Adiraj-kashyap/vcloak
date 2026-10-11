@@ -220,3 +220,30 @@ Notes: the S4 gates are in runs/20261011-191448_M04_ingest_audit/gates.txt, comp
 - At n = 2^max_log2n the tags are compared with the reference for seeds 1-3 and with the twin once (Amendments).
 - Whether nvcc emits branch-free code for mod_public and the rotates is an M08 (SASS) question, not answered here.
 - The runner's Python is 3.13.15 and the laptop's 3.14.0 (ISSUE-3 covers the package-set difference).
+
+## Audit M05 — 2026-10-11 — session 9 — result: PARTIAL (prep: local checks PASS; A1, A2, A4, G5 on the GPU wait for GPU job 20261011-193547_M05; module not DONE)
+| Item | Result | Evidence |
+|---|---|---|
+| A1 RFC vectors (Poly1305, AEAD) pass on the GPU | PENDING | ISSUE-9. Local half PASS: RFC 8439 §2.5.2 and §2.8.2 through the NumPy twins (test_rfc8439_2_5_2_poly1305[numpy], test_rfc8439_2_8_2_aead[numpy]) and through the real poly1305.cu compiled with g++ (test_cu_poly1305_is_rfc8439_2_5_2, test_cu_aead_tag_is_rfc8439_2_8_2): runs/20261011-193238_M05_aead_restore_prep/pytest.txt |
+| A2 bit-exact seal/open vs the reference, including tamper cases | PENDING | ISSUE-9. Local half PASS: twin seal = aead_ref.seal_seq at 2^6, 2^10, 2^16 x seeds 1-3 and 5 adversarial column kinds; twin open = aead_ref.open_seq on mixed rows (hits, other conversation, one-bit flips in tag / ciphertext / nonce, random dummies) at the same sizes and seeds, for two query conversations; all 352 single-bit flips of a row are misses under 3 keys; Poly1305 = `cryptography` at 15 lengths x 3 seeds plus reduction edge inputs; the C source = reference = twin (51 shim tests): same pytest.txt |
+| A3 no branch on `ok`, `conv` or tag bytes | PASS | runs/20261011-193238_M05_aead_restore_prep/check_oblivious.txt (11 files, 0 findings, exit 0); 8 leaks planted in aead_open.cu, aead_seal.cu, poly1305.cuh, poly1305.cu and aead_seq.cuh are each flagged at their line (test_check_oblivious_flags_a_leak_planted_in_the_aead_kernels); manual review: runs/20261011-193238_M05_aead_restore_prep/audit_a3.txt lists every control construct of the five files: the thread guards `t >= n`, literal-bound loops, and in poly1305_bytes the loops and the `rem > 0` test on the public byte count. The tag compare is an OR of XORs, `ok` and `miss` are used as values and masks only, the final Poly1305 subtraction is selected by `sel` |
+| A4 restore result equals the oracle for all test windows | PENDING | ISSUE-9. Local half PASS: 50 windows (K from 1 to 257, no hit to all hits, shared-bucket rows, dummies, repeated seq) = read_window_ref, each also read for a second conversation; restore sort = lexicographic order for 8 sizes x 3 seeds x 5 key kinds; compaction = oblivious_compact_ref at 3 sizes x 3 seeds x 6 dummy patterns; tags -> permute -> compact = the oracle write order for 6 (slots, n_real) x 3 epochs: same pytest.txt |
+| G1 | PASS (local) | runs/20261011-193238_M05_aead_restore_prep/pytest.txt (404 passed, 363 skipped: gpu); full suite pytest_all.txt in the same run (1057 passed, 595 skipped) |
+| G2 | PASS | runs/20261011-193238_M05_aead_restore_prep/check_metrics.txt (14 rows, 0 problems); no number recorded this session |
+| G2b | PASS | no metric added; nothing was timed |
+| G3 | PASS | as A3; self-test 11/11 (check_oblivious_selftest.txt) |
+| G4 | PASS | runs/20261011-193238_M05_aead_restore_prep/check_secrets.txt (0 key-like runs); re-run after the pack: PASS (the bundle digest is allow-listed by pack) |
+| G5 | PENDING | ISSUE-9: the GPU side of test_aead.py and test_restore.py (363 tests, incl. test_gpu_equals_simulator at 3 sizes x 3 seeds and test_max_log2n in both files) runs in the job |
+| G6 | PASS | runs/20261011-193238_M05_aead_restore_prep/deliverables_ls.txt (poly1305.cuh, aead_open.cu, aead_seal.cu, gpu/kernels.py wrappers, tests/gpu/test_aead.py, tests/gpu/test_restore.py; extra: aead_seq.cuh, poly1305.cu, see the Amendments note) |
+| G7 | PASS | checked after commit (clean tree, [owner:Aditya]) |
+| G8 | PASS | STATE: M05 BLOCKED_HUMAN at S4, gpu_job.pending 20261011-193547_M05, sessions 1 |
+| G9 | PASS | SESSION_LOG session 9, this entry, ISSUE-9 opened |
+| G10 | PASS | manifest validates (new_run.py --validate); the module tests re-run in a fresh process give the same result (pytest_repeat.txt in the same run: 404 passed, 363 skipped) |
+Notes: nothing on this page ran on a GPU. The twins and the g++ build show that the kernel logic is right; they do
+not show that nvrtc compiles the files, that the device produces the same bytes, or any speed. Whether nvcc emits
+branch-free code for `diff == 0`, `conv != q_conv` and the Poly1305 select is an M08 (SASS) question, not answered
+here. ruff reports 1 E501 in scripts/record_env.py, which predates this session (ruff.txt in the run); the files of
+this session are clean. The run manifest has dirty:true because the run was taken before the commit; the code it
+tested is commit 69a2cc3. scripts/check_oblivious.py changed this session (three public parameter names added),
+so the checker that passed A3 is not the one that passed M04; its self-test and the M03/M04 planted-leak tests
+still pass in the full suite.

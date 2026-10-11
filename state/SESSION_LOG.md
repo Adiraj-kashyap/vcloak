@@ -191,3 +191,26 @@
   branch-free machine code for mod_public and the rotates (M08, SASS); any performance claim (M07).
 - Commit: c7a7ac5
 - Next: M05 S1 ; human action: none
+
+## Session 9 — 2026-10-11 19:40 — M05 GPU AEAD-open, restore, compaction (prep) — owner:Aditya
+- Steps: S1-S4, local half (status after: BLOCKED_HUMAN, GPU JOB READY)
+- Did: kernels/poly1305.cuh (26-bit limbs, masked final reduction), aead_seq.cuh (fixed 3-block seq_enc tag),
+  aead_open.cu (aead_open_seq), aead_seal.cu (aead_seal_seq), poly1305.cu (general poly1305_mac and aead_tag for
+  the RFC vectors); NumPy twins in gpu/sim.py; wrappers gpu_open_and_key, gpu_restore_sort, gpu_compact,
+  gpu_seal_seq, gpu_poly1305, gpu_aead_tag, pack/unpack_seq_enc; tests test_aead.py, test_restore.py,
+  test_aead_cpu_shim.py (the real .cu files compiled with g++), tests/cuda_shim/aead_host.cpp, bench/jobs/M05.json.
+- Evidence: runs/20261011-193238_M05_aead_restore_prep (pytest 404 passed / 363 gpu-skipped; full suite
+  1057 / 595; check_oblivious 11 files 0 findings; check_secrets PASS; check_metrics 14 rows PASS; audit_a3.txt).
+- Checks: S1 RFC 8439 §2.5.2 (twin and C source); S2 seal/open = aead_ref on valid, tampered and dummy rows,
+  RFC §2.8.2 tag; S3 50 windows = read_window_ref; S4 compaction = oblivious_compact_ref and the oracle write order.
+- GPU job: 20261011-193547_M05 packed from 69a2cc3 (1.34 MB, 84 files), full mode, 6 commands, tests only.
+- Metrics added: none (numpy backend; nothing timed)
+- Decisions: none
+- Issues: opened ISSUE-9 (HUMAN ACTION: GPU JOB READY, M05)
+- Deviations from spec: see the Amendments note in ai/modules/M05_gpu_aead_restore_compact.md — blobs as 11 u32
+  words per row; extra files aead_seq.cuh and poly1305.cu; wrapper shapes; three public names added to
+  check_oblivious; `cryptography` added to requirements-gpu.txt; no bench.
+- Not verified: CUDA compilation, GPU execution, simulator parity on a device, 2^max_log2n, that the runner has or
+  can install `cryptography`, any timing.
+- Commit: 69a2cc3 (code), pending (job, logs, state)
+- Next: M05 ingest (A1, A2, A4, G5) ; human action: ISSUE-9 — upload the job, drop the results zip in gpujobs/inbox/
