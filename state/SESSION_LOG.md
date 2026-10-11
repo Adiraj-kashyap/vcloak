@@ -291,5 +291,5 @@
   ingested, because the module asks for smoke values and sets no CV gate; it is flagged in ISSUE-11.
 - Not verified: any performance claim. The five values come from 15 runs at a non-ramped SM clock and are not M07
   results. Not profiled: what the host stage spends its time on. Not checked: branch-free machine code (M08).
-- Commit: PENDING_SHA
+- Commit: 325a545
 - Next: M07 S1 ; human action: none

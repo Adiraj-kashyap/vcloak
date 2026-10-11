@@ -171,7 +171,7 @@ Resolved session 10: the human ran the job on Kaggle (Tesla T4, session 20261011
 in gpujobs/inbox/; `gpujob.py ingest` verified it and all 6 commands exited 0 (gpujobs/out/20261011-193547_M05/logs,
 gates in runs/20261011-213200_M05_ingest_audit/gates.txt). `cryptography` was already on the runner.
 
-### ISSUE-10 [CLOSED PENDING_SHA] HUMAN ACTION REQUIRED — GPU JOB READY: M06 GPU engine (job 20261011-215111_M06)
+### ISSUE-10 [CLOSED 325a545] HUMAN ACTION REQUIRED — GPU JOB READY: M06 GPU engine (job 20261011-215111_M06)
 BLOCKS: M06   SEVERITY: high   OPENED: 2026-10-11 session 11
 Why: the laptop has no GPU. The engine (key store, write_epoch, reshuffle_window, read_window) has only run on the
 NumPy twins. M06 needs one real run to execute it on CUDA, compare it byte for byte with the oracle and with the
