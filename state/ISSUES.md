@@ -89,7 +89,7 @@ Then open a new session and type: continue
 Resolved session 6: the human ran the job on Kaggle (Tesla T4, session 20261011-122243) and dropped the results zip
 in gpujobs/inbox/; `gpujob.py ingest` verified it and all 5 commands exited 0 (runs/20261011-122303_M03_bitonic_smoke).
 
-### ISSUE-7 [CLOSED HASH_PENDING] Telemetry during a timed section: 1 sample, taken at idle
+### ISSUE-7 [CLOSED 9ae9ba5] Telemetry during a timed section: 1 sample, taken at idle
 BLOCKS: none   SEVERITY: medium   OPENED: 2026-10-11 session 6
 Symptom: in runs/20261011-122303_M03_bitonic_smoke the manifest's start snapshot shows the SM clock at 900 MHz
 (idle, util 6%) and the end snapshot 1590 MHz; telemetry.csv holds 1 sample, also from before the ramp. The gate
@@ -213,7 +213,7 @@ Then open a new session and type: continue
 Closed session 12: the results zip was uploaded and ingested (overall exit 0, 7 commands); gates PASS in
 runs/20261011-221434_M06_ingest_audit/gates.txt.
 
-### ISSUE-11 [CLOSED HASH_PENDING] M06 smoke timings are UNSTABLE / taken at a low SM clock
+### ISSUE-11 [CLOSED 9ae9ba5] M06 smoke timings are UNSTABLE / taken at a low SM clock
 BLOCKS: none   SEVERITY: medium   OPENED: 2026-10-11 session 12
 Symptom: runs/20261011-163049_M06_pipeline_smoke_quick has status UNSTABLE. P-READ-WINDOW-MS-K128 had CV 0.106 and
 0.119 on its two attempts (limit 0.10); P-WRITE-EPOCH-MS-S4096 needed its second attempt (CV 0.354, then 0.043).
@@ -263,7 +263,7 @@ generate the row ids in one vectorised call instead of one `uuid` object per row
 new GPU job. That changes src/vcloak/gpu/engine.py, so every later job is packed from the new commit. Until then the
 honest statement is: the GPU pipeline fits the epoch at 2^16 slots, the Python host path on this runner's CPU does not.
 
-### ISSUE-13 [CLOSED HASH_PENDING] HUMAN ACTION REQUIRED — GPU JOB READY: M07 performance sweeps (job 20261011-224124_M07)
+### ISSUE-13 [CLOSED 9ae9ba5] HUMAN ACTION REQUIRED — GPU JOB READY: M07 performance sweeps (job 20261011-224124_M07)
 BLOCKS: M07   SEVERITY: high   OPENED: 2026-10-11 session 13
 Why: the laptop has no GPU. M07 is the measurement module: kernel sweeps from 2^10 to 2^22, the CPU baselines taken
 beside the GPU in the same runner session, the GPU/CPU crossover, and the pipeline breakdown with the real-time
