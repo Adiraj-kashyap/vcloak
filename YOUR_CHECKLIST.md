@@ -38,7 +38,9 @@ When a session ends with **`GPU JOB READY`**, you do this. Nothing else in the p
 1. **kaggle.com** → `Create` → `New Notebook` → `File` → `Import Notebook` → upload the same `.ipynb`.
 2. Right panel → `Settings` → `Accelerator` → **`GPU T4 x2`** (verify your phone once if asked).
 3. Kaggle has no file-upload box inside the notebook. Instead: right panel → `+ Add Input` → `Upload` →
-   upload `job.zip` as a dataset. Then in **Cell 2**, set `KAGGLE_INPUT = "/kaggle/input/<your-dataset>/job.zip"`.
+   upload `job.zip` as a dataset. Kaggle unpacks the zip into a folder; that is expected. You do not type a
+   path: **Cell 2** finds the job under `/kaggle/input` by itself and checks that the files are what was packed.
+   (If you re-use an old notebook, re-import the `.ipynb` first so that you have the current Cell 2.)
 4. Run all cells. The results zip appears in the **Output** panel on the right — download it from there.
 5. Same as Colab: drop it into `gpujobs/inbox/`, then `continue`.
 

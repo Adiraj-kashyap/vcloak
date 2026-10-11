@@ -81,6 +81,8 @@ gpu_job:                    # set by the gpu-job skill
   even if other modules look more urgent — criterion 9 awards nothing without a dated submission proof.
 - The five `P-*` rows from M06 are smoke values (15 runs, SM clock 585 MHz, one config above the CV limit).
   M07 must re-measure them and must report the host stage apart from the device stages (ISSUE-11, ISSUE-12).
+- Kaggle unpacks an uploaded job.zip into a folder. Cell 2 of the notebook finds either form; in a GPU JOB READY
+  issue never tell the human to set a path to job.zip on Kaggle.
 - M07 ingest session: after `gpujob.py ingest`, apply the gates, then do S6 (src/vcloak/bench/report.py, results/perf,
   docs/REPORT_CH4_NOTES.md) from the ingested run dirs, and run capture-evidence. X-* and CPU-* rows are only valid
   with the kernel sweep of the same `session_id`.

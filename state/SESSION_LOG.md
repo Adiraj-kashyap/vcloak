@@ -317,3 +317,9 @@
 - Commit: c40696b (code), 4673a5d (job, logs, state)
 - Next: M07 ingest (gates, metrics, S6 plots and notes) ; human action: ISSUE-13 — upload the job, drop the
   results zip in gpujobs/inbox/
+
+- Session 13 follow-up 2026-10-12 (human report, same unit, no new step): Kaggle unpacks an uploaded job.zip, so
+  Cell 2's KAGGLE_INPUT path did not exist. colab/VCloak_GPU_Runner.ipynb Cell 2 now finds an unpacked bundle or a
+  zip under /kaggle/input and verifies the bundle content hash; YOUR_CHECKLIST.md, the gpu-job skill, ISSUE-13 and
+  STATE updated. Job 20261011-224124_M07 is unchanged and still pending (the notebook is not in the bundle).
+  Not verified on Kaggle.

@@ -258,8 +258,10 @@ Notebook:       D:\PJT\vcloak\colab\VCloak_GPU_Runner.ipynb
 Do this (Kaggle, as for the earlier jobs):
   1. kaggle.com -> Create -> New Notebook -> File -> Import Notebook -> pick colab\VCloak_GPU_Runner.ipynb.
   2. Settings -> Accelerator -> GPU T4 x2.   (the step everyone forgets)
-  3. + Add Input -> Upload -> gpujobs\out\20261011-224124_M07\job.zip as a dataset.
-  4. In Cell 2 set KAGGLE_INPUT = "/kaggle/input/<your-dataset>/job.zip".
+  3. + Add Input -> Upload -> gpujobs\out\20261011-224124_M07\job.zip as a dataset. Kaggle unpacks it into a
+     folder: that is fine.
+  4. Nothing to type in Cell 2: leave KAGGLE_INPUT = "" . The cell finds the job under /kaggle/input and must
+     print "Bundle verified". (Import the notebook again from the repo: Cell 2 changed on 2026-10-12.)
   5. Run Cell 1. It must print a GPU name (e.g. Tesla T4). If it prints NO GPU, redo step 2.
   6. Run the remaining cells and keep the tab open until the last one finishes. Do not start anything else in
      that notebook while it runs: the CPU baselines are timed on the same machine.
@@ -274,3 +276,10 @@ Bring back only the results zip, even if a cell reports a failure. Do not commit
 No passphrase is needed: the job uses fixed TEST keys.
 Confirm by running: .venv\Scripts\python scripts\gpujob.py verify gpujobs\inbox\results_20261011-224124_M07.zip
 Then open a new session and type: continue
+Update 2026-10-12 (reported by the human): Kaggle unpacks an uploaded job.zip, so the path
+/kaggle/input/<dataset>/job.zip that steps 3-4 used to name does not exist and Cell 2 failed. Fixed in
+colab/VCloak_GPU_Runner.ipynb: Cell 2 searches /kaggle/input for an unpacked bundle (the folder with job.json and
+gpu_entry.py) or a zip, copies it to /kaggle/working, and recomputes the bundle content hash against job.json.
+Checked on the laptop against this job.zip in the three layouts (unpacked, unpacked one level deeper next to an
+older job, kept as a zip) and with a damaged file (refused). The job itself is unchanged: the notebook is not part
+of the bundle, so job 20261011-224124_M07 and its job.zip stay valid. Not checked on Kaggle itself.

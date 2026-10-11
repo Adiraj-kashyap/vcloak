@@ -29,7 +29,9 @@ Run `ls gpujobs/inbox/`. If a `results_*.zip` is there → INGEST. Otherwise →
 
    Long job? Use Kaggle instead: Create > New Notebook > File > Import Notebook,
    Settings > Accelerator > GPU T4 x2, add job.zip via "+ Add Input > Upload",
-   set KAGGLE_INPUT in Cell 2, and take the results from the Output panel.
+   run Cell 2 as it is (Kaggle unpacks the uploaded zip into a folder; Cell 2 finds the job under
+   /kaggle/input by itself, so never tell the human to type a path to job.zip), and take the results
+   from the Output panel.
    Full detail: YOUR_CHECKLIST.md
    ```
    First GPU job of the project? Add one line: "if you have never used Colab, a Google account is all
