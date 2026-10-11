@@ -34,5 +34,5 @@
 - Deviations from spec: (a) the runner was Kaggle, not Colab; (b) scripts/record_env.py is not in the M00 deliverables
   list, added so STATE.runner is generated, not typed (A3); (c) the runner's optional unit_tests command exited 1
   (2 test bugs, fixed here); (d) ncu_counters_permitted left unknown — not probed in M00.
-- Commit: PENDINGHASH
+- Commit: 5cff14d
 - Next: M01 S1 ; human action: none

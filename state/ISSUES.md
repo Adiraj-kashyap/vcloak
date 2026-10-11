@@ -6,7 +6,7 @@ The kit script was UTF-8 without a BOM; PowerShell 5.1 read it as ANSI, turned t
 characters and aborted before doing anything ("The term 'tick' is not recognized"). Fixed by adding a UTF-8 BOM
 to the file (no other change). It then ran clean: .venv, packages, git init, identity. Teammates get the fix.
 
-### ISSUE-2 [CLOSED PENDINGHASH] HUMAN ACTION REQUIRED — GPU JOB READY: M00 runner probe (job 20261011-014756_M00)
+### ISSUE-2 [CLOSED 5cff14d] HUMAN ACTION REQUIRED — GPU JOB READY: M00 runner probe (job 20261011-014756_M00)
 BLOCKS: M00   SEVERITY: high   OPENED: 2026-10-11 session 1
 Why: the laptop has no GPU; M00 S6 needs one real run on a free Colab GPU to identify the runner (about 2 minutes).
 File to upload: D:\PJT\vcloak\gpujobs\out\20261011-014756_M00\job.zip
