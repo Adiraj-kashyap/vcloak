@@ -57,7 +57,7 @@ Workaround (any session that packs a job): run `python scripts/check_secrets.py`
 Proposed fix (M03 prep session, owner of scripts/gpujob.py): have `gpujob.py pack` add that allow-list entry itself.
 Resolved session 5: `gpujob.py pack` adds the digest to scripts/secrets_allowlist.json itself; that file is no longer bundled or part of the staleness check, so the write cannot invalidate the job (tests/unit/test_gpujob.py).
 
-### ISSUE-6 [CLOSED PENDING_HASH] HUMAN ACTION REQUIRED — GPU JOB READY: M03 bitonic kernels (job 20261011-173759_M03)
+### ISSUE-6 [CLOSED 121dc0b] HUMAN ACTION REQUIRED — GPU JOB READY: M03 bitonic kernels (job 20261011-173759_M03)
 BLOCKS: M03   SEVERITY: high   OPENED: 2026-10-11 session 5
 Why: the laptop has no GPU and no nvcc. The bitonic kernels have only run as NumPy twins and through a g++ CPU
 stand-in; M03 needs one real run to compile them with CUDA, compare them byte for byte with the oracle and the

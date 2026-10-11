@@ -142,5 +142,5 @@
   snapshot; the gate is a drop of more than 15%, so the run stands as OK, with the caveat in the audit notes.
 - Not verified: per-test names on the runner (the logs are -q summaries); race freedom beyond the one racecheck
   size; any performance claim (M07).
-- Commit: PENDING_HASH
+- Commit: 121dc0b
 - Next: M04 S1 ; human action: none
