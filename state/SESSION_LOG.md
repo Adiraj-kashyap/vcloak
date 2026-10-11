@@ -189,5 +189,5 @@
 - Deviations from spec: none new.
 - Not verified: the smoke at the GPU's working clock (the SM clock stayed near half of what the M03 job reached);
   branch-free machine code for mod_public and the rotates (M08, SASS); any performance claim (M07).
-- Commit: @@HASH@@
+- Commit: c7a7ac5
 - Next: M05 S1 ; human action: none

@@ -104,7 +104,7 @@ stable pair of snapshots therefore does not mean the GPU was at its working cloc
 snapshot pair to bench/bitonic_smoke.py and the sweeps, warm up until the SM clock stops rising (or for a fixed
 wall time), record the clock with every metric, and treat a low-clock run as UNSTABLE. Still open.
 
-### ISSUE-8 [CLOSED @@HASH@@] HUMAN ACTION REQUIRED — GPU JOB READY: M04 ChaCha20 kernels (job 20261011-183051_M04)
+### ISSUE-8 [CLOSED c7a7ac5] HUMAN ACTION REQUIRED — GPU JOB READY: M04 ChaCha20 kernels (job 20261011-183051_M04)
 BLOCKS: M04   SEVERITY: high   OPENED: 2026-10-11 session 7
 Why: the laptop has no GPU and no nvcc. The ChaCha20 kernels (tags, subkeys, bucket PRF) have only run as NumPy
 twins and through a g++ CPU stand-in; M04 needs one real run to compile them with CUDA, check the RFC 8439 vector,
