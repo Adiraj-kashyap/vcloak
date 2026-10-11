@@ -1,0 +1,88 @@
+{
+  "job_id": "20261011-193547_M05",
+  "module": "M05",
+  "step": "S4",
+  "quick": false,
+  "packed_from_git_sha": "69a2cc3cba775a953a3f2cdf474061da3ee354e7",
+  "bundle_sha256": "9fff581dc12d68307e32d326a8e755aecac604491f41c0084292e0f0a75f64cf",
+  "finished_at": "2026-10-11T14:21:44.744227+00:00",
+  "env": {
+    "collected_at": "2026-10-11T14:18:33.835579+00:00",
+    "python": "3.13.15",
+    "platform": "Linux-6.18.48+-x86_64-with-glibc2.39",
+    "backend": "cupy",
+    "runner": "kaggle",
+    "session_id": "20261011-141833",
+    "gpu": "Tesla T4",
+    "driver": "580.178.04",
+    "vram_total": "15360 MiB",
+    "compute_capability": "7.5",
+    "nvcc": "Build cuda_12.8.r12.8/compiler.35583870_0",
+    "ncu": "NVIDIA (R) Nsight Compute Command Line Profiler",
+    "cupy": "14.0.1",
+    "cuda_runtime": "12090",
+    "cpu": "Intel(R) Xeon(R) CPU @ 2.00GHz",
+    "cpu_count": "4"
+  },
+  "requirements": {
+    "file": "requirements-gpu.txt",
+    "installed": [],
+    "skipped": [
+      "cupy-cuda12x",
+      "nvidia-ml-py",
+      "cryptography"
+    ],
+    "failed": []
+  },
+  "commands": [
+    {
+      "n": 1,
+      "name": "nvidia_smi",
+      "cmd": "nvidia-smi",
+      "exit_code": 0,
+      "log": "logs/01_nvidia_smi.txt",
+      "optional": false
+    },
+    {
+      "n": 2,
+      "name": "check_oblivious",
+      "cmd": "python scripts/check_oblivious.py kernels/",
+      "exit_code": 0,
+      "log": "logs/02_check_oblivious.txt",
+      "optional": false
+    },
+    {
+      "n": 3,
+      "name": "pytest_aead",
+      "cmd": "python -m pytest -p no:cacheprovider -rs -v -m \"not slow\" tests/gpu/test_aead.py",
+      "exit_code": 0,
+      "log": "logs/03_pytest_aead.txt",
+      "optional": false
+    },
+    {
+      "n": 4,
+      "name": "pytest_restore",
+      "cmd": "python -m pytest -p no:cacheprovider -rs -v -m \"not slow\" tests/gpu/test_restore.py",
+      "exit_code": 0,
+      "log": "logs/04_pytest_restore.txt",
+      "optional": false
+    },
+    {
+      "n": 5,
+      "name": "pytest_regression",
+      "cmd": "python -m pytest -p no:cacheprovider -rs -q -m \"not slow\" tests/gpu/test_chacha.py tests/gpu/test_bitonic.py",
+      "exit_code": 0,
+      "log": "logs/05_pytest_regression.txt",
+      "optional": false
+    },
+    {
+      "n": 6,
+      "name": "pytest_max_log2n",
+      "cmd": "python -m pytest -p no:cacheprovider -rs -v -m slow tests/gpu/test_aead.py tests/gpu/test_restore.py",
+      "exit_code": 0,
+      "log": "logs/06_pytest_max_log2n.txt",
+      "optional": false
+    }
+  ],
+  "overall_exit": 0
+}

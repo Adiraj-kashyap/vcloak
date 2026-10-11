@@ -214,3 +214,29 @@
   can install `cryptography`, any timing.
 - Commit: 69a2cc3 (code), 24b10da (job, logs, state)
 - Next: M05 ingest (A1, A2, A4, G5) ; human action: ISSUE-9 — upload the job, drop the results zip in gpujobs/inbox/
+
+- GPU-JOB 20261011-193547_M05 ingested 2026-10-11 21:31: runner kaggle, gpu Tesla T4, session 20261011-141833, overall exit 0, runs none, 0 metrics indexed.
+
+## Session 10 — 2026-10-11 21:45 — M05 GPU AEAD-open, restore, compaction (ingest) — owner:Aditya
+- Steps: S1-S4, GPU half (status after: DONE)
+- Did: verified and ingested results_20261011-193547_M05.zip (job id, bundle sha, git sha 69a2cc3 all match);
+  applied gates A1, A2, A4 and G5 to the runner logs; re-ran the local checks; audit; evidence copies.
+- Evidence: gpujobs/out/20261011-193547_M05/{result.json,logs/} (cupy, Kaggle Tesla T4, session 20261011-141833),
+  runs/20261011-213200_M05_ingest_audit (gates.txt, gates_m05.py, local checks), evidence/gpu/M05_nvidia_smi.txt,
+  evidence/terminal/M05_{gpu_tests,gates,audit}.txt.
+- Checks: all 6 runner commands exit 0, no failed or skipped test. A1 RFC 8439 §2.5.2 and §2.8.2 pass on the T4.
+  A2 213 passed (seal/open = aead_ref incl. tampered and dummy rows, every single-bit flip a miss). A4 497 passed
+  (50 windows = read_window_ref, compaction and write order = oracle). G5 GPU = twin at 3 sizes x seeds 1-3 in both
+  files, 6 passed at 2^max_log2n. ChaCha/bitonic regression 511 passed. check_oblivious 11 files, 0 findings on the
+  runner and locally. Local: 817 passed / 593 gpu-skipped, full suite 1057 / 595; check_metrics 14 rows PASS;
+  check_secrets PASS.
+- Metrics added: none (the job runs tests only; nothing was timed)
+- Decisions: none
+- Issues: closed ISSUE-9 (job uploaded and ingested); ISSUE-3 updated (the M05 job ran on a different runner image)
+- Deviations from spec: none new. capture-evidence was not required (no change in web/, results/ or METRICS_INDEX);
+  terminal and GPU proofs were copied anyway, as for M03 and M04.
+- Not verified: any timing of the AEAD, restore or compaction path (M07); branch-free machine code for the tag
+  compare, `conv != q_conv` and the Poly1305 select (M08, SASS); behaviour on the older runner image (CUDA 13.0).
+- Commit: PENDING_HASH
+- Next: M06 S1 ; human action: none
+

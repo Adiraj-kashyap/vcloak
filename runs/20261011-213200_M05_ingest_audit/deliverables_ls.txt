@@ -1,0 +1,12 @@
+-rw-r--r-- 1 HP 197121  2036 Oct 11 19:23 kernels/aead_open.cu
+-rw-r--r-- 1 HP 197121  1522 Oct 11 19:23 kernels/aead_seal.cu
+-rw-r--r-- 1 HP 197121  1313 Oct 11 19:23 kernels/aead_seq.cuh
+-rw-r--r-- 1 HP 197121  2424 Oct 11 19:23 kernels/poly1305.cu
+-rw-r--r-- 1 HP 197121  5554 Oct 11 19:23 kernels/poly1305.cuh
+-rw-r--r-- 1 HP 197121 19236 Oct 11 19:26 src/vcloak/gpu/kernels.py
+-rw-r--r-- 1 HP 197121 20409 Oct 11 19:32 tests/gpu/test_aead.py
+-rw-r--r-- 1 HP 197121 12199 Oct 11 19:32 tests/gpu/test_restore.py
+338:def gpu_seal_seq(kseq_dev: Any, conv_ids_dev: Any, seqs_dev: Any, nonces_dev: Any) -> Any:
+350:def gpu_open_and_key(kseq_dev: Any, blobs_dev: Any, q_conv: int) -> tuple[Any, Any, Any]:
+364:def gpu_restore_sort(d_hi: Any, d_lo: Any, *, T: int = DEFAULT_T) -> tuple[Any, int]:  # noqa: N803
+387:def gpu_compact(d_is_dummy: Any, d_order: Any, *, T: int = DEFAULT_T) -> Any:  # noqa: N803

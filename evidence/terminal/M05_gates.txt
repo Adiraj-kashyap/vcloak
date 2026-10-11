@@ -1,0 +1,31 @@
+job 20261011-193547_M05 session 20261011-141833 runner kaggle gpu Tesla T4 driver 580.178.04 cupy 14.0.1 cuda_runtime 12090 nvcc Build cuda_12.8.r12.8/compiler.35583870_0
+    PASS all_commands_exit_0 - 6 commands
+    PASS git_sha_matches_pack - 69a2cc3
+    PASS bundle_sha_matches_pack
+    PASS backend_cupy
+    PASS no fail/error/skip: pytest_aead - 213 passed, 3 deselected in 16.50s
+    PASS no fail/error/skip: pytest_restore - 497 passed, 3 deselected in 55.25s
+    PASS no fail/error/skip: pytest_regression - 511 passed, 10 deselected in 21.79s
+    PASS no fail/error/skip: pytest_max_log2n - 6 passed, 710 deselected in 85.95s (0:01:25)
+    PASS A1 RFC 8439 2.5.2 Poly1305 on the GPU
+    PASS A1 RFC 8439 2.8.2 AEAD on the GPU
+    PASS A2 cupy: test seal equals reference - 9 cupy cases passed
+    PASS A2 cupy: test open equals reference on valid tampered and dummy rows - 9 cupy cases passed
+    PASS A2 cupy: test every single bit flip is a miss - 3 cupy cases passed
+    PASS A2 cupy: test poly1305 equals reference at every alignment - 45 cupy cases passed
+    PASS A2 cupy: test aead tag equals reference - 21 cupy cases passed
+    PASS A2 cupy: test seal adversarial columns - 5 cupy cases passed
+    PASS A2 cupy: test open under the wrong key misses everything - 1 cupy cases passed
+    PASS A2 cupy: test poly1305 final reduction edges - 1 cupy cases passed
+    PASS A4 cupy: test read window equals oracle - 50 cupy cases passed
+    PASS A4 cupy: test restore sort equals lexicographic order - 120 cupy cases passed
+    PASS A4 cupy: test compact equals oracle - 54 cupy cases passed
+    PASS A4 cupy: test write path order equals oracle - 18 cupy cases passed
+    PASS G5 gpu equals simulator: pytest_aead - sizes [64, 1024, 65536] x seeds ['1', '2', '3']
+    PASS G5 gpu equals simulator: pytest_restore - sizes [64, 1024, 65536] x seeds ['1', '2', '3']
+    PASS G5_max_log2n - 6 passed: 6 passed, 710 deselected in 85.95s (0:01:25)
+    PASS regression_chacha_bitonic - 511 passed, 10 deselected in 21.79s
+    PASS check_oblivious_on_runner - check_oblivious: 11 file(s), 0 finding(s) - PASS
+    NOTE cupy-parametrised PASSED lines: aead 96, restore 243
+    NOTE no timing, telemetry or metric in this job (tests only); nothing is added to METRICS_INDEX
+gates: PASS

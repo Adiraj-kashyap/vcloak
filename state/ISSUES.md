@@ -35,6 +35,10 @@ requirements-gpu.txt names cupy-cuda12x, but the Kaggle T4 runner already ships 
 Risk: a Colab session may ship a different CuPy/CUDA pair, and the file no longer describes what actually ran.
 Proposed fix (M03 prep): make the requirement runtime-agnostic or record the installed wheel name in result.json;
 keep comparing `cupy`/`cuda` in each manifest before mixing timings from different sessions.
+Update session 10: the risk happened. The M05 job (session 20261011-141833) ran on a different Kaggle image:
+driver 580.178.04, nvcc CUDA 12.8, CUDA runtime 12090, kernel 6.18.48, against 580.82.07 / CUDA 13.0 / 13000 /
+6.6.122 for the M00, M03 and M04 jobs. Same Tesla T4 and CuPy 14.0.1. M05 has no timing, so nothing is affected yet;
+M07 must take all timings it compares from one image (or re-run the M00 probe first) and state the image per metric.
 
 ### ISSUE-4 [CLOSED] M02 secrets scanner must allow-list the golden vectors
 BLOCKS: none   SEVERITY: low   OPENED: 2026-10-11 session 3
@@ -132,7 +136,7 @@ Then open a new session and type: continue
 Resolved session 8: the human ran the job on Kaggle (Tesla T4, session 20261011-133942) and dropped the results zip
 in gpujobs/inbox/; `gpujob.py ingest` verified it and all 6 commands exited 0 (runs/20261011-134013_M04_chacha_smoke).
 
-### ISSUE-9 [OPEN] HUMAN ACTION REQUIRED — GPU JOB READY: M05 AEAD, restore sort, compaction (job 20261011-193547_M05)
+### ISSUE-9 [CLOSED PENDING_HASH] HUMAN ACTION REQUIRED — GPU JOB READY: M05 AEAD, restore sort, compaction (job 20261011-193547_M05)
 BLOCKS: M05   SEVERITY: high   OPENED: 2026-10-11 session 9
 Why: the laptop has no GPU and no nvcc. The Poly1305 and seq_enc AEAD kernels (seal, open) and the restore and
 compaction sorts have only run as NumPy twins and through a g++ CPU stand-in; M05 needs one real run to compile
@@ -161,3 +165,6 @@ Note: this job is the first whose tests import the `cryptography` package on the
   the runner lacks it (it needs internet in the notebook: Kaggle Settings -> Internet -> On).
 Confirm by running: .venv\Scripts\python scripts\gpujob.py verify gpujobs\inbox\results_20261011-193547_M05.zip
 Then open a new session and type: continue
+Resolved session 10: the human ran the job on Kaggle (Tesla T4, session 20261011-141833) and dropped the results zip
+in gpujobs/inbox/; `gpujob.py ingest` verified it and all 6 commands exited 0 (gpujobs/out/20261011-193547_M05/logs,
+gates in runs/20261011-213200_M05_ingest_audit/gates.txt). `cryptography` was already on the runner.

@@ -1,0 +1,15 @@
+============================= test session starts ==============================
+platform linux -- Python 3.13.15, pytest-8.4.2, pluggy-1.6.0 -- /usr/bin/python3
+rootdir: /content/vcloak_job
+configfile: pyproject.toml
+plugins: typeguard-4.6.0, anyio-4.14.2, langsmith-0.12.1
+collecting ... collected 716 items / 710 deselected / 6 selected
+
+tests/gpu/test_aead.py::test_max_log2n[1] PASSED                         [ 16%]
+tests/gpu/test_aead.py::test_max_log2n[2] PASSED                         [ 33%]
+tests/gpu/test_aead.py::test_max_log2n[3] PASSED                         [ 50%]
+tests/gpu/test_restore.py::test_max_log2n[1] PASSED                      [ 66%]
+tests/gpu/test_restore.py::test_max_log2n[2] PASSED                      [ 83%]
+tests/gpu/test_restore.py::test_max_log2n[3] PASSED                      [100%]
+
+================= 6 passed, 710 deselected in 85.95s (0:01:25) =================
