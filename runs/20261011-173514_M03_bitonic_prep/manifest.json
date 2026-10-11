@@ -1,0 +1,45 @@
+{
+  "run_id": "20261011-173514_M03_bitonic_prep",
+  "module": "M03",
+  "step": "S5",
+  "owner": "Aditya",
+  "git_sha": "378b57bcf666ec5596e38c709e488ee2fcf533d3",
+  "dirty": true,
+  "command": "pytest tests/gpu tests/unit/test_check_oblivious.py tests/unit/test_gpujob.py; check_oblivious.py kernels/; check_oblivious.py --self-test",
+  "seed": 0,
+  "quick": false,
+  "params": {},
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261011-173514",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U"
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791720314.5091827
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791720442.4391956
+  },
+  "outputs": [
+    "audit_a2_a4.txt",
+    "check_metrics.txt",
+    "check_oblivious.txt",
+    "check_oblivious_planted.txt",
+    "check_oblivious_selftest.txt",
+    "check_secrets.txt",
+    "deliverables_ls.txt",
+    "pytest.txt",
+    "pytest_all.txt",
+    "pytest_repeat.txt",
+    "ruff.txt"
+  ],
+  "status": "OK",
+  "notes": "prep session, numpy backend: correctness only, no number here is a performance result; CUDA compile and GPU execution are pending in the M03 GPU job"
+}

@@ -1,0 +1,13 @@
+PASS  clean copy: 0 finding(s)
+PASS  planted data_branch: expected BRANCH -> bitonic.cu:22: `if` condition depends on data (hi) in bitonic_pairs_global()
+PASS  planted data_loop_bound: expected BRANCH -> bitonic.cu:22: `for` condition depends on data (slot) in bitonic_pairs_global()
+PASS  planted data_while: expected BRANCH -> bitonic.cu:22: `while` condition depends on data (lo) in bitonic_pairs_global()
+PASS  planted data_ternary: expected TERNARY -> bitonic.cu:22: `?:` selection depends on data (big, hi) in bitonic_pairs_global()
+PASS  planted data_short_circuit: expected SHORT_CIRCUIT -> bitonic.cu:22: `&&` depends on data (both, hi, lo) in bitonic_pairs_global()
+PASS  planted data_index: expected INDEX -> bitonic.cu:22: array subscript depends on data (slot) in bitonic_pairs_global()
+PASS  planted derived_data_index: expected INDEX -> bitonic.cu:24: array subscript depends on data (e) in bitonic_pairs_global()
+PASS  planted data_through_reference: expected INDEX -> bitonic.cu:25: array subscript depends on data (z) in bitonic_pairs_global()
+PASS  planted unknown_index: expected INDEX -> bitonic.cu:22: array subscript uses some_global, not proven public, in bitonic_pairs_global()
+PASS  planted goto: expected GOTO -> bitonic.cu:22: goto in bitonic_pairs_global()
+self-test: OK (11/11)
+selftest exit 0

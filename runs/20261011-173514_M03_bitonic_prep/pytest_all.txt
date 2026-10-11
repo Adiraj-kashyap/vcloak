@@ -1,0 +1,19 @@
+........................................................................ [ 13%]
+..........................sssssssssssssssssssss........................s [ 27%]
+sssssssssssssssssssssss.......sssssss...sss.s..sssssssssssssssssssssssss [ 41%]
+sss..................................................................... [ 55%]
+........................................................................ [ 69%]
+........................................................................ [ 83%]
+.............................s.......................................... [ 97%]
+.............s                                                           [100%]
+=========================== short test summary info ===========================
+SKIPPED [21] tests\gpu\test_bitonic.py:140: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [24] tests\gpu\test_bitonic.py:149: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [7] tests\gpu\test_bitonic.py:158: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [3] tests\gpu\test_bitonic.py:168: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [1] tests\gpu\test_bitonic.py: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [21] tests\gpu\test_bitonic.py:213: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [7] tests\gpu\test_bitonic.py:225: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [1] tests\unit\test_oracle_chacha.py:82: M02 references are wired in
+SKIPPED [1] tests\unit\test_runtime_backend.py:94: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+432 passed, 86 skipped in 41.48s

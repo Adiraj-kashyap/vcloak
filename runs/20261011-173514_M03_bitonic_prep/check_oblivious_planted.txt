@@ -1,0 +1,5 @@
+planted 'if (hi[i] > hi[l])' after 'u32 l = i + j;' of bitonic_pairs_global in a temp copy of kernels/
+C:/Users/HP/AppData/Local/Temp/vcloak_planted/bitonic.cu:22: BRANCH: `if` condition depends on data (hi) in bitonic_pairs_global()
+    if (hi[i] > hi[l]) { return; }
+check_oblivious: 3 file(s), 1 finding(s) - FAIL
+exit 1

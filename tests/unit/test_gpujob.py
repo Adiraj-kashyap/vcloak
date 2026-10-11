@@ -178,3 +178,23 @@ def test_path_traversal_is_rejected(repo):
         z.writestr("runs/../../evil.txt", "x")
     errs, _ = gpujob.verify(res, root=repo)
     assert errs and "unsafe path" in errs[0]
+
+
+def test_pack_allow_lists_its_bundle_digest_without_going_stale(repo):
+    """ISSUE-5: pack records the new digest for G4; that write neither changes the bundle nor makes it stale."""
+    import hashlib
+
+    allow = repo / "scripts" / "secrets_allowlist.json"
+    allow.parent.mkdir()
+    allow.write_text(json.dumps({"files": [], "tokens": []}), encoding="utf-8")
+    _git(repo, "add", "-A")
+    _git(repo, "commit", "-q", "-m", "add the allow-list")
+    job_zip = gpujob.pack("M99", root=repo)
+    with zipfile.ZipFile(job_zip) as z:
+        job = json.loads(z.read("job.json"))
+        assert "scripts/secrets_allowlist.json" not in z.namelist()
+    (entry,) = json.loads(allow.read_text(encoding="utf-8"))["tokens"]
+    assert entry["sha256"] == hashlib.sha256(job["bundle_sha256"].encode()).hexdigest()
+    assert job["job_id"] in entry["reason"] and job["bundle_sha256"] not in allow.read_text(encoding="utf-8")
+    _git(repo, "commit", "-q", "-am", "allow-list the bundle digest")
+    assert gpujob.verify(_fake_results(repo, job_zip), root=repo)[0] == []

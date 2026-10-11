@@ -29,6 +29,10 @@ ROOT = Path(__file__).resolve().parent.parent
 BUNDLE_DIRS = ("src", "kernels", "tests", "bench", "scripts")
 BUNDLE_FILES = ("requirements-gpu.txt", "pyproject.toml")
 ENTRY = "colab/gpu_entry.py"
+# The G4 allow-list is not bundled and not part of the staleness check: pack itself adds the new
+# bundle digest to it, which would otherwise change the bundle it has just hashed (ISSUE-5).
+SECRETS_ALLOWLIST = "scripts/secrets_allowlist.json"
+BUNDLE_PATHSPEC = (*BUNDLE_DIRS, *BUNDLE_FILES, ENTRY, f":(exclude){SECRETS_ALLOWLIST}")
 SKIP_PARTS = {"__pycache__", ".pytest_cache", ".ruff_cache", ".git", ".venv", "runs", "node_modules"}
 SKIP_SUFFIXES = {".pyc", ".pyo", ".cubin", ".zip"}
 MAX_BUNDLE_MB = 20
@@ -55,6 +59,7 @@ def _bundle_members(root: Path) -> list[tuple[str, Path]]:
         for p in base.rglob("*"):
             rel = p.relative_to(root)
             if p.is_file() and not (set(rel.parts) & SKIP_PARTS) and p.suffix not in SKIP_SUFFIXES \
+                    and rel.as_posix() != SECRETS_ALLOWLIST \
                     and not any(part.endswith(".egg-info") for part in rel.parts):
                 members.append((rel.as_posix(), p))
     for f in BUNDLE_FILES:
@@ -94,7 +99,7 @@ def pack(module: str, *, quick: bool = False, params: dict[str, str] | None = No
     rc, sha = _git(root, "rev-parse", "HEAD")
     if rc != 0:
         raise JobError("not a git repository, or no commit yet: a job must be packed from a commit")
-    _, dirty = _git(root, "status", "--porcelain", "--", *BUNDLE_DIRS, *BUNDLE_FILES, ENTRY)
+    _, dirty = _git(root, "status", "--porcelain", "--", *BUNDLE_PATHSPEC)
     if dirty and not allow_dirty:
         raise JobError("uncommitted changes in bundled paths - commit first, so the results can be tied "
                        "to a commit:\n" + dirty)
@@ -127,12 +132,31 @@ def pack(module: str, *, quick: bool = False, params: dict[str, str] | None = No
         shutil.rmtree(out_dir)
         raise JobError(f"bundle is {size_mb:.1f} MB (> {MAX_BUNDLE_MB} MB): something large got packed")
     (out_dir / "job.json").write_text(json.dumps(job, indent=2) + "\n", encoding="utf-8")
+    allowed = _allow_bundle_digest(root, job)
     print(f"packed  {zip_path.relative_to(root).as_posix()}  ({size_mb:.2f} MB, {len(files)} files)")
     print(f"job id          {job_id}")
     print(f"git sha         {sha}" + ("  (DIRTY)" if dirty else ""))
     print(f"bundle sha256   {job['bundle_sha256']}   (content hash, recorded in job.json)")
     print(f"zip sha256      {_file_sha256(zip_path)}")
+    if allowed:
+        print(f"allow-listed    the bundle sha256 in {SECRETS_ALLOWLIST} (G4); commit that file")
     return zip_path
+
+
+def _allow_bundle_digest(root: Path, job: dict) -> bool:
+    """Add the bundle digest that job.json now holds to the secrets scanner's allow-list, in the format
+    `check_secrets.py --allow` writes (the SHA-256 of the hex run, never the run itself)."""
+    path = root / SECRETS_ALLOWLIST
+    if not path.is_file():
+        return False
+    doc = json.loads(path.read_text(encoding="utf-8"))
+    token = hashlib.sha256(job["bundle_sha256"].encode()).hexdigest()
+    rows = [e for e in doc.get("tokens", []) if e["sha256"] != token]
+    rows.append({"sha256": token, "reason": f"bundle_sha256 of GPU job {job['job_id']} (a content hash, not a key)"})
+    doc["tokens"] = sorted(rows, key=lambda e: (e.get("path", ""), e["sha256"]))
+    doc.setdefault("files", [])
+    path.write_text(json.dumps(doc, indent=1, sort_keys=True) + "\n", encoding="utf-8", newline="\n")
+    return True
 
 
 # ── verify / ingest ──────────────────────────────────────────────────────────
@@ -183,8 +207,7 @@ def verify(zip_path: Path, *, root: Path = ROOT, allow_stale: bool = False) -> t
     elif _git(root, "merge-base", "--is-ancestor", sha, "HEAD")[0] != 0:
         errs.append(f"packed commit {sha[:12]} is not an ancestor of HEAD")
     elif not allow_stale:
-        p = subprocess.run(["git", "diff", "--quiet", sha, "HEAD", "--", *BUNDLE_DIRS, *BUNDLE_FILES, ENTRY],
-                           cwd=root)
+        p = subprocess.run(["git", "diff", "--quiet", sha, "HEAD", "--", *BUNDLE_PATHSPEC], cwd=root)
         if p.returncode != 0:
             errs.append(f"stale evidence: bundled code changed since {sha[:12]}; re-pack and re-run the job")
 

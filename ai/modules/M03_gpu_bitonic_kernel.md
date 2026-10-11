@@ -68,3 +68,28 @@ real bug in one of the two — never "close enough".
 3. How do you prove there are no data-dependent branches?
 
 ## Next: M04
+
+## Amendments
+2026-10-11 (session 5, prep). Where the build differs from the text above, and why:
+- **Guards.** `bitonic_pairs_global` keeps `if (t >= npairs) return;` and the shared kernels keep
+  `if (base >= n) return;` (uniform over a block, so no thread waits at a barrier alone). Both use ids and public
+  parameters only, as S2 allows; they stop a wrong launch configuration from writing out of bounds.
+- **Signatures.** `bitonic_shared_full(hi, lo, slot, pay, n)` has no k or j. The compare-exchange is one helper,
+  `cmp_exchange` in `common.cuh`, used by all three kernels. The NumPy twins take the kernel arguments plus
+  `grid=` and `block=`, because blockIdx and blockDim are inputs of the index arithmetic.
+- **Driver.** `kernels.py` also exports `launch_plan(n, T)` (the whole launch sequence as data), `run_launch`,
+  `global_only_plan` and `clamp_tile`; `gpu_bitonic_sort` takes `T=` and sorts NumPy arrays through the twins.
+- **Largest size.** At n = 2^max_log2n the reference is `np.lexsort`, not the oracle's `bitonic_sort`, and the twin
+  runs for one input (random, seed 1), not for all seven: the oracle and the twin each need minutes per sort at
+  2^24 on a runner CPU. The keys are unique, so the sorted order is unique and lexsort is an equal reference.
+- **A2.** The racecheck runs from `bench/bitonic_smoke.py` (it needs a run dir for its output), not from pytest.
+  `tests/gpu/test_bitonic.py` checks the disjoint-pairs property of every launch and stage instead.
+- **S5.** `check_oblivious.py` classifies identifiers as data, public or unknown per function (data spreads
+  through assignments and reference parameters) rather than matching a fixed list of index names; anything not
+  proven public is flagged. Function-like macros are flagged, not analysed. It reads source text only.
+- **No local nvcc.** S1's "compiles via RawModule" and all of S6 can only pass on the runner. Added
+  `tests/cuda_shim/` + `tests/gpu/test_bitonic_cpu_shim.py`: g++ compiles the real `bitonic.cu` and runs it on the
+  CPU with one fiber per kernel thread, byte-compared with the twins. It checks the source logic, not nvcc output.
+- **Outside the deliverables.** `tests/conftest.py` skipped every test under `tests/gpu/` because pytest keywords
+  include directory names; it now tests the marker. `scripts/gpujob.py` leaves `scripts/secrets_allowlist.json`
+  out of the bundle and the staleness check, and `pack` allow-lists its own bundle digest (ISSUE-5).

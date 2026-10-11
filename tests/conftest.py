@@ -17,5 +17,6 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
         return
     skip = pytest.mark.skip(reason="needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)")
     for item in items:
-        if "gpu" in item.keywords:
+        # the marker, not `"gpu" in item.keywords`: keywords also hold directory names such as tests/gpu
+        if item.get_closest_marker("gpu") is not None:
             item.add_marker(skip)
