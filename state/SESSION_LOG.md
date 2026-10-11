@@ -89,5 +89,5 @@
   hex run that is the SHA-256 of a scanned file, and it allow-lists by file hash as well as by run hash; (d) aead_ref
   imports without `cryptography` (IMPLEMENTED False → oracle stand-in); (e) golden files unchanged, not regenerated;
   (f) chacha_ref is a second, independent NumPy implementation; oracle/chacha_np.py stays as the cross-check.
-- Commit: PENDING
+- Commit: 686954e
 - Next: M03 S1 ; human action: none
