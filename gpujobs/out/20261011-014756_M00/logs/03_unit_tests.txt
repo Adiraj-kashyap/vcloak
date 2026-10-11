@@ -1,0 +1,50 @@
+F.s................F......sss...s.                                       [100%]
+=================================== FAILURES ===================================
+____________________________ test_self_test_passes _____________________________
+
+capsys = <_pytest.capture.CaptureFixture object at 0x7d755c751be0>
+
+    def test_self_test_passes(capsys):
+>       assert check_metrics.self_test() == 0
+E       assert 1 == 0
+E        +  where 1 = <function self_test at 0x7d758e2e1c60>()
+E        +    where <function self_test at 0x7d758e2e1c60> = check_metrics.self_test
+
+tests/unit/test_check_metrics.py:11: AssertionError
+----------------------------- Captured stdout call -----------------------------
+  ok   numpy_performance_metric_rejected: line 3 K-SELFTEST-MS: GPU metric recorded with backend numpy - a numpy number is never a performance result
+  FAIL numpy_correctness_metric_accepted: line 3 S-SELFTEST: index says runner local, manifest says kaggle
+  ok   metric_absent_from_summary_rejected: line 3 S-INVENTED: not present in runs/20261011-110135_M00_selftest/summary.json
+  ok   value_mismatch_rejected: line 3 S-SELFTEST: index value 0.75 != summary.json value 0.5
+  ok   missing_run_dir_rejected: line 3 S-SELFTEST: run dir runs/nope does not exist
+  ok   backend_column_lie_rejected: line 3 K-SELFTEST-MS: index says backend cupy, manifest says numpy
+self-test: FAIL numpy_correctness_metric_accepted
+____________________________ test_new_run_validates ____________________________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-1/test_new_run_validates0')
+
+    def test_new_run_validates(tmp_path):
+        d = runs.new_run("M00", "dummy", step="S4", owner="test", command="true", seed=3,
+                         root=_fake_bundle_root(tmp_path), backend=get_backend("numpy"))
+        (d / "out.txt").write_text("x", encoding="utf-8")
+        m = runs.finish_run(d, status="OK")
+        assert runs.validate_manifest(d) == []
+        assert m["outputs"] == ["out.txt"]
+>       assert m["env"]["backend"] == "numpy" and m["env"]["runner"] == "local" and m["env"]["session_id"]
+E       AssertionError: assert ('numpy' == 'numpy'
+E         
+E           numpy and 'kaggle' == 'local'
+E         
+E         - local
+E         + kaggle)
+
+tests/unit/test_runs_manifest.py:25: AssertionError
+=========================== short test summary info ============================
+SKIPPED [1] tests/unit/test_check_metrics.py:26: state/ is not shipped in a job bundle
+SKIPPED [1] tests/unit/test_runtime_backend.py:34: this machine has a CUDA device
+SKIPPED [1] tests/unit/test_runtime_backend.py:40: this machine has a CUDA device
+SKIPPED [1] tests/unit/test_runtime_backend.py:47: this machine has a CUDA device
+SKIPPED [1] tests/unit/test_runtime_backend.py:84: this machine has a CUDA device
+FAILED tests/unit/test_check_metrics.py::test_self_test_passes - assert 1 == 0
+FAILED tests/unit/test_runs_manifest.py::test_new_run_validates - AssertionEr...
+2 failed, 27 passed, 5 skipped in 1.63s

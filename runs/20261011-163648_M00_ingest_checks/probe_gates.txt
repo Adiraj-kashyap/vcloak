@@ -1,0 +1,19 @@
+runs/20261011-110031_M00_gpu_probe session 20261011-110028 d2d 238.35 peak 320.064 cv 0.0029 csv_rows 30
+    PASS manifest_valid
+    PASS A3_real_nvidia_gpu
+    PASS gpu_job_block
+    PASS vector_add_correct
+    PASS A4_d2d_le_peak
+    PASS timer_cuda_event
+    PASS runs_ge_30
+    PASS no_throttle
+runs/20261011-110133_M00_gpu_probe session 20261011-110131 d2d 238.25 peak 320.064 cv 0.0035 csv_rows 30
+    PASS manifest_valid
+    PASS A3_real_nvidia_gpu
+    PASS gpu_job_block
+    PASS vector_add_correct
+    PASS A4_d2d_le_peak
+    PASS timer_cuda_event
+    PASS runs_ge_30
+    PASS no_throttle
+gates: PASS

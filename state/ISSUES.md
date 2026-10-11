@@ -6,7 +6,7 @@ The kit script was UTF-8 without a BOM; PowerShell 5.1 read it as ANSI, turned t
 characters and aborted before doing anything ("The term 'tick' is not recognized"). Fixed by adding a UTF-8 BOM
 to the file (no other change). It then ran clean: .venv, packages, git init, identity. Teammates get the fix.
 
-### ISSUE-2 [OPEN] HUMAN ACTION REQUIRED — GPU JOB READY: M00 runner probe (job 20261011-014756_M00)
+### ISSUE-2 [CLOSED PENDINGHASH] HUMAN ACTION REQUIRED — GPU JOB READY: M00 runner probe (job 20261011-014756_M00)
 BLOCKS: M00   SEVERITY: high   OPENED: 2026-10-11 session 1
 Why: the laptop has no GPU; M00 S6 needs one real run on a free Colab GPU to identify the runner (about 2 minutes).
 File to upload: D:\PJT\vcloak\gpujobs\out\20261011-014756_M00\job.zip
@@ -26,3 +26,12 @@ Bring back only the results zip. Do not commit or edit anything in the repo befo
   a change to src/, kernels/, tests/, bench/ or scripts/ makes the result stale and it will be rejected.
 Confirm by running: .venv\Scripts\python scripts\gpujob.py verify gpujobs\inbox\results_20261011-014756_M00.zip
 Then type: continue
+Resolved session 2: results zip delivered (Kaggle T4), verified and ingested; bundle in gpujobs/done/.
+
+### ISSUE-3 [OPEN] Runner package set differs from requirements-gpu.txt
+BLOCKS: none   SEVERITY: low   OPENED: 2026-10-11 session 2
+requirements-gpu.txt names cupy-cuda12x, but the Kaggle T4 runner already ships CuPy 14.0.1 on CUDA runtime 13.0
+(driver 580.82.07, Python 3.13.15), so gpu_entry skipped both installs. The probe compiled and ran correctly on it.
+Risk: a Colab session may ship a different CuPy/CUDA pair, and the file no longer describes what actually ran.
+Proposed fix (M03 prep): make the requirement runtime-agnostic or record the installed wheel name in result.json;
+keep comparing `cupy`/`cuda` in each manifest before mixing timings from different sessions.

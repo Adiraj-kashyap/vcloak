@@ -1,0 +1,3 @@
+gpujob: REJECTED results_20261011-014756_M00.zip:
+  - runs/20261011-110031_M00_gpu_probe already exists locally (already ingested?)
+  - runs/20261011-110133_M00_gpu_probe already exists locally (already ingested?)

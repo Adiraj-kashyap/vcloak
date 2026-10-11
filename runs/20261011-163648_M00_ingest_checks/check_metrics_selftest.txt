@@ -1,0 +1,7 @@
+  ok   numpy_performance_metric_rejected: line 3 K-SELFTEST-MS: GPU metric recorded with backend numpy - a numpy number is never a performance result
+  ok   numpy_correctness_metric_accepted: accepted
+  ok   metric_absent_from_summary_rejected: line 3 S-INVENTED: not present in runs/20261011-163701_M00_selftest/summary.json
+  ok   value_mismatch_rejected: line 3 S-SELFTEST: index value 0.75 != summary.json value 0.5
+  ok   missing_run_dir_rejected: line 3 S-SELFTEST: run dir runs/nope does not exist
+  ok   backend_column_lie_rejected: line 3 K-SELFTEST-MS: index says backend cupy, manifest says numpy
+self-test: PASS (6 cases)

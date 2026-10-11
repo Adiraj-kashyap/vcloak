@@ -1,0 +1,26 @@
+ok      pyproject.toml
+ok      requirements.lock
+ok      requirements-gpu.txt
+ok      .gitignore
+ok      setup/bootstrap.ps1
+ok      setup/bootstrap.sh
+ok      tasks.py
+ok      src/vcloak/__init__.py
+ok      src/vcloak/config.py
+ok      src/vcloak/gpu/runtime.py
+ok      src/vcloak/gpu/sim.py
+ok      src/vcloak/gpu/telemetry.py
+ok      scripts/gpujob.py
+ok      scripts/new_run.py
+ok      scripts/check_metrics.py
+ok      colab/gpu_entry.py
+ok      colab/VCloak_GPU_Runner.ipynb
+ok      gpujobs/out/.gitkeep
+ok      gpujobs/inbox/.gitkeep
+ok      gpujobs/done/.gitkeep
+ok      tests/unit/test_config.py
+ok      tests/unit/test_runtime_backend.py
+ok      tests/conftest.py
+ok      docs/ENV.md
+git user.name=Aditya user.email set=yes
+sim importable

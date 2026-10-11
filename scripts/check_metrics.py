@@ -122,9 +122,10 @@ def self_test() -> int:
                          runs_dir=root / "runs", backend=get_backend("numpy"))
         (d / "summary.json").write_text(json.dumps({"metrics": [
             {"id": "K-SELFTEST-MS", "value": 1.5}, {"id": "S-SELFTEST", "value": 0.5}]}), encoding="utf-8")
-        runs.finish_run(d, status="OK")
+        # The self-test also runs inside a job bundle, where the manifest's runner is colab/kaggle, not local.
+        runner = runs.finish_run(d, status="OK")["env"]["runner"]
         rel = d.relative_to(root).as_posix()
-        tail = f"| {rel} | self-test | 2000-01-01 | no | numpy | local |\n"
+        tail = f"| {rel} | self-test | 2000-01-01 | no | numpy | {runner} |\n"
 
         def run_case(name: str, body: str, want_error: str | None) -> None:
             idx = root / f"{name}.md"

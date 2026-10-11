@@ -1,0 +1,18 @@
+{
+  "backend": "cupy",
+  "is_gpu": true,
+  "device": "Tesla T4",
+  "gpu": "Tesla T4",
+  "cc": "7.5",
+  "sm_count": 40,
+  "vram_total_bytes": 15637086208,
+  "vram_free_bytes": 15420162048,
+  "mem_clock_khz": 5001000,
+  "mem_bus_width_bits": 256,
+  "peak_bw_gbs": 320.064,
+  "max_log2n": 24,
+  "cuda": "13000",
+  "cupy": "14.0.1",
+  "os": "Linux-6.6.122+-x86_64-with-glibc2.39",
+  "python": "3.13.15"
+}

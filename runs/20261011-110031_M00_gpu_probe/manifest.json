@@ -1,0 +1,77 @@
+{
+  "run_id": "20261011-110031_M00_gpu_probe",
+  "module": "M00",
+  "step": "S6",
+  "owner": "Aditya",
+  "git_sha": "a45088b4eadef0a4fe8c40cc904946ae137715c2",
+  "dirty": false,
+  "command": "python bench/probe_gpu.py --seed 7 --out runs",
+  "seed": 7,
+  "quick": false,
+  "params": {
+    "vector_add_n": 1048576,
+    "d2d_bytes": 268435456,
+    "warmup": 10,
+    "runs": 30
+  },
+  "env": {
+    "os": "Linux-6.6.122+-x86_64-with-glibc2.39",
+    "python": "3.13.15",
+    "backend": "cupy",
+    "runner": "kaggle",
+    "session_id": "20261011-110028",
+    "gpu": "Tesla T4",
+    "cc": "7.5",
+    "cuda": "13000",
+    "cupy": "14.0.1",
+    "driver": "580.82.07"
+  },
+  "telemetry_start": {
+    "available": true,
+    "gpu": "Tesla T4",
+    "driver": "580.82.07",
+    "clocks": "unlocked",
+    "ts": 1791716431.6443777,
+    "sm_clock_mhz": 735,
+    "mem_clock_mhz": 5000,
+    "temperature_c": 55,
+    "power_w": 29.017,
+    "power_limit_w": 70.0,
+    "util_gpu_pct": 6,
+    "util_mem_pct": 0,
+    "throttle_reasons": 0,
+    "pstate": 0,
+    "mem_used_mb": 654.1875
+  },
+  "telemetry_end": {
+    "available": true,
+    "gpu": "Tesla T4",
+    "driver": "580.82.07",
+    "clocks": "unlocked",
+    "ts": 1791716432.7513926,
+    "sm_clock_mhz": 1035,
+    "mem_clock_mhz": 5000,
+    "temperature_c": 55,
+    "power_w": 30.005,
+    "power_limit_w": 70.0,
+    "util_gpu_pct": 0,
+    "util_mem_pct": 0,
+    "throttle_reasons": 0,
+    "pstate": 0,
+    "mem_used_mb": 1180.1875
+  },
+  "outputs": [
+    "d2d_times.csv",
+    "device.json",
+    "nvidia_smi.txt",
+    "summary.json",
+    "telemetry.csv"
+  ],
+  "status": "OK",
+  "notes": "",
+  "gpu_job": {
+    "job_id": "20261011-014756_M00",
+    "bundle_sha256": "5107ea648e4fda77923a204638f55a1faafed1e79ea33c4d99fc5ca1658d6dce",
+    "packed_from_git_sha": "a45088b4eadef0a4fe8c40cc904946ae137715c2"
+  }
+}

@@ -1,5 +1,6 @@
 import importlib.util
 import json
+import os
 from pathlib import Path
 
 from vcloak import runs
@@ -22,7 +23,9 @@ def test_new_run_validates(tmp_path):
     m = runs.finish_run(d, status="OK")
     assert runs.validate_manifest(d) == []
     assert m["outputs"] == ["out.txt"]
-    assert m["env"]["backend"] == "numpy" and m["env"]["runner"] == "local" and m["env"]["session_id"]
+    # On the remote runner VCLOAK_RUNNER is colab/kaggle even for a numpy-backend run.
+    assert m["env"]["backend"] == "numpy" and m["env"]["session_id"]
+    assert m["env"]["runner"] == os.environ.get("VCLOAK_RUNNER", "local")
     assert m["git_sha"] == JOB["git_sha"] and m["gpu_job"]["job_id"] == JOB["job_id"]
     assert m["telemetry_start"]["available"] in (True, False)
 

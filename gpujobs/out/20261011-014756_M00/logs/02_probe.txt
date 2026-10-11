@@ -1,0 +1,8 @@
+run dir     /content/vcloak_job/runs/20261011-110133_M00_gpu_probe
+backend     cupy   device Tesla T4
+vector-add  n=1048576 mismatches=0 (cupy.RawModule (nvrtc))
+ENV-PEAK-BW    320.064 GB/s
+ENV-D2D-BW     238.25 GB/s
+ENV-MAX-LOG2N  24 log2(n)
+ENV-VRAM-FREE  15.42 GB
+status      OK

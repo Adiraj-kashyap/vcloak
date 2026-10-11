@@ -3,45 +3,45 @@
 ```yaml
 project: v-cloak
 kit_version: 1.0
-last_session: 1
+last_session: 2
 last_session_date: 2026-10-11
-current_module: M00
-current_step: S6
-status: BLOCKED_HUMAN      # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
-next_unit: M00
-last_checkpoint: 2026-10-11 S5 passed; S6 job packed, awaiting results (ISSUE-2)
+current_module: M01
+current_step: S1
+status: NOT_STARTED        # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
+next_unit: M01
+last_checkpoint: 2026-10-11 M00 DONE (S6 ingested, S7 recorded, audit PASS)
 quick_mode_default: false
 local:                      # the laptop (no GPU) — filled by M00 S7
-  os: unknown
-  python: unknown
-  cpu: unknown
-  ram_gb: unknown
-  postgres: unknown
-  default_backend: numpy
+  os: "Windows-11-10.0.26200-SP0"
+  python: "3.14.0"
+  cpu: "12th Gen Intel(R) Core(TM) i7-1255U (12 logical)"
+  ram_gb: 15.6
+  postgres: "service postgresql-x64-17 (Running); psql not on PATH"
+  default_backend: "numpy"
 runner:                     # the free remote GPU — filled from the ingested M00 probe, never typed by hand
-  provider: unknown         # colab | kaggle
-  gpu: unknown
-  compute_capability: unknown
-  vram_gb: unknown
-  driver: unknown
-  cuda: unknown
-  cupy: unknown
-  nvcc: unknown
-  ncu: unknown
-  ncu_counters_permitted: unknown
-  max_log2n: unknown
-  peak_bw_gbs: unknown
-  last_session_id: unknown
+  provider: "kaggle"         # colab | kaggle
+  gpu: "Tesla T4"
+  compute_capability: "7.5"
+  vram_gb: 15.64
+  driver: "580.82.07"
+  cuda: "13000"
+  cupy: "14.0.1"
+  nvcc: "Build cuda_13.0.r13.0/compiler.36424714_0"
+  ncu: "NVIDIA (R) Nsight Compute Command Line Profiler"
+  ncu_counters_permitted: "unknown"
+  max_log2n: 24
+  peak_bw_gbs: 320.064
+  last_session_id: "20261011-110131"
 gpu_job:                    # set by the gpu-job skill
-  pending: 20261011-014756_M00   # job id awaiting the human's upload, or null
-  last_ingested: null
+  pending: null   # job id awaiting the human's upload, or null
+  last_ingested: 20261011-014756_M00
 ```
 
 ## Modules
 
 | ID | Title | Owner | Depends on | Optional | Status | Step | Sessions |
 |---|---|---|---|---|---|---|---|
-| M00 | Bootstrap & GPU probe | Aditya | — | no | BLOCKED_HUMAN | S6 | 1 |
+| M00 | Bootstrap & GPU probe | Aditya | — | no | DONE | S7 | 2 |
 | M01 | Oracle port & golden vectors | Abhishek | M00 | no | NOT_STARTED | S1 | 0 |
 | M02 | CPU crypto & key lifecycle | Abhishek | M01 | no | NOT_STARTED | S1 | 0 |
 | M03 | GPU bitonic kernel | Aditya | M01 | no | NOT_STARTED | S1 | 0 |

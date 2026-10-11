@@ -17,3 +17,22 @@
   (d) manifest status gains FAIL; (e) docs/ENV.md and STATE env are deferred to S7 (need the ingested probe).
 - Commit: 092fd4a
 - Next: M00 S6 ingest → S7 → audit ; human action: ISSUE-2
+
+- GPU-JOB 20261011-014756_M00 ingested 2026-10-11 16:34: runner kaggle, gpu Tesla T4, session 20261011-110131, overall exit 0, runs 20261011-110031_M00_gpu_probe, 20261011-110133_M00_gpu_probe, 8 metrics indexed.
+
+## Session 2 — 2026-10-11 16:40 — M00 Bootstrap & GPU probe — owner:Aditya
+- Steps: S6 ingest→S7 (status after: DONE)
+- Did: verified and ingested results_20261011-014756_M00.zip (Kaggle, Tesla T4, 2 probe runs, vector-add 0 mismatches).
+- Did: scripts/record_env.py (new) fills STATE local/runner and writes docs/ENV.md from the ingested probe.
+- Did: fixed two tests that assumed runner == local (scripts/check_metrics.py self-test, tests/unit/test_runs_manifest.py).
+- Did: evidence/gpu + evidence/terminal captures (5 rows in evidence/INDEX.md).
+- Evidence: runs/20261011-163648_M00_ingest_checks (pytest 33/33 local, 33/33 as runner; check_metrics 8 rows PASS; self-test 6/6; probe gates PASS),
+  runs/20261011-110031_M00_gpu_probe, runs/20261011-110133_M00_gpu_probe
+- Metrics added: ENV-PEAK-BW, ENV-D2D-BW, ENV-MAX-LOG2N, ENV-VRAM-FREE (one row per probe run; backend cupy, runner kaggle)
+- Decisions: none
+- Issues: closed ISSUE-2; opened ISSUE-3 (runner package set differs from requirements-gpu.txt)
+- Deviations from spec: (a) the runner was Kaggle, not Colab; (b) scripts/record_env.py is not in the M00 deliverables
+  list, added so STATE.runner is generated, not typed (A3); (c) the runner's optional unit_tests command exited 1
+  (2 test bugs, fixed here); (d) ncu_counters_permitted left unknown — not probed in M00.
+- Commit: PENDINGHASH
+- Next: M01 S1 ; human action: none

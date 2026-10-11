@@ -1,0 +1,42 @@
+{
+  "run_id": "20261011-163648_M00_ingest_checks",
+  "module": "M00",
+  "step": "S7",
+  "owner": "Aditya",
+  "git_sha": "d721f729576d26074c74f5beb1e3af657562dabe",
+  "dirty": true,
+  "command": "pytest -q -m 'not gpu'; check_metrics; probe gates",
+  "seed": 0,
+  "quick": false,
+  "params": {},
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261011-163648",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U"
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791716808.8552082
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791716868.3876798
+  },
+  "outputs": [
+    "audit.txt",
+    "check_metrics.txt",
+    "check_metrics_selftest.txt",
+    "deliverables.txt",
+    "gpujob_reverify_after_ingest.txt",
+    "probe_gates.txt",
+    "pytest.txt",
+    "pytest_as_runner.txt"
+  ],
+  "status": "OK",
+  "notes": "M00 ingest session: local tests, metrics check, probe acceptance gates, deliverables, audit table. dirty:true because the ingested runs were uncommitted when this run started."
+}

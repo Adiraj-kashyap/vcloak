@@ -1,0 +1,63 @@
+{
+  "job_id": "20261011-014756_M00",
+  "module": "M00",
+  "step": "S6",
+  "quick": false,
+  "packed_from_git_sha": "a45088b4eadef0a4fe8c40cc904946ae137715c2",
+  "bundle_sha256": "5107ea648e4fda77923a204638f55a1faafed1e79ea33c4d99fc5ca1658d6dce",
+  "finished_at": "2026-10-11T11:01:37.114507+00:00",
+  "env": {
+    "collected_at": "2026-10-11T11:01:31.781564+00:00",
+    "python": "3.13.15",
+    "platform": "Linux-6.6.122+-x86_64-with-glibc2.39",
+    "backend": "cupy",
+    "runner": "kaggle",
+    "session_id": "20261011-110131",
+    "gpu": "Tesla T4",
+    "driver": "580.82.07",
+    "vram_total": "15360 MiB",
+    "compute_capability": "7.5",
+    "nvcc": "Build cuda_13.0.r13.0/compiler.36424714_0",
+    "ncu": "NVIDIA (R) Nsight Compute Command Line Profiler",
+    "cupy": "14.0.1",
+    "cuda_runtime": "13000",
+    "cpu": "Intel(R) Xeon(R) CPU @ 2.00GHz",
+    "cpu_count": "2"
+  },
+  "requirements": {
+    "file": "requirements-gpu.txt",
+    "installed": [],
+    "skipped": [
+      "cupy-cuda12x",
+      "nvidia-ml-py"
+    ],
+    "failed": []
+  },
+  "commands": [
+    {
+      "n": 1,
+      "name": "nvidia_smi",
+      "cmd": "nvidia-smi",
+      "exit_code": 0,
+      "log": "logs/01_nvidia_smi.txt",
+      "optional": false
+    },
+    {
+      "n": 2,
+      "name": "probe",
+      "cmd": "python bench/probe_gpu.py --seed 7 --out runs",
+      "exit_code": 0,
+      "log": "logs/02_probe.txt",
+      "optional": false
+    },
+    {
+      "n": 3,
+      "name": "unit_tests",
+      "cmd": "python -m pytest -q -p no:cacheprovider tests/unit",
+      "exit_code": 1,
+      "log": "logs/03_unit_tests.txt",
+      "optional": true
+    }
+  ],
+  "overall_exit": 0
+}
