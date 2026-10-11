@@ -1,0 +1,16 @@
+============================= test session starts ==============================
+platform linux -- Python 3.13.15, pytest-8.4.2, pluggy-1.6.0 -- /usr/bin/python3
+rootdir: /kaggle/working/vcloak_job
+configfile: pyproject.toml
+plugins: typeguard-4.6.0, anyio-4.14.2, langsmith-0.12.1
+collecting ... collected 3 items
+
+tests/gpu/test_timing.py::test_event_timer_agrees_with_host_clock 
+sleep kernel: events 52.403 ms, host clock 52.419 ms, ratio 0.9997, nominal 50.0 ms
+PASSED
+tests/gpu/test_timing.py::test_sleep_kernel_within_10_percent_of_nominal 
+sleep kernel: events 52.404 ms, nominal 50.0 ms, ratio 1.0481, cv 0.0001
+PASSED
+tests/gpu/test_timing.py::test_time_gpu_setup_is_outside_the_timed_region PASSED
+
+============================== 3 passed in 5.72s ===============================

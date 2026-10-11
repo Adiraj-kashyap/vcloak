@@ -1,0 +1,5 @@
+run dir     /kaggle/working/vcloak_job/runs/20261011-213731_M07_cpu_baselines
+host        Intel(R) Xeon(R) CPU @ 2.00GHz x4   numba {'numba': '0.61.2', 'threads': 4}
+checks      mismatches=0   unstable 0: 
+metrics     52
+status      OK

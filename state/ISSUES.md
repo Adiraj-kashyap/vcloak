@@ -89,7 +89,7 @@ Then open a new session and type: continue
 Resolved session 6: the human ran the job on Kaggle (Tesla T4, session 20261011-122243) and dropped the results zip
 in gpujobs/inbox/; `gpujob.py ingest` verified it and all 5 commands exited 0 (runs/20261011-122303_M03_bitonic_smoke).
 
-### ISSUE-7 [OPEN] Telemetry during a timed section: 1 sample, taken at idle
+### ISSUE-7 [CLOSED HASH_PENDING] Telemetry during a timed section: 1 sample, taken at idle
 BLOCKS: none   SEVERITY: medium   OPENED: 2026-10-11 session 6
 Symptom: in runs/20261011-122303_M03_bitonic_smoke the manifest's start snapshot shows the SM clock at 900 MHz
 (idle, util 6%) and the end snapshot 1590 MHz; telemetry.csv holds 1 sample, also from before the ramp. The gate
@@ -116,6 +116,10 @@ every metric, and repeats a low-clock configuration once after a ramp load. Chan
 that is steady but still below 85% of the device maximum keeps its number and is labelled `LOW clock` instead of
 UNSTABLE (see the Amendments note of M07). bench/bitonic_smoke.py keeps the old scheme: it is the M03 smoke and is
 superseded by the M07 sweep. Unverified until GPU job 20261011-224124_M07 is ingested, so the issue stays open.
+Closed session 14 (M07 ingest): the scheme worked on the T4. Every attempt of runs/20261011-213207_M07_kernel_sweep carries a snapshot
+after the warm-up and one after the last timed run, the 15% rule fired in both directions (for example bitonic_global
+at 2^21 and chacha_tags at 2^19 to 2^22), and telemetry.csv holds 2625 samples at 10 Hz. What the snapshots showed
+(most of the sweep runs under the board's power limit, at a reduced clock) is ISSUE-15, not a telemetry problem.
 
 ### ISSUE-8 [CLOSED c7a7ac5] HUMAN ACTION REQUIRED — GPU JOB READY: M04 ChaCha20 kernels (job 20261011-183051_M04)
 BLOCKS: M04   SEVERITY: high   OPENED: 2026-10-11 session 7
@@ -209,7 +213,7 @@ Then open a new session and type: continue
 Closed session 12: the results zip was uploaded and ingested (overall exit 0, 7 commands); gates PASS in
 runs/20261011-221434_M06_ingest_audit/gates.txt.
 
-### ISSUE-11 [OPEN] M06 smoke timings are UNSTABLE / taken at a low SM clock
+### ISSUE-11 [CLOSED HASH_PENDING] M06 smoke timings are UNSTABLE / taken at a low SM clock
 BLOCKS: none   SEVERITY: medium   OPENED: 2026-10-11 session 12
 Symptom: runs/20261011-163049_M06_pipeline_smoke_quick has status UNSTABLE. P-READ-WINDOW-MS-K128 had CV 0.106 and
 0.119 on its two attempts (limit 0.10); P-WRITE-EPOCH-MS-S4096 needed its second attempt (CV 0.354, then 0.043).
@@ -226,9 +230,14 @@ configuration whose CV of `total` is above 0.10 (or whose clock moved by more th
 metrics as UNSTABLE instead of its median. The SM clock is recorded with every P-* metric but is not forced up: the
 engine mostly waits for the host, so a low clock is its working condition. Unverified until job 20261011-224124_M07
 is ingested.
+Closed session 14 (M07 ingest): runs/20261011-215653_M07_pipeline replaces the smoke values (200 calls per configuration, quick: no).
+read_window is stable at all seven K (largest CV of the indexed attempts 0.086). write_epoch at SLOTS 1024, 4096 and
+16384 is UNSTABLE on both attempts and indexed as such (ISSUE-15). The SM clock stayed at 585 MHz through the whole
+pipeline run, as in the smoke run; it is recorded with every P-* metric. The five quick-tagged smoke rows stay in
+the index as history and are not results.
 
-### ISSUE-12 [OPEN] write_epoch is dominated by host work; at SLOTS 65536 the smoke median is above EPOCH_MS
-BLOCKS: none   SEVERITY: medium   OPENED: 2026-10-11 session 12
+### ISSUE-12 [OPEN] write_epoch is dominated by host work; at SLOTS 65536 the p99 is above EPOCH_MS
+BLOCKS: M15   SEVERITY: high   OPENED: 2026-10-11 session 12
 Symptom: in runs/20261011-163049_M06_pipeline_smoke_quick the `host` stage is 199.78 ms of a 208.11 ms median total
 at SLOTS 65536 (9.64 of 10.84 ms at 4096; 0.51 of 1.57 ms at 64). The device stages together are about 8 ms at
 65536 (d2h 5.7 ms, sort 0.88, compact 0.77, h2d 0.57). EPOCH_MS is 200.
@@ -243,8 +252,18 @@ Update session 13 (M07 prep, c40696b): the full pipeline mode reports `device` (
 apart (P-WRITE-EPOCH-DEVICE-MS/-DEVICE-P99/-HOST-MS-S<slots>), evaluates the real-time gate for the whole call and
 for the device part, and writes a cProfile of write_epoch at SLOTS 65536 to host_profile.txt. No engine change yet:
 whether the row building must be vectorised is decided from the ingested numbers.
+Update session 14 (M07 ingest, runs/20261011-215653_M07_pipeline, 200 calls, full epochs): confirmed on the T4 runner. At SLOTS 65536
+P-WRITE-EPOCH-P99-S65536 is 279.5451 ms against EPOCH_MS 200, so the real-time gate FAILS for the whole call;
+P-WRITE-EPOCH-DEVICE-P99-S65536 is 11.0996 ms, so the device part passes. P-WRITE-EPOCH-HOST-MS-S65536 is 233.7088 ms
+of a median of 242.3974 ms. The gate passes at 64 to 16384 slots (the three middle sizes are UNSTABLE, ISSUE-15).
+host_profile.txt (cProfile, three calls at 65536) puts most of the host time in `uuid.py __init__`, 196608 calls: one
+uuid object per stored row. Largest device stage at 65536: d2h.
+Fix (needs its own unit, before M15 gives the end-to-end verdict): build the stored rows as column arrays and
+generate the row ids in one vectorised call instead of one `uuid` object per row; then re-measure write_epoch with a
+new GPU job. That changes src/vcloak/gpu/engine.py, so every later job is packed from the new commit. Until then the
+honest statement is: the GPU pipeline fits the epoch at 2^16 slots, the Python host path on this runner's CPU does not.
 
-### ISSUE-13 [OPEN] HUMAN ACTION REQUIRED — GPU JOB READY: M07 performance sweeps (job 20261011-224124_M07)
+### ISSUE-13 [CLOSED HASH_PENDING] HUMAN ACTION REQUIRED — GPU JOB READY: M07 performance sweeps (job 20261011-224124_M07)
 BLOCKS: M07   SEVERITY: high   OPENED: 2026-10-11 session 13
 Why: the laptop has no GPU. M07 is the measurement module: kernel sweeps from 2^10 to 2^22, the CPU baselines taken
 beside the GPU in the same runner session, the GPU/CPU crossover, and the pipeline breakdown with the real-time
@@ -283,3 +302,44 @@ gpu_entry.py) or a zip, copies it to /kaggle/working, and recomputes the bundle 
 Checked on the laptop against this job.zip in the three layouts (unpacked, unpacked one level deeper next to an
 older job, kept as a zip) and with a damaged file (refused). The job itself is unchanged: the notebook is not part
 of the bundle, so job 20261011-224124_M07 and its job.zip stay valid. Not checked on Kaggle itself.
+Closed session 14: results_20261011-224124_M07.zip was in gpujobs/inbox/, verified (job id, bundle sha, git sha
+c40696b) and ingested: overall exit 0, 9 commands, 4 run dirs, 213 metric rows. Gates PASS in
+runs/20261012-033804_M07_ingest_audit/gates.txt. Cell 2 of the notebook found the job on Kaggle (the human's run
+completed), which is the first check of the 2026-10-12 notebook change on Kaggle itself.
+
+### ISSUE-14 [OPEN] K-BITONIC-BW-PCT is above 100% of the theoretical peak at 2^17: the bytes-moved model breaks below 2^18
+BLOCKS: none   SEVERITY: low   OPENED: 2026-10-12 session 14
+Symptom: in runs/20261011-213207_M07_kernel_sweep K-BITONIC-BW-PCT-2^17 is 167.539 % (global-only variant, CV 0.036), which memory traffic cannot
+reach. The time per launch (median / rounds, runs/20261012-033804_M07_ingest_audit/gates.txt) is flat at about 12 microseconds from 2^10 to 2^17 and
+then jumps to 55.8 at 2^18, after which it doubles with n. From 2^18 to 2^22 the metric is between 70.499 and 73.717 %.
+Cause: NOT MEASURED. Two candidates, not told apart by this job: (a) up to 2^17 the 24-byte records (about 3 MB)
+are served from the GPU's on-chip cache, so the "every stage moves all n records through device memory" assumption
+of ai/GPU_GUIDE.md section 5 is false there; (b) up to 2^17 the sort is bound by the launch rate, so the time
+measures launch overhead and not memory traffic. Both make the percentage meaningless below 2^18.
+Effect: the values for 2^10 to 2^17 are indexed as measured (they are what the formula gives) but must not be
+quoted as bandwidth utilisation. docs/REPORT_CH4_NOTES.md says so, and fig_bandwidth_pct draws the 100% line.
+Proposed fix: answer "what fraction of peak" with the 2^18 to 2^22 range only. If M08 gets Nsight counters on the
+runner (`ncu_counters_permitted` is still unknown), read the L2 hit rate of one global launch at 2^17 and at 2^18.
+
+### ISSUE-15 [OPEN] M07: 45 of 78 kernel configurations and 3 of 5 write_epoch sizes are UNSTABLE on the shared T4
+BLOCKS: none   SEVERITY: medium   OPENED: 2026-10-12 session 14
+Symptom: 65 of the 213 M07 metric rows are UNSTABLE, among them three IDs the module lists as headline metrics:
+K-AEADOPEN-ROWS-S, K-BUCKETPRF-ROWS-S (in addition) and X-CROSSOVER-N. bucket_prf is unstable at every n, aead_open at
+12 of 13, chacha_tags at 11 of 13; the bitonic variants at 2 to 4 of 13 (runs/20261012-033804_M07_ingest_audit/gates.txt lists every point).
+Cause, read from the attempts in summary.json (not a separate experiment):
+  1. Kernels below about 0.1 ms (ChaCha, AEAD open and the PRF up to about 2^17; fused bitonic at 2^10 and 2^12):
+     CV 0.25 to 0.55 on both attempts. One launch is as short as the jitter of a launch.
+  2. Large n: the SM clock moved by more than 15% inside the timed runs. telemetry.csv has a non-zero
+     throttle-reasons mask (value 4) in 2049 of 2625 samples, power at the 70 W limit and the temperature rising
+     from 50 to 77 C over the sweep, which lasted about five minutes.
+  3. write_epoch at 1024 to 16384 slots: CV of the whole call 0.18 to 0.57, and the host stage is most of the call
+     (ISSUE-12).
+Effect: the unstable cells are UNSTABLE in the index, hollow in the figures and flagged in the CSV tables; nothing
+was dropped. The speed-ups at 2^16 and 2^20 and the bitonic series from 2^13 to 2^19 are stable. M16 would export
+the table with these holes. The crossover statement itself is not in doubt (the GPU is faster at every compared n,
+smallest ratio 8.93 at 2^10), only its 2^10 input is noisy.
+Proposed fix (an optional re-measurement job, one prep session and one runner session; the human decides whether
+it is worth a GPU session before M16): time batches of launches for any kernel whose single launch is under 0.1 ms
+and divide; run the large-n configurations after a load that has brought the clock to its power-limited steady
+state, so that the clock no longer moves inside the timed runs; label that state in the metric note as now. Keep
+this session's numbers; index the new session separately and never merge the two in one figure.

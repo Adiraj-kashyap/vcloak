@@ -1,0 +1,37 @@
+{
+  "figure": "fig_write_epoch_host_device",
+  "files": [
+    "fig_write_epoch_host_device.png",
+    "fig_write_epoch_host_device.pdf"
+  ],
+  "metric_ids": [
+    "P-WRITE-EPOCH-DEVICE-MS-S64",
+    "P-WRITE-EPOCH-HOST-MS-S64",
+    "P-WRITE-EPOCH-P99-S64",
+    "P-WRITE-EPOCH-DEVICE-MS-S1024",
+    "P-WRITE-EPOCH-HOST-MS-S1024",
+    "P-WRITE-EPOCH-P99-S1024",
+    "P-WRITE-EPOCH-DEVICE-MS-S4096",
+    "P-WRITE-EPOCH-HOST-MS-S4096",
+    "P-WRITE-EPOCH-P99-S4096",
+    "P-WRITE-EPOCH-DEVICE-MS-S16384",
+    "P-WRITE-EPOCH-HOST-MS-S16384",
+    "P-WRITE-EPOCH-P99-S16384",
+    "P-WRITE-EPOCH-DEVICE-MS-S65536",
+    "P-WRITE-EPOCH-HOST-MS-S65536",
+    "P-WRITE-EPOCH-P99-S65536"
+  ],
+  "what": "stacked medians of the device stages and of the host stage of write_epoch per SLOTS, the p99 of the whole call, and the EPOCH_MS budget",
+  "run_dirs": [
+    "runs/20261011-215653_M07_pipeline"
+  ],
+  "session_id": "20261011-213139",
+  "runner": "kaggle",
+  "gpu": "Tesla T4",
+  "cpu": "Intel(R) Xeon(R) CPU @ 2.00GHz x4",
+  "job_id": "20261011-224124_M07",
+  "git_sha": "c40696b9c5d6d560f1ba9021ffd0f3e97b832f24",
+  "quick": false,
+  "backend": "cupy",
+  "generated_by": "python -m vcloak.bench.report"
+}

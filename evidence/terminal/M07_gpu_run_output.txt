@@ -1,0 +1,73 @@
+===== 03_pytest_timing.txt =====
+============================= test session starts ==============================
+platform linux -- Python 3.13.15, pytest-8.4.2, pluggy-1.6.0 -- /usr/bin/python3
+rootdir: /kaggle/working/vcloak_job
+configfile: pyproject.toml
+plugins: typeguard-4.6.0, anyio-4.14.2, langsmith-0.12.1
+collecting ... collected 3 items
+
+tests/gpu/test_timing.py::test_event_timer_agrees_with_host_clock 
+sleep kernel: events 52.403 ms, host clock 52.419 ms, ratio 0.9997, nominal 50.0 ms
+PASSED
+tests/gpu/test_timing.py::test_sleep_kernel_within_10_percent_of_nominal 
+sleep kernel: events 52.404 ms, nominal 50.0 ms, ratio 1.0481, cv 0.0001
+PASSED
+tests/gpu/test_timing.py::test_time_gpu_setup_is_outside_the_timed_region PASSED
+
+============================== 3 passed in 5.72s ===============================
+
+===== 04_pytest_engine_regression.txt =====
+........................................................................ [ 29%]
+........................................................................ [ 58%]
+........................................................................ [ 87%]
+................................                                         [100%]
+248 passed, 7 deselected in 15.68s
+
+===== 05_kernel_sweep.txt =====
+run dir     /kaggle/working/vcloak_job/runs/20261011-213207_M07_kernel_sweep
+backend     cupy   sizes 2^10..2^22   runs 50
+checks      mismatches=0 fused_differs_from_global=[]
+unstable    45: bitonic_global@2^11, bitonic_global@2^21, bitonic_fused@2^10, bitonic_fused@2^12, bitonic_fused@2^20, bitonic_fused@2^22, sort_e2e@2^10, sort_e2e@2^11, sort_e2e@2^22, chacha_tags@2^10, chacha_tags@2^11, chacha_tags@2^12
+low clock   33: bitonic_global@2^17, bitonic_global@2^18, bitonic_global@2^19, bitonic_global@2^20, bitonic_global@2^22, bitonic_fused@2^10, bitonic_fused@2^11, bitonic_fused@2^12, bitonic_fused@2^17, bitonic_fused@2^18, bitonic_fused@2^19, bitonic_fused@2^21
+metrics     96   telemetry samples 2625
+status      UNSTABLE
+
+===== 06_cpu_baselines.txt =====
+run dir     /kaggle/working/vcloak_job/runs/20261011-213731_M07_cpu_baselines
+host        Intel(R) Xeon(R) CPU @ 2.00GHz x4   numba {'numba': '0.61.2', 'threads': 4}
+checks      mismatches=0   unstable 0: 
+metrics     52
+status      OK
+
+===== 07_crossover.txt =====
+run dir     /kaggle/working/vcloak_job/runs/20261011-215652_M07_crossover
+inputs      20261011-213207_M07_kernel_sweep  20261011-213731_M07_cpu_baselines
+X-CROSSOVER-N                UNSTABLE n
+X-SPEEDUP-2^16               34.593 x
+X-SPEEDUP-2^20               21.756 x
+X-SPEEDUP-VS-LEXSORT-2^16    16.815 x
+X-SPEEDUP-VS-LEXSORT-2^20    12.633 x
+status      UNSTABLE
+
+===== 08_pipeline.txt =====
+run dir     /kaggle/working/vcloak_job/runs/20261011-215653_M07_pipeline
+backend     cupy   timer cupy.cuda.Event   calls 200
+write_epoch      64  oracle_mismatches=0  p99=1.121 device_p99=0.899 host_med=0.198 cv=0.082 clock=LOW
+write_epoch    1024  oracle_mismatches=0  p99=9.471 device_p99=1.592 host_med=2.395 cv=0.574 clock=LOW
+write_epoch    4096  oracle_mismatches=0  p99=32.136 device_p99=2.170 host_med=9.987 cv=0.320 clock=LOW
+write_epoch   16384  oracle_mismatches=0  p99=73.921 device_p99=2.788 host_med=43.387 cv=0.178 clock=LOW
+write_epoch   65536  oracle_mismatches=0  p99=279.545 device_p99=11.100 host_med=233.709 cv=0.093 clock=LOW
+read_window      64  oracle_mismatches=0  p99=0.542 device_p99=0.538 host_med=0.004 cv=0.067 clock=LOW
+read_window     128  oracle_mismatches=0  p99=0.556 device_p99=0.552 host_med=0.004 cv=0.072 clock=LOW
+read_window     256  oracle_mismatches=0  p99=0.570 device_p99=0.560 host_med=0.006 cv=0.086 clock=LOW
+read_window     512  oracle_mismatches=0  p99=0.607 device_p99=0.597 host_med=0.008 cv=0.073 clock=LOW
+read_window    1024  oracle_mismatches=0  p99=0.627 device_p99=0.614 host_med=0.013 cv=0.063 clock=LOW
+read_window    2048  oracle_mismatches=0  p99=0.712 device_p99=0.689 host_med=0.020 cv=0.058 clock=LOW
+read_window    4096  oracle_mismatches=0  p99=0.895 device_p99=0.860 host_med=0.036 cv=0.082 clock=LOW
+rt gate     SLOTS     64: total PASS  device PASS
+rt gate     SLOTS   1024: total PASS  device PASS
+rt gate     SLOTS   4096: total PASS  device PASS
+rt gate     SLOTS  16384: total PASS  device PASS
+rt gate     SLOTS  65536: total FAIL  device PASS
+status      UNSTABLE
+

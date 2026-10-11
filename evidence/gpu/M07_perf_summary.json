@@ -1,0 +1,155 @@
+{
+  "provenance": {
+    "session_id": "20261011-213139",
+    "runner": "kaggle",
+    "gpu": "Tesla T4",
+    "driver": "580.178.04",
+    "cuda": "12090",
+    "cupy": "14.0.1",
+    "cpu": "Intel(R) Xeon(R) CPU @ 2.00GHz x4",
+    "git_sha": "c40696b9c5d6d560f1ba9021ffd0f3e97b832f24",
+    "job_id": "20261011-224124_M07",
+    "quick": false
+  },
+  "backend": "cupy",
+  "run_dirs": {
+    "kernels": "runs/20261011-213207_M07_kernel_sweep",
+    "cpu": "runs/20261011-213731_M07_cpu_baselines",
+    "crossover": "runs/20261011-215652_M07_crossover",
+    "pipeline": "runs/20261011-215653_M07_pipeline"
+  },
+  "tables": [
+    "cpu_baselines.csv",
+    "crossover.csv",
+    "kernel_sweep.csv",
+    "pipeline.csv"
+  ],
+  "figures": [
+    "fig_sort_gpu_vs_cpu",
+    "fig_kernels_vs_n",
+    "fig_bandwidth_pct",
+    "fig_write_epoch_host_device",
+    "fig_write_epoch_device_stages",
+    "fig_read_window",
+    "fig_telemetry_kernel_sweep"
+  ],
+  "run_status": {
+    "kernels": "UNSTABLE",
+    "cpu": "OK",
+    "crossover": "UNSTABLE",
+    "pipeline": "UNSTABLE"
+  },
+  "realtime_gate": [
+    {
+      "slots": 64,
+      "epoch_ms": 200,
+      "p99_total_ms": 1.1208377432823176,
+      "p99_device_ms": 0.8987452926859253,
+      "median_host_ms": 0.1977280005812645,
+      "pass_total": true,
+      "pass_device": true,
+      "unstable": false
+    },
+    {
+      "slots": 1024,
+      "epoch_ms": 200,
+      "p99_total_ms": 9.470763587951541,
+      "p99_device_ms": 1.5918793530389663,
+      "median_host_ms": 2.395183965563774,
+      "pass_total": true,
+      "pass_device": true,
+      "unstable": true
+    },
+    {
+      "slots": 4096,
+      "epoch_ms": 200,
+      "p99_total_ms": 32.13586875915527,
+      "p99_device_ms": 2.170227816477417,
+      "median_host_ms": 9.98727959394455,
+      "pass_total": true,
+      "pass_device": true,
+      "unstable": true
+    },
+    {
+      "slots": 16384,
+      "epoch_ms": 200,
+      "p99_total_ms": 73.92081924438476,
+      "p99_device_ms": 2.7880038228630974,
+      "median_host_ms": 43.38728046417236,
+      "pass_total": true,
+      "pass_device": true,
+      "unstable": true
+    },
+    {
+      "slots": 65536,
+      "epoch_ms": 200,
+      "p99_total_ms": 279.54510589599596,
+      "p99_device_ms": 11.099625889062876,
+      "median_host_ms": 233.7088108062744,
+      "pass_total": false,
+      "pass_device": true,
+      "unstable": false
+    }
+  ],
+  "crossover": {
+    "kind": "at_or_below",
+    "n": 1024,
+    "unstable": true,
+    "smallest_n": 1024,
+    "largest_n": 4194304
+  },
+  "unstable": {
+    "kernels": [
+      "bitonic_global@2^11",
+      "bitonic_global@2^21",
+      "bitonic_fused@2^10",
+      "bitonic_fused@2^12",
+      "bitonic_fused@2^20",
+      "bitonic_fused@2^22",
+      "sort_e2e@2^10",
+      "sort_e2e@2^11",
+      "sort_e2e@2^22",
+      "chacha_tags@2^10",
+      "chacha_tags@2^11",
+      "chacha_tags@2^12",
+      "chacha_tags@2^13",
+      "chacha_tags@2^14",
+      "chacha_tags@2^15",
+      "chacha_tags@2^16",
+      "chacha_tags@2^17",
+      "chacha_tags@2^18",
+      "chacha_tags@2^19",
+      "chacha_tags@2^21",
+      "aead_open@2^10",
+      "aead_open@2^11",
+      "aead_open@2^12",
+      "aead_open@2^13",
+      "aead_open@2^14",
+      "aead_open@2^15",
+      "aead_open@2^16",
+      "aead_open@2^18",
+      "aead_open@2^19",
+      "aead_open@2^20",
+      "aead_open@2^21",
+      "aead_open@2^22",
+      "bucket_prf@2^10",
+      "bucket_prf@2^11",
+      "bucket_prf@2^12",
+      "bucket_prf@2^13",
+      "bucket_prf@2^14",
+      "bucket_prf@2^15",
+      "bucket_prf@2^16",
+      "bucket_prf@2^17",
+      "bucket_prf@2^18",
+      "bucket_prf@2^19",
+      "bucket_prf@2^20",
+      "bucket_prf@2^21",
+      "bucket_prf@2^22"
+    ],
+    "pipeline": [
+      "write_epoch@1024",
+      "write_epoch@4096",
+      "write_epoch@16384"
+    ]
+  }
+}

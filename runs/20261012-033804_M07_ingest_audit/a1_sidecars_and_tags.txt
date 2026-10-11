@@ -1,0 +1,9 @@
+PASS fig_bandwidth_pct.json: 13 metric ids all indexed, run dirs ['runs/20261011-213207_M07_kernel_sweep'], files ['fig_bandwidth_pct.png', 'fig_bandwidth_pct.pdf']
+PASS fig_kernels_vs_n.json: 65 metric ids all indexed, run dirs ['runs/20261011-213207_M07_kernel_sweep'], files ['fig_kernels_vs_n.png', 'fig_kernels_vs_n.pdf']
+PASS fig_read_window.json: 14 metric ids all indexed, run dirs ['runs/20261011-215653_M07_pipeline'], files ['fig_read_window.png', 'fig_read_window.pdf']
+PASS fig_sort_gpu_vs_cpu.json: 65 metric ids all indexed, run dirs ['runs/20261011-213207_M07_kernel_sweep', 'runs/20261011-213731_M07_cpu_baselines'], files ['fig_sort_gpu_vs_cpu.png', 'fig_sort_gpu_vs_cpu.pdf']
+PASS fig_telemetry_kernel_sweep.json: 2 metric ids all indexed, run dirs ['runs/20261011-213207_M07_kernel_sweep'], files ['fig_telemetry_kernel_sweep.png', 'fig_telemetry_kernel_sweep.pdf']
+PASS fig_write_epoch_device_stages.json: 5 metric ids all indexed, run dirs ['runs/20261011-215653_M07_pipeline'], files ['fig_write_epoch_device_stages.png', 'fig_write_epoch_device_stages.pdf']
+PASS fig_write_epoch_host_device.json: 15 metric ids all indexed, run dirs ['runs/20261011-215653_M07_pipeline'], files ['fig_write_epoch_host_device.png', 'fig_write_epoch_host_device.pdf']
+PASS docs/REPORT_CH4_NOTES.md: 201 tagged values, each equal to its METRICS_INDEX row (65 of them UNSTABLE)
+RESULT: PASS (7 sidecars)

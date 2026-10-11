@@ -1,0 +1,6 @@
+same kernel_sweep.csv
+same cpu_baselines.csv
+same crossover.csv
+same pipeline.csv
+same perf_summary.json
+same notes

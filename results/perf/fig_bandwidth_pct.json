@@ -1,0 +1,35 @@
+{
+  "figure": "fig_bandwidth_pct",
+  "files": [
+    "fig_bandwidth_pct.png",
+    "fig_bandwidth_pct.pdf"
+  ],
+  "metric_ids": [
+    "K-BITONIC-BW-PCT-2^10",
+    "K-BITONIC-BW-PCT-2^11",
+    "K-BITONIC-BW-PCT-2^12",
+    "K-BITONIC-BW-PCT-2^13",
+    "K-BITONIC-BW-PCT-2^14",
+    "K-BITONIC-BW-PCT-2^15",
+    "K-BITONIC-BW-PCT-2^16",
+    "K-BITONIC-BW-PCT-2^17",
+    "K-BITONIC-BW-PCT-2^18",
+    "K-BITONIC-BW-PCT-2^19",
+    "K-BITONIC-BW-PCT-2^20",
+    "K-BITONIC-BW-PCT-2^21",
+    "K-BITONIC-BW-PCT-2^22"
+  ],
+  "what": "rounds x n x 24 B x 2 over the median time of the global-only variant, as a percentage of the theoretical peak memory bandwidth; a value above 100% means the model does not hold at that n",
+  "run_dirs": [
+    "runs/20261011-213207_M07_kernel_sweep"
+  ],
+  "session_id": "20261011-213139",
+  "runner": "kaggle",
+  "gpu": "Tesla T4",
+  "cpu": "Intel(R) Xeon(R) CPU @ 2.00GHz x4",
+  "job_id": "20261011-224124_M07",
+  "git_sha": "c40696b9c5d6d560f1ba9021ffd0f3e97b832f24",
+  "quick": false,
+  "backend": "cupy",
+  "generated_by": "python -m vcloak.bench.report"
+}

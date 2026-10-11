@@ -1,0 +1,20 @@
+run dir     /kaggle/working/vcloak_job/runs/20261011-215653_M07_pipeline
+backend     cupy   timer cupy.cuda.Event   calls 200
+write_epoch      64  oracle_mismatches=0  p99=1.121 device_p99=0.899 host_med=0.198 cv=0.082 clock=LOW
+write_epoch    1024  oracle_mismatches=0  p99=9.471 device_p99=1.592 host_med=2.395 cv=0.574 clock=LOW
+write_epoch    4096  oracle_mismatches=0  p99=32.136 device_p99=2.170 host_med=9.987 cv=0.320 clock=LOW
+write_epoch   16384  oracle_mismatches=0  p99=73.921 device_p99=2.788 host_med=43.387 cv=0.178 clock=LOW
+write_epoch   65536  oracle_mismatches=0  p99=279.545 device_p99=11.100 host_med=233.709 cv=0.093 clock=LOW
+read_window      64  oracle_mismatches=0  p99=0.542 device_p99=0.538 host_med=0.004 cv=0.067 clock=LOW
+read_window     128  oracle_mismatches=0  p99=0.556 device_p99=0.552 host_med=0.004 cv=0.072 clock=LOW
+read_window     256  oracle_mismatches=0  p99=0.570 device_p99=0.560 host_med=0.006 cv=0.086 clock=LOW
+read_window     512  oracle_mismatches=0  p99=0.607 device_p99=0.597 host_med=0.008 cv=0.073 clock=LOW
+read_window    1024  oracle_mismatches=0  p99=0.627 device_p99=0.614 host_med=0.013 cv=0.063 clock=LOW
+read_window    2048  oracle_mismatches=0  p99=0.712 device_p99=0.689 host_med=0.020 cv=0.058 clock=LOW
+read_window    4096  oracle_mismatches=0  p99=0.895 device_p99=0.860 host_med=0.036 cv=0.082 clock=LOW
+rt gate     SLOTS     64: total PASS  device PASS
+rt gate     SLOTS   1024: total PASS  device PASS
+rt gate     SLOTS   4096: total PASS  device PASS
+rt gate     SLOTS  16384: total PASS  device PASS
+rt gate     SLOTS  65536: total FAIL  device PASS
+status      UNSTABLE

@@ -1,0 +1,38 @@
+         1575882 function calls (1575832 primitive calls) in 1.357 seconds
+
+   Ordered by: cumulative time
+   List reduced from 106 to 30 due to restriction <30>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        8    0.209    0.026    1.117    0.140 threading.py:327(wait)
+   196608    0.491    0.000    0.639    0.000 uuid.py:142(__init__)
+      9/8    0.000    0.000    0.615    0.077 telemetry.py:41(_sample)
+      7/4    0.000    0.000    0.422    0.105 threading.py:641(wait)
+    71/25    0.138    0.002    0.215    0.009 telemetry.py:29(_try)
+        3    0.046    0.015    0.115    0.038 engine.py:204(write_epoch)
+        6    0.053    0.009    0.114    0.019 {built-in method numpy.fromiter}
+       31    0.014    0.000    0.108    0.003 {method 'acquire' of '_thread.lock' objects}
+        8    0.019    0.002    0.055    0.007 pynvml.py:4463(nvmlDeviceGetCurrentClocksThrottleReasons)
+       16    0.023    0.001    0.051    0.003 pynvml.py:3503(nvmlDeviceGetClockInfo)
+   196611    0.051    0.000    0.051    0.000 engine.py:219(<genexpr>)
+   196611    0.049    0.000    0.049    0.000 engine.py:220(<genexpr>)
+   196608    0.043    0.000    0.043    0.000 {built-in method from_bytes}
+   196608    0.039    0.000    0.039    0.000 {method 'count' of 'list' objects}
+   196614    0.036    0.000    0.036    0.000 {built-in method builtins.len}
+   196608    0.031    0.000    0.031    0.000 <string>:2(__init__)
+   196914    0.029    0.000    0.029    0.000 {built-in method builtins.isinstance}
+        8    0.011    0.001    0.020    0.003 pynvml.py:3791(nvmlDeviceGetPowerUsage)
+        8    0.007    0.001    0.017    0.002 pynvml.py:3705(nvmlDeviceGetTemperature)
+        8    0.008    0.001    0.016    0.002 pynvml.py:3822(nvmlDeviceGetMemoryInfo)
+        8    0.007    0.001    0.014    0.002 pynvml.py:3784(nvmlDeviceGetEnforcedPowerLimit)
+        3    0.013    0.004    0.013    0.004 {built-in method posix.urandom}
+        8    0.006    0.001    0.013    0.002 pynvml.py:3908(nvmlDeviceGetUtilizationRates)
+        3    0.000    0.000    0.009    0.003 engine.py:180(_real_order)
+        6    0.008    0.001    0.008    0.001 {method 'astype' of 'numpy.ndarray' objects}
+        3    0.006    0.002    0.006    0.002 {method 'tobytes' of 'numpy.ndarray' objects}
+        8    0.001    0.000    0.006    0.001 pynvml.py:3743(nvmlDeviceGetPerformanceState)
+        6    0.005    0.001    0.005    0.001 {method 'tolist' of 'numpy.ndarray' objects}
+        6    0.000    0.000    0.004    0.001 kernels.py:144(gpu_bitonic_sort)
+      216    0.002    0.000    0.004    0.000 kernels.py:128(run_launch)
+
+

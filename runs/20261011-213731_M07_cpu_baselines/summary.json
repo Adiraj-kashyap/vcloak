@@ -1,0 +1,1768 @@
+{
+  "metrics": [
+    {
+      "id": "CPU-BITONIC-MS-2^10",
+      "value": 4.9578,
+      "unit": "ms",
+      "stat": "median",
+      "note": "oracle_bitonic (oblivious), 10 runs, perf_counter_ns, CV 0.057"
+    },
+    {
+      "id": "CPU-BITONIC-MS-2^11",
+      "value": 7.8198,
+      "unit": "ms",
+      "stat": "median",
+      "note": "oracle_bitonic (oblivious), 10 runs, perf_counter_ns, CV 0.022"
+    },
+    {
+      "id": "CPU-BITONIC-MS-2^12",
+      "value": 15.605,
+      "unit": "ms",
+      "stat": "median",
+      "note": "oracle_bitonic (oblivious), 10 runs, perf_counter_ns, CV 0.014"
+    },
+    {
+      "id": "CPU-BITONIC-MS-2^13",
+      "value": 30.4625,
+      "unit": "ms",
+      "stat": "median",
+      "note": "oracle_bitonic (oblivious), 10 runs, perf_counter_ns, CV 0.023"
+    },
+    {
+      "id": "CPU-BITONIC-MS-2^14",
+      "value": 65.0011,
+      "unit": "ms",
+      "stat": "median",
+      "note": "oracle_bitonic (oblivious), 10 runs, perf_counter_ns, CV 0.015"
+    },
+    {
+      "id": "CPU-BITONIC-MS-2^15",
+      "value": 141.5689,
+      "unit": "ms",
+      "stat": "median",
+      "note": "oracle_bitonic (oblivious), 10 runs, perf_counter_ns, CV 0.047"
+    },
+    {
+      "id": "CPU-BITONIC-MS-2^16",
+      "value": 327.8493,
+      "unit": "ms",
+      "stat": "median",
+      "note": "oracle_bitonic (oblivious), 10 runs, perf_counter_ns, CV 0.025"
+    },
+    {
+      "id": "CPU-BITONIC-MS-2^17",
+      "value": 755.197,
+      "unit": "ms",
+      "stat": "median",
+      "note": "oracle_bitonic (oblivious), 10 runs, perf_counter_ns, CV 0.017"
+    },
+    {
+      "id": "CPU-BITONIC-MS-2^18",
+      "value": 1833.8399,
+      "unit": "ms",
+      "stat": "median",
+      "note": "oracle_bitonic (oblivious), 10 runs, perf_counter_ns, CV 0.014"
+    },
+    {
+      "id": "CPU-BITONIC-MS-2^19",
+      "value": 4176.3912,
+      "unit": "ms",
+      "stat": "median",
+      "note": "oracle_bitonic (oblivious), 10 runs, perf_counter_ns, CV 0.013"
+    },
+    {
+      "id": "CPU-BITONIC-MS-2^20",
+      "value": 10197.3165,
+      "unit": "ms",
+      "stat": "median",
+      "note": "oracle_bitonic (oblivious), 10 runs, perf_counter_ns, CV 0.006"
+    },
+    {
+      "id": "CPU-BITONIC-MS-2^21",
+      "value": 23880.4544,
+      "unit": "ms",
+      "stat": "median",
+      "note": "oracle_bitonic (oblivious), 5 runs, perf_counter_ns, CV 0.004"
+    },
+    {
+      "id": "CPU-BITONIC-MS-2^22",
+      "value": 56582.6164,
+      "unit": "ms",
+      "stat": "median",
+      "note": "oracle_bitonic (oblivious), 5 runs, perf_counter_ns, CV 0.004"
+    },
+    {
+      "id": "CPU-BITONIC-VIEWS-MS-2^10",
+      "value": 4.7741,
+      "unit": "ms",
+      "stat": "median",
+      "note": "views_bitonic (oblivious), 10 runs, perf_counter_ns, CV 0.026"
+    },
+    {
+      "id": "CPU-BITONIC-VIEWS-MS-2^11",
+      "value": 8.0416,
+      "unit": "ms",
+      "stat": "median",
+      "note": "views_bitonic (oblivious), 10 runs, perf_counter_ns, CV 0.036"
+    },
+    {
+      "id": "CPU-BITONIC-VIEWS-MS-2^12",
+      "value": 13.8352,
+      "unit": "ms",
+      "stat": "median",
+      "note": "views_bitonic (oblivious), 10 runs, perf_counter_ns, CV 0.027"
+    },
+    {
+      "id": "CPU-BITONIC-VIEWS-MS-2^13",
+      "value": 27.3125,
+      "unit": "ms",
+      "stat": "median",
+      "note": "views_bitonic (oblivious), 10 runs, perf_counter_ns, CV 0.016"
+    },
+    {
+      "id": "CPU-BITONIC-VIEWS-MS-2^14",
+      "value": 54.6554,
+      "unit": "ms",
+      "stat": "median",
+      "note": "views_bitonic (oblivious), 10 runs, perf_counter_ns, CV 0.035"
+    },
+    {
+      "id": "CPU-BITONIC-VIEWS-MS-2^15",
+      "value": 111.5482,
+      "unit": "ms",
+      "stat": "median",
+      "note": "views_bitonic (oblivious), 10 runs, perf_counter_ns, CV 0.022"
+    },
+    {
+      "id": "CPU-BITONIC-VIEWS-MS-2^16",
+      "value": 244.8571,
+      "unit": "ms",
+      "stat": "median",
+      "note": "views_bitonic (oblivious), 10 runs, perf_counter_ns, CV 0.019"
+    },
+    {
+      "id": "CPU-BITONIC-VIEWS-MS-2^17",
+      "value": 541.7404,
+      "unit": "ms",
+      "stat": "median",
+      "note": "views_bitonic (oblivious), 10 runs, perf_counter_ns, CV 0.013"
+    },
+    {
+      "id": "CPU-BITONIC-VIEWS-MS-2^18",
+      "value": 1211.6883,
+      "unit": "ms",
+      "stat": "median",
+      "note": "views_bitonic (oblivious), 10 runs, perf_counter_ns, CV 0.020"
+    },
+    {
+      "id": "CPU-BITONIC-VIEWS-MS-2^19",
+      "value": 2684.1608,
+      "unit": "ms",
+      "stat": "median",
+      "note": "views_bitonic (oblivious), 10 runs, perf_counter_ns, CV 0.018"
+    },
+    {
+      "id": "CPU-BITONIC-VIEWS-MS-2^20",
+      "value": 6280.6001,
+      "unit": "ms",
+      "stat": "median",
+      "note": "views_bitonic (oblivious), 10 runs, perf_counter_ns, CV 0.006"
+    },
+    {
+      "id": "CPU-BITONIC-VIEWS-MS-2^21",
+      "value": 14680.271,
+      "unit": "ms",
+      "stat": "median",
+      "note": "views_bitonic (oblivious), 5 runs, perf_counter_ns, CV 0.009"
+    },
+    {
+      "id": "CPU-BITONIC-VIEWS-MS-2^22",
+      "value": 35064.9909,
+      "unit": "ms",
+      "stat": "median",
+      "note": "views_bitonic (oblivious), 5 runs, perf_counter_ns, CV 0.004"
+    },
+    {
+      "id": "CPU-BITONIC-NUMBA-MS-2^10",
+      "value": 1.1046,
+      "unit": "ms",
+      "stat": "median",
+      "note": "numba_bitonic (oblivious), 10 runs, perf_counter_ns, CV 0.028"
+    },
+    {
+      "id": "CPU-BITONIC-NUMBA-MS-2^11",
+      "value": 1.5905,
+      "unit": "ms",
+      "stat": "median",
+      "note": "numba_bitonic (oblivious), 10 runs, perf_counter_ns, CV 0.023"
+    },
+    {
+      "id": "CPU-BITONIC-NUMBA-MS-2^12",
+      "value": 2.3797,
+      "unit": "ms",
+      "stat": "median",
+      "note": "numba_bitonic (oblivious), 10 runs, perf_counter_ns, CV 0.039"
+    },
+    {
+      "id": "CPU-BITONIC-NUMBA-MS-2^13",
+      "value": 3.7553,
+      "unit": "ms",
+      "stat": "median",
+      "note": "numba_bitonic (oblivious), 10 runs, perf_counter_ns, CV 0.025"
+    },
+    {
+      "id": "CPU-BITONIC-NUMBA-MS-2^14",
+      "value": 6.3921,
+      "unit": "ms",
+      "stat": "median",
+      "note": "numba_bitonic (oblivious), 10 runs, perf_counter_ns, CV 0.036"
+    },
+    {
+      "id": "CPU-BITONIC-NUMBA-MS-2^15",
+      "value": 14.1079,
+      "unit": "ms",
+      "stat": "median",
+      "note": "numba_bitonic (oblivious), 10 runs, perf_counter_ns, CV 0.051"
+    },
+    {
+      "id": "CPU-BITONIC-NUMBA-MS-2^16",
+      "value": 24.3463,
+      "unit": "ms",
+      "stat": "median",
+      "note": "numba_bitonic (oblivious), 10 runs, perf_counter_ns, CV 0.044"
+    },
+    {
+      "id": "CPU-BITONIC-NUMBA-MS-2^17",
+      "value": 52.0377,
+      "unit": "ms",
+      "stat": "median",
+      "note": "numba_bitonic (oblivious), 10 runs, perf_counter_ns, CV 0.049"
+    },
+    {
+      "id": "CPU-BITONIC-NUMBA-MS-2^18",
+      "value": 105.3083,
+      "unit": "ms",
+      "stat": "median",
+      "note": "numba_bitonic (oblivious), 10 runs, perf_counter_ns, CV 0.047"
+    },
+    {
+      "id": "CPU-BITONIC-NUMBA-MS-2^19",
+      "value": 232.8735,
+      "unit": "ms",
+      "stat": "median",
+      "note": "numba_bitonic (oblivious), 10 runs, perf_counter_ns, CV 0.045"
+    },
+    {
+      "id": "CPU-BITONIC-NUMBA-MS-2^20",
+      "value": 495.7042,
+      "unit": "ms",
+      "stat": "median",
+      "note": "numba_bitonic (oblivious), 10 runs, perf_counter_ns, CV 0.037"
+    },
+    {
+      "id": "CPU-BITONIC-NUMBA-MS-2^21",
+      "value": 1090.2056,
+      "unit": "ms",
+      "stat": "median",
+      "note": "numba_bitonic (oblivious), 5 runs, perf_counter_ns, CV 0.006"
+    },
+    {
+      "id": "CPU-BITONIC-NUMBA-MS-2^22",
+      "value": 2416.3105,
+      "unit": "ms",
+      "stat": "median",
+      "note": "numba_bitonic (oblivious), 5 runs, perf_counter_ns, CV 0.020"
+    },
+    {
+      "id": "CPU-LEXSORT-MS-2^10",
+      "value": 0.1099,
+      "unit": "ms",
+      "stat": "median",
+      "note": "lexsort (not oblivious, lower bound), 10 runs, perf_counter_ns, CV 0.050"
+    },
+    {
+      "id": "CPU-LEXSORT-MS-2^11",
+      "value": 0.2453,
+      "unit": "ms",
+      "stat": "median",
+      "note": "lexsort (not oblivious, lower bound), 10 runs, perf_counter_ns, CV 0.041"
+    },
+    {
+      "id": "CPU-LEXSORT-MS-2^12",
+      "value": 0.5457,
+      "unit": "ms",
+      "stat": "median",
+      "note": "lexsort (not oblivious, lower bound), 10 runs, perf_counter_ns, CV 0.041"
+    },
+    {
+      "id": "CPU-LEXSORT-MS-2^13",
+      "value": 1.1821,
+      "unit": "ms",
+      "stat": "median",
+      "note": "lexsort (not oblivious, lower bound), 10 runs, perf_counter_ns, CV 0.031"
+    },
+    {
+      "id": "CPU-LEXSORT-MS-2^14",
+      "value": 2.6361,
+      "unit": "ms",
+      "stat": "median",
+      "note": "lexsort (not oblivious, lower bound), 10 runs, perf_counter_ns, CV 0.048"
+    },
+    {
+      "id": "CPU-LEXSORT-MS-2^15",
+      "value": 5.8483,
+      "unit": "ms",
+      "stat": "median",
+      "note": "lexsort (not oblivious, lower bound), 10 runs, perf_counter_ns, CV 0.031"
+    },
+    {
+      "id": "CPU-LEXSORT-MS-2^16",
+      "value": 11.8345,
+      "unit": "ms",
+      "stat": "median",
+      "note": "lexsort (not oblivious, lower bound), 10 runs, perf_counter_ns, CV 0.016"
+    },
+    {
+      "id": "CPU-LEXSORT-MS-2^17",
+      "value": 26.9152,
+      "unit": "ms",
+      "stat": "median",
+      "note": "lexsort (not oblivious, lower bound), 10 runs, perf_counter_ns, CV 0.022"
+    },
+    {
+      "id": "CPU-LEXSORT-MS-2^18",
+      "value": 61.2783,
+      "unit": "ms",
+      "stat": "median",
+      "note": "lexsort (not oblivious, lower bound), 10 runs, perf_counter_ns, CV 0.020"
+    },
+    {
+      "id": "CPU-LEXSORT-MS-2^19",
+      "value": 132.202,
+      "unit": "ms",
+      "stat": "median",
+      "note": "lexsort (not oblivious, lower bound), 10 runs, perf_counter_ns, CV 0.035"
+    },
+    {
+      "id": "CPU-LEXSORT-MS-2^20",
+      "value": 287.8445,
+      "unit": "ms",
+      "stat": "median",
+      "note": "lexsort (not oblivious, lower bound), 10 runs, perf_counter_ns, CV 0.009"
+    },
+    {
+      "id": "CPU-LEXSORT-MS-2^21",
+      "value": 671.7223,
+      "unit": "ms",
+      "stat": "median",
+      "note": "lexsort (not oblivious, lower bound), 5 runs, perf_counter_ns, CV 0.016"
+    },
+    {
+      "id": "CPU-LEXSORT-MS-2^22",
+      "value": 1559.4714,
+      "unit": "ms",
+      "stat": "median",
+      "note": "lexsort (not oblivious, lower bound), 5 runs, perf_counter_ns, CV 0.042"
+    }
+  ],
+  "timer": "time.perf_counter_ns",
+  "mismatches": 0,
+  "unstable": [],
+  "sweeps": {
+    "oracle_bitonic": [
+      {
+        "n": 1024,
+        "log2n": 10,
+        "mismatches": 0,
+        "median_ms": 4.9577539999999996,
+        "cv": 0.05742607691386712,
+        "unstable": false,
+        "keys_per_s": 206545.1412070869,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": true,
+            "runs": 10,
+            "median_ms": 4.9577539999999996,
+            "p5_ms": 4.421262,
+            "p95_ms": 5.1382066,
+            "p99_ms": 5.16857332,
+            "min_ms": 4.206468,
+            "max_ms": 5.176165,
+            "mean_ms": 4.8990814,
+            "std_ms": 0.2813350252836958,
+            "cv": 0.05742607691386712
+          }
+        ]
+      },
+      {
+        "n": 2048,
+        "log2n": 11,
+        "mismatches": 0,
+        "median_ms": 7.8198045,
+        "cv": 0.02172870608806486,
+        "unstable": false,
+        "keys_per_s": 261899.13059846958,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": true,
+            "runs": 10,
+            "median_ms": 7.8198045,
+            "p5_ms": 7.6360532,
+            "p95_ms": 8.10163855,
+            "p99_ms": 8.13516931,
+            "min_ms": 7.620746,
+            "max_ms": 8.143552,
+            "mean_ms": 7.8423006,
+            "std_ms": 0.17040304479165472,
+            "cv": 0.02172870608806486
+          }
+        ]
+      },
+      {
+        "n": 4096,
+        "log2n": 12,
+        "mismatches": 0,
+        "median_ms": 15.604988500000001,
+        "cv": 0.014459015196548785,
+        "unstable": false,
+        "keys_per_s": 262480.1678001877,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": true,
+            "runs": 10,
+            "median_ms": 15.604988500000001,
+            "p5_ms": 15.315650399999999,
+            "p95_ms": 15.952794149999999,
+            "p99_ms": 16.02158043,
+            "min_ms": 15.28707,
+            "max_ms": 16.038777,
+            "mean_ms": 15.618264199999999,
+            "std_ms": 0.22582471941151383,
+            "cv": 0.014459015196548785
+          }
+        ]
+      },
+      {
+        "n": 8192,
+        "log2n": 13,
+        "mismatches": 0,
+        "median_ms": 30.4625435,
+        "cv": 0.022530155830923073,
+        "unstable": false,
+        "keys_per_s": 268920.42025315453,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": true,
+            "runs": 10,
+            "median_ms": 30.4625435,
+            "p5_ms": 29.29586565,
+            "p95_ms": 31.0512224,
+            "p99_ms": 31.14278048,
+            "min_ms": 29.161713,
+            "max_ms": 31.16567,
+            "mean_ms": 30.3020803,
+            "std_ms": 0.6827105911601442,
+            "cv": 0.022530155830923073
+          }
+        ]
+      },
+      {
+        "n": 16384,
+        "log2n": 14,
+        "mismatches": 0,
+        "median_ms": 65.00107249999999,
+        "cv": 0.01481059955463718,
+        "unstable": false,
+        "keys_per_s": 252057.3795147765,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": true,
+            "runs": 10,
+            "median_ms": 65.00107249999999,
+            "p5_ms": 63.6315481,
+            "p95_ms": 66.16270745,
+            "p99_ms": 66.37299029,
+            "min_ms": 62.927155,
+            "max_ms": 66.425561,
+            "mean_ms": 65.0243249,
+            "std_ms": 0.9630492374045233,
+            "cv": 0.01481059955463718
+          }
+        ]
+      },
+      {
+        "n": 32768,
+        "log2n": 15,
+        "mismatches": 0,
+        "median_ms": 141.568949,
+        "cv": 0.04738657487793047,
+        "unstable": false,
+        "keys_per_s": 231463.18618216203,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": true,
+            "runs": 10,
+            "median_ms": 141.568949,
+            "p5_ms": 138.20737485,
+            "p95_ms": 155.3266193,
+            "p99_ms": 159.39646466,
+            "min_ms": 137.792865,
+            "max_ms": 160.413926,
+            "mean_ms": 143.5197825,
+            "std_ms": 6.800910919900545,
+            "cv": 0.04738657487793047
+          }
+        ]
+      },
+      {
+        "n": 65536,
+        "log2n": 16,
+        "mismatches": 0,
+        "median_ms": 327.84926299999995,
+        "cv": 0.02454188217563593,
+        "unstable": false,
+        "keys_per_s": 199896.74340064023,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": true,
+            "runs": 10,
+            "median_ms": 327.84926299999995,
+            "p5_ms": 318.794508,
+            "p95_ms": 342.0794604,
+            "p99_ms": 342.55380648,
+            "min_ms": 318.40632,
+            "max_ms": 342.672393,
+            "mean_ms": 328.93684329999996,
+            "std_ms": 8.072729251494218,
+            "cv": 0.02454188217563593
+          }
+        ]
+      },
+      {
+        "n": 131072,
+        "log2n": 17,
+        "mismatches": 0,
+        "median_ms": 755.197,
+        "cv": 0.01732730478030633,
+        "unstable": false,
+        "keys_per_s": 173560.01149368973,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": true,
+            "runs": 10,
+            "median_ms": 755.197,
+            "p5_ms": 735.4145704,
+            "p95_ms": 768.1343612,
+            "p99_ms": 772.7604562399999,
+            "min_ms": 735.089962,
+            "max_ms": 773.91698,
+            "mean_ms": 751.6647740000001,
+            "std_ms": 13.024324631718079,
+            "cv": 0.01732730478030633
+          }
+        ]
+      },
+      {
+        "n": 262144,
+        "log2n": 18,
+        "mismatches": 0,
+        "median_ms": 1833.8399375,
+        "cv": 0.013944220815862052,
+        "unstable": false,
+        "keys_per_s": 142948.13557031067,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": true,
+            "runs": 10,
+            "median_ms": 1833.8399375,
+            "p5_ms": 1810.0638744,
+            "p95_ms": 1875.7602467,
+            "p99_ms": 1893.9777349400001,
+            "min_ms": 1801.599279,
+            "max_ms": 1898.532107,
+            "mean_ms": 1835.7144810000002,
+            "std_ms": 25.597608077939604,
+            "cv": 0.013944220815862052
+          }
+        ]
+      },
+      {
+        "n": 524288,
+        "log2n": 19,
+        "mismatches": 0,
+        "median_ms": 4176.391161,
+        "cv": 0.012908577182704082,
+        "unstable": false,
+        "keys_per_s": 125536.13389854602,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": true,
+            "runs": 10,
+            "median_ms": 4176.391161,
+            "p5_ms": 4126.2138549,
+            "p95_ms": 4272.27773215,
+            "p99_ms": 4275.98581603,
+            "min_ms": 4118.592429,
+            "max_ms": 4276.912837,
+            "mean_ms": 4185.187231999999,
+            "std_ms": 54.02481240833965,
+            "cv": 0.012908577182704082
+          }
+        ]
+      },
+      {
+        "n": 1048576,
+        "log2n": 20,
+        "mismatches": 0,
+        "median_ms": 10197.316506,
+        "cv": 0.00587957903286213,
+        "unstable": false,
+        "keys_per_s": 102828.62156754949,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": true,
+            "runs": 10,
+            "median_ms": 10197.316506,
+            "p5_ms": 10111.8449329,
+            "p95_ms": 10277.69118565,
+            "p99_ms": 10278.91815313,
+            "min_ms": 10083.591178,
+            "max_ms": 10279.224895,
+            "mean_ms": 10197.389245400002,
+            "std_ms": 59.95635599718763,
+            "cv": 0.00587957903286213
+          }
+        ]
+      },
+      {
+        "n": 2097152,
+        "log2n": 21,
+        "mismatches": 0,
+        "median_ms": 23880.454425,
+        "cv": 0.0038665266578447304,
+        "unstable": false,
+        "keys_per_s": 87818.7643617255,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": true,
+            "runs": 5,
+            "median_ms": 23880.454425,
+            "p5_ms": 23793.5592254,
+            "p95_ms": 24006.1416388,
+            "p99_ms": 24026.74849736,
+            "min_ms": 23778.308883,
+            "max_ms": 24031.900212,
+            "mean_ms": 23889.666292200003,
+            "std_ms": 92.37003156580599,
+            "cv": 0.0038665266578447304
+          }
+        ]
+      },
+      {
+        "n": 4194304,
+        "log2n": 22,
+        "mismatches": 0,
+        "median_ms": 56582.616415,
+        "cv": 0.004192137416814943,
+        "unstable": false,
+        "keys_per_s": 74127.07763877978,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": true,
+            "runs": 5,
+            "median_ms": 56582.616415,
+            "p5_ms": 56275.4348086,
+            "p95_ms": 56823.6668356,
+            "p99_ms": 56851.43974792,
+            "min_ms": 56216.323051,
+            "max_ms": 56858.382976,
+            "mean_ms": 56570.801310999996,
+            "std_ms": 237.15257287504693,
+            "cv": 0.004192137416814943
+          }
+        ]
+      }
+    ],
+    "views_bitonic": [
+      {
+        "n": 1024,
+        "log2n": 10,
+        "mismatches": 0,
+        "median_ms": 4.7741325,
+        "cv": 0.026058934223865356,
+        "unstable": false,
+        "keys_per_s": 214489.22919504222,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": true,
+            "runs": 10,
+            "median_ms": 4.7741325,
+            "p5_ms": 4.60546975,
+            "p95_ms": 4.9524389,
+            "p99_ms": 4.96209338,
+            "min_ms": 4.55446,
+            "max_ms": 4.964507,
+            "mean_ms": 4.7852811,
+            "std_ms": 0.12469932542760605,
+            "cv": 0.026058934223865356
+          }
+        ]
+      },
+      {
+        "n": 2048,
+        "log2n": 11,
+        "mismatches": 0,
+        "median_ms": 8.041583,
+        "cv": 0.0359310186158629,
+        "unstable": false,
+        "keys_per_s": 254676.22481792455,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": true,
+            "runs": 10,
+            "median_ms": 8.041583,
+            "p5_ms": 7.5708955499999995,
+            "p95_ms": 8.3708299,
+            "p99_ms": 8.41034998,
+            "min_ms": 7.385667,
+            "max_ms": 8.42023,
+            "mean_ms": 8.0334362,
+            "std_ms": 0.28864954565154693,
+            "cv": 0.0359310186158629
+          }
+        ]
+      },
+      {
+        "n": 4096,
+        "log2n": 12,
+        "mismatches": 0,
+        "median_ms": 13.8352185,
+        "cv": 0.026840864484580524,
+        "unstable": false,
+        "keys_per_s": 296056.03988111933,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": true,
+            "runs": 10,
+            "median_ms": 13.8352185,
+            "p5_ms": 13.30011515,
+            "p95_ms": 14.3033369,
+            "p99_ms": 14.40384818,
+            "min_ms": 13.129931,
+            "max_ms": 14.428976,
+            "mean_ms": 13.791582200000002,
+            "std_ms": 0.370177988858153,
+            "cv": 0.026840864484580524
+          }
+        ]
+      },
+      {
+        "n": 8192,
+        "log2n": 13,
+        "mismatches": 0,
+        "median_ms": 27.3124825,
+        "cv": 0.01581032051337459,
+        "unstable": false,
+        "keys_per_s": 299936.11895220436,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": true,
+            "runs": 10,
+            "median_ms": 27.3124825,
+            "p5_ms": 26.5545678,
+            "p95_ms": 27.71043495,
+            "p99_ms": 27.809949390000003,
+            "min_ms": 26.431932,
+            "max_ms": 27.834828,
+            "mean_ms": 27.188320600000004,
+            "std_ms": 0.429856062906385,
+            "cv": 0.01581032051337459
+          }
+        ]
+      },
+      {
+        "n": 16384,
+        "log2n": 14,
+        "mismatches": 0,
+        "median_ms": 54.655401999999995,
+        "cv": 0.03546315138100282,
+        "unstable": false,
+        "keys_per_s": 299769.0877838572,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": true,
+            "runs": 10,
+            "median_ms": 54.655401999999995,
+            "p5_ms": 52.254632,
+            "p95_ms": 57.8249238,
+            "p99_ms": 58.014455160000004,
+            "min_ms": 51.585986,
+            "max_ms": 58.061838,
+            "mean_ms": 54.842298400000004,
+            "std_ms": 1.944880730241329,
+            "cv": 0.03546315138100282
+          }
+        ]
+      },
+      {
+        "n": 32768,
+        "log2n": 15,
+        "mismatches": 0,
+        "median_ms": 111.548213,
+        "cv": 0.02200089698420169,
+        "unstable": false,
+        "keys_per_s": 293756.38675628084,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": true,
+            "runs": 10,
+            "median_ms": 111.548213,
+            "p5_ms": 108.5990153,
+            "p95_ms": 115.38466975,
+            "p99_ms": 115.90741315,
+            "min_ms": 108.35438,
+            "max_ms": 116.038099,
+            "mean_ms": 111.62195430000001,
+            "std_ms": 2.4557831177295695,
+            "cv": 0.02200089698420169
+          }
+        ]
+      },
+      {
+        "n": 65536,
+        "log2n": 16,
+        "mismatches": 0,
+        "median_ms": 244.8570705,
+        "cv": 0.018649479043549414,
+        "unstable": false,
+        "keys_per_s": 267650.020749554,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": true,
+            "runs": 10,
+            "median_ms": 244.8570705,
+            "p5_ms": 239.3458335,
+            "p95_ms": 251.377234,
+            "p99_ms": 251.7607492,
+            "min_ms": 237.831669,
+            "max_ms": 251.856628,
+            "mean_ms": 245.16609509999998,
+            "std_ms": 4.572219952756292,
+            "cv": 0.018649479043549414
+          }
+        ]
+      },
+      {
+        "n": 131072,
+        "log2n": 17,
+        "mismatches": 0,
+        "median_ms": 541.7403750000001,
+        "cv": 0.013271097187153611,
+        "unstable": false,
+        "keys_per_s": 241946.15363493995,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": true,
+            "runs": 10,
+            "median_ms": 541.7403750000001,
+            "p5_ms": 538.3238248499999,
+            "p95_ms": 557.76589855,
+            "p99_ms": 559.59511651,
+            "min_ms": 538.306971,
+            "max_ms": 560.052421,
+            "mean_ms": 544.7248765,
+            "std_ms": 7.229096776291748,
+            "cv": 0.013271097187153611
+          }
+        ]
+      },
+      {
+        "n": 262144,
+        "log2n": 18,
+        "mismatches": 0,
+        "median_ms": 1211.688267,
+        "cv": 0.01958830714111341,
+        "unstable": false,
+        "keys_per_s": 216346.07443137022,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": true,
+            "runs": 10,
+            "median_ms": 1211.688267,
+            "p5_ms": 1195.6199156,
+            "p95_ms": 1254.1041797,
+            "p99_ms": 1270.79734154,
+            "min_ms": 1194.59672,
+            "max_ms": 1274.970632,
+            "mean_ms": 1216.5186057,
+            "std_ms": 23.82954009133064,
+            "cv": 0.01958830714111341
+          }
+        ]
+      },
+      {
+        "n": 524288,
+        "log2n": 19,
+        "mismatches": 0,
+        "median_ms": 2684.1607505,
+        "cv": 0.018168022167906167,
+        "unstable": false,
+        "keys_per_s": 195326.60251526913,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": true,
+            "runs": 10,
+            "median_ms": 2684.1607505,
+            "p5_ms": 2600.5472634999996,
+            "p95_ms": 2727.3772137,
+            "p99_ms": 2731.93369554,
+            "min_ms": 2587.896805,
+            "max_ms": 2733.072816,
+            "mean_ms": 2674.0477777,
+            "std_ms": 48.58215930329382,
+            "cv": 0.018168022167906167
+          }
+        ]
+      },
+      {
+        "n": 1048576,
+        "log2n": 20,
+        "mismatches": 0,
+        "median_ms": 6280.600141999999,
+        "cv": 0.0061141664384024045,
+        "unstable": false,
+        "keys_per_s": 166954.74577149097,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": true,
+            "runs": 10,
+            "median_ms": 6280.600141999999,
+            "p5_ms": 6203.582818049999,
+            "p95_ms": 6299.36224115,
+            "p99_ms": 6303.43522103,
+            "min_ms": 6194.592615,
+            "max_ms": 6304.453466,
+            "mean_ms": 6263.5785858,
+            "std_ms": 38.29656197359436,
+            "cv": 0.0061141664384024045
+          }
+        ]
+      },
+      {
+        "n": 2097152,
+        "log2n": 21,
+        "mismatches": 0,
+        "median_ms": 14680.270999,
+        "cv": 0.00937938446795041,
+        "unstable": false,
+        "keys_per_s": 142855.12850156886,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": true,
+            "runs": 5,
+            "median_ms": 14680.270999,
+            "p5_ms": 14588.0102806,
+            "p95_ms": 14888.0741882,
+            "p99_ms": 14928.49349524,
+            "min_ms": 14572.395209,
+            "max_ms": 14938.598322,
+            "mean_ms": 14705.542550000002,
+            "std_ms": 137.9289373862539,
+            "cv": 0.00937938446795041
+          }
+        ]
+      },
+      {
+        "n": 4194304,
+        "log2n": 22,
+        "mismatches": 0,
+        "median_ms": 35064.990857,
+        "cv": 0.004307673383791809,
+        "unstable": false,
+        "keys_per_s": 119615.14597579581,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": true,
+            "runs": 5,
+            "median_ms": 35064.990857,
+            "p5_ms": 34924.259848,
+            "p95_ms": 35250.560741,
+            "p99_ms": 35259.1303818,
+            "min_ms": 34916.017832,
+            "max_ms": 35261.272792,
+            "mean_ms": 35081.444386,
+            "std_ms": 151.11940424654478,
+            "cv": 0.004307673383791809
+          }
+        ]
+      }
+    ],
+    "numba_bitonic": [
+      {
+        "n": 1024,
+        "log2n": 10,
+        "mismatches": 0,
+        "median_ms": 1.1045895,
+        "cv": 0.0279847672544238,
+        "unstable": false,
+        "keys_per_s": 927041.2221010611,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": true,
+            "runs": 10,
+            "median_ms": 1.1045895,
+            "p5_ms": 1.0630761000000002,
+            "p95_ms": 1.1454151,
+            "p99_ms": 1.14815182,
+            "min_ms": 1.061106,
+            "max_ms": 1.148836,
+            "mean_ms": 1.1066917,
+            "std_ms": 0.030970509646902608,
+            "cv": 0.0279847672544238
+          }
+        ]
+      },
+      {
+        "n": 2048,
+        "log2n": 11,
+        "mismatches": 0,
+        "median_ms": 1.5904905,
+        "cv": 0.0228811828133322,
+        "unstable": false,
+        "keys_per_s": 1287653.0856361606,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": true,
+            "runs": 10,
+            "median_ms": 1.5904905,
+            "p5_ms": 1.5611842999999999,
+            "p95_ms": 1.6550041,
+            "p99_ms": 1.68260962,
+            "min_ms": 1.552115,
+            "max_ms": 1.689511,
+            "mean_ms": 1.5982861,
+            "std_ms": 0.03657067644210775,
+            "cv": 0.0228811828133322
+          }
+        ]
+      },
+      {
+        "n": 4096,
+        "log2n": 12,
+        "mismatches": 0,
+        "median_ms": 2.3797245,
+        "cv": 0.0386448149814385,
+        "unstable": false,
+        "keys_per_s": 1721207.6439940843,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": true,
+            "runs": 10,
+            "median_ms": 2.3797245,
+            "p5_ms": 2.27157815,
+            "p95_ms": 2.508666,
+            "p99_ms": 2.5530684000000003,
+            "min_ms": 2.255708,
+            "max_ms": 2.564169,
+            "mean_ms": 2.3787264,
+            "std_ms": 0.09192544161946327,
+            "cv": 0.0386448149814385
+          }
+        ]
+      },
+      {
+        "n": 8192,
+        "log2n": 13,
+        "mismatches": 0,
+        "median_ms": 3.755275,
+        "cv": 0.02520208630560817,
+        "unstable": false,
+        "keys_per_s": 2181464.73959963,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": true,
+            "runs": 10,
+            "median_ms": 3.755275,
+            "p5_ms": 3.62832435,
+            "p95_ms": 3.8834546,
+            "p99_ms": 3.91234532,
+            "min_ms": 3.598155,
+            "max_ms": 3.919568,
+            "mean_ms": 3.7570001999999993,
+            "std_ms": 0.09468424329058714,
+            "cv": 0.02520208630560817
+          }
+        ]
+      },
+      {
+        "n": 16384,
+        "log2n": 14,
+        "mismatches": 0,
+        "median_ms": 6.3920785,
+        "cv": 0.03564426667307195,
+        "unstable": false,
+        "keys_per_s": 2563172.5267454083,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": true,
+            "runs": 10,
+            "median_ms": 6.3920785,
+            "p5_ms": 6.0670537,
+            "p95_ms": 6.6464024,
+            "p99_ms": 6.69842528,
+            "min_ms": 6.022906,
+            "max_ms": 6.711431,
+            "mean_ms": 6.359271399999999,
+            "std_ms": 0.22667156562803958,
+            "cv": 0.03564426667307195
+          }
+        ]
+      },
+      {
+        "n": 32768,
+        "log2n": 15,
+        "mismatches": 0,
+        "median_ms": 14.107942999999999,
+        "cv": 0.05101808408568704,
+        "unstable": false,
+        "keys_per_s": 2322663.197604357,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": true,
+            "runs": 10,
+            "median_ms": 14.107942999999999,
+            "p5_ms": 12.9399327,
+            "p95_ms": 14.74007515,
+            "p99_ms": 14.80270543,
+            "min_ms": 12.659724,
+            "max_ms": 14.818363,
+            "mean_ms": 13.9943647,
+            "std_ms": 0.7139656749903704,
+            "cv": 0.05101808408568704
+          }
+        ]
+      },
+      {
+        "n": 65536,
+        "log2n": 16,
+        "mismatches": 0,
+        "median_ms": 24.346302,
+        "cv": 0.04416554904939631,
+        "unstable": false,
+        "keys_per_s": 2691825.6415286395,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": true,
+            "runs": 10,
+            "median_ms": 24.346302,
+            "p5_ms": 23.9678744,
+            "p95_ms": 26.7172308,
+            "p99_ms": 27.20705256,
+            "min_ms": 23.833814,
+            "max_ms": 27.329508,
+            "mean_ms": 24.8399542,
+            "std_ms": 1.097070215604858,
+            "cv": 0.04416554904939631
+          }
+        ]
+      },
+      {
+        "n": 131072,
+        "log2n": 17,
+        "mismatches": 0,
+        "median_ms": 52.037747499999995,
+        "cv": 0.048532917527432384,
+        "unstable": false,
+        "keys_per_s": 2518786.9632520126,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": false,
+            "runs": 10,
+            "median_ms": 49.481977,
+            "p5_ms": 48.14139895,
+            "p95_ms": 76.96717579999996,
+            "p99_ms": 90.48045836,
+            "min_ms": 47.990509,
+            "max_ms": 93.858779,
+            "mean_ms": 54.499717399999994,
+            "std_ms": 14.035871901651545,
+            "cv": 0.257540269404251
+          },
+          {
+            "attempt": 2,
+            "stable": true,
+            "runs": 10,
+            "median_ms": 52.037747499999995,
+            "p5_ms": 51.117479949999996,
+            "p95_ms": 57.187069099999995,
+            "p99_ms": 59.21340182,
+            "min_ms": 50.988595,
+            "max_ms": 59.719985,
+            "mean_ms": 52.912403299999994,
+            "std_ms": 2.567993305537141,
+            "cv": 0.048532917527432384
+          }
+        ]
+      },
+      {
+        "n": 262144,
+        "log2n": 18,
+        "mismatches": 0,
+        "median_ms": 105.3083185,
+        "cv": 0.04737080016173925,
+        "unstable": false,
+        "keys_per_s": 2489300.026189289,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": true,
+            "runs": 10,
+            "median_ms": 105.3083185,
+            "p5_ms": 103.6858584,
+            "p95_ms": 116.7318761,
+            "p99_ms": 118.79165282,
+            "min_ms": 103.645137,
+            "max_ms": 119.306597,
+            "mean_ms": 107.483718,
+            "std_ms": 5.091589726018736,
+            "cv": 0.04737080016173925
+          }
+        ]
+      },
+      {
+        "n": 524288,
+        "log2n": 19,
+        "mismatches": 0,
+        "median_ms": 232.873468,
+        "cv": 0.04492385835436845,
+        "unstable": false,
+        "keys_per_s": 2251385.718187527,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": true,
+            "runs": 10,
+            "median_ms": 232.873468,
+            "p5_ms": 227.17091595,
+            "p95_ms": 255.57633545000002,
+            "p99_ms": 256.85295989,
+            "min_ms": 226.202169,
+            "max_ms": 257.172116,
+            "mean_ms": 236.1788004,
+            "std_ms": 10.610062975474259,
+            "cv": 0.04492385835436845
+          }
+        ]
+      },
+      {
+        "n": 1048576,
+        "log2n": 20,
+        "mismatches": 0,
+        "median_ms": 495.70417050000003,
+        "cv": 0.0369640554420484,
+        "unstable": false,
+        "keys_per_s": 2115326.1610495164,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": true,
+            "runs": 10,
+            "median_ms": 495.70417050000003,
+            "p5_ms": 486.82842689999995,
+            "p95_ms": 535.08379575,
+            "p99_ms": 541.6709623500001,
+            "min_ms": 486.795306,
+            "max_ms": 543.317754,
+            "mean_ms": 502.52937629999997,
+            "std_ms": 18.575523726811202,
+            "cv": 0.0369640554420484
+          }
+        ]
+      },
+      {
+        "n": 2097152,
+        "log2n": 21,
+        "mismatches": 0,
+        "median_ms": 1090.205642,
+        "cv": 0.006196223374265367,
+        "unstable": false,
+        "keys_per_s": 1923629.743974486,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": true,
+            "runs": 5,
+            "median_ms": 1090.205642,
+            "p5_ms": 1083.6772813999999,
+            "p95_ms": 1099.3009894,
+            "p99_ms": 1100.37723468,
+            "min_ms": 1082.704491,
+            "max_ms": 1100.646296,
+            "mean_ms": 1091.0089269999999,
+            "std_ms": 6.760135015009577,
+            "cv": 0.006196223374265367
+          }
+        ]
+      },
+      {
+        "n": 4194304,
+        "log2n": 22,
+        "mismatches": 0,
+        "median_ms": 2416.310504,
+        "cv": 0.019857805862672693,
+        "unstable": false,
+        "keys_per_s": 1735829.8915047052,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": true,
+            "runs": 5,
+            "median_ms": 2416.310504,
+            "p5_ms": 2369.5727506,
+            "p95_ms": 2480.9790881999998,
+            "p99_ms": 2489.8698920399997,
+            "min_ms": 2358.134869,
+            "max_ms": 2492.092593,
+            "mean_ms": 2423.6774624,
+            "std_ms": 48.12891652207439,
+            "cv": 0.019857805862672693
+          }
+        ]
+      }
+    ],
+    "lexsort": [
+      {
+        "n": 1024,
+        "log2n": 10,
+        "mismatches": 0,
+        "median_ms": 0.10987150000000001,
+        "cv": 0.04969786695506082,
+        "unstable": false,
+        "keys_per_s": 9319978.338331595,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": true,
+            "runs": 10,
+            "median_ms": 0.10987150000000001,
+            "p5_ms": 0.10869895,
+            "p95_ms": 0.12278549999999999,
+            "p99_ms": 0.1229979,
+            "min_ms": 0.108631,
+            "max_ms": 0.123051,
+            "mean_ms": 0.11239079999999999,
+            "std_ms": 0.0055855830253728495,
+            "cv": 0.04969786695506082
+          }
+        ]
+      },
+      {
+        "n": 2048,
+        "log2n": 11,
+        "mismatches": 0,
+        "median_ms": 0.24528250000000001,
+        "cv": 0.04083555072307536,
+        "unstable": false,
+        "keys_per_s": 8349556.124061032,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": true,
+            "runs": 10,
+            "median_ms": 0.24528250000000001,
+            "p5_ms": 0.22928125,
+            "p95_ms": 0.25368145,
+            "p99_ms": 0.25458108999999995,
+            "min_ms": 0.220549,
+            "max_ms": 0.254806,
+            "mean_ms": 0.2439101,
+            "std_ms": 0.009960203260420384,
+            "cv": 0.04083555072307536
+          }
+        ]
+      },
+      {
+        "n": 4096,
+        "log2n": 12,
+        "mismatches": 0,
+        "median_ms": 0.5457099999999999,
+        "cv": 0.04062670296491481,
+        "unstable": false,
+        "keys_per_s": 7505818.108519178,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": true,
+            "runs": 10,
+            "median_ms": 0.5457099999999999,
+            "p5_ms": 0.5307286999999999,
+            "p95_ms": 0.5863330999999999,
+            "p99_ms": 0.5873850199999999,
+            "min_ms": 0.53033,
+            "max_ms": 0.587648,
+            "mean_ms": 0.5529113999999999,
+            "std_ms": 0.022462967213715195,
+            "cv": 0.04062670296491481
+          }
+        ]
+      },
+      {
+        "n": 8192,
+        "log2n": 13,
+        "mismatches": 0,
+        "median_ms": 1.1820675,
+        "cv": 0.03123566114171291,
+        "unstable": false,
+        "keys_per_s": 6930230.295647244,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": true,
+            "runs": 10,
+            "median_ms": 1.1820675,
+            "p5_ms": 1.1740575,
+            "p95_ms": 1.2561125999999998,
+            "p99_ms": 1.28856012,
+            "min_ms": 1.173639,
+            "max_ms": 1.296672,
+            "mean_ms": 1.1954737,
+            "std_ms": 0.037341411397029754,
+            "cv": 0.03123566114171291
+          }
+        ]
+      },
+      {
+        "n": 16384,
+        "log2n": 14,
+        "mismatches": 0,
+        "median_ms": 2.6361075,
+        "cv": 0.04844307960737504,
+        "unstable": false,
+        "keys_per_s": 6215224.530866059,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": true,
+            "runs": 10,
+            "median_ms": 2.6361075,
+            "p5_ms": 2.5903076499999997,
+            "p95_ms": 2.8907850999999996,
+            "p99_ms": 2.99203942,
+            "min_ms": 2.58913,
+            "max_ms": 3.017353,
+            "mean_ms": 2.6726764000000003,
+            "std_ms": 0.12947267560995254,
+            "cv": 0.04844307960737504
+          }
+        ]
+      },
+      {
+        "n": 32768,
+        "log2n": 15,
+        "mismatches": 0,
+        "median_ms": 5.8483295,
+        "cv": 0.03131092078812416,
+        "unstable": false,
+        "keys_per_s": 5602967.479858993,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": true,
+            "runs": 10,
+            "median_ms": 5.8483295,
+            "p5_ms": 5.6100407,
+            "p95_ms": 6.1069688499999994,
+            "p99_ms": 6.19772737,
+            "min_ms": 5.552951,
+            "max_ms": 6.220417,
+            "mean_ms": 5.8513438,
+            "std_ms": 0.18321096222588143,
+            "cv": 0.03131092078812416
+          }
+        ]
+      },
+      {
+        "n": 65536,
+        "log2n": 16,
+        "mismatches": 0,
+        "median_ms": 11.834470499999998,
+        "cv": 0.016295748943277965,
+        "unstable": false,
+        "keys_per_s": 5537721.353904259,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": true,
+            "runs": 10,
+            "median_ms": 11.834470499999998,
+            "p5_ms": 11.60208165,
+            "p95_ms": 12.0898806,
+            "p99_ms": 12.180576120000001,
+            "min_ms": 11.596062,
+            "max_ms": 12.20325,
+            "mean_ms": 11.8268694,
+            "std_ms": 0.19272769452733648,
+            "cv": 0.016295748943277965
+          }
+        ]
+      },
+      {
+        "n": 131072,
+        "log2n": 17,
+        "mismatches": 0,
+        "median_ms": 26.9152105,
+        "cv": 0.022356016959128613,
+        "unstable": false,
+        "keys_per_s": 4869811.439891952,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": true,
+            "runs": 10,
+            "median_ms": 26.9152105,
+            "p5_ms": 26.392860549999998,
+            "p95_ms": 28.0954214,
+            "p99_ms": 28.31754428,
+            "min_ms": 26.358895,
+            "max_ms": 28.373075,
+            "mean_ms": 27.052052200000002,
+            "std_ms": 0.6047761377624326,
+            "cv": 0.022356016959128613
+          }
+        ]
+      },
+      {
+        "n": 262144,
+        "log2n": 18,
+        "mismatches": 0,
+        "median_ms": 61.278287000000006,
+        "cv": 0.02006305586839337,
+        "unstable": false,
+        "keys_per_s": 4277926.3721911805,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": true,
+            "runs": 10,
+            "median_ms": 61.278287000000006,
+            "p5_ms": 60.88695445,
+            "p95_ms": 64.04421765000001,
+            "p99_ms": 64.20006993000001,
+            "min_ms": 60.867604,
+            "max_ms": 64.239033,
+            "mean_ms": 61.9101809,
+            "std_ms": 1.2421074182190401,
+            "cv": 0.02006305586839337
+          }
+        ]
+      },
+      {
+        "n": 524288,
+        "log2n": 19,
+        "mismatches": 0,
+        "median_ms": 132.201994,
+        "cv": 0.034907187522597756,
+        "unstable": false,
+        "keys_per_s": 3965810.0769644966,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": true,
+            "runs": 10,
+            "median_ms": 132.201994,
+            "p5_ms": 130.21813269999998,
+            "p95_ms": 141.28653924999998,
+            "p99_ms": 144.96328225,
+            "min_ms": 130.200652,
+            "max_ms": 145.882468,
+            "mean_ms": 133.47680089999997,
+            "std_ms": 4.659299718932744,
+            "cv": 0.034907187522597756
+          }
+        ]
+      },
+      {
+        "n": 1048576,
+        "log2n": 20,
+        "mismatches": 0,
+        "median_ms": 287.844505,
+        "cv": 0.009372798827958705,
+        "unstable": false,
+        "keys_per_s": 3642855.714754742,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": true,
+            "runs": 10,
+            "median_ms": 287.844505,
+            "p5_ms": 284.43594455,
+            "p95_ms": 291.90455034999997,
+            "p99_ms": 292.01021647,
+            "min_ms": 283.417244,
+            "max_ms": 292.036633,
+            "mean_ms": 287.9800222,
+            "std_ms": 2.699178814551682,
+            "cv": 0.009372798827958705
+          }
+        ]
+      },
+      {
+        "n": 2097152,
+        "log2n": 21,
+        "mismatches": 0,
+        "median_ms": 671.722325,
+        "cv": 0.015789626892196224,
+        "unstable": false,
+        "keys_per_s": 3122051.9580021403,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": true,
+            "runs": 5,
+            "median_ms": 671.722325,
+            "p5_ms": 670.6301672000001,
+            "p95_ms": 692.6718976000001,
+            "p99_ms": 694.9140491200001,
+            "min_ms": 670.46567,
+            "max_ms": 695.474587,
+            "mean_ms": 678.0823756,
+            "std_ms": 10.70666771289806,
+            "cv": 0.015789626892196224
+          }
+        ]
+      },
+      {
+        "n": 4194304,
+        "log2n": 22,
+        "mismatches": 0,
+        "median_ms": 1559.471413,
+        "cv": 0.041933587396806415,
+        "unstable": false,
+        "keys_per_s": 2689567.7375267153,
+        "note": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "stable": true,
+            "runs": 5,
+            "median_ms": 1559.471413,
+            "p5_ms": 1511.4687936,
+            "p95_ms": 1658.744687,
+            "p99_ms": 1673.309271,
+            "min_ms": 1506.846819,
+            "max_ms": 1676.950417,
+            "mean_ms": 1571.8294216,
+            "std_ms": 65.91244642353527,
+            "cv": 0.041933587396806415
+          }
+        ]
+      }
+    ]
+  },
+  "numba": {
+    "numba": "0.61.2",
+    "threads": 4
+  },
+  "host": {
+    "cpu": "Intel(R) Xeon(R) CPU @ 2.00GHz",
+    "cpu_count": 4,
+    "ram_gb": 31.3,
+    "os": "Linux-6.18.48+-x86_64-with-glibc2.39",
+    "python": "3.13.15"
+  },
+  "numpy": "2.1.3",
+  "cv_limit": 0.1,
+  "oblivious": [
+    "oracle_bitonic",
+    "views_bitonic",
+    "numba_bitonic"
+  ],
+  "not_oblivious": [
+    "lexsort"
+  ]
+}

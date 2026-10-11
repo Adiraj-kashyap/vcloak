@@ -1,0 +1,112 @@
+{
+  "job_id": "20261011-224124_M07",
+  "module": "M07",
+  "step": "S5",
+  "quick": false,
+  "packed_from_git_sha": "c40696b9c5d6d560f1ba9021ffd0f3e97b832f24",
+  "bundle_sha256": "1f6c60410fd796e64f180bf2bf7da8317b997062aee4ba03d94c8816c5c02c86",
+  "finished_at": "2026-10-11T21:58:52.753273+00:00",
+  "env": {
+    "collected_at": "2026-10-11T21:31:39.426542+00:00",
+    "python": "3.13.15",
+    "platform": "Linux-6.18.48+-x86_64-with-glibc2.39",
+    "backend": "cupy",
+    "runner": "kaggle",
+    "session_id": "20261011-213139",
+    "gpu": "Tesla T4",
+    "driver": "580.178.04",
+    "vram_total": "15360 MiB",
+    "compute_capability": "7.5",
+    "nvcc": "Build cuda_12.8.r12.8/compiler.35583870_0",
+    "ncu": "NVIDIA (R) Nsight Compute Command Line Profiler",
+    "cupy": "14.0.1",
+    "cuda_runtime": "12090",
+    "cpu": "Intel(R) Xeon(R) CPU @ 2.00GHz",
+    "cpu_count": "4"
+  },
+  "requirements": {
+    "file": "requirements-gpu.txt",
+    "installed": [],
+    "skipped": [
+      "cupy-cuda12x",
+      "nvidia-ml-py",
+      "cryptography"
+    ],
+    "failed": []
+  },
+  "commands": [
+    {
+      "n": 1,
+      "name": "nvidia_smi",
+      "cmd": "nvidia-smi",
+      "exit_code": 0,
+      "log": "logs/01_nvidia_smi.txt",
+      "optional": false
+    },
+    {
+      "n": 2,
+      "name": "cpu_info",
+      "cmd": "lscpu",
+      "exit_code": 0,
+      "log": "logs/02_cpu_info.txt",
+      "optional": false
+    },
+    {
+      "n": 3,
+      "name": "pytest_timing",
+      "cmd": "python -m pytest -p no:cacheprovider -rsx -s -v tests/gpu/test_timing.py",
+      "exit_code": 0,
+      "log": "logs/03_pytest_timing.txt",
+      "optional": false
+    },
+    {
+      "n": 4,
+      "name": "pytest_engine_regression",
+      "cmd": "python -m pytest -p no:cacheprovider -rs -q -m \"not slow\" tests/gpu/test_engine.py tests/gpu/test_bitonic.py",
+      "exit_code": 0,
+      "log": "logs/04_pytest_engine_regression.txt",
+      "optional": false
+    },
+    {
+      "n": 5,
+      "name": "kernel_sweep",
+      "cmd": "python bench/run_kernels.py --part gpu --seed 7 --out runs",
+      "exit_code": 0,
+      "log": "logs/05_kernel_sweep.txt",
+      "optional": false
+    },
+    {
+      "n": 6,
+      "name": "cpu_baselines",
+      "cmd": "python bench/run_kernels.py --part cpu --seed 7 --out runs",
+      "exit_code": 0,
+      "log": "logs/06_cpu_baselines.txt",
+      "optional": false
+    },
+    {
+      "n": 7,
+      "name": "crossover",
+      "cmd": "python bench/run_kernels.py --part crossover --seed 7 --out runs",
+      "exit_code": 0,
+      "log": "logs/07_crossover.txt",
+      "optional": false
+    },
+    {
+      "n": 8,
+      "name": "pipeline",
+      "cmd": "python bench/run_pipeline.py --dev --full --seed 7 --out runs",
+      "exit_code": 0,
+      "log": "logs/08_pipeline.txt",
+      "optional": false
+    },
+    {
+      "n": 9,
+      "name": "nvidia_smi_after",
+      "cmd": "nvidia-smi",
+      "exit_code": 0,
+      "log": "logs/09_nvidia_smi_after.txt",
+      "optional": false
+    }
+  ],
+  "overall_exit": 0
+}

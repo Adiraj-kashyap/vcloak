@@ -3,13 +3,13 @@
 ```yaml
 project: v-cloak
 kit_version: 1.0
-last_session: 13
-last_session_date: 2026-10-11
-current_module: M07
-current_step: S5
-status: BLOCKED_HUMAN      # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
-next_unit: M07
-last_checkpoint: 2026-10-11 M07 S1-S5 prepared (c40696b), GPU job 20261011-224124_M07 packed; waiting for the upload (ISSUE-13)
+last_session: 14
+last_session_date: 2026-10-12
+current_module: M08
+current_step: S1
+status: NOT_STARTED        # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
+next_unit: M08
+last_checkpoint: 2026-10-12 M07 DONE (job 20261011-224124_M07 ingested, S6 figures and notes, audit PASS); next M08 S1
 quick_mode_default: false
 local:                      # the laptop (no GPU) — filled by M00 S7
   os: "Windows-11-10.0.26200-SP0"
@@ -31,10 +31,10 @@ runner:                     # the free remote GPU — filled from the ingested M
   ncu_counters_permitted: "unknown"
   max_log2n: 24
   peak_bw_gbs: 320.064
-  last_session_id: "20261011-141833"
+  last_session_id: "20261011-213139"
 gpu_job:                    # set by the gpu-job skill
-  pending: 20261011-224124_M07   # job id awaiting the upload of the human, or null
-  last_ingested: 20261011-215111_M06
+  pending: null   # job id awaiting the upload of the human, or null
+  last_ingested: 20261011-224124_M07
 ```
 
 ## Modules
@@ -48,7 +48,7 @@ gpu_job:                    # set by the gpu-job skill
 | M04 | GPU ChaCha20 tags/PRF | Aditya | M02, M03 | no | DONE | S4 | 2 |
 | M05 | GPU AEAD-open, restore, compaction | Aditya | M04 | no | DONE | S4 | 2 |
 | M06 | GPU engine | Aditya | M05 | no | DONE | S5 | 2 |
-| M07 | GPU performance metrics (E4) | Aditya | M06 | no | BLOCKED_HUMAN | S5 | 1 |
+| M07 | GPU performance metrics (E4) | Aditya | M06 | no | DONE | S6 | 2 |
 | M08 | GPU obliviousness audit (E3) | Aditya | M06 | no | NOT_STARTED | S1 | 0 |
 | M09 | Storage (PostgreSQL) | Divyansh | M06 | no | NOT_STARTED | S1 | 0 |
 | M10 | Service & scheduler | Divyansh | M09 | no | NOT_STARTED | S1 | 0 |
@@ -79,10 +79,11 @@ gpu_job:                    # set by the gpu-job skill
   above (M00 probe). Do not mix timings across the two images (ISSUE-3).
 - **M19 is calendar-bound.** Once M16 has real results, treat M19 as the highest-priority unmet unit
   even if other modules look more urgent — criterion 9 awards nothing without a dated submission proof.
-- The five `P-*` rows from M06 are smoke values (15 runs, SM clock 585 MHz, one config above the CV limit).
-  M07 must re-measure them and must report the host stage apart from the device stages (ISSUE-11, ISSUE-12).
+- The five quick-tagged `P-*` rows from M06 are smoke values, superseded by the M07 rows of session 20261011-213139.
 - Kaggle unpacks an uploaded job.zip into a folder. Cell 2 of the notebook finds either form; in a GPU JOB READY
   issue never tell the human to set a path to job.zip on Kaggle.
-- M07 ingest session: after `gpujob.py ingest`, apply the gates, then do S6 (src/vcloak/bench/report.py, results/perf,
-  docs/REPORT_CH4_NOTES.md) from the ingested run dirs, and run capture-evidence. X-* and CPU-* rows are only valid
-  with the kernel sweep of the same `session_id`.
+- M07 results are one runner session (20261011-213139, T4 / Xeon 2.00GHz x4). 65 of its 213 rows are UNSTABLE
+  (ISSUE-15); never quote K-BITONIC-BW-PCT below 2^18 as bandwidth (ISSUE-14). Figures and notes are regenerated
+  with `python -m vcloak.bench.report`, never edited by hand.
+- write_epoch misses EPOCH_MS at 2^16 slots because of host Python (one uuid object per row), not the GPU
+  (ISSUE-12, BLOCKS M15): vectorise the row building in its own unit, then re-measure with a new GPU job.

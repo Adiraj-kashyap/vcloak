@@ -1,0 +1,5 @@
+report: session 20261011-213139  7 figures, 4 tables -> results/perf
+  kernels    UNSTABLE
+  cpu        OK
+  crossover  UNSTABLE
+  pipeline   UNSTABLE

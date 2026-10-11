@@ -1,0 +1,27 @@
+{
+  "figure": "fig_write_epoch_device_stages",
+  "files": [
+    "fig_write_epoch_device_stages.png",
+    "fig_write_epoch_device_stages.pdf"
+  ],
+  "metric_ids": [
+    "P-WRITE-EPOCH-DEVICE-MS-S64",
+    "P-WRITE-EPOCH-DEVICE-MS-S1024",
+    "P-WRITE-EPOCH-DEVICE-MS-S4096",
+    "P-WRITE-EPOCH-DEVICE-MS-S16384",
+    "P-WRITE-EPOCH-DEVICE-MS-S65536"
+  ],
+  "what": "stacked per-stage medians of the device part of write_epoch per SLOTS (the bar top is the sum of the stage medians, which is not the median of the device total)",
+  "run_dirs": [
+    "runs/20261011-215653_M07_pipeline"
+  ],
+  "session_id": "20261011-213139",
+  "runner": "kaggle",
+  "gpu": "Tesla T4",
+  "cpu": "Intel(R) Xeon(R) CPU @ 2.00GHz x4",
+  "job_id": "20261011-224124_M07",
+  "git_sha": "c40696b9c5d6d560f1ba9021ffd0f3e97b832f24",
+  "quick": false,
+  "backend": "cupy",
+  "generated_by": "python -m vcloak.bench.report"
+}

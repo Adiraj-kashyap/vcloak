@@ -1,0 +1,49 @@
+{
+  "run_id": "20261012-033804_M07_ingest_audit",
+  "module": "M07",
+  "step": "S6",
+  "owner": "Aditya",
+  "git_sha": "00f6fe1799d71ff52ee526da79eddc5454c81553",
+  "dirty": true,
+  "command": "gpujob.py ingest; gates_m07.py; python -m vcloak.bench.report; pytest (module + full, numpy); check_oblivious.py kernels/; check_metrics.py; check_secrets.py",
+  "seed": 0,
+  "quick": false,
+  "params": {},
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261012-033804",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U"
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791756484.7325308
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791757208.536954
+  },
+  "outputs": [
+    "a1_sidecars_and_tags.txt",
+    "audit.txt",
+    "audit_a2_grep.txt",
+    "check_metrics.txt",
+    "check_oblivious.txt",
+    "check_secrets.txt",
+    "deliverables_ls.txt",
+    "evidence_and_a1_check.py",
+    "g10_report_rerun.txt",
+    "gates.txt",
+    "gates_m07.py",
+    "pytest.txt",
+    "pytest_all.txt",
+    "report.txt",
+    "ruff.txt"
+  ],
+  "status": "OK",
+  "notes": "M07 ingest gates, S6 report, local tests and audit checks. Local numpy run: no performance number is produced here; all M07 metrics come from the four ingested run dirs of job 20261011-224124_M07."
+}

@@ -1,0 +1,49 @@
+{
+  "source": "runs/20261011-213207_M07_kernel_sweep/summary.json",
+  "device": {
+    "backend": "cupy",
+    "is_gpu": true,
+    "device": "Tesla T4",
+    "gpu": "Tesla T4",
+    "cc": "7.5",
+    "sm_count": 40,
+    "vram_total_bytes": 15636037632,
+    "vram_free_bytes": 15419113472,
+    "mem_clock_khz": 5001000,
+    "mem_bus_width_bits": 256,
+    "peak_bw_gbs": 320.064,
+    "max_log2n": 24,
+    "cuda": "12090",
+    "cupy": "14.0.1",
+    "os": "Linux-6.18.48+-x86_64-with-glibc2.39",
+    "python": "3.13.15"
+  },
+  "host": {
+    "cpu": "Intel(R) Xeon(R) CPU @ 2.00GHz",
+    "cpu_count": 4,
+    "ram_gb": 31.3,
+    "os": "Linux-6.18.48+-x86_64-with-glibc2.39",
+    "python": "3.13.15"
+  },
+  "peak_bw_gbs": 320.064,
+  "telemetry": {
+    "samples": 2625,
+    "sm_clock_mhz": 1125.0,
+    "power_w": 66.366,
+    "temperature_c": 70.0,
+    "util_gpu_pct": 92.0
+  },
+  "telemetry_samples": 2625,
+  "ramps": [
+    {
+      "calls": 46,
+      "seconds": 1.064,
+      "clocks_mhz": [
+        690,
+        1515,
+        1320,
+        1320
+      ]
+    }
+  ]
+}

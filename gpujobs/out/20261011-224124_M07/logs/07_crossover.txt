@@ -1,0 +1,8 @@
+run dir     /kaggle/working/vcloak_job/runs/20261011-215652_M07_crossover
+inputs      20261011-213207_M07_kernel_sweep  20261011-213731_M07_cpu_baselines
+X-CROSSOVER-N                UNSTABLE n
+X-SPEEDUP-2^16               34.593 x
+X-SPEEDUP-2^20               21.756 x
+X-SPEEDUP-VS-LEXSORT-2^16    16.815 x
+X-SPEEDUP-VS-LEXSORT-2^20    12.633 x
+status      UNSTABLE

@@ -1,0 +1,57 @@
+job 20261011-224124_M07 session 20261011-213139 runner kaggle gpu Tesla T4 driver 580.178.04 cupy 14.0.1 cuda_runtime 12090
+    PASS all commands exit 0 - 9 commands
+    PASS git sha matches pack - c40696b
+    PASS bundle sha matches pack
+    PASS backend cupy
+    PASS no fail/error/skip/xfail: pytest_timing - 3 passed in 5.72s
+    PASS no fail/error/skip/xfail: pytest_engine_regression - 248 passed, 7 deselected in 15.68s
+    PASS S1 event timer within 10% of the host clock - ratio 0.9997
+    PASS S1 sleep kernel within 10% of nominal - ratio 1.0481
+    PASS manifest 20261011-213207_M07_kernel_sweep: cupy, this job, this session - status UNSTABLE
+    PASS manifest 20261011-213731_M07_cpu_baselines: cupy, this job, this session - status OK
+    PASS manifest 20261011-215652_M07_crossover: cupy, this job, this session - status UNSTABLE
+    PASS manifest 20261011-215653_M07_pipeline: cupy, this job, this session - status UNSTABLE
+    PASS S2 run dir complete
+    PASS S2 six kernels x 2^10..2^22
+    PASS S2 at least 50 timed runs in every attempt - 144 attempts, min 50 runs
+    PASS S2 timer is CUDA events
+    PASS S2 every timed output equals its reference
+    PASS A5 fused equals global-only at every n - 13 sizes
+    PASS S2 summary statistics equal raw.csv; CV <= 0.10 and clock change <= 15% for every numeric point - 33 stable (16 at a LOW clock), 45 UNSTABLE of 78
+    PASS A4 unstable kernel configurations are indexed as UNSTABLE, with both attempts in raw.csv - 45 configurations, 49 metric rows
+    NOTE bitonic_global: UNSTABLE at log2n [11, 21]
+    NOTE bitonic_fused: UNSTABLE at log2n [10, 12, 20, 22]
+    NOTE sort_e2e: UNSTABLE at log2n [10, 11, 22]
+    NOTE chacha_tags: UNSTABLE at log2n [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 21]
+    NOTE aead_open: UNSTABLE at log2n [10, 11, 12, 13, 14, 15, 16, 18, 19, 20, 21, 22]
+    NOTE bucket_prf: UNSTABLE at log2n [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22]
+    NOTE K-BITONIC-BW-PCT is above 100% of the theoretical peak at log2n [17]: 167.5%
+    NOTE bitonic_global microseconds per launch (median / rounds): 2^10 12.4, 2^11 11.8, 2^12 11.8, 2^13 11.7, 2^14 11.5, 2^15 11.8, 2^16 11.6, 2^17 11.7, 2^18 55.8, 2^19 110.6, 2^20 215.5, 2^21 429.1, 2^22 853.3
+    PASS TEL medians equal telemetry.csv - 2625 samples, SM clock median 1125 MHz, power median 66.37 W
+    NOTE telemetry: 2049 of 2625 samples have a non-zero throttle-reasons mask (values [0, 4]); temperature max 77 C; power limit 70.0 W
+    PASS S3 four baselines x 2^10..2^22
+    PASS S3 at least 10 runs up to 2^20 and 5 above - runs per point: [5, 10]
+    PASS S3 timer is perf_counter_ns
+    PASS S3 medians equal raw.csv, every output equals its reference, no unstable point - max CV 0.057
+    NOTE numba_bitonic at 2^17 was repeated: CV 0.258, 0.049; the last attempt is the indexed one, both are in raw.csv
+    PASS S3 numba measured - {'numba': '0.61.2', 'threads': 4}
+    PASS A3 GPU and CPU sweeps come from the session of the crossover - 20261011-213139
+    PASS A3 GPU series includes the transfers - sort_e2e (H2D + fused sort + D2H)
+    PASS A3 shared-runner caveat recorded
+    PASS S4 table recomputed from the two sweeps (best oblivious CPU baseline per n) - best baseline: numba_bitonic
+    PASS S4 summary.json has n* and the speed-ups at 2^16 and 2^20 - n* at_or_below 1024 (unstable input: True), x34.593 at 2^16, x21.756 at 2^20
+    PASS S4 the GPU is faster at every compared n - smallest speed-up x8.93 at 2^10
+    NOTE X-CROSSOVER-N is UNSTABLE: sort_e2e at 2^10 has CV 0.131, 0.167
+    PASS S5 200 timed calls in every attempt - 17 attempts
+    PASS S5 stages add up to the total in every timed call - worst relative gap 8.87e-08
+    PASS S5 every call equals the oracle - 12 configurations
+    NOTE real-time gate SLOTS    64: p99 total    1.121 ms PASS, p99 device   0.899 ms PASS, host median 0.198 ms (EPOCH_MS 200)
+    NOTE real-time gate SLOTS  1024: p99 total    9.471 ms PASS, p99 device   1.592 ms PASS, host median 2.395 ms, UNSTABLE (EPOCH_MS 200)
+    NOTE real-time gate SLOTS  4096: p99 total   32.136 ms PASS, p99 device   2.170 ms PASS, host median 9.987 ms, UNSTABLE (EPOCH_MS 200)
+    NOTE real-time gate SLOTS 16384: p99 total   73.921 ms PASS, p99 device   2.788 ms PASS, host median 43.387 ms, UNSTABLE (EPOCH_MS 200)
+    NOTE real-time gate SLOTS 65536: p99 total  279.545 ms FAIL, p99 device  11.100 ms PASS, host median 233.709 ms (EPOCH_MS 200)
+    PASS S5 real-time gate evaluated and recorded; p99 recomputed from raw.csv - whole call misses the budget at SLOTS [65536]; device part misses it at []
+    PASS A4 unstable pipeline configurations are indexed as UNSTABLE - 3 configurations, 15 metric rows
+    PASS host profile present
+    PASS every metric of the four summaries is indexed - 213 rows, 65 of them UNSTABLE
+RESULT: PASS

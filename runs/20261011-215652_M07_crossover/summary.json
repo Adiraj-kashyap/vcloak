@@ -1,0 +1,318 @@
+{
+  "metrics": [
+    {
+      "id": "X-CROSSOVER-N",
+      "value": "UNSTABLE",
+      "unit": "n",
+      "stat": "upper-bound",
+      "note": "the GPU is faster at every compared n, so n* is at most this smallest swept n; against the best oblivious CPU baseline; same runner session 20261011-213139; Tesla T4 / Intel(R) Xeon(R) CPU @ 2.00GHz x4"
+    },
+    {
+      "id": "X-SPEEDUP-2^16",
+      "value": 34.593,
+      "unit": "x",
+      "stat": "ratio",
+      "note": "best oblivious CPU baseline (numba_bitonic) median / GPU sort_e2e median; same runner session 20261011-213139; Tesla T4 / Intel(R) Xeon(R) CPU @ 2.00GHz x4"
+    },
+    {
+      "id": "X-SPEEDUP-2^20",
+      "value": 21.756,
+      "unit": "x",
+      "stat": "ratio",
+      "note": "best oblivious CPU baseline (numba_bitonic) median / GPU sort_e2e median; same runner session 20261011-213139; Tesla T4 / Intel(R) Xeon(R) CPU @ 2.00GHz x4"
+    },
+    {
+      "id": "X-SPEEDUP-VS-LEXSORT-2^16",
+      "value": 16.815,
+      "unit": "x",
+      "stat": "ratio",
+      "note": "np.lexsort (not oblivious, lower bound) (lexsort) median / GPU sort_e2e median; same runner session 20261011-213139; Tesla T4 / Intel(R) Xeon(R) CPU @ 2.00GHz x4"
+    },
+    {
+      "id": "X-SPEEDUP-VS-LEXSORT-2^20",
+      "value": 12.633,
+      "unit": "x",
+      "stat": "ratio",
+      "note": "np.lexsort (not oblivious, lower bound) (lexsort) median / GPU sort_e2e median; same runner session 20261011-213139; Tesla T4 / Intel(R) Xeon(R) CPU @ 2.00GHz x4"
+    }
+  ],
+  "crossover": {
+    "kind": "at_or_below",
+    "n": 1024,
+    "unstable": true,
+    "smallest_n": 1024,
+    "largest_n": 4194304
+  },
+  "table": [
+    {
+      "n": 1024,
+      "log2n": 10,
+      "gpu_ms": 0.12369599938392639,
+      "cpu_ms": 1.1045895,
+      "cpu_baseline": "numba_bitonic",
+      "speedup": 8.929872473656857,
+      "gpu_faster": true,
+      "unstable": true
+    },
+    {
+      "n": 2048,
+      "log2n": 11,
+      "gpu_ms": 0.1706879958510399,
+      "cpu_ms": 1.5904905,
+      "cpu_baseline": "numba_bitonic",
+      "speedup": 9.318115735496875,
+      "gpu_faster": true,
+      "unstable": true
+    },
+    {
+      "n": 4096,
+      "log2n": 12,
+      "gpu_ms": 0.21540799736976624,
+      "cpu_ms": 2.3797245,
+      "cpu_baseline": "numba_bitonic",
+      "speedup": 11.04752158256687,
+      "gpu_faster": true,
+      "unstable": false
+    },
+    {
+      "n": 8192,
+      "log2n": 13,
+      "gpu_ms": 0.2919199913740158,
+      "cpu_ms": 3.755275,
+      "cpu_baseline": "numba_bitonic",
+      "speedup": 12.864055600730133,
+      "gpu_faster": true,
+      "unstable": false
+    },
+    {
+      "n": 16384,
+      "log2n": 14,
+      "gpu_ms": 0.3742559999227524,
+      "cpu_ms": 6.3920785,
+      "cpu_baseline": "numba_bitonic",
+      "speedup": 17.079428255844515,
+      "gpu_faster": true,
+      "unstable": false
+    },
+    {
+      "n": 32768,
+      "log2n": 15,
+      "gpu_ms": 0.4984159916639328,
+      "cpu_ms": 14.107942999999999,
+      "cpu_baseline": "numba_bitonic",
+      "speedup": 28.30555848118246,
+      "gpu_faster": true,
+      "unstable": false
+    },
+    {
+      "n": 65536,
+      "log2n": 16,
+      "gpu_ms": 0.703792005777359,
+      "cpu_ms": 24.346302,
+      "cpu_baseline": "numba_bitonic",
+      "speedup": 34.593035726668695,
+      "gpu_faster": true,
+      "unstable": false
+    },
+    {
+      "n": 131072,
+      "log2n": 17,
+      "gpu_ms": 1.214352011680603,
+      "cpu_ms": 52.037747499999995,
+      "cpu_baseline": "numba_bitonic",
+      "speedup": 42.85227594590331,
+      "gpu_faster": true,
+      "unstable": false
+    },
+    {
+      "n": 262144,
+      "log2n": 18,
+      "gpu_ms": 4.549631834030151,
+      "cpu_ms": 105.3083185,
+      "cpu_baseline": "numba_bitonic",
+      "speedup": 23.1465583022167,
+      "gpu_faster": true,
+      "unstable": false
+    },
+    {
+      "n": 524288,
+      "log2n": 19,
+      "gpu_ms": 10.100800037384033,
+      "cpu_ms": 232.873468,
+      "cpu_baseline": "numba_bitonic",
+      "speedup": 23.0549527896912,
+      "gpu_faster": true,
+      "unstable": false
+    },
+    {
+      "n": 1048576,
+      "log2n": 20,
+      "gpu_ms": 22.784735679626465,
+      "cpu_ms": 495.70417050000003,
+      "cpu_baseline": "numba_bitonic",
+      "speedup": 21.75597634618365,
+      "gpu_faster": true,
+      "unstable": false
+    },
+    {
+      "n": 2097152,
+      "log2n": 21,
+      "gpu_ms": 51.89888000488281,
+      "cpu_ms": 1090.205642,
+      "cpu_baseline": "numba_bitonic",
+      "speedup": 21.006342369959235,
+      "gpu_faster": true,
+      "unstable": false
+    },
+    {
+      "n": 4194304,
+      "log2n": 22,
+      "gpu_ms": 116.07315063476562,
+      "cpu_ms": 2416.310504,
+      "cpu_baseline": "numba_bitonic",
+      "speedup": 20.817135494177577,
+      "gpu_faster": true,
+      "unstable": true
+    }
+  ],
+  "table_vs_lexsort": [
+    {
+      "n": 1024,
+      "log2n": 10,
+      "gpu_ms": 0.12369599938392639,
+      "cpu_ms": 0.10987150000000001,
+      "cpu_baseline": "lexsort",
+      "speedup": 0.8882381042816264,
+      "gpu_faster": false,
+      "unstable": true
+    },
+    {
+      "n": 2048,
+      "log2n": 11,
+      "gpu_ms": 0.1706879958510399,
+      "cpu_ms": 0.24528250000000001,
+      "cpu_baseline": "lexsort",
+      "speedup": 1.4370225555525244,
+      "gpu_faster": true,
+      "unstable": true
+    },
+    {
+      "n": 4096,
+      "log2n": 12,
+      "gpu_ms": 0.21540799736976624,
+      "cpu_ms": 0.5457099999999999,
+      "cpu_baseline": "lexsort",
+      "speedup": 2.533378549837414,
+      "gpu_faster": true,
+      "unstable": false
+    },
+    {
+      "n": 8192,
+      "log2n": 13,
+      "gpu_ms": 0.2919199913740158,
+      "cpu_ms": 1.1820675,
+      "cpu_baseline": "lexsort",
+      "speedup": 4.049285882875706,
+      "gpu_faster": true,
+      "unstable": false
+    },
+    {
+      "n": 16384,
+      "log2n": 14,
+      "gpu_ms": 0.3742559999227524,
+      "cpu_ms": 2.6361075,
+      "cpu_baseline": "lexsort",
+      "speedup": 7.043594492924899,
+      "gpu_faster": true,
+      "unstable": false
+    },
+    {
+      "n": 32768,
+      "log2n": 15,
+      "gpu_ms": 0.4984159916639328,
+      "cpu_ms": 5.8483295,
+      "cpu_baseline": "lexsort",
+      "speedup": 11.733831975325856,
+      "gpu_faster": true,
+      "unstable": false
+    },
+    {
+      "n": 65536,
+      "log2n": 16,
+      "gpu_ms": 0.703792005777359,
+      "cpu_ms": 11.834470499999998,
+      "cpu_baseline": "lexsort",
+      "speedup": 16.815295432247026,
+      "gpu_faster": true,
+      "unstable": false
+    },
+    {
+      "n": 131072,
+      "log2n": 17,
+      "gpu_ms": 1.214352011680603,
+      "cpu_ms": 26.9152105,
+      "cpu_baseline": "lexsort",
+      "speedup": 22.164257349687823,
+      "gpu_faster": true,
+      "unstable": false
+    },
+    {
+      "n": 262144,
+      "log2n": 18,
+      "gpu_ms": 4.549631834030151,
+      "cpu_ms": 61.278287000000006,
+      "cpu_baseline": "lexsort",
+      "speedup": 13.468845224277965,
+      "gpu_faster": true,
+      "unstable": false
+    },
+    {
+      "n": 524288,
+      "log2n": 19,
+      "gpu_ms": 10.100800037384033,
+      "cpu_ms": 132.201994,
+      "cpu_baseline": "lexsort",
+      "speedup": 13.08826959356761,
+      "gpu_faster": true,
+      "unstable": false
+    },
+    {
+      "n": 1048576,
+      "log2n": 20,
+      "gpu_ms": 22.784735679626465,
+      "cpu_ms": 287.844505,
+      "cpu_baseline": "lexsort",
+      "speedup": 12.633216774921085,
+      "gpu_faster": true,
+      "unstable": false
+    },
+    {
+      "n": 2097152,
+      "log2n": 21,
+      "gpu_ms": 51.89888000488281,
+      "cpu_ms": 671.722325,
+      "cpu_baseline": "lexsort",
+      "speedup": 12.942905992129353,
+      "gpu_faster": true,
+      "unstable": false
+    },
+    {
+      "n": 4194304,
+      "log2n": 22,
+      "gpu_ms": 116.07315063476562,
+      "cpu_ms": 1559.471413,
+      "cpu_baseline": "lexsort",
+      "speedup": 13.435246691175067,
+      "gpu_faster": true,
+      "unstable": true
+    }
+  ],
+  "inputs": {
+    "gpu_run": "runs/20261011-213207_M07_kernel_sweep",
+    "cpu_run": "runs/20261011-213731_M07_cpu_baselines",
+    "session_id": "20261011-213139",
+    "gpu_series": "sort_e2e (H2D + fused sort + D2H)"
+  },
+  "pair": "Tesla T4 / Intel(R) Xeon(R) CPU @ 2.00GHz x4",
+  "caveat": "Free Colab/Kaggle GPUs and their host CPUs are shared and may be throttled; the GPU and CPU numbers were taken in one runner session and are valid for this GPU/CPU pair only."
+}

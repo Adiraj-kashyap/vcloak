@@ -117,3 +117,18 @@ paper's setup section and the panel will ask to see. Follow `ai/EVIDENCE.md`.
   forced up. `host_profile.txt` is a cProfile of three write_epoch calls at SLOTS 65536.
 - **S6 is not prepared in this session**: `src/vcloak/bench/report.py`, the figures and `docs/REPORT_CH4_NOTES.md`
   are written in the ingest session from the ingested run dirs.
+
+### 2026-10-12 (session 14, ingest) — S6 as built, and what the measurement showed
+- **Seven figures instead of four.** The palette has four series colours and one y-axis per chart is a rule
+  (ai/FRONTEND.md §5), so "time vs n (GPU variants vs CPU)" is two figures (`fig_sort_gpu_vs_cpu`, `fig_kernels_vs_n`)
+  and the stage breakdown is two (`fig_write_epoch_host_device`, where the host stage would hide everything else,
+  and `fig_write_epoch_device_stages`); `fig_read_window` is added. The telemetry figure covers the kernel sweep,
+  the longest GPU run of the job.
+- **The notes are generated.** `python -m vcloak.bench.report --notes docs/REPORT_CH4_NOTES.md` writes the file from
+  the run dirs, so no number in it is typed. It refuses numpy runs and runs of different sessions.
+- **UNSTABLE points are drawn hollow** from their last attempt and flagged in the CSV tables; the index value stays
+  UNSTABLE.
+- **Reality against the plan:** the bytes-moved bandwidth model only holds from 2^18 upwards (ISSUE-14); most of
+  the sweep ran under the board's power limit, so the "LOW clock" label is the normal state at large n, not an
+  exception; 45 of 78 kernel configurations are UNSTABLE (ISSUE-15); the real-time gate fails for the whole call
+  at 2^16 slots because of host work (ISSUE-12).

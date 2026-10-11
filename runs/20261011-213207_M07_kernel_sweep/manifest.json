@@ -1,0 +1,96 @@
+{
+  "run_id": "20261011-213207_M07_kernel_sweep",
+  "module": "M07",
+  "step": "S2",
+  "owner": "Aditya",
+  "git_sha": "c40696b9c5d6d560f1ba9021ffd0f3e97b832f24",
+  "dirty": false,
+  "command": "python bench/run_kernels.py --part gpu --seed 7 --out runs",
+  "seed": 7,
+  "quick": false,
+  "params": {
+    "n_log2": [
+      10,
+      22
+    ],
+    "runs": 50,
+    "warmup": 10,
+    "kernels": [
+      "bitonic_global",
+      "bitonic_fused",
+      "sort_e2e",
+      "chacha_tags",
+      "aead_open",
+      "bucket_prf"
+    ],
+    "T": 256,
+    "warm_seconds": [
+      0.5,
+      4.0
+    ],
+    "cv_limit": 0.1,
+    "clock_limit": 0.15,
+    "low_clock_fraction": 0.85,
+    "buckets": 64
+  },
+  "env": {
+    "os": "Linux-6.18.48+-x86_64-with-glibc2.39",
+    "python": "3.13.15",
+    "backend": "cupy",
+    "runner": "kaggle",
+    "session_id": "20261011-213139",
+    "gpu": "Tesla T4",
+    "cc": "7.5",
+    "cuda": "12090",
+    "cupy": "14.0.1",
+    "driver": "580.178.04"
+  },
+  "telemetry_start": {
+    "available": true,
+    "gpu": "Tesla T4",
+    "driver": "580.178.04",
+    "clocks": "unlocked",
+    "sm_clock_max_mhz": 1590,
+    "ts": 1791754328.1420128,
+    "sm_clock_mhz": 690,
+    "mem_clock_mhz": 5000,
+    "temperature_c": 50,
+    "power_w": 29.05,
+    "power_limit_w": 70.0,
+    "util_gpu_pct": 5,
+    "util_mem_pct": 0,
+    "throttle_reasons": 0,
+    "pstate": 0,
+    "mem_used_mb": 655.1875
+  },
+  "telemetry_end": {
+    "available": true,
+    "gpu": "Tesla T4",
+    "driver": "580.178.04",
+    "clocks": "unlocked",
+    "sm_clock_max_mhz": 1590,
+    "ts": 1791754649.3766563,
+    "sm_clock_mhz": 1575,
+    "mem_clock_mhz": 5000,
+    "temperature_c": 76,
+    "power_w": 44.841,
+    "power_limit_w": 70.0,
+    "util_gpu_pct": 100,
+    "util_mem_pct": 100,
+    "throttle_reasons": 4,
+    "pstate": 0,
+    "mem_used_mb": 705.1875
+  },
+  "outputs": [
+    "raw.csv",
+    "summary.json",
+    "telemetry.csv"
+  ],
+  "status": "UNSTABLE",
+  "notes": "45 configuration(s) unstable after two attempts: bitonic_global@2^11, bitonic_global@2^21, bitonic_fused@2^10, bitonic_fused@2^12, bitonic_fused@2^20, bitonic_fused@2^22, sort_e2e@2^10, sort_e2e@2^11, sort_e2e@2^22, chacha_tags@2^10, chacha_tags@2^11, chacha_tags@2^12, chacha_tags@2^13, chacha_tags@2^14, chacha_tags@2^15, chacha_tags@2^16, chacha_tags@2^17, chacha_tags@2^18, chacha_tags@2^19, chacha_tags@2^21, aead_open@2^10, aead_open@2^11, aead_open@2^12, aead_open@2^13, aead_open@2^14, aead_open@2^15, aead_open@2^16, aead_open@2^18, aead_open@2^19, aead_open@2^20, aead_open@2^21, aead_open@2^22, bucket_prf@2^10, bucket_prf@2^11, bucket_prf@2^12, bucket_prf@2^13, bucket_prf@2^14, bucket_prf@2^15, bucket_prf@2^16, bucket_prf@2^17, bucket_prf@2^18, bucket_prf@2^19, bucket_prf@2^20, bucket_prf@2^21, bucket_prf@2^22; 33 configuration(s) measured at a LOW SM clock (kept, labelled): bitonic_global@2^17, bitonic_global@2^18, bitonic_global@2^19, bitonic_global@2^20, bitonic_global@2^22, bitonic_fused@2^10, bitonic_fused@2^11, bitonic_fused@2^12, bitonic_fused@2^17, bitonic_fused@2^18, bitonic_fused@2^19, bitonic_fused@2^21, sort_e2e@2^19, sort_e2e@2^20, sort_e2e@2^21, chacha_tags@2^10, chacha_tags@2^11, chacha_tags@2^12, chacha_tags@2^14, chacha_tags@2^18, chacha_tags@2^20, chacha_tags@2^22, aead_open@2^13, aead_open@2^17, aead_open@2^20, aead_open@2^22, bucket_prf@2^10, bucket_prf@2^11, bucket_prf@2^12, bucket_prf@2^14, bucket_prf@2^15, bucket_prf@2^19, bucket_prf@2^22",
+  "gpu_job": {
+    "job_id": "20261011-224124_M07",
+    "bundle_sha256": "1f6c60410fd796e64f180bf2bf7da8317b997062aee4ba03d94c8816c5c02c86",
+    "packed_from_git_sha": "c40696b9c5d6d560f1ba9021ffd0f3e97b832f24"
+  }
+}
