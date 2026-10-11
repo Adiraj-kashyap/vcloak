@@ -168,3 +168,32 @@ Then open a new session and type: continue
 Resolved session 10: the human ran the job on Kaggle (Tesla T4, session 20261011-141833) and dropped the results zip
 in gpujobs/inbox/; `gpujob.py ingest` verified it and all 6 commands exited 0 (gpujobs/out/20261011-193547_M05/logs,
 gates in runs/20261011-213200_M05_ingest_audit/gates.txt). `cryptography` was already on the runner.
+
+### ISSUE-10 [OPEN] HUMAN ACTION REQUIRED — GPU JOB READY: M06 GPU engine (job 20261011-215111_M06)
+BLOCKS: M06   SEVERITY: high   OPENED: 2026-10-11 session 11
+Why: the laptop has no GPU. The engine (key store, write_epoch, reshuffle_window, read_window) has only run on the
+NumPy twins. M06 needs one real run to execute it on CUDA, compare it byte for byte with the oracle and with the
+simulator engine up to SLOTS = 2^24, and take the first pipeline timings (smoke, quick-tagged). The CuPy-only code
+paths (the engine's stream, pinned transfers, CUDA events, the key upload and the memset) have never executed, so a
+failing cell is possible; it is still evidence and is fixed in the next session.
+The time on the runner has not been measured; allow about as long as the M05 job and keep the tab open.
+File to upload: D:\PJT\vcloak\gpujobs\out\20261011-215111_M06\job.zip
+Notebook:       D:\PJT\vcloak\colab\VCloak_GPU_Runner.ipynb
+Do this (Kaggle, as for the M00, M03, M04 and M05 jobs):
+  1. kaggle.com -> Create -> New Notebook -> File -> Import Notebook -> pick colab\VCloak_GPU_Runner.ipynb.
+  2. Settings -> Accelerator -> GPU T4 x2.   (the step everyone forgets)
+  3. + Add Input -> Upload -> gpujobs\out\20261011-215111_M06\job.zip as a dataset.
+  4. In Cell 2 set KAGGLE_INPUT = "/kaggle/input/<your-dataset>/job.zip".
+  5. Run Cell 1. It must print a GPU name (e.g. Tesla T4). If it prints NO GPU, redo step 2.
+  6. Run the remaining cells and keep the tab open until the last one finishes.
+  7. Download results_20261011-215111_M06.zip from the Output panel.
+  8. Move that file into D:\PJT\vcloak\gpujobs\inbox\   (do not unzip or rename it).
+Or use Google Colab: colab.research.google.com -> File -> Upload notebook -> the same .ipynb; Runtime -> Change
+  runtime type -> T4 GPU -> Save; run Cell 1 (GPU name), Cell 2 (upload job.zip), Cell 3 (keep the tab open),
+  Cell 4 (downloads the results zip).
+Bring back only the results zip, even if a cell reports a failure. Do not commit or edit anything in the repo
+  before the next session: a change to src/, kernels/, tests/, bench/ or scripts/ makes the result stale and it
+  will be rejected.
+No passphrase is needed: the job uses the fixed TEST key (`--dev`).
+Confirm by running: .venv\Scripts\python scripts\gpujob.py verify gpujobs\inbox\results_20261011-215111_M06.zip
+Then open a new session and type: continue

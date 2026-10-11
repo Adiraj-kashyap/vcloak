@@ -281,3 +281,34 @@ Notes: the gates are in runs/20261011-213200_M05_ingest_audit/gates.txt, compute
 - Whether nvcc emits branch-free code for `diff == 0`, `conv != q_conv` and the Poly1305 select is an M08 (SASS)
   question, not answered here.
 - The local run manifest has dirty:true (taken before the commit); the code tested on the GPU is commit 69a2cc3.
+
+## Audit M06 — 2026-10-11 — session 11 — result: PARTIAL (prep: local checks PASS; A1, A2, A4, G5 on the GPU wait for GPU job 20261011-215111_M06; module not DONE)
+Evidence dir: runs/20261011-214849_M06_engine_prep (numpy backend, laptop); code commit 67504cd
+
+| Item | Result | Evidence |
+|---|---|---|
+| A1 engine outputs bit-exact vs the oracle (injected nonces/uuids) | PENDING | ISSUE-10. Local half PASS on the twins (pytest.txt): write_epoch = write_epoch_ref at SLOTS 2^6, 2^10, 2^16 x seeds 1-3 (full, half+1 and 1 real row), 5 adversarial batches, 6 epochs, 5 public-parameter sets; reshuffle_window = reshuffle_ref for 12 sizes x 3 windows; read_window = read_window_ref for 50 windows, plus padding to K; bucket_of = chacha_ref.bucket_prf |
+| A2 the host master buffer is zeroized (test) | PENDING | ISSUE-10 for the device path (copy_from_host, memset). Local half PASS: test_load_master_zeroizes_the_host_buffer..., ...even_when_derivation_fails, test_zeroize_clears_the_device_buffer... [numpy] in pytest.txt |
+| A3 no subkey in host memory (no `.get()` / `asnumpy` on key buffers) | PASS | audit_a3.txt: keystore.py has no match; engine.py has one device download (`_d2h`, line 176) whose 5 callers pass order, blobs, bkt and perm only. Enforced by test_a3_the_key_store_has_no_device_to_host_path and test_a3_the_engine_downloads_only_through_d2h_and_never_a_key_buffer (pytest.txt) |
+| A4 stage timings exist and are consistent | PENDING | ISSUE-10 (CUDA events). Local half PASS on the host clock: test_last_timings_of_every_call[numpy], test_an_empty_epoch...[numpy]: all keys present, unused stages 0, stages add up to total |
+| G1 | PASS (local) | pytest.txt (82 passed, 68 skipped: gpu); full suite pytest_all.txt (1139 passed, 663 skipped) |
+| G2 | PASS | check_metrics.txt (14 rows, 0 problems); no number recorded this session |
+| G2b | PASS | no metric added; runs/20261011-215050_M06_pipeline_smoke_quick is numpy and records every metric as NOT_MEASURED |
+| G3 | PASS | check_oblivious.txt (11 files, 0 findings); kernels/ unchanged this session |
+| G4 | PASS | check_secrets.txt, taken after the pack (380 files, 0 key-like runs) |
+| G5 | PENDING | ISSUE-10: the cupy half of both test files (68 tests), incl. test_gpu_engine_equals_the_simulator_engine at 3 sizes x 3 seeds and test_max_log2n x 3 seeds |
+| G6 | PASS | deliverables_ls.txt (keystore.py, engine.py, tests/gpu/test_engine.py, tests/integration/test_engine_vs_oracle.py, bench/run_pipeline.py) |
+| G7 | PASS | checked after the closing commit |
+| G8 | PASS | STATE: M06 BLOCKED_HUMAN at S5, gpu_job.pending 20261011-215111_M06, sessions 1 |
+| G9 | PASS | SESSION_LOG session 11, this entry, ISSUE-10 opened |
+| G10 | PASS | both manifests validate (new_run.py --validate); the module tests re-run in a fresh process give the same result (pytest_repeat.txt: 82 passed, 68 skipped) |
+Notes: nothing on this page ran on a GPU.
+- The engine adds no kernel; what is new and untested on a device is the CuPy plumbing: a non-blocking stream as the
+  current stream, pinned buffers with `set(stream=)` / `get(stream=, out=)`, `MemoryPointer.copy_from_host` from the
+  bytearray, `runtime.memset`, and stage timing with consecutive events. These lines have never executed.
+- The timing test asserts a strictly positive time for every stage a call uses. That holds on the host clock; on
+  CUDA events a very short transfer stage could read 0 and fail the test without the engine being wrong.
+- The pipeline smoke times whole calls, host work included (Python builds one row object per message). Its numbers
+  will be smoke values, quick-tagged; real-time behaviour (p99 < EPOCH_MS) is M07/M15, NOT_MEASURED here.
+- ruff reports 1 E501 in scripts/record_env.py, which predates this session (ruff.txt); this session's files are clean.
+- The prep run manifest has dirty:true (taken before the commit); the code it tested is commit 67504cd.

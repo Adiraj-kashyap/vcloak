@@ -240,3 +240,29 @@
 - Commit: c2cefaa
 - Next: M06 S1 ; human action: none
 
+
+## Session 11 — 2026-10-11 21:55 — M06 GPU engine (prep) — owner:Aditya
+- Steps: S1-S5, local half (status after: BLOCKED_HUMAN, GPU JOB READY)
+- Did: src/vcloak/gpu/keystore.py (DeviceKeyStore: H2D from the bytearray, host wipe, subkeys on the device,
+  memset zeroize), src/vcloak/gpu/engine.py (GpuEngine: write_epoch, reshuffle_window, read_window, bucket_of,
+  one stream, pinned transfers, per-stage event clock, last_timings), dev_keystore() in tests/testkeys.py,
+  tests/gpu/test_engine.py, tests/integration/test_engine_vs_oracle.py, bench/run_pipeline.py, bench/jobs/M06.json.
+- Evidence: runs/20261011-214849_M06_engine_prep (pytest 82 passed / 68 gpu-skipped; full suite 1139 / 663;
+  check_oblivious 11 files 0 findings; check_secrets PASS; check_metrics 14 rows PASS; audit_a3.txt),
+  runs/20261011-215050_M06_pipeline_smoke_quick (numpy plumbing run, 0 oracle mismatches, NOT_MEASURED).
+- Checks: S1 host bytearray all zero after load, subkeys = chacha_ref.derive_subkeys; S2 write_epoch =
+  write_epoch_ref with one shared byte tape; S3 reshuffle = reshuffle_ref, read_window = read_window_ref for 50
+  windows; S4 last_timings has all keys and the stages add up to total; S5 the bench runs end to end on the twins.
+- GPU job: 20261011-215111_M06 packed from 67504cd (1.37 MB, 91 files), full mode, 7 commands; the smoke bench
+  inside it runs with --quick.
+- Metrics added: none (numpy backend; nothing timed)
+- Decisions: none
+- Issues: opened ISSUE-10 (HUMAN ACTION: GPU JOB READY, M06)
+- Deviations from spec: see the Amendments note in ai/modules/M06_gpu_engine.md — no new kernel; the device copy of
+  K_master is cleared after derivation; one `entropy` hook instead of nonce/uuid hooks; seal and bucket after the
+  host gather; extra stage keys `open` and `host`; read_window pads to K; bench is --dev only (no passphrase).
+- Not verified: anything on a GPU — the stream, pinned transfers, copy_from_host, memset, CUDA-event timings,
+  engine parity with the simulator, SLOTS = 2^max_log2n, every timing.
+- Commit: 67504cd (code), see the next commit (job, logs, state)
+- Next: M06 ingest (A1, A2, A4, G5, smoke metrics) ; human action: ISSUE-10 — upload the job, drop the results zip
+  in gpujobs/inbox/

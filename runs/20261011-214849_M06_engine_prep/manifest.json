@@ -25,7 +25,7 @@
   "telemetry_end": {
     "available": false,
     "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
-    "ts": 1791735664.1860452
+    "ts": 1791735670.82761
   },
   "outputs": [
     "audit_a3.txt",
@@ -38,5 +38,5 @@
     "ruff.txt"
   ],
   "status": "OK",
-  "notes": "prep session, numpy backend: correctness only, no number here is a performance result; engine = oracle (write_epoch, reshuffle_window, read_window 50 windows, bucket_of) on the simulator twins; pipeline smoke ran as a plumbing check only (run 20261011-214906_M06_pipeline_smoke_quick style dir, NOT_MEASURED); CUDA execution, stream/pinned transfers, CUDA-event timings and GPU-vs-twin parity are pending in the M06 GPU job; ruff: 1 E501 in scripts/record_env.py that predates this session"
+  "notes": "prep session, numpy backend: correctness only, no number here is a performance result; engine = oracle (write_epoch, reshuffle_window, read_window 50 windows, bucket_of) on the simulator twins; the pipeline smoke ran as a plumbing check only (runs/20261011-215050_M06_pipeline_smoke_quick, NOT_MEASURED); CUDA execution, stream and pinned transfers, CUDA-event timings and GPU-vs-twin parity are pending in the M06 GPU job; ruff: 1 E501 in scripts/record_env.py that predates this session; the manifest has dirty:true because the run was taken before commit 67504cd"
 }

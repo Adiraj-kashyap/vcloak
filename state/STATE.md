@@ -7,9 +7,9 @@ last_session: 11
 last_session_date: 2026-10-11
 current_module: M06
 current_step: S5
-status: IN_PROGRESS        # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
+status: BLOCKED_HUMAN      # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
 next_unit: M06
-last_checkpoint: 2026-10-11 M05 DONE: GPU job 20261011-193547_M05 ingested, gates and audit PASS (session 10)
+last_checkpoint: 2026-10-11 M06 S1-S5 local half passed on numpy; GPU job 20261011-215111_M06 packed from 67504cd; waiting for the results zip (ISSUE-10)
 quick_mode_default: false
 local:                      # the laptop (no GPU) — filled by M00 S7
   os: "Windows-11-10.0.26200-SP0"
@@ -33,7 +33,7 @@ runner:                     # the free remote GPU — filled from the ingested M
   peak_bw_gbs: 320.064
   last_session_id: "20261011-141833"
 gpu_job:                    # set by the gpu-job skill
-  pending: null                  # job id awaiting the upload of the human, or null
+  pending: 20261011-215111_M06   # job id awaiting the upload of the human, or null
   last_ingested: 20261011-193547_M05
 ```
 
@@ -47,7 +47,7 @@ gpu_job:                    # set by the gpu-job skill
 | M03 | GPU bitonic kernel | Aditya | M01 | no | DONE | S6 | 2 |
 | M04 | GPU ChaCha20 tags/PRF | Aditya | M02, M03 | no | DONE | S4 | 2 |
 | M05 | GPU AEAD-open, restore, compaction | Aditya | M04 | no | DONE | S4 | 2 |
-| M06 | GPU engine | Aditya | M05 | no | IN_PROGRESS | S5 | 1 |
+| M06 | GPU engine | Aditya | M05 | no | BLOCKED_HUMAN | S5 | 1 |
 | M07 | GPU performance metrics (E4) | Aditya | M06 | no | NOT_STARTED | S1 | 0 |
 | M08 | GPU obliviousness audit (E3) | Aditya | M06 | no | NOT_STARTED | S1 | 0 |
 | M09 | Storage (PostgreSQL) | Divyansh | M06 | no | NOT_STARTED | S1 | 0 |
