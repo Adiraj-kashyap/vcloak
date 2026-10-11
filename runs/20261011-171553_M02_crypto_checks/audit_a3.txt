@@ -1,0 +1,18 @@
+============================= test session starts =============================
+platform win32 -- Python 3.14.0, pytest-9.1.1, pluggy-1.6.0 -- D:\PJT\vcloak\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: D:\PJT\vcloak
+configfile: pyproject.toml
+plugins: anyio-4.15.1
+collecting ... collected 11 items / 9 deselected / 2 selected
+
+tests/unit/test_crypto_aead.py::test_every_single_bit_flip_is_rejected_without_an_exception PASSED [ 50%]
+tests/unit/test_crypto_aead.py::test_wrong_key_and_wrong_lengths_are_rejected_without_an_exception PASSED [100%]
+
+======================= 2 passed, 9 deselected in 0.13s =======================
+14:    from cryptography.exceptions import InvalidTag
+37:    except InvalidTag:
+43:    nonce = os.urandom(NONCE_LEN) if nonce is None else nonce
+44:    if len(nonce) != NONCE_LEN:
+52:    if len(blob) != SEQ_ENC_LEN:  # the length is public
+55:    if pt is None:

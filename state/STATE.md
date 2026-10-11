@@ -3,13 +3,13 @@
 ```yaml
 project: v-cloak
 kit_version: 1.0
-last_session: 3
+last_session: 4
 last_session_date: 2026-10-11
-current_module: M02
+current_module: M03
 current_step: S1
 status: NOT_STARTED        # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
-next_unit: M02
-last_checkpoint: 2026-10-11 M01 DONE (S1-S5, 148 oracle tests, golden vectors, audit PASS)
+next_unit: M03
+last_checkpoint: 2026-10-11 M02 DONE (S1-S7, 72 crypto tests, RFC 8439 vectors, secrets scanner, audit PASS)
 quick_mode_default: false
 local:                      # the laptop (no GPU) — filled by M00 S7
   os: "Windows-11-10.0.26200-SP0"
@@ -43,7 +43,7 @@ gpu_job:                    # set by the gpu-job skill
 |---|---|---|---|---|---|---|---|
 | M00 | Bootstrap & GPU probe | Aditya | — | no | DONE | S7 | 2 |
 | M01 | Oracle port & golden vectors | Abhishek | M00 | no | DONE | S5 | 1 |
-| M02 | CPU crypto & key lifecycle | Abhishek | M01 | no | NOT_STARTED | S1 | 0 |
+| M02 | CPU crypto & key lifecycle | Abhishek | M01 | no | DONE | S7 | 1 |
 | M03 | GPU bitonic kernel | Aditya | M01 | no | NOT_STARTED | S1 | 0 |
 | M04 | GPU ChaCha20 tags/PRF | Aditya | M02, M03 | no | NOT_STARTED | S1 | 0 |
 | M05 | GPU AEAD-open, restore, compaction | Aditya | M04 | no | NOT_STARTED | S1 | 0 |
@@ -73,5 +73,7 @@ gpu_job:                    # set by the gpu-job skill
 - The build targets three gates: **Review 3** (interim, 20 marks) is satisfied by M00–M08 plus M13;
   the **Draft / Report Review** (5 marks) is M22; **Review 4** (final, 25 marks) needs everything and
   adds M19–M21. See `ai/REVIEW_RUBRICS.md`.
+- G4 runs `python scripts/check_secrets.py`. After packing a GPU job it fails on the new `bundle_sha256` until that
+  digest is allow-listed (`--allow <id> --reason ...`); see ISSUE-5.
 - **M19 is calendar-bound.** Once M16 has real results, treat M19 as the highest-priority unmet unit
   even if other modules look more urgent — criterion 9 awards nothing without a dated submission proof.

@@ -46,3 +46,22 @@ client content crypto, and the sealed-master-key lifecycle.
 3. What happens if the server restarts, and if the passphrase is lost?
 
 ## Next: M03
+
+## Amendments
+- 2026-10-11 (session 4). **S4 file format.** The spec fixes the field sizes but not the cipher or the params
+  encoding. Implemented: `magic = b"VCLKSMK1"`, params = LE32 t | LE32 m_kib | LE32 p (12 B), AES-256-GCM over the
+  32-byte key with `magic|params|salt` as associated data; 96 bytes in total. AES-GCM was chosen over
+  ChaCha20-Poly1305 because `cryptography` can decrypt it straight into a `bytearray` (`update_into`), so the
+  unsealed key never exists as an immutable `bytes` object. The KEK from Argon2 and the fresh key from `os.urandom`
+  are still immutable `bytes` for a moment; this is part of the ADR-007 exposure window.
+- 2026-10-11 (session 4). **`vcloak_keys.py rotate`** re-seals the same K_master under a new passphrase (fresh salt
+  and nonce). It does not draw a new K_master: nothing in the system can re-key stored rows, so a new master would
+  orphan them. `init` refuses to overwrite an existing sealed file for the same reason.
+- 2026-10-11 (session 4). **S6 scanner rules.** "Any 32-byte hex/base64 run" is implemented as ≥64 hex characters,
+  or ≥43 base64/base64url characters that contain a digit, an upper-case and a lower-case letter (without that
+  condition long identifiers and paths match). Beyond the by-hash allow-list of the spec, a hex run is also accepted
+  when it equals the SHA-256 of a scanned file, and whole files can be allow-listed by file hash (ISSUE-4). A
+  digest the scanner cannot verify (a GPU job's `bundle_sha256`) needs `check_secrets.py --allow <id>` (ISSUE-5).
+- 2026-10-11 (session 4). **S7.** The byte formats did not change, so the golden files were checked
+  (`make_golden.py --check`: identical) and not regenerated. `aead_ref` sets IMPLEMENTED from whether
+  `cryptography` imports, so the oracle still imports without it and then uses its NumPy stand-in.

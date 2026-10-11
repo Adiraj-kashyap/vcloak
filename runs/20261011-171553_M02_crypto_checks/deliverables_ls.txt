@@ -1,0 +1,14 @@
+src/vcloak/crypto/chacha_ref.py
+src/vcloak/crypto/aead_ref.py
+src/vcloak/crypto/keys.py
+src/vcloak/crypto/client.py
+scripts/check_secrets.py
+scripts/vcloak_keys.py
+tests/golden/rfc8439_aead.json
+tests/golden/rfc8439_block.json
+tests/golden/rfc8439_keystream.json
+tests/golden/rfc8439_poly1305.json
+tests/unit/test_crypto_aead.py
+tests/unit/test_crypto_chacha.py
+tests/unit/test_crypto_client.py
+tests/unit/test_crypto_keys.py

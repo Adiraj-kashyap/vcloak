@@ -72,3 +72,31 @@ p-values and tau bands computed from the fixed test key, so they are determinist
 recorded as a metric (the E0-E2 measurements belong to M14). `ruff` reports one pre-existing E501 in
 scripts/record_env.py (M00), left untouched (runs/20261011-164329_M01_oracle_checks/ruff.txt). The run manifest's
 git_sha is the HEAD at run creation, before this session's commits.
+
+## Audit M02 — 2026-10-11 — session 4 — result: PASS
+| Item | Result | Evidence |
+|---|---|---|
+| A1 | PASS | RFC 8439 §2.3.2 block, §2.4.2 keystream, §2.5.2 Poly1305, §2.8.2 AEAD: 4/4 vector tests pass, vectors read from tests/golden/rfc8439_*.json (runs/20261011-171553_M02_crypto_checks/audit_a1_a2.txt) |
+| A2 | PASS | test_keystream_equals_cryptography_over_1_mib 9/9 = 3 keys x 3 nonces x 1 MiB, byte-equal to `cryptography` ChaCha20 (runs/20261011-171553_M02_crypto_checks/audit_a1_a2.txt) |
+| A3 | PASS | every single-bit flip of the 44 bytes, a wrong key and wrong lengths give (False, 0, 0) with no exception (runs/20261011-171553_M02_crypto_checks/audit_a3.txt). Manual: the same file lists every branch in aead_ref.py — nonce length, blob length (public), `pt is None`, and the `except InvalidTag`; the tag comparison itself is inside OpenSSL and no line reads tag bytes |
+| A4 | PASS | `python scripts/check_secrets.py` exit 0 on the repo (runs/20261011-171553_M02_crypto_checks/check_secrets.txt); a planted random key in a temp dir gives exit 1 (s6_planted.txt); `secrets/` is ignored and nothing under it is tracked (a4_gitignore.txt) |
+| G1 | PASS | runs/20261011-171553_M02_crypto_checks/pytest.txt (72/72 module tests); pytest_all.txt (252 passed, 2 skipped); pytest_as_runner.txt (252 passed, 2 skipped with VCLOAK_RUNNER=kaggle); s7_m01_tests.txt (147 oracle tests passed, 1 skipped) |
+| G2 | PASS | runs/20261011-171553_M02_crypto_checks/check_metrics.txt (8 rows, 0 problems); M02 records no metrics |
+| G2b | N/A | no performance or side-channel metric in M02; nothing was timed |
+| G3 | N/A | check_oblivious.py is created in M03; M02 adds no kernel. The CPU references are NumPy/OpenSSL correctness references, not server kernels |
+| G4 | PASS | same evidence as A4. First run of the scanner: 7 golden files allow-listed by file hash, 4 runs by token hash (3 inline RFC 8439 vectors, 1 GPU bundle digest), each with a reason in scripts/secrets_allowlist.json |
+| G5 | N/A | M02 creates the CPU references; their GPU twins arrive in M04-M05 |
+| G6 | PASS | 14/14 deliverable paths exist (runs/20261011-171553_M02_crypto_checks/deliverables_ls.txt) |
+| G7 | PASS | checked after commit (clean tree, [owner:Abhishek], tag M02-done) |
+| G8 | PASS | STATE: M02 DONE at S7 (1 session), next_unit M03, gpu_job.pending null |
+| G9 | PASS | SESSION_LOG session 4, this AUDIT_LOG entry, ISSUE-4 closed, ISSUE-5 opened |
+| G10 | PASS | manifest validates (`new_run.py --validate`); the module tests and the full suite were each run more than once this session with the same PASS outcome |
+Notes: correctness only, numpy backend, no number from this session is a result. The bucket χ² test asserts
+p > 0.01 for B in {16, 256, 1000} on the fixed test key, so it is deterministic; its statistics are printed in
+audit_a1_a2.txt and are not recorded as metrics. The first full-suite run of the session had 2 failures, both
+fixed before the evidence runs: a test wrote hex.log and HEX.log (one file on Windows), and the M01 test
+test_oracle_imports_without_cryptography failed once aead_ref imported `cryptography` unconditionally (aead_ref
+now imports it under try/except and reports IMPLEMENTED False without it). Not verified here: that the Kaggle
+runner has `cryptography` (ISSUE-3 covers its package set); without it the oracle silently uses its NumPy
+stand-in, visible only through crypto_hooks.backend_name(). `ruff` still reports the one pre-existing E501 in
+scripts/record_env.py (ruff.txt). The run manifest's git_sha is the HEAD at run creation, before this commit.

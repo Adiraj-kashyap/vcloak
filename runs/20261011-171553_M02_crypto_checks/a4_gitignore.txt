@@ -1,0 +1,2 @@
+.gitignore:5:secrets/	secrets/k_master.sealed
+tracked under secrets/: []

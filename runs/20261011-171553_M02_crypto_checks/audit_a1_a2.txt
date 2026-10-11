@@ -1,0 +1,36 @@
+============================= test session starts =============================
+platform win32 -- Python 3.14.0, pytest-9.1.1, pluggy-1.6.0 -- D:\PJT\vcloak\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: D:\PJT\vcloak
+configfile: pyproject.toml
+plugins: anyio-4.15.1
+collecting ... collected 45 items / 29 deselected / 16 selected
+
+tests/unit/test_crypto_chacha.py::test_rfc8439_2_3_2_block PASSED        [  6%]
+tests/unit/test_crypto_chacha.py::test_rfc8439_2_4_2_keystream PASSED    [ 12%]
+tests/unit/test_crypto_chacha.py::test_keystream_equals_cryptography_over_1_mib[0-0] PASSED [ 18%]
+tests/unit/test_crypto_chacha.py::test_keystream_equals_cryptography_over_1_mib[0-1] PASSED [ 25%]
+tests/unit/test_crypto_chacha.py::test_keystream_equals_cryptography_over_1_mib[0-2] PASSED [ 31%]
+tests/unit/test_crypto_chacha.py::test_keystream_equals_cryptography_over_1_mib[1-0] PASSED [ 37%]
+tests/unit/test_crypto_chacha.py::test_keystream_equals_cryptography_over_1_mib[1-1] PASSED [ 43%]
+tests/unit/test_crypto_chacha.py::test_keystream_equals_cryptography_over_1_mib[1-2] PASSED [ 50%]
+tests/unit/test_crypto_chacha.py::test_keystream_equals_cryptography_over_1_mib[2-0] PASSED [ 56%]
+tests/unit/test_crypto_chacha.py::test_keystream_equals_cryptography_over_1_mib[2-1] PASSED [ 62%]
+tests/unit/test_crypto_chacha.py::test_keystream_equals_cryptography_over_1_mib[2-2] PASSED [ 68%]
+tests/unit/test_crypto_chacha.py::test_bucket_is_uniform_over_b[16] PASSED [ 75%]
+tests/unit/test_crypto_chacha.py::test_bucket_is_uniform_over_b[256] PASSED [ 81%]
+tests/unit/test_crypto_chacha.py::test_bucket_is_uniform_over_b[1000] PASSED [ 87%]
+tests/unit/test_crypto_aead.py::test_rfc8439_2_5_2_poly1305 PASSED       [ 93%]
+tests/unit/test_crypto_aead.py::test_rfc8439_2_8_2_aead PASSED           [100%]
+
+=================================== PASSES ====================================
+______________________ test_bucket_is_uniform_over_b[16] ______________________
+---------------------------- Captured stdout call -----------------------------
+bucket chi2: B=16 ids=100000 chi2=14.114 p=0.5169
+_____________________ test_bucket_is_uniform_over_b[256] ______________________
+---------------------------- Captured stdout call -----------------------------
+bucket chi2: B=256 ids=100000 chi2=257.833 p=0.4386
+_____________________ test_bucket_is_uniform_over_b[1000] _____________________
+---------------------------- Captured stdout call -----------------------------
+bucket chi2: B=1000 ids=100000 chi2=998.580 p=0.4978
+====================== 16 passed, 29 deselected in 1.28s ======================

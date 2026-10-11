@@ -1,0 +1,4 @@
+$ python scripts/check_secrets.py <temp dir holding one planted random 32-byte hex key>
+<tmp>/leak.log:1  hex  len=64  id=0c2fe477-b212c5e6-e8e1579b-47b44151-8fbdf1dc-06e6cf66-3555e538-4766f7de
+check_secrets: 1 files scanned, 1 key-like runs, 0 tracked files under secrets/ -> FAIL
+exit 1

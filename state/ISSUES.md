@@ -36,7 +36,7 @@ Risk: a Colab session may ship a different CuPy/CUDA pair, and the file no longe
 Proposed fix (M03 prep): make the requirement runtime-agnostic or record the installed wheel name in result.json;
 keep comparing `cupy`/`cuda` in each manifest before mixing timings from different sessions.
 
-### ISSUE-4 [OPEN] M02 secrets scanner must allow-list the golden vectors
+### ISSUE-4 [CLOSED] M02 secrets scanner must allow-list the golden vectors
 BLOCKS: none   SEVERITY: low   OPENED: 2026-10-11 session 3
 tests/golden/oracle_perm_n*.json hold base64 permutations and sha256 hex digests. They contain no key material
 (tests/unit/test_oracle_golden.py asserts this), but `scripts/check_secrets.py` (M02 S6) is specified to flag any
@@ -44,3 +44,14 @@ tests/golden/oracle_perm_n*.json hold base64 permutations and sha256 hex digests
 Proposed fix (M02 S6): allow-list tests/golden/*.json by file hash, next to the RFC vectors. Also in M02 S7: set
 IMPLEMENTED = True in vcloak.crypto.{chacha_ref,aead_ref} and run `python scripts/make_golden.py --check`; the
 golden files must come out identical, since the byte formats do not change.
+Resolved session 4: scripts/secrets_allowlist.json lists the golden files by file hash; IMPLEMENTED is True in both references and `make_golden.py --check` reports the three files identical.
+
+### ISSUE-5 [OPEN] Each GPU job's bundle_sha256 must be allow-listed for G4
+BLOCKS: none   SEVERITY: low   OPENED: 2026-10-11 session 4
+`scripts/gpujob.py` writes a 64-hex `bundle_sha256` into job.json, result.json, pack logs and run manifests. It is
+a content hash, not the SHA-256 of job.zip, so `scripts/check_secrets.py` cannot verify it and reports it as a
+key-like run. The M00 job's digest was allow-listed by hand in session 4. Every later pack (M03 onwards) will make
+G4 fail until its digest is allow-listed.
+Workaround (any session that packs a job): run `python scripts/check_secrets.py`, copy the `id=` of the finding, then
+`python scripts/check_secrets.py --allow <id> --reason "bundle_sha256 of GPU job <job id>"`.
+Proposed fix (M03 prep session, owner of scripts/gpujob.py): have `gpujob.py pack` add that allow-list entry itself.

@@ -1,0 +1,12 @@
+E501 Line too long (125 > 120)
+   --> scripts\record_env.py:161:121
+    |
+159 |         f"| mem_bus_width_bits | {detail['device']['mem_bus_width_bits']} |",
+160 |         f"| runner os / python | {detail['device']['os']} / {detail['device']['python']} |",
+161 |         f"| runner cpu | {detail['result']['env'].get('cpu', 'unknown')} x{detail['result']['env'].get('cpu_count', '?')} |",
+    |                                                                                                                         ^^^^^
+162 |         f"| clocks | {tel.get('clocks', 'unknown')} (power limit {tel.get('power_limit_w')} W) |",
+163 |         "",
+    |
+
+Found 1 error.
