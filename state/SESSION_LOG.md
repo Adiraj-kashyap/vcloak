@@ -293,3 +293,27 @@
   results. Not profiled: what the host stage spends its time on. Not checked: branch-free machine code (M08).
 - Commit: 325a545
 - Next: M07 S1 ; human action: none
+
+
+## Session 13 — 2026-10-11 22:45 — M07 GPU performance metrics (prep) — owner:Aditya
+- Steps: S1-S5 prepared locally (status after: BLOCKED_HUMAN, GPU JOB READY); S6 not started
+- Did: src/vcloak/bench/timing.py (time_gpu, time_cpu, summarise, warm_until_stable, clock_check), baselines.py
+  (oracle network, NumPy views network, numba pairs loop, lexsort), derive.py (rounds, bandwidth, crossover);
+  bench/run_kernels.py --part gpu|cpu|crossover; bench/run_pipeline.py --full; telemetry.sample; bench/jobs/M07.json.
+- Evidence: runs/20261011-223709_M07_prep_audit (pytest.txt, pytest_not_gpu.txt, ruff.txt, check_*.txt, plumbing_runs.txt,
+  audit_a2_grep.txt); plumbing runs 20261011-224043_M07_kernel_sweep, 20261011-224044_M07_cpu_baselines,
+  20261011-224044_M07_crossover, 20261011-224045_M07_pipeline (numpy, all NOT_MEASURED).
+- Checks: module tests 86 passed / 3 gpu-skipped; local suite 1225 passed, 1 skipped; all timed outputs of the
+  plumbing runs equal their references (0 mismatches); check_oblivious 11 files 0 findings; check_metrics 19 rows
+  PASS; check_secrets PASS.
+- GPU job: 20261011-224124_M07 packed from c40696b (1.40 MB, 104 files), full mode, 9 commands.
+- Metrics added: none (numpy backend; nothing timed)
+- Decisions: none (no ADR). Implementation choices are in the Amendments note of ai/modules/M07.
+- Issues: opened ISSUE-13 (HUMAN ACTION: GPU JOB READY, M07); updated ISSUE-7, ISSUE-11, ISSUE-12
+- Deviations from spec: no new kernel; nominal-sleep miss is XFAIL while event-vs-host-clock is the hard check;
+  low-clock points are labelled, not UNSTABLE; extra baseline (views) and extra metric IDs; 200 calls for p99.
+- Not verified: everything on a GPU — `__nanosleep` under nvrtc, the event timing loop, pinned transfers in
+  sort_e2e, numba, the run time of the job (the CPU baselines at 2^21 and 2^22 are the long part), every number.
+- Commit: c40696b (code), see the next commit (job, logs, state)
+- Next: M07 ingest (gates, metrics, S6 plots and notes) ; human action: ISSUE-13 — upload the job, drop the
+  results zip in gpujobs/inbox/

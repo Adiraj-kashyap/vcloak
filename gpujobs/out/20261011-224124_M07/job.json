@@ -1,0 +1,69 @@
+{
+  "job_id": "20261011-224124_M07",
+  "module": "M07",
+  "step": "S5",
+  "title": "M07 GPU performance metrics: timer self-test, kernel sweeps 2^10..2^22 (bitonic global-only / fused / with transfers, ChaCha20 tags, AEAD open, bucket PRF), CPU baselines and the GPU/CPU crossover in the same session, pipeline stage breakdown and the real-time gate",
+  "quick": false,
+  "params": {},
+  "seed": 7,
+  "git_sha": "c40696b9c5d6d560f1ba9021ffd0f3e97b832f24",
+  "dirty": false,
+  "packed_at": "2026-10-11T17:11:24+00:00",
+  "bundle_sha256": "1f6c60410fd796e64f180bf2bf7da8317b997062aee4ba03d94c8816c5c02c86",
+  "n_files": 104,
+  "commands": [
+    {
+      "name": "nvidia_smi",
+      "cmd": "nvidia-smi",
+      "timeout": 120
+    },
+    {
+      "name": "cpu_info",
+      "cmd": "lscpu",
+      "timeout": 60,
+      "stop_on_fail": false
+    },
+    {
+      "name": "pytest_timing",
+      "cmd": "python -m pytest -p no:cacheprovider -rsx -s -v tests/gpu/test_timing.py",
+      "timeout": 900,
+      "stop_on_fail": false
+    },
+    {
+      "name": "pytest_engine_regression",
+      "cmd": "python -m pytest -p no:cacheprovider -rs -q -m \"not slow\" tests/gpu/test_engine.py tests/gpu/test_bitonic.py",
+      "timeout": 1800,
+      "stop_on_fail": false
+    },
+    {
+      "name": "kernel_sweep",
+      "cmd": "python bench/run_kernels.py --part gpu --seed 7 --out runs",
+      "timeout": 3600,
+      "stop_on_fail": false
+    },
+    {
+      "name": "cpu_baselines",
+      "cmd": "python bench/run_kernels.py --part cpu --seed 7 --out runs",
+      "timeout": 7200,
+      "stop_on_fail": false
+    },
+    {
+      "name": "crossover",
+      "cmd": "python bench/run_kernels.py --part crossover --seed 7 --out runs",
+      "timeout": 300,
+      "stop_on_fail": false
+    },
+    {
+      "name": "pipeline",
+      "cmd": "python bench/run_pipeline.py --dev --full --seed 7 --out runs",
+      "timeout": 3600,
+      "stop_on_fail": false
+    },
+    {
+      "name": "nvidia_smi_after",
+      "cmd": "nvidia-smi",
+      "timeout": 120,
+      "stop_on_fail": false
+    }
+  ]
+}

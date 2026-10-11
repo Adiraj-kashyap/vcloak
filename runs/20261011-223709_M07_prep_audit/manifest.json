@@ -22,8 +22,22 @@
     "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
     "ts": 1791738429.2631478
   },
-  "telemetry_end": null,
-  "outputs": [],
-  "status": "NOT_MEASURED",
-  "notes": "run started; not finalised"
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791738735.2606773
+  },
+  "outputs": [
+    "audit_a2_grep.txt",
+    "check_metrics.txt",
+    "check_oblivious.txt",
+    "check_secrets.txt",
+    "deliverables_ls.txt",
+    "plumbing_runs.txt",
+    "pytest.txt",
+    "pytest_not_gpu.txt",
+    "ruff.txt"
+  ],
+  "status": "OK",
+  "notes": "local checks of the M07 prep session on the numpy backend; nothing timed, no metric. dirty:true because the manifest was written before the commit (code = c40696b)."
 }

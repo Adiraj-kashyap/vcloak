@@ -109,6 +109,13 @@ kernel time, so the T4 stayed at 810-840 MHz (util 3-6%) instead of the 1590 MHz
 stable pair of snapshots therefore does not mean the GPU was at its working clock. For M07: besides porting the
 snapshot pair to bench/bitonic_smoke.py and the sweeps, warm up until the SM clock stops rising (or for a fixed
 wall time), record the clock with every metric, and treat a low-clock run as UNSTABLE. Still open.
+Update session 13 (M07 prep, c40696b): `vcloak.bench.timing.warm_until_stable` warms a configuration up until the SM
+clock has stopped rising (>= 10 launches and 0.5 s, at most 4 s), and `telemetry.sample` reads the clock after the
+warm-up and after the last timed run without a subprocess; bench/run_kernels.py uses both, records the clock with
+every metric, and repeats a low-clock configuration once after a ramp load. Changed from the proposal above: a clock
+that is steady but still below 85% of the device maximum keeps its number and is labelled `LOW clock` instead of
+UNSTABLE (see the Amendments note of M07). bench/bitonic_smoke.py keeps the old scheme: it is the M03 smoke and is
+superseded by the M07 sweep. Unverified until GPU job 20261011-224124_M07 is ingested, so the issue stays open.
 
 ### ISSUE-8 [CLOSED c7a7ac5] HUMAN ACTION REQUIRED — GPU JOB READY: M04 ChaCha20 kernels (job 20261011-183051_M04)
 BLOCKS: M04   SEVERITY: high   OPENED: 2026-10-11 session 7
@@ -214,6 +221,11 @@ Effect: the five P-* rows in METRICS_INDEX are smoke values (quick-tagged). Do n
 them in a figure; M07 replaces them.
 Proposed fix (M07 prep): with the ISSUE-7 fix, warm up until the SM clock stops rising, record the clock with each
 metric, >= 30 runs, and report a config that stays above the CV limit as UNSTABLE instead of indexing its median.
+Update session 13 (M07 prep, c40696b): `bench/run_pipeline.py --full` takes 200 calls per configuration, repeats a
+configuration whose CV of `total` is above 0.10 (or whose clock moved by more than 15%) once, and then records its
+metrics as UNSTABLE instead of its median. The SM clock is recorded with every P-* metric but is not forced up: the
+engine mostly waits for the host, so a low clock is its working condition. Unverified until job 20261011-224124_M07
+is ingested.
 
 ### ISSUE-12 [OPEN] write_epoch is dominated by host work; at SLOTS 65536 the smoke median is above EPOCH_MS
 BLOCKS: none   SEVERITY: medium   OPENED: 2026-10-11 session 12
@@ -227,3 +239,38 @@ not a real-time verdict (p99 < EPOCH_MS is M07/M15).
 Proposed fix: in M07, report the host stage separately from the device pipeline, so that GPU metrics are not
 hidden by Python overhead, and profile it. If it stays the bottleneck, vectorise the row building (column arrays
 instead of one object per row) before M10/M15; that changes engine.py, so it needs its own unit and a new GPU job.
+Update session 13 (M07 prep, c40696b): the full pipeline mode reports `device` (sum of the device stages) and `host`
+apart (P-WRITE-EPOCH-DEVICE-MS/-DEVICE-P99/-HOST-MS-S<slots>), evaluates the real-time gate for the whole call and
+for the device part, and writes a cProfile of write_epoch at SLOTS 65536 to host_profile.txt. No engine change yet:
+whether the row building must be vectorised is decided from the ingested numbers.
+
+### ISSUE-13 [OPEN] HUMAN ACTION REQUIRED — GPU JOB READY: M07 performance sweeps (job 20261011-224124_M07)
+BLOCKS: M07   SEVERITY: high   OPENED: 2026-10-11 session 13
+Why: the laptop has no GPU. M07 is the measurement module: kernel sweeps from 2^10 to 2^22, the CPU baselines taken
+beside the GPU in the same runner session, the GPU/CPU crossover, and the pipeline breakdown with the real-time
+gate. None of these numbers can be produced here. The CuPy-only paths of the two benchmark scripts have only run
+against a NumPy stand-in for the device, so a failing cell is possible; it is still evidence and is fixed in the next
+session.
+GPU JOB READY — 20261011-224124_M07              (runtime not measured; plan for 40-90 min, most of it CPU baselines)
+Use Kaggle for this one (the job is long, and Kaggle sessions do not disconnect when the tab is idle).
+File to upload: D:\PJT\vcloak\gpujobs\out\20261011-224124_M07\job.zip
+Notebook:       D:\PJT\vcloak\colab\VCloak_GPU_Runner.ipynb
+Do this (Kaggle, as for the earlier jobs):
+  1. kaggle.com -> Create -> New Notebook -> File -> Import Notebook -> pick colab\VCloak_GPU_Runner.ipynb.
+  2. Settings -> Accelerator -> GPU T4 x2.   (the step everyone forgets)
+  3. + Add Input -> Upload -> gpujobs\out\20261011-224124_M07\job.zip as a dataset.
+  4. In Cell 2 set KAGGLE_INPUT = "/kaggle/input/<your-dataset>/job.zip".
+  5. Run Cell 1. It must print a GPU name (e.g. Tesla T4). If it prints NO GPU, redo step 2.
+  6. Run the remaining cells and keep the tab open until the last one finishes. Do not start anything else in
+     that notebook while it runs: the CPU baselines are timed on the same machine.
+  7. Download results_20261011-224124_M07.zip from the Output panel.
+  8. Move that file into D:\PJT\vcloak\gpujobs\inbox\   (do not unzip or rename it).
+Or use Google Colab: colab.research.google.com -> File -> Upload notebook -> the same .ipynb; Runtime -> Change
+  runtime type -> T4 GPU -> Save; run Cell 1 (GPU name), Cell 2 (upload job.zip), Cell 3 (keep the tab open and
+  active: a free Colab session can disconnect during a long job), Cell 4 (downloads the results zip).
+Bring back only the results zip, even if a cell reports a failure. Do not commit or edit anything in the repo
+  before the next session: a change to src/, kernels/, tests/, bench/ or scripts/ makes the result stale and it
+  will be rejected.
+No passphrase is needed: the job uses fixed TEST keys.
+Confirm by running: .venv\Scripts\python scripts\gpujob.py verify gpujobs\inbox\results_20261011-224124_M07.zip
+Then open a new session and type: continue

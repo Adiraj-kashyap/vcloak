@@ -347,3 +347,31 @@ Notes: the gates are in runs/20261011-221434_M06_ingest_audit/gates.txt, compute
 - Same runner image as the M05 job (driver 580.178.04, CUDA runtime 12090, nvcc 12.8), not the M00/M03/M04 one.
 - The run dir of the GPU run carries the runner's UTC time (16:30); the job was packed at 21:51 local time (UTC+5:30).
 - The local run manifest has dirty:true (taken before the commit); the code tested on the GPU is commit 67504cd.
+
+## Audit M07 — 2026-10-11 — session 13 — result: PARTIAL (prep; GPU job 20261011-224124_M07 pending)
+| Item | Result | Evidence |
+|---|---|---|
+| A1 every plotted point traces to a run dir; check_metrics passes | PENDING | no figure exists yet (S6 is the ingest session); runs/20261011-223709_M07_prep_audit/check_metrics.txt (19 rows, 0 problems) |
+| A2 GPU timings use CUDA events; CPU uses perf_counter_ns (grep) | PASS (code) | runs/20261011-223709_M07_prep_audit/audit_a2_grep.txt: `time_gpu` records two `cp.cuda.Event`s on the stream, `time_cpu` uses `time.perf_counter_ns`; the engine's stage clock is unchanged (M06). To be confirmed on the runner by tests/gpu/test_timing.py |
+| A3 fair comparison: transfers included, same runner session, caveat recorded | PASS (code) | the crossover uses the `sort_e2e` series (pinned H2D + sort + D2H) and refuses inputs of another `session_id`: test_cpu_and_crossover_flow_in_one_session, test_crossover_refuses_another_session (runs/20261011-223709_M07_prep_audit/pytest.txt); the caveat is written to summary.json and the manifest notes. PENDING for the numbers |
+| A4 unstable runs are reported, not dropped | PASS (code) | both attempts stay in raw.csv and summary.json and the metric value becomes UNSTABLE: test_gpu_part_flow_with_stand_in_device, test_measure_full_repeats_once_and_keeps_both, test_realtime_gate_and_metrics. PENDING for the numbers |
+| A5 fused variant bit-identical to global-only (spot test) | PENDING | the sweep compares the two variants on the device at every n (`identical_to_global`, a FAIL of the run if not); tests/gpu/test_bitonic.py is in the job as a regression |
+| G1 | PASS (local) | runs/20261011-223709_M07_prep_audit/pytest.txt (86 passed, 3 gpu-skipped); pytest_not_gpu.txt (1225 passed, 1 skipped, 665 deselected) |
+| G2 | PASS | runs/20261011-223709_M07_prep_audit/check_metrics.txt; no metric row was added this session |
+| G2b | PASS | nothing recorded; the four numpy plumbing runs have every metric NOT_MEASURED (plumbing_runs.txt) |
+| G3 | PASS | runs/20261011-223709_M07_prep_audit/check_oblivious.txt (11 files, 0 findings); kernels/ unchanged |
+| G4 | PASS | runs/20261011-223709_M07_prep_audit/check_secrets.txt (437 files, 0 key-like runs); re-run after pack, see the session log |
+| G5 | N/A | no new kernel in M07 (Amendments note); the sweep checks every timed output against its reference |
+| G6 | PARTIAL | runs/20261011-223709_M07_prep_audit/deliverables_ls.txt: timing.py, baselines.py, run_kernels.py, run_pipeline.py exist; report.py, results/perf and docs/REPORT_CH4_NOTES.md belong to S6 |
+| G7 | PASS | checked after the closing commit |
+| G8 | PASS | STATE: M07 BLOCKED_HUMAN at S5, sessions 1, gpu_job.pending 20261011-224124_M07 |
+| G9 | PASS | SESSION_LOG session 13, this entry, ISSUE-13 opened, ISSUE-7/11/12 updated |
+| G10 | PARTIAL | the five local run dirs have valid manifests; the numbers are reproducible only on a runner |
+Notes: a prep session cannot pass A1-A5 for numbers that do not exist; the module stays open until the ingest.
+- The CuPy-only paths of bench/run_kernels.py were exercised against tests/fakecupy.py (NumPy arrays with `set`/`get`,
+  host-clock events) into tmp_path. That checks the flow and the bookkeeping, not CUDA behaviour.
+- `__nanosleep` has never been compiled here. If nvrtc rejects it the three timer tests are skipped with the reason
+  and S1's check is then not met; that would be fixed in the next prep session.
+- numba is not installed on the laptop: the numba baseline's source ran only under the interpreter (n <= 256).
+- ruff reports one line-length finding in scripts/record_env.py:161; it is at HEAD~1 as well and not part of M07.
+- The local run manifests have dirty:true (written before the commit); the code in the job is commit c40696b.
