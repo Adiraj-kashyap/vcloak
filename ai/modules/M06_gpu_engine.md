@@ -56,3 +56,29 @@ real bug in one of the two — never "close enough".
 3. What is the per-stage cost breakdown of one epoch?
 
 ## Next: M07
+
+## Amendments
+2026-10-11 (session 11, prep). Where the build differs from the text above, and why:
+- **No new kernel.** The engine is built from the M03-M05 wrappers only, so `kernels/` and `gpu/sim.py` are
+  unchanged. The simulator-parity gate is applied to the engine as a whole: the cupy engine against the numpy
+  engine (`test_gpu_engine_equals_the_simulator_engine`), besides both against the oracle.
+- **K_master on the device.** After `derive_subkeys` the device copy of the master is cleared with memset; only
+  the three subkeys stay in VRAM. H2D reads straight from the caller's bytearray (`copy_from_host`), so no pinned
+  or pageable staging copy of the master exists on the host.
+- **`dev_keystore()`** lives in `tests/testkeys.py`, because test keys may exist in `tests/` only (CONVENTIONS §3).
+  `bench/run_pipeline.py --dev` derives its TEST master from the seed, as the other bench scripts do; it has no
+  sealed-key path, so this module needs no passphrase (the service unseals the real key, M10).
+- **Test hook.** Instead of separate nonce and uuid hooks the engine takes one `entropy` callable (default
+  `os.urandom`), called once per epoch for 28 bytes per stored row: 16 for the uuid4, then 12 for the nonce. The
+  oracle draws the same bytes in the same order (16, then 12, per row), so one byte tape drives both.
+- **Order of S2.** The bucket PRF and the seal run after the host gather, on the rows in stored order; the first
+  transfer of an epoch is therefore the D2H of the order, and `h2d` (conv ids, seqs, nonces) comes after it.
+- **Re-shuffle** follows the oracle (`reshuffle_ref`): tags, bitonic sort, compaction of the padding, host gather.
+- **read_window** accepts fewer than K candidates and pads them with random 44-byte seq_enc values (misses);
+  more than K, or a seq_enc that is not 44 bytes, is a ValueError (the oracle treats a malformed row as a miss).
+- **Stage keys.** `last_timings()` always has `h2d, tags, sort, compact, d2h, seal, bucket, open, host, total`.
+  `open` is the AEAD-open of a read; `host` is the engine's host work between device stages (gather, random bytes,
+  building rows). Stages are intervals between consecutive events on the engine's stream, so they add up to `total`.
+  Under the numpy backend the clock is `time.perf_counter` and `engine.timer` says so; never a performance result.
+- **Smoke sizes.** `bench/run_pipeline.py` times full epochs (n_real = SLOTS) and reads with K/8 hits, with 8-byte
+  payload stand-ins (payload bytes never reach the device, ADR-006).

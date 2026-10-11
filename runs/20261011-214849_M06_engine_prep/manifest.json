@@ -1,0 +1,42 @@
+{
+  "run_id": "20261011-214849_M06_engine_prep",
+  "module": "M06",
+  "step": "S5",
+  "owner": "Aditya",
+  "git_sha": "b3d7d6b8cdb487cde8f44a0cb0aa220437edb111",
+  "dirty": true,
+  "command": "pytest tests/gpu/test_engine.py tests/integration/test_engine_vs_oracle.py; pytest (full suite); bench/run_pipeline.py --dev --seed 6 --quick (plumbing); check_oblivious.py kernels/; check_secrets.py; check_metrics.py; ruff",
+  "seed": 0,
+  "quick": false,
+  "params": {},
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261011-214849",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U"
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791735529.3114421
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791735664.1860452
+  },
+  "outputs": [
+    "audit_a3.txt",
+    "check_metrics.txt",
+    "check_oblivious.txt",
+    "deliverables_ls.txt",
+    "pipeline_smoke_numpy.txt",
+    "pytest.txt",
+    "pytest_all.txt",
+    "ruff.txt"
+  ],
+  "status": "OK",
+  "notes": "prep session, numpy backend: correctness only, no number here is a performance result; engine = oracle (write_epoch, reshuffle_window, read_window 50 windows, bucket_of) on the simulator twins; pipeline smoke ran as a plumbing check only (run 20261011-214906_M06_pipeline_smoke_quick style dir, NOT_MEASURED); CUDA execution, stream/pinned transfers, CUDA-event timings and GPU-vs-twin parity are pending in the M06 GPU job; ruff: 1 E501 in scripts/record_env.py that predates this session"
+}

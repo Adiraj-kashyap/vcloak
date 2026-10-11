@@ -1,0 +1,8 @@
+run dir     D:\PJT\vcloak\runs\20261011-215050_M06_pipeline_smoke_quick
+backend     numpy   timer time.perf_counter (numpy simulator: not a performance result)
+P-WRITE-EPOCH-MS-S64         NOT_MEASURED ms  oracle_mismatches=0
+P-WRITE-EPOCH-MS-S4096       NOT_MEASURED ms  oracle_mismatches=0
+P-WRITE-EPOCH-MS-S65536      NOT_MEASURED ms  oracle_mismatches=0
+P-READ-WINDOW-MS-K128        NOT_MEASURED ms  oracle_mismatches=0
+P-READ-WINDOW-MS-K1024       NOT_MEASURED ms  oracle_mismatches=0
+status      NOT_MEASURED

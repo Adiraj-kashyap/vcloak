@@ -1,0 +1,6 @@
+src/vcloak/gpu/engine.py:155:        mem, size = self._pin.get(name, (None, 0))
+src/vcloak/gpu/engine.py:176:        return dev.get(stream=self._stream, out=self._pinned(name, dev.dtype, int(dev.size)))
+src/vcloak/gpu/engine.py:194:        host = self._d2h("order", order[:n_real]).tolist()
+src/vcloak/gpu/engine.py:235:            sealed = self._d2h("blobs", d_blobs).astype("<u4").tobytes()
+src/vcloak/gpu/engine.py:236:            bkt = self._d2h("bkt", d_bkt).tolist()
+src/vcloak/gpu/engine.py:304:                idx = self._d2h("perm", perm[:hits]).tolist()

@@ -1,0 +1,15 @@
+.s.s.s.......................s.s.............sssssssss.....sssss......ss [ 48%]
+ssss.....sssss.s.s............ssssssssssss.........sssssssss.s.s.sssssss [ 96%]
+ssssss                                                                   [100%]
+=========================== short test summary info ===========================
+SKIPPED [5] tests\gpu\test_engine.py: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [9] tests\integration\test_engine_vs_oracle.py:106: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [5] tests\integration\test_engine_vs_oracle.py:114: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [6] tests\integration\test_engine_vs_oracle.py:119: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [5] tests\integration\test_engine_vs_oracle.py:124: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [5] tests\integration\test_engine_vs_oracle.py: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [12] tests\integration\test_engine_vs_oracle.py:161: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [9] tests\integration\test_engine_vs_oracle.py:169: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [9] tests\integration\test_engine_vs_oracle.py:234: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [3] tests\integration\test_engine_vs_oracle.py:254: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+82 passed, 68 skipped in 18.50s

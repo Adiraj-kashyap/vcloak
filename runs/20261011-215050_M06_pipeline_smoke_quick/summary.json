@@ -1,0 +1,91 @@
+{
+  "metrics": [
+    {
+      "id": "P-WRITE-EPOCH-MS-S64",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-WRITE-EPOCH-MS-S4096",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-WRITE-EPOCH-MS-S65536",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-READ-WINDOW-MS-K128",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "P-READ-WINDOW-MS-K1024",
+      "value": "NOT_MEASURED",
+      "unit": "ms",
+      "stat": "median",
+      "note": "numpy backend: no GPU on this machine"
+    }
+  ],
+  "executed_by": "numpy twins (vcloak.gpu.sim)",
+  "mismatches": 0,
+  "configs": [
+    {
+      "kind": "write_epoch",
+      "size": 64,
+      "metric": "P-WRITE-EPOCH-MS-S64",
+      "n_real": 64,
+      "mismatches": 0
+    },
+    {
+      "kind": "write_epoch",
+      "size": 4096,
+      "metric": "P-WRITE-EPOCH-MS-S4096",
+      "n_real": 4096,
+      "mismatches": 0
+    },
+    {
+      "kind": "write_epoch",
+      "size": 65536,
+      "metric": "P-WRITE-EPOCH-MS-S65536",
+      "n_real": 65536,
+      "mismatches": 0
+    },
+    {
+      "kind": "read_window",
+      "size": 128,
+      "metric": "P-READ-WINDOW-MS-K128",
+      "hits": 16,
+      "mismatches": 0
+    },
+    {
+      "kind": "read_window",
+      "size": 1024,
+      "metric": "P-READ-WINDOW-MS-K1024",
+      "hits": 128,
+      "mismatches": 0
+    }
+  ],
+  "timer": null,
+  "telemetry_samples": 0,
+  "cv_limit": 0.1,
+  "device": {
+    "backend": "numpy",
+    "is_gpu": false,
+    "device": "12th Gen Intel(R) Core(TM) i7-1255U",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U",
+    "cpu_count": 12,
+    "ram_gb": 15.6,
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0"
+  }
+}

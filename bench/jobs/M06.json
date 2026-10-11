@@ -1,0 +1,19 @@
+{
+  "title": "M06 GPU engine: device key store, write_epoch / reshuffle_window / read_window bit-exact vs the oracle and the simulator, per-stage CUDA-event timings, pipeline smoke benchmark",
+  "step": "S5",
+  "seed": 6,
+  "commands": [
+    {"name": "nvidia_smi", "cmd": "nvidia-smi", "timeout": 120},
+    {"name": "check_oblivious", "cmd": "python scripts/check_oblivious.py kernels/", "timeout": 300},
+    {"name": "pytest_engine", "cmd": "python -m pytest -p no:cacheprovider -rs -v -m \"not slow\" tests/gpu/test_engine.py",
+     "timeout": 1800},
+    {"name": "pytest_engine_vs_oracle", "cmd": "python -m pytest -p no:cacheprovider -rs -v -m \"not slow\" tests/integration/test_engine_vs_oracle.py",
+     "timeout": 1800, "stop_on_fail": false},
+    {"name": "pipeline_smoke", "cmd": "python bench/run_pipeline.py --dev --seed 6 --quick --out runs", "timeout": 1800,
+     "stop_on_fail": false},
+    {"name": "pytest_regression", "cmd": "python -m pytest -p no:cacheprovider -rs -q -m \"not slow\" tests/gpu/test_chacha.py tests/gpu/test_bitonic.py tests/gpu/test_aead.py tests/gpu/test_restore.py",
+     "timeout": 2400, "stop_on_fail": false},
+    {"name": "pytest_max_log2n", "cmd": "python -m pytest -p no:cacheprovider -rs -v -m slow tests/integration/test_engine_vs_oracle.py",
+     "timeout": 3600, "stop_on_fail": false}
+  ]
+}

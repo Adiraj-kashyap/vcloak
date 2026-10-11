@@ -1,0 +1,53 @@
+{
+  "run_id": "20261011-215050_M06_pipeline_smoke_quick",
+  "module": "M06",
+  "step": "S5",
+  "owner": "Aditya",
+  "git_sha": "b3d7d6b8cdb487cde8f44a0cb0aa220437edb111",
+  "dirty": true,
+  "command": "python bench/run_pipeline.py --dev --seed 6 --quick --out runs",
+  "seed": 6,
+  "quick": true,
+  "params": {
+    "write_slots": [
+      64,
+      4096,
+      65536
+    ],
+    "read_k": [
+      128,
+      1024
+    ],
+    "n_real": "slots (full)",
+    "read_hits": "K/8",
+    "buckets": 64,
+    "window_s": 60,
+    "epoch_ms": 200,
+    "warmup": 10,
+    "warm_seconds": 2.0,
+    "runs": 15
+  },
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261011-215050",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U"
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791735650.8210573
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791735652.9825833
+  },
+  "outputs": [
+    "summary.json"
+  ],
+  "status": "NOT_MEASURED",
+  "notes": "numpy backend: plumbing and oracle check only, no GPU metric measured"
+}
