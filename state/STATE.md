@@ -6,10 +6,10 @@ kit_version: 1.0
 last_session: 2
 last_session_date: 2026-10-11
 current_module: M01
-current_step: S3
+current_step: S4
 status: IN_PROGRESS        # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
 next_unit: M01
-last_checkpoint: 2026-10-11 M01 S2 passed (chacha_np + crypto hooks, RFC 8439 vectors)
+last_checkpoint: 2026-10-11 M01 S3 passed (write/reshuffle/read refs, 20-conversation round trip)
 quick_mode_default: false
 local:                      # the laptop (no GPU) — filled by M00 S7
   os: "Windows-11-10.0.26200-SP0"
@@ -42,7 +42,7 @@ gpu_job:                    # set by the gpu-job skill
 | ID | Title | Owner | Depends on | Optional | Status | Step | Sessions |
 |---|---|---|---|---|---|---|---|
 | M00 | Bootstrap & GPU probe | Aditya | — | no | DONE | S7 | 2 |
-| M01 | Oracle port & golden vectors | Abhishek | M00 | no | IN_PROGRESS | S3 | 1 |
+| M01 | Oracle port & golden vectors | Abhishek | M00 | no | IN_PROGRESS | S4 | 1 |
 | M02 | CPU crypto & key lifecycle | Abhishek | M01 | no | NOT_STARTED | S1 | 0 |
 | M03 | GPU bitonic kernel | Aditya | M01 | no | NOT_STARTED | S1 | 0 |
 | M04 | GPU ChaCha20 tags/PRF | Aditya | M02, M03 | no | NOT_STARTED | S1 | 0 |

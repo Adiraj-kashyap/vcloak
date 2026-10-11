@@ -51,6 +51,8 @@ def test_keystream_is_block_concatenation_and_counter_offsets() -> None:
     assert np.array_equal(chacha_np.chacha20_blocks(RFC_KEY, nonce, counter=3, nblocks=2), blocks[3:5])
     per_nonce = chacha_np.chacha20_block_per_nonce(RFC_KEY, np.frombuffer(nonce, dtype=np.uint8)[None, :])
     assert np.array_equal(per_nonce[0], blocks[0])
+    for c in range(5):  # the single-block integer path equals the vectorised path
+        assert np.array_equal(chacha_np.chacha20_blocks(RFC_KEY, nonce, counter=c)[0], blocks[c])
 
 
 def test_matches_cryptography_library() -> None:

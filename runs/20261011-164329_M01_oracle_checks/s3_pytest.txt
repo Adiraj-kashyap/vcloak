@@ -1,0 +1,5 @@
+......................                                                   [100%]
+============================= slowest 2 durations =============================
+1.59s call     tests/unit/test_oracle_paths.py::test_round_trip_restoration_20_conversations[True]
+1.21s call     tests/unit/test_oracle_paths.py::test_round_trip_restoration_20_conversations[False]
+22 passed in 3.10s

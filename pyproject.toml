@@ -14,7 +14,7 @@ where = ["src"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["src", "scripts"]
+pythonpath = ["src", "scripts", "tests"]
 addopts = "-ra --strict-markers"
 markers = [
     "gpu: needs a real CUDA device (runs only on the Colab/Kaggle runner)",

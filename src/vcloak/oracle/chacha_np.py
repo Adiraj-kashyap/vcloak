@@ -14,6 +14,9 @@ _SIGMA = np.frombuffer(b"expand 32-byte k", dtype="<u4")
 _P1305 = (1 << 130) - 5
 _R_CLAMP = 0x0FFFFFFC0FFFFFFC0FFFFFFC0FFFFFFF
 TAG_LEN = 16
+_M32 = 0xFFFFFFFF
+_ROUND_INDICES = ((0, 4, 8, 12), (1, 5, 9, 13), (2, 6, 10, 14), (3, 7, 11, 15),
+                  (0, 5, 10, 15), (1, 6, 11, 12), (2, 7, 8, 13), (3, 4, 9, 14))
 
 
 def _rotl(x: np.ndarray, r: int) -> np.ndarray:
@@ -31,18 +34,35 @@ def _quarter_round(s: np.ndarray, a: int, b: int, c: int, d: int) -> None:
     s[b] = _rotl(s[b] ^ s[c], 7)
 
 
+def _core_one(words: list[int]) -> np.ndarray:
+    """The same 20 rounds on Python integers: much faster than array overhead for a single block."""
+    x = list(words)
+    for _ in range(10):
+        for a, b, c, d in _ROUND_INDICES:
+            x[a] = (x[a] + x[b]) & _M32
+            x[d] ^= x[a]
+            x[d] = ((x[d] << 16) | (x[d] >> 16)) & _M32
+            x[c] = (x[c] + x[d]) & _M32
+            x[b] ^= x[c]
+            x[b] = ((x[b] << 12) | (x[b] >> 20)) & _M32
+            x[a] = (x[a] + x[b]) & _M32
+            x[d] ^= x[a]
+            x[d] = ((x[d] << 8) | (x[d] >> 24)) & _M32
+            x[c] = (x[c] + x[d]) & _M32
+            x[b] ^= x[c]
+            x[b] = ((x[b] << 7) | (x[b] >> 25)) & _M32
+    out = np.array([(a + b) & _M32 for a, b in zip(x, words, strict=True)], dtype="<u4")
+    return out.view(np.uint8).reshape(1, 64)
+
+
 def _core(init: np.ndarray) -> np.ndarray:
     """20 rounds over a (16, m) uint32 state, one column per block. Returns (m, 64) uint8."""
+    if init.shape[1] == 1:
+        return _core_one(init[:, 0].tolist())
     s = init.copy()
     for _ in range(10):
-        _quarter_round(s, 0, 4, 8, 12)
-        _quarter_round(s, 1, 5, 9, 13)
-        _quarter_round(s, 2, 6, 10, 14)
-        _quarter_round(s, 3, 7, 11, 15)
-        _quarter_round(s, 0, 5, 10, 15)
-        _quarter_round(s, 1, 6, 11, 12)
-        _quarter_round(s, 2, 7, 8, 13)
-        _quarter_round(s, 3, 4, 9, 14)
+        for a, b, c, d in _ROUND_INDICES:
+            _quarter_round(s, a, b, c, d)
     s += init
     return np.ascontiguousarray(s.T, dtype="<u4").view(np.uint8).reshape(-1, 64)
 
