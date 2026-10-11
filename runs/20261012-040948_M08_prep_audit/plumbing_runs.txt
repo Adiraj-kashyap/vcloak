@@ -1,0 +1,31 @@
+target control_leak
+target control_null
+target bitonic_equal
+target bitonic_sorted
+target write_epoch
+target aead_tag
+target aead_conv
+run dir     D:\PJT\vcloak\runs\20261012-040958_M08_dudect
+backend     numpy   N per class 100000   quick False
+  control_leak    NOT_MEASURED  mismatches 0
+  control_null    NOT_MEASURED  mismatches 0
+  bitonic_equal   NOT_MEASURED  mismatches 0
+  bitonic_sorted  NOT_MEASURED  mismatches 0
+  write_epoch     NOT_MEASURED  mismatches 0
+  aead_tag        NOT_MEASURED  mismatches 0
+  aead_conv       NOT_MEASURED  mismatches 0
+metrics     14
+status      NOT_MEASURED
+run dir     D:\PJT\vcloak\runs\20261012-040959_M08_sass
+arch        None (cupy: ModuleNotFoundError; nvidia-smi gave no compute capability)
+control     planted leak classified DATA: None
+status      NOT_MEASURED   nvcc is not installed on this machine
+run dir     D:\PJT\vcloak\runs\20261012-040959_M08_ncu
+ncu         absent
+metrics     queried 0 branch metric(s), 0 csv rows
+  bitonic_pairs_global   -
+  bitonic_shared         -
+  bitonic_shared_full    -
+  aead_open_seq          -
+  planted_leak           -
+status      NOT_MEASURED   numpy backend: no GPU on this machine

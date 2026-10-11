@@ -407,3 +407,37 @@ Notes:
   summary.json and raw.csv but not in the index, where the value is UNSTABLE.
 - ruff: src/vcloak/bench and the new test pass; the old line-length finding in scripts/record_env.py:161 is unchanged.
 - The local audit manifest has dirty:true (taken before the commit); the measured code is commit c40696b.
+
+## Audit M08 — 2026-10-12 — session 15 — result: PARTIAL (prep session; nothing measured; GPU job 20261012-041010_M08 pending)
+| Item | Result | Evidence |
+|---|---|---|
+| A1 the planted-leak self-test is detected | PENDING (GPU) | job command `dudect_selftest`. Locally only the flow is checked: against the NumPy stand-in device the planted kernel is reported FAIL as expected and a control with the wrong verdict fails the run (runs/20261012-040948_M08_prep_audit/pytest.txt, tests/unit/test_run_dudect.py). That is not a timing result |
+| A2 all 5 targets have verdicts at full N | PENDING (GPU) | job command `dudect` (N = 100000 per class, plus the null control). Local plumbing: both classes of all 7 targets prepared and run on the simulator with 0 wrong outputs, every metric NOT_MEASURED (runs/20261012-040958_M08_dudect) |
+| A3 SASS branches are all explained | PENDING (GPU) | job command `sass`. Locally NOT_MEASURED: nvcc is not installed (runs/20261012-040959_M08_sass). The parser is tested on a hand-written listing only (tests/data/sass_synthetic.txt) |
+| A4 ncu metrics collected or NOT_MEASURED with the reason | PENDING (GPU) | job command `ncu`. Locally NOT_MEASURED: no GPU (runs/20261012-040959_M08_ncu). A refused counter (ERR_NVGPUCTRPERM) is recorded as NOT_MEASURED with exit 0 (tests/unit/test_run_ncu.py) |
+| A5 a FAIL on any target opens a high-severity issue that BLOCKS M14 | PENDING (GPU) | no verdict exists yet; run_dudect.py names every FAIL in the manifest notes and never changes a verdict |
+| G1 | PASS | runs/20261012-040948_M08_prep_audit/pytest.txt (50 passed, 9 gpu-skipped); runs/20261012-040948_M08_prep_audit/pytest_not_gpu.txt (1283 passed, 1 skipped, 674 deselected) |
+| G2 | PASS | runs/20261012-040948_M08_prep_audit/check_metrics.txt (232 rows, 0 problems); no metric row added this session; the three local run dirs carry NOT_MEASURED only |
+| G3 | PASS | runs/20261012-040948_M08_prep_audit/check_oblivious.txt (kernels/: 11 files, 0 findings). The planted leak is outside kernels/ and is flagged, as it must be: runs/20261012-040948_M08_prep_audit/check_oblivious_planted.txt (2 findings, exit 1) |
+| G4 | PASS | runs/20261012-040948_M08_prep_audit/check_secrets.txt (0 key-like runs); the job uses fixed TEST keys derived from the seed |
+| G5 | PENDING (GPU) | tests/gpu/test_planted_leak.py (3 sizes x 3 seeds x 6 inputs, byte equality with the twin) runs in the job; M08 adds no other kernel |
+| G6 | PARTIAL | runs/20261012-040948_M08_prep_audit/deliverables_ls.txt: bench/run_dudect.py, bench/run_ncu.sh, bench/run_ncu.ps1, scripts/sass_check.py exist; results/oblivious/* and the obliviousness section of docs/REPORT_CH4_NOTES.md belong to the ingest session (S5) |
+| G7 | PASS | checked after the closing commit |
+| G8 | PASS | STATE: M08 BLOCKED_HUMAN at S5, sessions 1, gpu_job.pending 20261012-041010_M08 |
+| G9 | PASS | SESSION_LOG session 15, this entry, ISSUE-16 opened |
+| G10 | PARTIAL | the four local run dirs have valid manifests at commit fe51656; the measurements can only be reproduced on a runner |
+Notes: a prep session cannot pass A1-A5 for results that do not exist; the module stays open until the ingest.
+- Nothing in this session ran on a GPU. The CuPy paths of run_dudect.py (events, RawModule for the planted kernel,
+  uploads with `set`) ran only against tests/fakecupy.py; write_epoch could not run against the stand-in at all
+  (the key store needs real device memory calls) and ran on the numpy backend only.
+- The SASS parser and the ncu CSV parser were written against the documented layout of the tools' output and tested
+  on hand-written samples. If the real output differs, the raw listing and the raw ncu output are still saved by
+  the job, the run is marked FAIL or NOT_MEASURED, and the parser is corrected at ingest. `sass_check.py --listing`
+  re-analyses a saved listing.
+- sass_check.py classifies statically and flow-insensitively; a `public` there is not a proof. A3 still needs every
+  branch read in the listing.
+- dudect's second-order test is not implemented; the verdict rests on the raw Welch t and the 100 crops.
+- The runtime of the job is unknown: no timing exists for these loops.
+- The local manifests say dirty:true because the new run dirs were untracked when they were written; the bundled
+  paths were clean and the job is commit fe51656.
+- ruff: the new files pass; the old line-length finding in scripts/record_env.py:161 is unchanged (runs/20261012-040948_M08_prep_audit/ruff.txt).

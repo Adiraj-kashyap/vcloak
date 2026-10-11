@@ -64,3 +64,22 @@ paper's setup section and the panel will ask to see. Follow `ai/EVIDENCE.md`.
 3. Which SASS branches remain in the comparator kernel and why are they safe?
 
 ## Next: M09
+
+## Amendments
+- 2026-10-12 (session 15, prep). What was built differs from the step text in these points:
+  - S1: the planted-leak kernel is `bench/planted/planted_leak.cu`, outside `kernels/`, because it breaks
+    CONVENTIONS §2.1 on purpose and G3 scans `kernels/`. Its twin is `vcloak.gpu.sim.planted_leak`.
+  - S1: a second control was added, `control_null` (the same fixed input in both classes). A FAIL there means the
+    harness itself separates the classes, so it is run at full N beside the five targets.
+  - S1: the statistics are in `src/vcloak/bench/dudect.py`. A calibration batch (500 per class) sets the batch size r
+    and the 100 crop thresholds and is not part of any test, as in dudect. dudect's second-order test is not implemented.
+  - S2 (c): write_epoch has two series, the device stages (the engine's CUDA events without its `host` stage) and the
+    whole call. Extra metric id: `T-DUDECT-MAXT-WRITE-EPOCH-CALL`. A FAIL on either is a finding.
+  - S2 (e): class B of `aead_conv` is drawn from a pool of 64 inputs sealed before the run (16 in quick mode), because
+    sealing a fresh input on the device before only one class would be a difference between the classes.
+  - S2: every class-B input is drawn on the host for both classes and then used or not, so the host does the same
+    work before every measurement.
+  - S3: `sass_check.py` also lists the code that CuPy's nvrtc path builds, when CuPy exposes it, and compiles the
+    planted-leak kernel as a positive control. Its trace is static and flow-insensitive.
+  - S4: the logic is in `bench/run_ncu.py` (with `bench/ncu_workload.py`); `run_ncu.sh` and `run_ncu.ps1` call it.
+    The planted-leak kernel is profiled as a positive control.

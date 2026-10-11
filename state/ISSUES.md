@@ -343,3 +343,39 @@ it is worth a GPU session before M16): time batches of launches for any kernel w
 and divide; run the large-n configurations after a load that has brought the clock to its power-limited steady
 state, so that the clock no longer moves inside the timed runs; label that state in the metric note as now. Keep
 this session's numbers; index the new session separately and never merge the two in one figure.
+
+### ISSUE-16 [OPEN] HUMAN ACTION REQUIRED — GPU JOB READY: M08 obliviousness audit (job 20261012-041010_M08)
+BLOCKS: M08   SEVERITY: high   OPENED: 2026-10-12 session 15
+Why: the laptop has no GPU. M08 asks whether GPU execution time or control flow depends on secret data: dudect
+timing tests, the SASS branch listing (nvcc, cuobjdump) and the Nsight Compute divergence counters. None of it can
+run here. The CuPy-only paths of the three new scripts have only run against a NumPy stand-in for the device, and
+the SASS and ncu parsers only against hand-written samples of the tools' output, so a failing cell is possible; it
+is still evidence and is fixed in the next session.
+GPU JOB READY — 20261012-041010_M08              (runtime not measured; plan for 1 to 2 hours, most of it the write_epoch dudect)
+Use Kaggle for this one (the job is long, and Kaggle sessions do not disconnect when the tab is idle).
+File to upload: D:\PJT\vcloak\gpujobs\out\20261012-041010_M08\job.zip
+Notebook:       D:\PJT\vcloak\colab\VCloak_GPU_Runner.ipynb
+Do this (Kaggle, as for the earlier jobs):
+  1. kaggle.com -> Create -> New Notebook -> File -> Import Notebook -> pick colab\VCloak_GPU_Runner.ipynb.
+  2. Settings -> Accelerator -> GPU T4 x2.   (the step everyone forgets)
+  3. + Add Input -> Upload -> gpujobs\out\20261012-041010_M08\job.zip as a dataset. Kaggle unpacks it into a
+     folder: that is fine.
+  4. Nothing to type in Cell 2: leave KAGGLE_INPUT = "" . The cell finds the job under /kaggle/input and must
+     print "Bundle verified".
+  5. Run Cell 1. It must print a GPU name (e.g. Tesla T4). If it prints NO GPU, redo step 2.
+  6. Run the remaining cells and keep the tab open until the last one finishes. The long cell prints nothing
+     while a command runs (the output of each command appears when it ends): that is normal. Do not start anything
+     else in that notebook while it runs: the job measures small timing differences.
+  7. Download results_20261012-041010_M08.zip from the Output panel.
+  8. Move that file into D:\PJT\vcloak\gpujobs\inbox\   (do not unzip or rename it).
+Or use Google Colab: colab.research.google.com -> File -> Upload notebook -> the same .ipynb; Runtime -> Change
+  runtime type -> T4 GPU -> Save; run Cell 1 (GPU name), Cell 2 (upload job.zip), Cell 3 (keep the tab open and
+  active: a free Colab session can disconnect during a long job), Cell 4 (downloads the results zip).
+Bring back only the results zip, even if a cell reports a failure. Do not commit or edit anything in the repo
+  before the next session: a change to src/, kernels/, tests/, bench/ or scripts/ makes the result stale and it
+  will be rejected.
+No passphrase is needed: the job uses fixed TEST keys.
+Things that may come back as NOT_MEASURED and are not your fault: the Nsight counters (shared containers usually
+  refuse them, ERR_NVGPUCTRPERM) and the SASS listing if the runner has no cuobjdump. Both are recorded as such.
+Confirm by running: .venv\Scripts\python scripts\gpujob.py verify gpujobs\inbox\results_20261012-041010_M08.zip
+Then open a new session and type: continue

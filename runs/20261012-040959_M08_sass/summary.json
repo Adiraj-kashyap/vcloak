@@ -1,0 +1,39 @@
+{
+  "metrics": [
+    {
+      "id": "T-SASS-BRA-BITONIC",
+      "value": "NOT_MEASURED",
+      "unit": "branches",
+      "stat": "count",
+      "note": "nvcc is not installed on this machine"
+    },
+    {
+      "id": "T-SASS-BRA-AEAD-OPEN",
+      "value": "NOT_MEASURED",
+      "unit": "branches",
+      "stat": "count",
+      "note": "nvcc is not installed on this machine"
+    },
+    {
+      "id": "T-SASS-BRA-CHACHA-TAGS",
+      "value": "NOT_MEASURED",
+      "unit": "branches",
+      "stat": "count",
+      "note": "nvcc is not installed on this machine"
+    }
+  ],
+  "reason": "nvcc is not installed on this machine",
+  "log": {
+    "arch": null,
+    "arch_from": "cupy: ModuleNotFoundError; nvidia-smi gave no compute capability",
+    "files": {},
+    "nvrtc": {}
+  },
+  "control": {
+    "file": "bench/planted/planted_leak.cu",
+    "detected": null
+  },
+  "analysis": "static, per function, flow-insensitive; DATA and unknown need a reading of the listing",
+  "functions": {},
+  "to_explain": {}
+}

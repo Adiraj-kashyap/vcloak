@@ -346,3 +346,28 @@
   whether batching launches would stabilise the short kernels; branch-free machine code (M08).
 - Commit: 9ae9ba5
 - Next: M08 S1 ; human action: none required (optional: decide on the ISSUE-15 re-measurement before M16)
+
+## Session 15 — 2026-10-12 04:12 — M08 GPU obliviousness audit (prep) — owner:Aditya
+- Steps: S1-S4 code written, checks pending on the GPU (status after: BLOCKED_HUMAN)
+- Did: src/vcloak/bench/dudect.py (online Welch t on the raw data and on the 100 dudect crops, t-curve, plot);
+  bench/run_dudect.py (random interleaving of exactly N per class, CUDA events around r launches, calibration batch,
+  raw npz + json + png per target; controls control_leak and control_null; targets bitonic_equal, bitonic_sorted,
+  write_epoch with device and whole-call series, aead_tag, aead_conv); bench/planted/planted_leak.cu with its twin
+  in sim.py; scripts/sass_check.py (nvcc -cubin, cuobjdump -sass, branch table with predicate sources, nvrtc
+  listing when available); bench/run_ncu.py + ncu_workload.py + run_ncu.sh/.ps1; bench/jobs/M08.json; 59 new tests;
+  tests/fakecupy.py gained a stream; .gitignore (npz), .gitattributes (*.sh stays LF).
+- Evidence: runs/20261012-040948_M08_prep_audit (pytest.txt 50 passed, 9 gpu-skipped; pytest_not_gpu.txt 1283 passed, 1 skipped, 674 deselected; check_oblivious, check_secrets,
+  check_metrics PASS); local plumbing runs runs/20261012-040958_M08_dudect, runs/20261012-040959_M08_sass,
+  runs/20261012-040959_M08_ncu (all NOT_MEASURED).
+- GPU job: 20261012-041010_M08 packed from fe51656 (1.45 MB, 121 files), full mode, 8 commands.
+- Metrics added: none (numpy backend; nothing timed)
+- Decisions: none (no ADR). Implementation choices are in the Amendments note of ai/modules/M08.
+- Issues: opened ISSUE-16 (HUMAN ACTION: GPU JOB READY, M08)
+- Deviations from spec: planted kernel outside kernels/; extra null control; write_epoch has two series; class B of
+  aead_conv comes from a pool sealed before the run; ncu logic in a Python driver behind the two scripts.
+- Not verified: everything on a GPU — the planted leak being detected, every verdict, the event loop under CuPy,
+  nvcc/cuobjdump on the runner and the format of their output, whether the runner permits the ncu counters, the
+  names of its branch metrics, the nvrtc listing path, the run time of the job.
+- Commit: fe51656 (code), <closing> (job, logs, state)
+- Next: M08 ingest (gates A1-A5, metrics, evidence, S5 report) ; human action: ISSUE-16 — upload the job, drop the
+  results zip in gpujobs/inbox/

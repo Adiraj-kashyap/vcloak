@@ -1,0 +1,5 @@
+bench/planted/planted_leak.cu:17: BRANCH: `if` condition depends on data (x) in planted_leak()
+    if (x[t]) {  // the planted leak: a branch on the data, and work that only one side does
+bench/planted/planted_leak.cu:18: BRANCH: `for` condition uses spins, not proven public, in planted_leak()
+    for (u32 s = 0; s < spins; ++s) {
+check_oblivious: 1 file(s), 2 finding(s) - FAIL

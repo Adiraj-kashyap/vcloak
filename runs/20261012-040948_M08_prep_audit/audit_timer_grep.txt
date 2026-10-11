@@ -1,0 +1,2 @@
+bench/run_dudect.py:473:        "clock": clock, "timer": "cupy.cuda.Event", "series": {},
+bench/run_dudect.py:571:        body = {"metrics": metrics, "timer": "cupy.cuda.Event" if backend.is_gpu else None,

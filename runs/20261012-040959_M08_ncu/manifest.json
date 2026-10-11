@@ -1,0 +1,44 @@
+{
+  "run_id": "20261012-040959_M08_ncu",
+  "module": "M08",
+  "step": "S4",
+  "owner": "Aditya",
+  "git_sha": "fe51656455505df756624305b18a55a11825afd4",
+  "dirty": true,
+  "command": "python bench/run_ncu.py --seed 8 --out runs",
+  "seed": 8,
+  "quick": false,
+  "params": {
+    "log2n": 16,
+    "kernels": [
+      "bitonic_pairs_global",
+      "bitonic_shared",
+      "bitonic_shared_full",
+      "aead_open_seq"
+    ],
+    "control": "planted_leak"
+  },
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261012-040959",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U"
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791758399.9306498
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791758399.9371934
+  },
+  "outputs": [
+    "summary.json"
+  ],
+  "status": "NOT_MEASURED",
+  "notes": "numpy backend: no GPU on this machine"
+}

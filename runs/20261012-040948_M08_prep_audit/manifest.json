@@ -1,0 +1,44 @@
+{
+  "run_id": "20261012-040948_M08_prep_audit",
+  "module": "M08",
+  "step": "S4",
+  "owner": "Aditya",
+  "git_sha": "fe51656455505df756624305b18a55a11825afd4",
+  "dirty": false,
+  "command": "pytest (module + not gpu), check_oblivious, check_secrets, check_metrics, ruff, local plumbing runs",
+  "seed": 0,
+  "quick": false,
+  "params": {},
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261012-040948",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U"
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791758388.6581454
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791758559.6472406
+  },
+  "outputs": [
+    "audit_timer_grep.txt",
+    "check_metrics.txt",
+    "check_oblivious.txt",
+    "check_oblivious_planted.txt",
+    "check_secrets.txt",
+    "deliverables_ls.txt",
+    "plumbing_runs.txt",
+    "pytest.txt",
+    "pytest_not_gpu.txt",
+    "ruff.txt"
+  ],
+  "status": "OK",
+  "notes": "prep audit: module tests and the whole local suite pass; G3, G4, G2 scripts PASS; three local plumbing runs NOT_MEASURED; no GPU result exists yet"
+}

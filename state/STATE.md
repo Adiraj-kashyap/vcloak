@@ -3,13 +3,13 @@
 ```yaml
 project: v-cloak
 kit_version: 1.0
-last_session: 14
+last_session: 15
 last_session_date: 2026-10-12
 current_module: M08
 current_step: S5
-status: IN_PROGRESS        # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
+status: BLOCKED_HUMAN        # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
 next_unit: M08
-last_checkpoint: 2026-10-12 M08 S1-S2 code and local tests done (dudect harness, controls, five targets); GPU checks pending; S3 sass_check.py written and unit-tested on a hand-written listing; S4 ncu driver written and unit-tested on hand-written ncu output; next pack the GPU job
+last_checkpoint: 2026-10-12 M08 prep done (S1-S4 code, commit fe51656); GPU job 20261012-041010_M08 packed; waiting for the results zip (ISSUE-16); then ingest, gates A1-A5, S5 report
 quick_mode_default: false
 local:                      # the laptop (no GPU) — filled by M00 S7
   os: "Windows-11-10.0.26200-SP0"
@@ -33,7 +33,7 @@ runner:                     # the free remote GPU — filled from the ingested M
   peak_bw_gbs: 320.064
   last_session_id: "20261011-213139"
 gpu_job:                    # set by the gpu-job skill
-  pending: null   # job id awaiting the upload of the human, or null
+  pending: 20261012-041010_M08   # job id awaiting the upload of the human, or null
   last_ingested: 20261011-224124_M07
 ```
 
@@ -49,7 +49,7 @@ gpu_job:                    # set by the gpu-job skill
 | M05 | GPU AEAD-open, restore, compaction | Aditya | M04 | no | DONE | S4 | 2 |
 | M06 | GPU engine | Aditya | M05 | no | DONE | S5 | 2 |
 | M07 | GPU performance metrics (E4) | Aditya | M06 | no | DONE | S6 | 2 |
-| M08 | GPU obliviousness audit (E3) | Aditya | M06 | no | NOT_STARTED | S1 | 0 |
+| M08 | GPU obliviousness audit (E3) | Aditya | M06 | no | BLOCKED_HUMAN | S5 | 1 |
 | M09 | Storage (PostgreSQL) | Divyansh | M06 | no | NOT_STARTED | S1 | 0 |
 | M10 | Service & scheduler | Divyansh | M09 | no | NOT_STARTED | S1 | 0 |
 | M11 | Session security (E5) | Divyansh | M10 | no | NOT_STARTED | S1 | 0 |
@@ -87,3 +87,7 @@ gpu_job:                    # set by the gpu-job skill
   with `python -m vcloak.bench.report`, never edited by hand.
 - write_epoch misses EPOCH_MS at 2^16 slots because of host Python (one uuid object per row), not the GPU
   (ISSUE-12, BLOCKS M15): vectorise the row building in its own unit, then re-measure with a new GPU job.
+- M08 is waiting for job 20261012-041010_M08 (ISSUE-16). At ingest: apply the S1-S4 checks (planted leak detected, null
+  control not detected, five verdicts, SASS branches read and explained, ncu or NOT_MEASURED), then S5. The SASS and
+  ncu parsers were tested on hand-written samples only: if a run dir says FAIL or the tables are empty, fix the parser
+  against the saved raw output (`sass_check.py --listing`), do not re-run the job for that.

@@ -1,0 +1,63 @@
+{
+  "job_id": "20261012-041010_M08",
+  "module": "M08",
+  "step": "S4",
+  "title": "M08 GPU obliviousness audit: planted-leak kernel parity, dudect self-test (planted leak, null control), dudect on the fused bitonic sort (all-equal / sorted vs random), write_epoch (fixed vs random contents) and AEAD open (valid vs invalid tags, matching vs foreign conversation), SASS branch listing, Nsight Compute divergence counters",
+  "quick": false,
+  "params": {},
+  "seed": 8,
+  "git_sha": "fe51656455505df756624305b18a55a11825afd4",
+  "dirty": false,
+  "packed_at": "2026-10-11T22:40:10+00:00",
+  "bundle_sha256": "13fe614f268f1dec64f40871733c1946cd3214d7fdd472d18cd7fc498b24fbd8",
+  "n_files": 121,
+  "commands": [
+    {
+      "name": "nvidia_smi",
+      "cmd": "nvidia-smi",
+      "timeout": 120
+    },
+    {
+      "name": "check_oblivious",
+      "cmd": "python scripts/check_oblivious.py kernels/",
+      "timeout": 300,
+      "stop_on_fail": false
+    },
+    {
+      "name": "pytest_planted_leak",
+      "cmd": "python -m pytest -p no:cacheprovider -rs -v tests/gpu/test_planted_leak.py",
+      "timeout": 900,
+      "stop_on_fail": false
+    },
+    {
+      "name": "dudect_selftest",
+      "cmd": "python bench/run_dudect.py --targets controls --seed 8 --quick --name dudect_selftest --out runs",
+      "timeout": 1800,
+      "stop_on_fail": false
+    },
+    {
+      "name": "dudect",
+      "cmd": "python bench/run_dudect.py --targets control_null,targets --seed 8 --out runs",
+      "timeout": 21600,
+      "stop_on_fail": false
+    },
+    {
+      "name": "sass",
+      "cmd": "python scripts/sass_check.py --compile --out runs",
+      "timeout": 1800,
+      "stop_on_fail": false
+    },
+    {
+      "name": "ncu",
+      "cmd": "bash bench/run_ncu.sh --seed 8 --out runs",
+      "timeout": 2400,
+      "stop_on_fail": false
+    },
+    {
+      "name": "nvidia_smi_after",
+      "cmd": "nvidia-smi",
+      "timeout": 120,
+      "stop_on_fail": false
+    }
+  ]
+}
