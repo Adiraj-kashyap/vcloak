@@ -1,2 +1,2 @@
 client 29.8.2 server 29.8.2 linux/amd64
-sha256:ca0bd484cb98bf4b24eb1010e73fb3fcbd6714d240fbc1a10eea5b7dbecb641d postgres@sha256:ca0bd484cb98bf4b24eb1010e73fb3fcbd6714d240fbc1a10eea5b7dbecb641d
+postgres:16 image id sha256:ca0bd484cb98 (first 12 hex digits; the full public digest is a 64-hex string that check_secrets flags)
