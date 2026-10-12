@@ -683,5 +683,5 @@
 - Not verified: S6 (not started); that every earlier failure of that test had this cause; the whole test file
   repeated; `--views` subsets, the script making its own run directory, the move to evidence/superseded/; the page in
   Firefox or Safari; a CUDA engine behind the service
-- Commit: (hash follows)
+- Commit: 424a870
 - Next: M13 S6 ; human action: none. Keep Docker Desktop running when you type continue
