@@ -101,9 +101,10 @@ def time_cpu(fn: Callable[[], Any], warmup: int, runs: int, *,
 
 def warm_until_stable(fn: Callable[[], Any], *, min_calls: int, snapshot: Callable[[], dict[str, Any]],
                       sync: Callable[[], Any] | None = None, min_seconds: float = 1.0,
-                      max_seconds: float = 6.0, poll_seconds: float = 0.25) -> dict[str, Any]:
+                      max_seconds: float = 6.0, poll_seconds: float = 0.25,
+                      flat_polls: int = 2) -> dict[str, Any]:
     """Call `fn` (then `sync`) until at least `min_calls` calls and `min_seconds` have passed and the SM
-    clock has not risen over two consecutive polls, or until `max_seconds`. Returns the last snapshot plus
+    clock has not risen over `flat_polls` consecutive polls, or until `max_seconds`. Returns the last snapshot plus
     the calls, the seconds spent and the polled clocks. Without NVML the loop ends at `min_seconds`.
     `snapshot` should be cheap (`telemetry.sample`): the device idles while it runs."""
     t0 = time.monotonic()
@@ -119,12 +120,12 @@ def warm_until_stable(fn: Callable[[], Any], *, min_calls: int, snapshot: Callab
             last_poll = now
             clock = snapshot().get("sm_clock_mhz")
             if clock is None:
-                flat = 2  # no clock to wait for
+                flat = flat_polls  # no clock to wait for
             else:
                 flat = flat + 1 if clocks and clock <= clocks[-1] else 0
                 clocks.append(clock)
         elapsed = now - t0
-        if calls >= min_calls and elapsed >= min_seconds and (flat >= 2 or elapsed >= max_seconds):
+        if calls >= min_calls and elapsed >= min_seconds and (flat >= flat_polls or elapsed >= max_seconds):
             break
     return {"snapshot": snapshot(), "calls": calls, "seconds": time.monotonic() - t0, "clocks_mhz": clocks}
 

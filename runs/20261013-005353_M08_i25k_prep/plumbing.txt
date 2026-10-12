@@ -1,0 +1,14 @@
+target control_leak_q
+target tags_kernel_null
+target tags_kernel
+target compact_kernel_null
+target compact_kernel
+run dir     D:\PJT\vcloak\runs\20261013-005359_M08_i25k_plumb
+backend     numpy   N per class 100000   quick False
+  control_leak_q  NOT_MEASURED  mismatches 0
+  tags_kernel_null NOT_MEASURED  mismatches 0
+  tags_kernel     NOT_MEASURED  mismatches 0
+  compact_kernel_null NOT_MEASURED  mismatches 0
+  compact_kernel  NOT_MEASURED  mismatches 0
+metrics     10
+status      NOT_MEASURED

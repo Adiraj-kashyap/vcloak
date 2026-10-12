@@ -282,3 +282,24 @@ demonstration and the panel says so on screen; it must never be described as a d
 on a `--compare` server is a result. The two stores can disagree by one window about a message near a boundary, so a
 client that is not told about the switch (the Python SDK, a second tab) can stop with an order error. The M10 test
 that started `--dev` on `0.0.0.0 --allow-remote` now runs without `--dev`.
+
+## ADR-023 — P3 is claimed for the kernels; the timing of the host orchestration is outside the threat model — ACCEPTED — 2026-10-13
+Context: ISSUE-17 point 2 left one question to the team: is the host Python of `write_epoch` inside the threat
+model? The dudect series that contain host code FAIL with EQUAL contents in both classes (the whole call, the
+transfers, and the engine's stage intervals, which hold the host code that issues the launches; ISSUE-17, ISSUE-25).
+The human decided it on 2026-10-13 (session 32), as reported in the session request; the agent records it.
+Decision: (1) The adversary of `ai/PROJECT_BRIEF.md §3` is passive and holds a snapshot of the persistent store. A
+dump carries no timing. Observing the running time of the server needs a compromised running backend, which §3
+already puts out of scope. (2) P3 (§4) is worded for the kernels: "the kernels' access trace and running time".
+The claim of the project is therefore obliviousness of the server-side kernels; the timing of the host
+orchestration (Python: building rows, issuing launches, transfers of host memory) is NOT claimed. (3) The claim is
+not widened: no document may say that `write_epoch`, the write path or the service is constant time. (4) The
+kernel-level claim is tested with a window that holds no host code (ISSUE-25, group `issue25k` of
+`bench/run_dudect.py`), beside the SASS reading and the E3 trace invariance.
+Consequences: a whole-call or per-stage FAIL with equal contents is a property of the host code and of the
+harness, reported as measured and listed as a limitation (generated text of `report_oblivious`, section 4.O.6); it
+is never removed from a table, and it no longer blocks M14 by itself. What still has to be shown for the kernels
+is what ISSUE-25 measures. M14 and the report must state the scope in these words: kernel-level obliviousness,
+against an adversary who sees the store and no timing. A reader who assumes a co-located or network timing
+attacker is told that this is outside the model, not that it was defeated. This ADR does not change any verdict or
+any row of `state/METRICS_INDEX.md`.

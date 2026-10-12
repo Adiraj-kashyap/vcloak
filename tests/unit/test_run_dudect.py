@@ -183,7 +183,8 @@ def test_the_static_checker_flags_the_planted_leak_and_it_is_not_in_kernels() ->
 # --- ISSUE-17: the diagnostic targets -------------------------------------------------------------
 
 def test_issue17_groups() -> None:
-    assert set(rd.DIAG) <= {*rd.ISSUE17, *rd.ISSUE25} and set(rd.ISSUE17_REP) < set(rd.ISSUE17)
+    assert set(rd.DIAG) <= {*rd.ISSUE17, *rd.ISSUE25, *rd.ISSUE25K, *rd.DIAG_CONTROLS}
+    assert set(rd.ISSUE17_REP) < set(rd.ISSUE17)
     assert {"aead_conv", "aead_tag", "write_epoch"} <= set(rd.ISSUE17_REP)  # the three failing targets, again
     assert rd.parse_targets("control_null,issue17") == ["control_null", *rd.ISSUE17]
     assert not set(rd.DIAG) & set(rd.ALL)  # `all` and `targets` stay what the M08 job measured
@@ -370,3 +371,184 @@ def test_open_and_key_writes_into_given_outputs() -> None:
         rd.gpu_open_and_key(t.kseq, t.blobs, t.q, out=(out[0], out[1], out[2][:-1].copy()))
     with pytest.raises(TypeError, match="out hi"):
         rd.gpu_open_and_key(t.kseq, t.blobs, t.q, out=(out[2], out[1], out[2]))
+
+
+# --- ISSUE-25, kernel-only window: tags and compact behind a blocker ----------------------------
+
+@pytest.fixture
+def small_window(monkeypatch: pytest.MonkeyPatch, fake_gpu: None) -> None:
+    for name, value in (("WRITE_SLOTS", 64), ("BLOCKER_MIN", 4), ("BLOCKER_MAX", 16), ("QUEUE_PROBE", 3),
+                        ("WARM_Q_MIN_S", 0.0), ("WARM_Q_MAX_S", 0.1), ("WARM_Q_FLAT", 1)):
+        monkeypatch.setattr(rd, name, value)
+    monkeypatch.setattr(rd._QueuedWindow, "blocker_blocks", 4)
+
+
+def test_issue25k_group() -> None:
+    assert rd.parse_targets("issue25k") == list(rd.ISSUE25K)
+    assert rd.ISSUE25K.index("tags_kernel_null") < rd.ISSUE25K.index("tags_kernel")  # the control first
+    assert not set(rd.ISSUE25K) & {*rd.ALL, *rd.ISSUE17, *rd.ISSUE25}
+    assert rd.build_target("control_leak_q", get_backend("numpy"), 8, True).expect == dudect.FAIL
+
+
+def test_the_class_order_is_a_random_interleaving_not_two_blocks() -> None:
+    c = dudect.balanced_classes(5000, np.random.default_rng([8, 2]))
+    assert c.sum() == 5000 and c.size == 10000
+    switches = int(np.count_nonzero(c[1:] != c[:-1]))
+    assert 4700 < switches < 5300  # two blocks would switch once; a fair shuffle about n times
+    edges = np.flatnonzero(np.diff(np.concatenate(([2], c, [2]))))
+    assert int(np.diff(edges).max()) < 30  # the longest run of one class
+
+
+@pytest.mark.parametrize("name", ["write_epoch_null_st", "write_epoch_age_st", "write_epoch_fresh_st"])
+def test_issue25_tags_and_compact_get_the_same_device_input_in_both_classes(
+        name: str, monkeypatch: pytest.MonkeyPatch) -> None:
+    """The stages tags, sort and compact of write_epoch never see the submissions: their inputs come from
+    K_tag, the epoch and n_real. A difference of tags_ms or compact_ms between the classes of these targets
+    is therefore not a dependence of those kernels on their data."""
+    from vcloak.gpu import engine
+
+    seen: list[tuple[bytes, ...]] = []
+    tags, compact = engine.gpu_tags_for_epoch, engine.gpu_compact
+
+    def spy_tags(key: np.ndarray, epoch: int, n: int) -> tuple[np.ndarray, np.ndarray]:
+        hi, lo = tags(key, epoch, n)
+        seen.append((b"tags", np.asarray(key).tobytes(), bytes([epoch]), hi.tobytes(), lo.tobytes()))
+        return hi, lo
+
+    def spy_compact(is_dummy: np.ndarray, order: np.ndarray) -> np.ndarray:
+        seen.append((b"compact", is_dummy.tobytes(), order.tobytes()))
+        return compact(is_dummy, order)
+
+    monkeypatch.setattr(engine, "gpu_tags_for_epoch", spy_tags)
+    monkeypatch.setattr(engine, "gpu_compact", spy_compact)
+    t = rd.build_target(name, get_backend("numpy"), 8, True)
+    rng = np.random.default_rng(6)
+    per_class = []
+    for cls in (0, 1, 0, 1):
+        seen.clear()
+        t.prepare(cls, rng)
+        t.run()
+        assert [s[0] for s in seen] == [b"tags", b"compact"]
+        per_class.append(list(seen))
+    assert all(p == per_class[0] for p in per_class)
+    if name == "write_epoch_fresh_st":  # while the submissions themselves do differ
+        t.prepare(0, rng)
+        a = contents_of(t.batch)
+        t.prepare(1, rng)
+        assert contents_of(t.batch) != a
+
+
+@pytest.mark.parametrize("name", rd.ISSUE25K)
+def test_issue25k_classes_are_what_the_target_says(name: str) -> None:
+    t = rd.build_target(name, get_backend("numpy"), 8, True)
+    same = all(np.array_equal(a, b) for a, b in zip(t.host[0], t.host[1], strict=True))
+    assert same == name.endswith("_null") and len(t.host[0]) == len(t.host[1])
+    assert all(np.array_equal(a, t.host[0][0]) for a in t.host[0])  # class A is one fixed input
+    for cls in (0, 1):
+        t.prepare(cls, np.random.default_rng(2))
+        t.run()
+        assert t.check(cls) == 0
+    if name.startswith("compact"):
+        for p in (*t.host[0], *t.host[1]):  # a permutation: the same number of dummies in every input
+            assert sorted(p.tolist()) == list(range(t.slots))
+        eng_order = rd.gpu_compact((t.host[1][0] >= t.n_real).astype(np.uint32), t.host[1][0])
+        assert eng_order[:t.n_real].tolist() == [v for v in t.host[1][0].tolist() if v < t.n_real]
+
+
+def test_issue25k_the_window_enqueues_blocker_start_launches_end_and_reads_the_flag(
+        monkeypatch: pytest.MonkeyPatch) -> None:
+    t = rd.build_target("tags_kernel", get_backend("numpy"), 8, True)
+    log: list[str] = []
+
+    class Ev:
+        def __init__(self, name: str, done: bool) -> None:
+            self.name, self._done = name, done
+
+        def record(self, stream: object) -> None:
+            log.append(self.name)
+
+        @property
+        def done(self) -> bool:
+            log.append(f"{self.name}.done?")
+            return self._done
+
+        def synchronize(self) -> None:
+            log.append(f"{self.name}.sync")
+
+    monkeypatch.setattr(t, "_block", lambda: log.append("blocker"))
+    monkeypatch.setattr(t, "run", lambda: log.append("launch"))
+    cp = type("cp", (), {"cuda": type("cuda", (), {"get_elapsed_time": staticmethod(lambda a, b: 0.25)})})
+    stream = type("S", (), {"synchronize": lambda self: log.append("stream.sync")})()
+    assert t.measure(cp, stream, Ev("start", False), Ev("end", False), 3) == (0.25,)
+    assert log == ["stream.sync", "blocker", "start", "launch", "launch", "launch", "end", "start.done?", "end.sync"]
+    assert t.queued is True
+    t.measure(cp, stream, Ev("start", True), Ev("end", False), 1)
+    assert t.queued is False  # the device was idle before the end event was enqueued: host time is inside
+
+
+@pytest.mark.parametrize("name", [*rd.ISSUE25K, "control_leak_q"])
+def test_issue25k_targets_run_through_the_measuring_loop(name: str, tmp_path: Path, small_window: None) -> None:
+    backend = fakecupy.backend()
+    t = rd.build_target(name, backend, 8, True)
+    clock = iter([1590] * 100 + [585] * 5 + [1575] * 10_000)
+    res = rd.run_target(t, backend, 60, 8, tmp_path, log=lambda s: None, sm_clock=lambda: next(clock))
+    f, s = res["per_sample"], res["series"]["ms"]
+    assert res["mismatches"] == 0 and s["n_class0"] == s["n_class1"] == 60
+    assert f["measurements"] == 120 and f["unqueued"] == 0 and f["steady_clock_mhz"] == 1590
+    assert f["off_clock"] == 5 and f["not_at_modal_clock"] == 20 and f["flagged"] == 5
+    assert s["unflagged"]["n_class0"] + s["unflagged"]["n_class1"] == 115
+    assert f["blocker_steps"][0] == {"blocks": 4, "r": 1, "unqueued": 0} and t.blocker_blocks >= 8
+    raw = np.load(tmp_path / res["raw"])
+    assert raw["clocks_mhz"].shape == raw["queued"].shape == (120,) and raw["queued"].all()
+    ids = [m["id"] for m in rd.metrics_of([res], False, None)]
+    base = rd.METRIC_OF[name]
+    assert ids == [f"T-DUDECT-MAXT-{base}", f"T-DUDECT-MAXT-{base}-UNFLAGGED", f"T-DUDECT-FLAGGED-{base}",
+                   f"T-DUDECT-CLOCK-{base}", f"T-DUDECT-N-{base}"]
+
+
+def test_issue25k_unqueued_measurements_are_flagged_and_the_blocker_stops_at_its_limit(
+        tmp_path: Path, small_window: None, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(fakecupy._Event, "done", True)  # a device that is never busy: nothing is queued
+    backend = fakecupy.backend()
+    t = rd.build_target("tags_kernel_null", backend, 8, True)
+    res = rd.run_target(t, backend, 40, 8, tmp_path, log=lambda s: None, sm_clock=lambda: None)
+    f = res["per_sample"]
+    assert t.blocker_blocks == rd.BLOCKER_MAX and f["blocker_steps"][-1]["unqueued"] == rd.QUEUE_PROBE
+    assert f["unqueued"] == f["flagged"] == 80 and f["off_clock"] == "NOT_MEASURED"
+    assert res["series"]["ms"]["n_class0"] == 40  # the verdict is still the test on every measurement
+    assert res["series"]["ms"]["unflagged"]["n_class0"] == 0
+
+
+def test_issue25k_plumbing_on_the_numpy_backend(tmp_path: Path, numpy_backend: None) -> None:
+    assert rd.main(["--targets", "control_leak_q,issue25k", "--lock-clock", "--out", str(tmp_path)]) == 0
+    s = summary(only_run(tmp_path))
+    assert [t["target"] for t in s["targets"]] == ["control_leak_q", *rd.ISSUE25K] and not s["errors"]
+    assert all(t["mismatches"] == 0 for t in s["targets"])
+    assert {m["value"] for m in s["metrics"]} == {"NOT_MEASURED"}
+    assert s["clock_lock"] == {"attempted": False, "accepted": False}  # never asked for without a device
+
+
+def test_the_clock_lock_records_a_refusal_and_an_acceptance(monkeypatch: pytest.MonkeyPatch) -> None:
+    import types
+
+    nv = types.SimpleNamespace(NVML_CLOCK_SM=1, nvmlDeviceGetHandleByIndex=lambda i: "h",
+                               nvmlDeviceGetMaxClockInfo=lambda h, c: 1590, nvmlDeviceGetClockInfo=lambda h, c: 585)
+    monkeypatch.setattr(telemetry, "_nvml", lambda: nv)
+    monkeypatch.setattr(telemetry, "_clock_handle", None)
+    calls: list[list[str]] = []
+
+    def smi(code: int) -> object:
+        def run(cmd: list[str], **kw: object) -> types.SimpleNamespace:
+            calls.append(cmd)
+            return types.SimpleNamespace(returncode=code, stdout="out", stderr="")
+        return run
+
+    monkeypatch.setattr(telemetry.subprocess, "run", smi(4))
+    got = telemetry.lock_clock()
+    assert got["attempted"] and not got["accepted"] and got["returncode"] == 4
+    assert calls[-1] == ["nvidia-smi", "-i", "0", "-lgc", "1590,1590"] and telemetry._locked_mhz is None
+    monkeypatch.setattr(telemetry.subprocess, "run", smi(0))
+    assert telemetry.lock_clock()["accepted"] and telemetry._clock_lock() == "lock accepted at 1590 MHz"
+    assert telemetry.unlock_clock()["command"].endswith("-rgc") and telemetry._locked_mhz is None
+    assert telemetry.sm_clock() == 585
+    monkeypatch.setattr(telemetry, "_clock_handle", None)

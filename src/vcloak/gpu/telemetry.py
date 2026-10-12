@@ -58,8 +58,14 @@ def _sample(nv: Any, h: Any) -> dict[str, Any]:
     }
 
 
+_locked_mhz: int | None = None  # set by `lock_clock` when nvidia-smi accepted the request
+_clock_handle: tuple[Any, Any] | None = None
+
+
 def _clock_lock() -> str:
-    """Report whether the SM clock is locked. We never try to lock it on a shared runner."""
+    """Report whether the SM clock is locked. Only `lock_clock` tries to lock it (ISSUE-25)."""
+    if _locked_mhz is not None:
+        return f"lock accepted at {_locked_mhz} MHz"
     try:
         out = subprocess.run(["nvidia-smi", "--query-gpu=clocks.sm", "--format=csv,noheader"],
                              capture_output=True, text=True, timeout=20)
@@ -99,6 +105,51 @@ def sample(index: int = 0) -> dict[str, Any]:
     out: dict[str, Any] = {"available": True, **_sample(nv, h)}
     out["sm_clock_max_mhz"] = _try(nv.nvmlDeviceGetMaxClockInfo, h, nv.NVML_CLOCK_SM)
     return out
+
+
+def sm_clock(index: int = 0) -> int | None:
+    """The SM clock in MHz with a single NVML query: cheap enough to read after every measurement."""
+    global _clock_handle
+    if _clock_handle is None:
+        nv = _nvml()
+        h = None if nv is None else _try(nv.nvmlDeviceGetHandleByIndex, index)
+        if h is None:
+            return None
+        _clock_handle = (nv, h)
+    nv, h = _clock_handle
+    return _try(nv.nvmlDeviceGetClockInfo, h, nv.NVML_CLOCK_SM)
+
+
+def _smi(args: list[str]) -> dict[str, Any]:
+    cmd = ["nvidia-smi", *args]
+    try:
+        out = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+    except Exception as e:  # noqa: BLE001 - no nvidia-smi, or it hangs
+        return {"command": " ".join(cmd), "returncode": None, "output": type(e).__name__}
+    return {"command": " ".join(cmd), "returncode": out.returncode, "output": (out.stdout + out.stderr).strip()[:300]}
+
+
+def lock_clock(index: int = 0) -> dict[str, Any]:
+    """Ask the driver to pin the SM clock at its maximum (`nvidia-smi -lgc max,max`, needs root; ISSUE-25).
+    `accepted` says that nvidia-smi returned 0, not that the clock holds: the readings show that. A
+    refusal is an outcome to record, never an error."""
+    global _locked_mhz
+    nv = _nvml()
+    h = None if nv is None else _try(nv.nvmlDeviceGetHandleByIndex, index)
+    top = None if h is None else _try(nv.nvmlDeviceGetMaxClockInfo, h, nv.NVML_CLOCK_SM)
+    if not top:
+        return {"attempted": False, "accepted": False, "reason": "NVML reported no maximum SM clock"}
+    res = _smi(["-i", str(index), "-lgc", f"{top},{top}"])
+    ok = res["returncode"] == 0
+    _locked_mhz = int(top) if ok else None
+    return {"attempted": True, "accepted": ok, "mhz": int(top), **res}
+
+
+def unlock_clock(index: int = 0) -> dict[str, Any]:
+    """Give the clock back to the driver (`nvidia-smi -rgc`)."""
+    global _locked_mhz
+    _locked_mhz = None
+    return _smi(["-i", str(index), "-rgc"])
 
 
 class Sampler:

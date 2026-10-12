@@ -255,6 +255,9 @@ branch-efficiency and divergent-branch metrics of the four profiled kernels are 
 - dudect can show a dependence, not its absence; N is {t('dudect', 'T-DUDECT-N-BITONIC-EQUAL')} per class.
 - Three target series FAIL and are open ({issues['fail']}).
 - No dynamic divergence measurement ({issues['ncu']}); no listing of the executed nvrtc code ({issues['sass']}).
+- P3 is a claim about the kernels. The host code that issues the launches (Python) is not constant time and is
+  not claimed to be: timing can be observed only on a live server, which the threat model excludes (ADR-023).
+  A whole-call or per-stage series that FAILS with equal contents stays in the tables as measured.
 {END}
 """
 

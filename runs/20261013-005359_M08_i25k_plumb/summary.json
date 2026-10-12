@@ -1,0 +1,190 @@
+{
+  "metrics": [
+    {
+      "id": "T-DUDECT-MAXT-CONTROL-LEAK-Q",
+      "value": "NOT_MEASURED",
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "T-DUDECT-N-CONTROL-LEAK-Q",
+      "value": "NOT_MEASURED",
+      "unit": "measurements",
+      "stat": "per class",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "T-DUDECT-MAXT-TAGS-KERNEL-NULL",
+      "value": "NOT_MEASURED",
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "T-DUDECT-N-TAGS-KERNEL-NULL",
+      "value": "NOT_MEASURED",
+      "unit": "measurements",
+      "stat": "per class",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "T-DUDECT-MAXT-TAGS-KERNEL",
+      "value": "NOT_MEASURED",
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "T-DUDECT-N-TAGS-KERNEL",
+      "value": "NOT_MEASURED",
+      "unit": "measurements",
+      "stat": "per class",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "T-DUDECT-MAXT-COMPACT-KERNEL-NULL",
+      "value": "NOT_MEASURED",
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "T-DUDECT-N-COMPACT-KERNEL-NULL",
+      "value": "NOT_MEASURED",
+      "unit": "measurements",
+      "stat": "per class",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "T-DUDECT-MAXT-COMPACT-KERNEL",
+      "value": "NOT_MEASURED",
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "T-DUDECT-N-COMPACT-KERNEL",
+      "value": "NOT_MEASURED",
+      "unit": "measurements",
+      "stat": "per class",
+      "note": "numpy backend: no GPU on this machine"
+    }
+  ],
+  "timer": null,
+  "executed_by": "numpy twins (vcloak.gpu.sim)",
+  "t_threshold": 4.5,
+  "n_per_class": 100000,
+  "quick": false,
+  "caveat": "Free Colab/Kaggle GPUs are shared: a PASS says that no dependence was detected with this many measurements on this device in this session, not that none exists.",
+  "errors": [],
+  "device": {
+    "backend": "numpy",
+    "is_gpu": false,
+    "device": "12th Gen Intel(R) Core(TM) i7-1255U",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U",
+    "cpu_count": 12,
+    "ram_gb": 15.6,
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0"
+  },
+  "clock_lock": {
+    "attempted": false,
+    "accepted": false
+  },
+  "targets": [
+    {
+      "target": "control_leak_q",
+      "title": "positive control of the kernel-only window: planted `if (x) spin(1000)` kernel, zeros vs random",
+      "class0": "x = 0 everywhere (fixed)",
+      "class1": "fresh uniform random x",
+      "params": {
+        "n": 256,
+        "spins": 1000,
+        "kernel": "bench/planted/planted_leak.cu",
+        "window": "queued behind a blocker: device execution only",
+        "blocker": "chacha_blocks, zero key",
+        "blocker_blocks": 1024
+      },
+      "mismatches": 0,
+      "verdict": "NOT_MEASURED",
+      "expected_verdict": "FAIL"
+    },
+    {
+      "target": "tags_kernel_null",
+      "title": "ISSUE-25 kernel-only, control: chacha_tags, the same key in both classes",
+      "class0": "the fixed key, from a device pool whose buffers all hold it",
+      "class1": "the same fixed key, from a second device pool of the same size",
+      "params": {
+        "window": "queued behind a blocker: device execution only",
+        "blocker": "chacha_blocks, zero key",
+        "blocker_blocks": 1024,
+        "slots": 64,
+        "epoch": 1,
+        "kernel": "chacha_tags",
+        "pool_per_class": 2,
+        "staging": "device pools, device-to-device copy"
+      },
+      "mismatches": 0,
+      "verdict": "NOT_MEASURED",
+      "expected_verdict": "PASS"
+    },
+    {
+      "target": "tags_kernel",
+      "title": "ISSUE-25 kernel-only: chacha_tags, one fixed key vs fresh random keys",
+      "class0": "the fixed key, from a device pool whose buffers all hold it",
+      "class1": "one of a device pool of random keys",
+      "params": {
+        "window": "queued behind a blocker: device execution only",
+        "blocker": "chacha_blocks, zero key",
+        "blocker_blocks": 1024,
+        "slots": 64,
+        "epoch": 1,
+        "kernel": "chacha_tags",
+        "pool_per_class": 2,
+        "staging": "device pools, device-to-device copy"
+      },
+      "mismatches": 0,
+      "verdict": "NOT_MEASURED",
+      "expected_verdict": "PASS"
+    },
+    {
+      "target": "compact_kernel_null",
+      "title": "ISSUE-25 kernel-only, control: the sort network of gpu_compact, the same permutation in both classes",
+      "class0": "the fixed permutation, from a device pool whose buffers all hold it",
+      "class1": "the same fixed permutation, from a second device pool of the same size",
+      "params": {
+        "window": "queued behind a blocker: device execution only",
+        "blocker": "chacha_blocks, zero key",
+        "blocker_blocks": 1024,
+        "slots": 64,
+        "n_real": 16,
+        "kernel": "the launch plan of gpu_bitonic_sort, as gpu_compact runs it",
+        "pool_per_class": 2,
+        "staging": "device pools, device-to-device copy"
+      },
+      "mismatches": 0,
+      "verdict": "NOT_MEASURED",
+      "expected_verdict": "PASS"
+    },
+    {
+      "target": "compact_kernel",
+      "title": "ISSUE-25 kernel-only: the sort network of gpu_compact, one fixed permutation vs fresh random ones",
+      "class0": "the fixed permutation, from a device pool whose buffers all hold it",
+      "class1": "one of a device pool of random permutations (the same number of dummies)",
+      "params": {
+        "window": "queued behind a blocker: device execution only",
+        "blocker": "chacha_blocks, zero key",
+        "blocker_blocks": 1024,
+        "slots": 64,
+        "n_real": 16,
+        "kernel": "the launch plan of gpu_bitonic_sort, as gpu_compact runs it",
+        "pool_per_class": 2,
+        "staging": "device pools, device-to-device copy"
+      },
+      "mismatches": 0,
+      "verdict": "NOT_MEASURED",
+      "expected_verdict": "PASS"
+    }
+  ]
+}

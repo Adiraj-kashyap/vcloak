@@ -63,6 +63,25 @@ same call, so that a FAIL is located in a stage:
                    two stages that copy host memory, H5) and one series per stage of the engine.
                    write_epoch_null_st is the control of a run: what it shows is not the contents.
 
+ISSUE-25, kernel-only window (group `issue25k`). In the per-stage job the stages tags and compact FAIL
+although their kernels receive the same input bytes in both classes (the tags come from K_tag and the
+epoch, never from the submissions): a stage interval of the engine holds the host code that issues the
+launches. These targets time the kernels alone and give them classes that do differ on the device:
+  tags_kernel      chacha_tags over SLOTS slots: one fixed key vs fresh random keys.
+  compact_kernel   the sort network of gpu_compact over SLOTS slots: one fixed permutation vs fresh random
+                   permutations, the same number of dummies in both classes.
+  tags_kernel_null, compact_kernel_null   the same contents in both classes: the control of each target.
+  control_leak_q   the planted leak through the same window. Must be DETECTED.
+Staging: both classes from device pools of the same size (as *_sym). Window: a blocker of public size
+(chacha_blocks into a scratch buffer) is launched first, then the start event, the r launches and the end
+event are enqueued while the device is still busy with it. The interval between the two events is then
+device execution only: no host code runs inside it. A measurement whose start event had already been
+reached when the end event was enqueued is flagged `unqueued`. The SM clock is read after every
+measurement (outside the window); a measurement more than 15% off the modal clock is flagged. The
+verdict is the test on all measurements; the test without the flagged ones is reported beside it.
+`--lock-clock` asks `nvidia-smi -lgc max,max` before the run and resets it afterwards; a refusal is
+recorded and the warm-up then waits for a clock that no longer rises.
+
 Under the numpy backend (the laptop) each target prepares and runs both classes once at a small size
 to check the plumbing and the outputs, and every metric is NOT_MEASURED (ai/GPU_RUNNER.md §3).
 """
@@ -90,12 +109,18 @@ from vcloak.gpu import sim, telemetry  # noqa: E402
 from vcloak.gpu.engine import STAGES, GpuEngine, Submission  # noqa: E402
 from vcloak.gpu.kernels import (  # noqa: E402
     CHACHA_BLOCK,
+    DOMAIN_EPOCH,
+    KEY_WORDS,
+    NONCE_WORDS,
     SEQ_WORDS,
     SUBKEY_SEQ,
     gpu_bitonic_sort,
+    gpu_chacha_blocks,
+    gpu_compact,
     gpu_derive_subkeys,
     gpu_open_and_key,
     gpu_seal_seq,
+    gpu_tags,
     subkey,
 )
 from vcloak.gpu.keystore import DeviceKeyStore  # noqa: E402
@@ -118,6 +143,11 @@ SEQ_TAG_WORD = 7  # words 7..10 of a seq_enc row are its tag
 EPOCH = 1
 KERNEL_WINDOW_R = 8  # launches per measurement of the kernel-only targets (ISSUE-17)
 TELEMETRY_HZ = 2.0
+# ISSUE-25, kernel-only window: the blocker is chacha_blocks over this many blocks (public, doubled by
+# `fit_blocker` until the window is queued behind it)
+BLOCKER_MIN, BLOCKER_MAX = 1 << 10, 1 << 20
+QUEUE_PROBE = 30  # measurements, all of which must be queued, before a blocker size is accepted
+WARM_Q_MIN_S, WARM_Q_MAX_S, WARM_Q_FLAT = 10.0, 120.0, 8  # warm-up of these targets: 8 polls without a rise
 CONTROLS = ("control_leak", "control_null")
 SHARED_GPU_CAVEAT = ("Free Colab/Kaggle GPUs are shared: a PASS says that no dependence was detected with this "
                      "many measurements on this device in this session, not that none exists.")
@@ -639,9 +669,165 @@ class WriteEpochFreshSt(_StageSeries, WriteEpochFresh):
     title = "ISSUE-25 per stage, symmetric staging: fixed contents vs random contents, one batch built"
 
 
+# ISSUE-25, kernel-only window: tags and compact timed without any host code between the two events.
+
+
+def _reached(cp: Any, event: Any) -> bool:
+    """Has the device reached this event? (cudaEventQuery; never blocks)"""
+    done = getattr(event, "done", None)
+    return bool(cp.cuda.runtime.eventQuery(event.ptr)) if done is None else bool(done)
+
+
+class _QueuedWindow:
+    """The start event, the r launches and the end event are enqueued behind a blocker (chacha_blocks over
+    `blocker_blocks` blocks into a scratch buffer, public and the same for both classes). While the device
+    is busy with the blocker the host only fills the queue, so the time between the two events is the
+    device executing the r launches back to back. `queued` is False when the device had already reached
+    the start event by the time the end event was enqueued: that measurement holds host launch time."""
+
+    per_sample = True  # the harness records `queued` and the SM clock of every measurement
+    blocker_blocks = BLOCKER_MIN
+    queued = True
+    _bkey: Any = None
+    _bnonce: Any = None
+    _bout: Any = None
+
+    def _block(self) -> None:
+        if self._bkey is None:
+            xp = self.xp  # type: ignore[attr-defined]
+            self._bkey = xp.asarray(np.zeros(KEY_WORDS, dtype=np.uint32))
+            self._bnonce = xp.asarray(np.zeros(NONCE_WORDS, dtype=np.uint32))
+        self._bout = None  # back to the pool before the next one is taken
+        self._bout = gpu_chacha_blocks(self._bkey, self._bnonce, 0, self.blocker_blocks)
+
+    def measure(self, cp: Any, stream: Any, start: Any, end: Any, r: int) -> tuple[float, ...]:
+        stream.synchronize()  # the device-to-device copies of `prepare` are finished
+        self._block()
+        start.record(stream)
+        for _ in range(r):
+            self.run()  # type: ignore[attr-defined]
+        end.record(stream)
+        self.queued = not _reached(cp, start)
+        end.synchronize()
+        return (float(cp.cuda.get_elapsed_time(start, end)),)
+
+    def params(self) -> dict[str, Any]:
+        return {**super().params(), "window": "queued behind a blocker: device execution only",  # type: ignore[misc]
+                "blocker": "chacha_blocks, zero key", "blocker_blocks": self.blocker_blocks}
+
+
+class ControlLeakQ(_QueuedWindow, ControlLeak):
+    name, metric = "control_leak_q", "CONTROL-LEAK-Q"
+    title = f"positive control of the kernel-only window: planted `if (x) spin({LEAK_SPINS})` kernel, zeros vs random"
+
+    def __init__(self, backend: Backend, n: int, seed: int) -> None:
+        super().__init__(backend, n, seed)
+        self.xp = backend.xp
+
+
+class TagsKernel(_QueuedWindow, Target):
+    name, metric = "tags_kernel", "TAGS-KERNEL"
+    title = "ISSUE-25 kernel-only: chacha_tags, one fixed key vs fresh random keys"
+    class0 = "the fixed key, from a device pool whose buffers all hold it"
+    class1 = "one of a device pool of random keys"
+    same_contents = False
+
+    def __init__(self, backend: Backend, slots: int, seed: int, pool: int = POOL) -> None:
+        xp = self.xp = backend.xp
+        self.slots = slots
+        rng = np.random.default_rng([seed, slots, 500])
+        fixed = rng.integers(0, 2**32, KEY_WORDS, dtype=np.uint32)  # test keys, drawn from the seed
+        other = [fixed if self.same_contents else rng.integers(0, 2**32, KEY_WORDS, dtype=np.uint32)
+                 for _ in range(pool)]
+        self.host = ([fixed] * pool, other)
+        self.pools = tuple([xp.asarray(k) for k in ks] for ks in self.host)
+        self.key = xp.empty(KEY_WORDS, dtype=np.uint32)
+        self.hi, self.lo = xp.empty(slots, dtype=np.uint64), xp.empty(slots, dtype=np.uint64)
+        self.cur = (0, 0)
+
+    def prepare(self, cls: int, rng: np.random.Generator) -> None:
+        i = int(rng.integers(0, len(self.pools[0])))
+        self.cur = (cls, i)
+        self.xp.copyto(self.key, self.pools[cls][i])
+
+    def run(self) -> None:
+        gpu_tags(self.key, EPOCH, DOMAIN_EPOCH, self.hi, self.lo)
+
+    def check(self, cls: int) -> int:  # noqa: ARG002
+        hi, lo = np.empty(self.slots, dtype=np.uint64), np.empty(self.slots, dtype=np.uint64)
+        gpu_tags(self.host[self.cur[0]][self.cur[1]], EPOCH, DOMAIN_EPOCH, hi, lo)  # the NumPy twin
+        return int(np.count_nonzero(to_host(self.hi) != hi) + np.count_nonzero(to_host(self.lo) != lo))
+
+    def params(self) -> dict[str, Any]:
+        return {**super().params(), "slots": self.slots, "epoch": EPOCH, "kernel": "chacha_tags",
+                "pool_per_class": len(self.pools[0]), "staging": "device pools, device-to-device copy"}
+
+
+class TagsKernelNull(TagsKernel):
+    name, metric = "tags_kernel_null", "TAGS-KERNEL-NULL"
+    title = "ISSUE-25 kernel-only, control: chacha_tags, the same key in both classes"
+    class1 = "the same fixed key, from a second device pool of the same size"
+    same_contents = True
+
+
+class CompactKernel(_QueuedWindow, Target):
+    name, metric = "compact_kernel", "COMPACT-KERNEL"
+    title = "ISSUE-25 kernel-only: the sort network of gpu_compact, one fixed permutation vs fresh random ones"
+    class0 = "the fixed permutation, from a device pool whose buffers all hold it"
+    class1 = "one of a device pool of random permutations (the same number of dummies)"
+    in_place = True  # the network sorts its columns in place: one compaction per measurement
+    same_contents = False
+
+    def __init__(self, backend: Backend, slots: int, seed: int, pool: int = POOL) -> None:
+        xp = self.xp = backend.xp
+        self.slots, self.n_real = slots, slots // REAL_FRACTION
+        rng = np.random.default_rng([seed, slots, 600])
+        fixed = rng.permutation(slots).astype(np.uint32)
+        other = [fixed if self.same_contents else rng.permutation(slots).astype(np.uint32) for _ in range(pool)]
+        self.host = ([fixed] * pool, other)
+        # the columns gpu_compact builds: hi = is_dummy, lo = position, slot = position, pay = the order
+        self.pool_pay = tuple([xp.asarray(p) for p in ps] for ps in self.host)
+        self.pool_hi = tuple([xp.asarray((p >= self.n_real).astype(np.uint64)) for p in ps] for ps in self.host)
+        self.lo0 = xp.asarray(np.arange(slots, dtype=np.uint64))
+        self.slot0 = xp.asarray(np.arange(slots, dtype=np.uint32))
+        self.hi, self.lo = xp.empty(slots, dtype=np.uint64), xp.empty(slots, dtype=np.uint64)
+        self.slot, self.pay = xp.empty(slots, dtype=np.uint32), xp.empty(slots, dtype=np.uint32)
+        self.cur = (0, 0)
+
+    def prepare(self, cls: int, rng: np.random.Generator) -> None:
+        i = int(rng.integers(0, len(self.pool_pay[0])))
+        self.cur = (cls, i)
+        xp = self.xp
+        xp.copyto(self.hi, self.pool_hi[cls][i])
+        xp.copyto(self.pay, self.pool_pay[cls][i])
+        xp.copyto(self.lo, self.lo0)
+        xp.copyto(self.slot, self.slot0)
+
+    def run(self) -> None:
+        gpu_bitonic_sort(self.hi, self.lo, self.slot, self.pay)
+
+    def check(self, cls: int) -> int:  # noqa: ARG002
+        perm = self.host[self.cur[0]][self.cur[1]]
+        want = gpu_compact((perm >= self.n_real).astype(np.uint32), perm)  # the NumPy twin of the engine's call
+        return int(np.count_nonzero(to_host(self.pay) != want))
+
+    def params(self) -> dict[str, Any]:
+        return {**super().params(), "slots": self.slots, "n_real": self.n_real,
+                "kernel": "the launch plan of gpu_bitonic_sort, as gpu_compact runs it",
+                "pool_per_class": len(self.pool_pay[0]), "staging": "device pools, device-to-device copy"}
+
+
+class CompactKernelNull(CompactKernel):
+    name, metric = "compact_kernel_null", "COMPACT-KERNEL-NULL"
+    title = "ISSUE-25 kernel-only, control: the sort network of gpu_compact, the same permutation in both classes"
+    class1 = "the same fixed permutation, from a second device pool of the same size"
+    same_contents = True
+
+
 DIAG_CLASSES = (AeadConvNull, AeadConvSwap, AeadConvSym, AeadConvKernel, AeadTagNull, AeadTagSwap, AeadTagSym,
                 AeadTagKernel, WriteEpochNull, WriteEpochAge, WriteEpochFresh,
-                WriteEpochNullSt, WriteEpochAgeSt, WriteEpochFreshSt)
+                WriteEpochNullSt, WriteEpochAgeSt, WriteEpochFreshSt,
+                TagsKernelNull, TagsKernel, CompactKernelNull, CompactKernel, ControlLeakQ)
 
 
 def build_target(name: str, backend: Backend, seed: int, quick: bool) -> Target:
@@ -667,6 +853,8 @@ def build_target(name: str, backend: Backend, seed: int, quick: bool) -> Target:
             continue
         if issubclass(cls, WriteEpoch):
             return cls(backend, WRITE_SLOTS if backend.is_gpu else LOCAL_WRITE_SLOTS, seed)
+        if issubclass(cls, (TagsKernel, CompactKernel)):
+            return cls(backend, WRITE_SLOTS if backend.is_gpu else LOCAL_WRITE_SLOTS, seed, pool=pool)
         if issubclass(cls, (AeadConv, _DevicePools)):
             return cls(backend, n, seed, pool=pool)
         return cls(backend, n, seed)
@@ -686,6 +874,9 @@ ISSUE17 = ("aead_conv", "aead_conv_null", "aead_conv_swap", "aead_conv_sym", "ae
 ISSUE17_REP = tuple(n for n in ISSUE17 if n not in ("write_epoch_null", "write_epoch_age"))
 # ISSUE-25: the control first, so a FAIL of the other two is read against it in the same run.
 ISSUE25 = ("write_epoch_null_st", "write_epoch_age_st", "write_epoch_fresh_st")
+# ISSUE-25, kernel-only window: each control before its target. control_leak_q is run with the self-test.
+ISSUE25K = ("tags_kernel_null", "tags_kernel", "compact_kernel_null", "compact_kernel")
+DIAG_CONTROLS = ("control_leak_q",)
 KNOWN = (*ALL, *DIAG)
 METRIC_OF.update({c.name: c.metric for c in DIAG_CLASSES})
 SERIES_SUFFIX = {"ms": "", "device_ms": "", "call_ms": "-CALL", "core_ms": "-CORE",
@@ -703,10 +894,54 @@ def choose_r(single_ms: list[float], in_place: bool) -> tuple[int, str]:
     return want, ""
 
 
+def fit_blocker(t: Any, one: Any, r: int) -> list[dict[str, int]]:
+    """Double the blocker of a kernel-only target until QUEUE_PROBE measurements, the classes in turn, were
+    all queued behind it, then once more as a margin. The size depends on public timing only."""
+    steps = []
+    while True:
+        miss = 0
+        for i in range(QUEUE_PROBE):
+            one(i % 2, r)
+            miss += not t.queued
+        steps.append({"blocks": t.blocker_blocks, "r": r, "unqueued": miss})
+        if t.blocker_blocks >= BLOCKER_MAX:
+            break
+        t.blocker_blocks *= 2
+        if miss == 0:
+            break
+    return steps
+
+
+def per_sample_report(clocks: np.ndarray, queued: np.ndarray, classes: np.ndarray) -> tuple[dict[str, Any], np.ndarray]:
+    """The flags of a kernel-only target and the mask of the measurements that carry none. A measurement
+    is off the clock when its SM clock differs from the modal one by more than timing.CLOCK_LIMIT."""
+    have = clocks > 0
+    out: dict[str, Any] = {"measurements": int(clocks.size), "unqueued": int(np.count_nonzero(~queued)),
+                           "clock_limit": timing.CLOCK_LIMIT}
+    off = np.zeros(clocks.size, dtype=np.bool_)
+    if have.any():
+        values, counts = np.unique(clocks[have], return_counts=True)
+        steady = int(values[np.argmax(counts)])
+        off = have & (np.abs(clocks.astype(np.float64) - steady) > timing.CLOCK_LIMIT * steady)
+        out |= {"steady_clock_mhz": steady, "off_clock": int(np.count_nonzero(off)),
+                "not_at_modal_clock": int(np.count_nonzero(have & (clocks != steady))),
+                "clock_missing": int(np.count_nonzero(~have)),
+                "clock_histogram_mhz": {str(int(v)): int(c) for v, c in zip(values, counts, strict=True)},
+                "mean_clock_mhz_class0": float(clocks[have & (classes == 0)].mean()),
+                "mean_clock_mhz_class1": float(clocks[have & (classes == 1)].mean())}
+    else:
+        out |= {"steady_clock_mhz": NM, "off_clock": NM, "reason": "NVML reported no SM clock"}
+    clean = queued & ~off
+    out["flagged"] = int(np.count_nonzero(~clean))
+    return out, clean
+
+
 def run_target(t: Target, backend: Backend, n_per_class: int, seed: int, run_dir: Path,
-               sample: Any = None, log: Any = print) -> dict[str, Any]:
+               sample: Any = None, log: Any = print, sm_clock: Any = None) -> dict[str, Any]:
     """Warm up, calibrate, measure 2 * n_per_class inputs in a random interleaving, test online, save."""
     sample = sample or telemetry.sample
+    sm_clock = sm_clock or telemetry.sm_clock
+    per_sample = bool(getattr(t, "per_sample", False))
     cp = backend.xp
     stream = cp.cuda.get_current_stream()
     start, end = cp.cuda.Event(), cp.cuda.Event()
@@ -720,12 +955,19 @@ def run_target(t: Target, backend: Backend, n_per_class: int, seed: int, run_dir
     def spin() -> None:
         one(int(order_rng.integers(0, 2)), 1)
 
-    warm = timing.warm_until_stable(spin, min_calls=10, snapshot=sample, sync=stream.synchronize,
-                                    min_seconds=WARM_MIN_S, max_seconds=WARM_MAX_S)
+    if per_sample:  # the clock is given time to settle: it is part of what these targets report
+        warm = timing.warm_until_stable(spin, min_calls=10, snapshot=sample, sync=stream.synchronize,
+                                        min_seconds=WARM_Q_MIN_S, max_seconds=WARM_Q_MAX_S, flat_polls=WARM_Q_FLAT)
+    else:
+        warm = timing.warm_until_stable(spin, min_calls=10, snapshot=sample, sync=stream.synchronize,
+                                        min_seconds=WARM_MIN_S, max_seconds=WARM_MAX_S)
+    blocker_steps = fit_blocker(t, one, 1) if per_sample else []
     probe = [one(i % 2, 1)[0] for i in range(R_PROBE)]
     r, r_note = choose_r(probe, t.in_place)
     if r < t.min_r:
         r, r_note = t.min_r, f"{t.min_r} launches per measurement by design (public), not from the 50 us rule"
+    if per_sample and r > 1:
+        blocker_steps += fit_blocker(t, one, r)
 
     bad = 0
     for cls in (0, 1):  # the output of each class is checked once, outside the measurements
@@ -741,12 +983,17 @@ def run_target(t: Target, backend: Backend, n_per_class: int, seed: int, run_dir
 
     classes = dudect.balanced_classes(n_per_class, order_rng)
     times = np.empty((classes.size, len(t.series)), dtype=np.float64)
+    clocks = np.zeros(classes.size, dtype=np.int32)  # kernel-only targets: the SM clock after each measurement
+    queued = np.ones(classes.size, dtype=np.bool_)
     clock_before = sample()
     t0 = time.monotonic()
     for lo in range(0, classes.size, CHUNK):
         hi = min(lo + CHUNK, classes.size)
         for i in range(lo, hi):
             times[i] = one(int(classes[i]), r)
+            if per_sample:  # outside the timed window, and the same for both classes
+                queued[i] = t.queued  # type: ignore[attr-defined]
+                clocks[i] = sm_clock() or 0
         for s, test in enumerate(tests):
             test.update(times[lo:hi, s], classes[lo:hi])
             test.checkpoint()
@@ -756,8 +1003,10 @@ def run_target(t: Target, backend: Backend, n_per_class: int, seed: int, run_dir
     seconds = time.monotonic() - t0
     clock = timing.clock_check(clock_before, sample())
 
+    extra = {"clocks_mhz": clocks, "queued": queued} if per_sample else {}
     np.savez_compressed(run_dir / f"dudect_{t.name}_raw.npz", times_ms=times, classes=classes,
-                        calibration_ms=cal, calibration_classes=cal_classes, series=np.array(t.series), r=r)
+                        calibration_ms=cal, calibration_classes=cal_classes, series=np.array(t.series), r=r, **extra)
+    flags, clean = per_sample_report(clocks, queued, classes) if per_sample else ({}, queued)
     out: dict[str, Any] = {
         "target": t.name, "title": t.title, "class0": t.class0, "class1": t.class1, "params": t.params(),
         "n_per_class": n_per_class, "calibration_per_class": CAL_PER_CLASS, "chunk": CHUNK, "r": r, "r_note": r_note,
@@ -766,11 +1015,16 @@ def run_target(t: Target, backend: Backend, n_per_class: int, seed: int, run_dir
         "clock": clock, "timer": "cupy.cuda.Event", "series": {},
         "raw": f"dudect_{t.name}_raw.npz", "plots": [],
     }
+    if per_sample:
+        out["per_sample"] = flags | {"blocker_steps": blocker_steps}
     for s, (name, test) in enumerate(zip(t.series, tests, strict=True)):
         res = test.result()
         res["summary_class0"] = timing.summarise(times[classes == 0, s])
         res["summary_class1"] = timing.summarise(times[classes == 1, s])
         res["curve"] = test.curve
+        if per_sample:  # the same test without the flagged measurements; the verdict stays the one on all
+            kept = dudect.analyse(times[clean, s], classes[clean], cal[:, s], batch=CHUNK)
+            res["unflagged"] = {k: kept[k] for k in ("max_abs_t", "verdict", "max_at", "n_class0", "n_class1")}
         out["series"][name] = res
         png = f"dudect_{t.name}" + ("" if s == 0 else f"_{name}") + ".png"
         try:
@@ -817,6 +1071,18 @@ def metrics_of(results: list[dict[str, Any]], quick: bool, reason: str | None) -
                     f"{s['tests'] - 1} crops; series {name}; r {res['r']}")
             value = round(s["max_abs_t"], 4) if math.isfinite(s["max_abs_t"]) else "inf"
             out.append(metric(f"T-DUDECT-MAXT-{base}{sfx}", value, "-", "max |t|", note))
+            if "unflagged" in s:
+                u = s["unflagged"]
+                out.append(metric(f"T-DUDECT-MAXT-{base}{sfx}-UNFLAGGED", round(u["max_abs_t"], 4), "-", "max |t|",
+                                  f"{u['verdict']} at threshold {s['threshold']}{tag}; the measurements without a "
+                                  f"flag (unqueued or off the clock): {u['n_class0']} and {u['n_class1']} per class"))
+        if "per_sample" in res:
+            f = res["per_sample"]
+            out.append(metric(f"T-DUDECT-FLAGGED-{base}", f["flagged"], "measurements", "count",
+                              f"of {f['measurements']}{tag}: unqueued {f['unqueued']}, off the clock {f['off_clock']} "
+                              f"(more than {f['clock_limit']:.0%} from the modal SM clock)"))
+            out.append(metric(f"T-DUDECT-CLOCK-{base}", f["steady_clock_mhz"], "MHz", "mode",
+                              f"SM clock read after every measurement{tag}"))
         out.append(metric(f"T-DUDECT-N-{base}", res["n_per_class"], "measurements", "per class",
                           f"exactly this many of each class, randomly interleaved{tag}"))
     return out
@@ -827,11 +1093,11 @@ def parse_targets(text: str) -> list[str]:
     for part in text.split(","):
         part = part.strip()
         group = {"all": ALL, "controls": CONTROLS, "targets": TARGETS, "issue17": ISSUE17,
-                 "issue17_rep": ISSUE17_REP, "issue25": ISSUE25}.get(part, (part,))
+                 "issue17_rep": ISSUE17_REP, "issue25": ISSUE25, "issue25k": ISSUE25K}.get(part, (part,))
         for name in group:
             if name not in KNOWN:
                 raise SystemExit(f"unknown target {name!r}; choose from: all, controls, targets, issue17, "
-                                 f"issue17_rep, issue25, {', '.join(KNOWN)}")
+                                 f"issue17_rep, issue25, issue25k, {', '.join(KNOWN)}")
             if name not in names:
                 names.append(name)
     return names
@@ -840,18 +1106,21 @@ def parse_targets(text: str) -> list[str]:
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n", 1)[0])
     ap.add_argument("--targets", default="all", help="comma list of: all, controls, targets, issue17, issue17_rep, "
-                    "issue25, " + ", ".join(KNOWN))
+                    "issue25, issue25k, " + ", ".join(KNOWN))
     ap.add_argument("--seed", type=int, default=8)
     ap.add_argument("--quick", action="store_true", help=f"N = {N_QUICK} per class instead of {N_FULL}")
     ap.add_argument("--n-per-class", type=int, default=0, help="override N (recorded in the manifest)")
     ap.add_argument("--name", default="dudect", help="run dir name suffix")
     ap.add_argument("--out", default="runs")
+    ap.add_argument("--lock-clock", action="store_true",
+                    help="ask nvidia-smi to pin the SM clock at its maximum for this run (needs root)")
     a = ap.parse_args(argv)
     names = parse_targets(a.targets)
     n_per_class = a.n_per_class or (N_QUICK if a.quick else N_FULL)
     command = "python bench/run_dudect.py " + " ".join(shlex.quote(x) for x in (argv if argv is not None
                                                                               else sys.argv[1:]))
     backend = get_backend()
+    lock = telemetry.lock_clock() if a.lock_clock and backend.is_gpu else {"attempted": False, "accepted": False}
     run_dir = runs.new_run("M08", a.name, step="S2", owner="Aditya", command=command, seed=a.seed, quick=a.quick,
                            root=Path.cwd(), runs_dir=a.out, backend=backend,
                            params={"targets": names, "n_per_class": n_per_class, "calibration_per_class": CAL_PER_CLASS,
@@ -868,6 +1137,7 @@ def main(argv: list[str] | None = None) -> int:
                 "executed_by": "cupy.RawModule (nvrtc)" if backend.is_gpu else "numpy twins (vcloak.gpu.sim)",
                 "t_threshold": dudect.T_THRESHOLD, "n_per_class": n_per_class, "quick": a.quick,
                 "caveat": SHARED_GPU_CAVEAT, "errors": errors, "device": backend.device_info(),
+                "clock_lock": lock,
                 "targets": [{k: v for k, v in res.items() if k != "series"}
                             | ({"series": {n: {k: v for k, v in s.items() if k not in ("curve", "t_all")}
                                            for n, s in res["series"].items()}} if "series" in res else {})
@@ -891,12 +1161,15 @@ def main(argv: list[str] | None = None) -> int:
                 backend.xp.get_default_memory_pool().free_all_blocks()
             save()  # after every target: a runner that dies keeps what was measured
     metrics = save()
+    if lock["accepted"]:
+        lock["reset"] = telemetry.unlock_clock()
+        metrics = save()
 
     bad = sum(res["mismatches"] for res in results)
     by_name = {res["target"]: res for res in results}
-    unexpected = [n for n in CONTROLS if n in by_name and backend.is_gpu
+    unexpected = [n for n in (*CONTROLS, *DIAG_CONTROLS) if n in by_name and backend.is_gpu
                   and by_name[n]["verdict"] != by_name[n]["expected_verdict"]]
-    fails = [n for n in (*TARGETS, *DIAG) if n in by_name and backend.is_gpu
+    fails = [n for n in (*TARGETS, *DIAG) if n in by_name and n not in DIAG_CONTROLS and backend.is_gpu
              and any(s["verdict"] == dudect.FAIL for s in by_name[n]["series"].values())]
     notes = []
     if errors or bad or unexpected:

@@ -1,0 +1,67 @@
+20261012-135427_M08_dudect_i25_s8: 6534 telemetry rows; throttle_reasons {'0': 6534}
+  SM clock histogram (MHz: rows) {585: 5965, 630: 1, 750: 1, 975: 2, 990: 3, 1005: 13, 1020: 43, 1035: 48, 1050: 48, 1065: 47, 1080: 78, 1095: 192, 1110: 86, 1125: 7}
+  control_null: clock before 1080 after 1095 MHz, relative change 0.0139, status LOW, warm-up clocks [1050, 1020, 1020]
+  write_epoch_null_st: clock before 585 after 585 MHz, relative change 0.0000, status LOW, warm-up clocks [675, 630, 585]
+  write_epoch_age_st: clock before 585 after 585 MHz, relative change 0.0000, status LOW, warm-up clocks [585, 585, 585]
+  write_epoch_fresh_st: clock before 585 after 585 MHz, relative change 0.0000, status LOW, warm-up clocks [585, 585, 585]
+20261012-145303_M08_dudect_i25_s10: 6614 telemetry rows; throttle_reasons {'0': 6614}
+  SM clock histogram (MHz: rows) {585: 6053, 705: 1, 915: 3, 1020: 1, 1035: 1, 1050: 25, 1065: 44, 1080: 66, 1095: 131, 1110: 206, 1125: 80, 1140: 3}
+  control_null: clock before 1110 after 1110 MHz, relative change 0.0000, status LOW, warm-up clocks [915, 915, 915]
+  write_epoch_null_st: clock before 585 after 585 MHz, relative change 0.0000, status LOW, warm-up clocks [705, 645, 585]
+  write_epoch_age_st: clock before 585 after 585 MHz, relative change 0.0000, status LOW, warm-up clocks [585, 585, 585]
+  write_epoch_fresh_st: clock before 585 after 585 MHz, relative change 0.0000, status LOW, warm-up clocks [585, 585, 585]
+20261012-155223_M08_dudect_i25_s11: 6526 telemetry rows; throttle_reasons {'0': 6526}
+  SM clock histogram (MHz: rows) {585: 5957, 660: 1, 735: 1, 750: 1, 795: 1, 870: 2, 990: 3, 1005: 12, 1020: 18, 1035: 23, 1050: 40, 1065: 51, 1080: 102, 1095: 136, 1110: 135, 1125: 41, 1140: 2}
+  control_null: clock before 1065 after 1080 MHz, relative change 0.0141, status LOW, warm-up clocks [720, 735, 870, 870, 870]
+  write_epoch_null_st: clock before 585 after 585 MHz, relative change 0.0000, status LOW, warm-up clocks [660, 600, 585]
+  write_epoch_age_st: clock before 585 after 585 MHz, relative change 0.0000, status LOW, warm-up clocks [585, 585, 585]
+  write_epoch_fresh_st: clock before 585 after 585 MHz, relative change 0.0000, status LOW, warm-up clocks [585, 585, 585]
+20261012-165055_M08_dudect_i25_s12: 6515 telemetry rows; throttle_reasons {'0': 6515}
+  SM clock histogram (MHz: rows) {585: 5951, 780: 1, 885: 2, 960: 1, 990: 1, 1005: 1, 1020: 1, 1035: 13, 1050: 40, 1065: 44, 1080: 82, 1095: 151, 1110: 202, 1125: 25}
+  control_null: clock before 1065 after 1050 MHz, relative change -0.0141, status LOW, warm-up clocks [750, 885, 885, 885]
+  write_epoch_null_st: clock before 585 after 585 MHz, relative change 0.0000, status LOW, warm-up clocks [1050, 1050, 585]
+  write_epoch_age_st: clock before 585 after 585 MHz, relative change 0.0000, status LOW, warm-up clocks [585, 585, 585, 585]
+  write_epoch_fresh_st: clock before 585 after 585 MHz, relative change 0.0000, status LOW, warm-up clocks [585, 585, 585]
+
+series by kind and verdict (the pass/fail split against the clock split):
+  control      PASS  4
+  write_epoch  FAIL  56
+  write_epoch  PASS  64
+series by clock of the target and verdict:
+  control at 1065-1050 MHz           PASS  1
+  control at 1065-1080 MHz           PASS  1
+  control at 1080-1095 MHz           PASS  1
+  control at 1110-1110 MHz           PASS  1
+  write_epoch at 585-585 MHz         FAIL  56
+  write_epoch at 585-585 MHz         PASS  64
+write_epoch series, seeds with PASS / FAIL (all four seeds at 585 MHz):
+  write_epoch_age_st/bucket_ms       PASS 4  FAIL 0
+  write_epoch_age_st/call_ms         PASS 0  FAIL 4
+  write_epoch_age_st/compact_ms      PASS 0  FAIL 4
+  write_epoch_age_st/core_ms         PASS 4  FAIL 0
+  write_epoch_age_st/d2h_ms          PASS 4  FAIL 0
+  write_epoch_age_st/device_ms       PASS 4  FAIL 0
+  write_epoch_age_st/h2d_ms          PASS 1  FAIL 3
+  write_epoch_age_st/seal_ms         PASS 2  FAIL 2
+  write_epoch_age_st/sort_ms         PASS 2  FAIL 2
+  write_epoch_age_st/tags_ms         PASS 0  FAIL 4
+  write_epoch_fresh_st/bucket_ms     PASS 4  FAIL 0
+  write_epoch_fresh_st/call_ms       PASS 3  FAIL 1
+  write_epoch_fresh_st/compact_ms    PASS 0  FAIL 4
+  write_epoch_fresh_st/core_ms       PASS 3  FAIL 1
+  write_epoch_fresh_st/d2h_ms        PASS 0  FAIL 4
+  write_epoch_fresh_st/device_ms     PASS 3  FAIL 1
+  write_epoch_fresh_st/h2d_ms        PASS 0  FAIL 4
+  write_epoch_fresh_st/seal_ms       PASS 4  FAIL 0
+  write_epoch_fresh_st/sort_ms       PASS 2  FAIL 2
+  write_epoch_fresh_st/tags_ms       PASS 3  FAIL 1
+  write_epoch_null_st/bucket_ms      PASS 2  FAIL 2
+  write_epoch_null_st/call_ms        PASS 2  FAIL 2
+  write_epoch_null_st/compact_ms     PASS 4  FAIL 0
+  write_epoch_null_st/core_ms        PASS 4  FAIL 0
+  write_epoch_null_st/d2h_ms         PASS 0  FAIL 4
+  write_epoch_null_st/device_ms      PASS 2  FAIL 2
+  write_epoch_null_st/h2d_ms         PASS 0  FAIL 4
+  write_epoch_null_st/seal_ms        PASS 1  FAIL 3
+  write_epoch_null_st/sort_ms        PASS 2  FAIL 2
+  write_epoch_null_st/tags_ms        PASS 4  FAIL 0

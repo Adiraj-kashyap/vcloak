@@ -1,0 +1,60 @@
+{
+  "title": "ISSUE-25, the one remaining job: tags and compact timed in a kernel-only window (start event, launches and end event enqueued behind a blocker, so no host code runs between the events), classes that differ on the device (fixed vs random key, fixed vs random permutation) with a same-contents control of each, the SM clock read after every measurement, and a request to pin the clock at its maximum; seeds 8 and 10; the planted leak through the same window and a full-N control_null in each run",
+  "step": "S2",
+  "seed": 8,
+  "commands": [
+    {
+      "name": "nvidia_smi",
+      "cmd": "nvidia-smi",
+      "timeout": 120
+    },
+    {
+      "name": "whoami",
+      "cmd": "id",
+      "timeout": 60,
+      "stop_on_fail": false
+    },
+    {
+      "name": "check_oblivious",
+      "cmd": "python scripts/check_oblivious.py kernels/",
+      "timeout": 300,
+      "stop_on_fail": false
+    },
+    {
+      "name": "pytest_issue25k",
+      "cmd": "python -m pytest -p no:cacheprovider -rs -q tests/unit/test_run_dudect.py tests/gpu/test_engine.py",
+      "timeout": 1800,
+      "stop_on_fail": false
+    },
+    {
+      "name": "dudect_selftest",
+      "cmd": "python bench/run_dudect.py --targets control_leak,control_leak_q,control_null --seed 8 --quick --lock-clock --name i25k_selftest --out runs",
+      "timeout": 1800,
+      "stop_on_fail": false
+    },
+    {
+      "name": "dudect_issue25k_s8",
+      "cmd": "python bench/run_dudect.py --targets control_null,issue25k --seed 8 {quick} --lock-clock --name dudect_i25k_s8 --out runs",
+      "timeout": 10800,
+      "stop_on_fail": false
+    },
+    {
+      "name": "dudect_issue25k_s10",
+      "cmd": "python bench/run_dudect.py --targets control_null,issue25k --seed 10 {quick} --lock-clock --name dudect_i25k_s10 --out runs",
+      "timeout": 10800,
+      "stop_on_fail": false
+    },
+    {
+      "name": "clock_reset",
+      "cmd": "nvidia-smi -rgc",
+      "timeout": 120,
+      "stop_on_fail": false
+    },
+    {
+      "name": "nvidia_smi_after",
+      "cmd": "nvidia-smi",
+      "timeout": 120,
+      "stop_on_fail": false
+    }
+  ]
+}

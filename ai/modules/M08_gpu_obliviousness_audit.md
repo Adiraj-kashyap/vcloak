@@ -120,3 +120,13 @@ paper's setup section and the panel will ask to see. Follow `ai/EVIDENCE.md`.
     for a dependence on the contents (c) is not met, because the same stage also fails with equal contents. That is
     not an exclusion; the issue stays open with a kernel-window target for `tags` and `compact` as the next step.
   - Every verdict was recomputed from the raw data by `runs/20261013-000602_M08_i25_ingest/gates_issue25.py`.
+- 2026-10-13 (session 32, fix ISSUE-25, prep of the last job). `bench/run_dudect.py` gains the group `issue25k`:
+  `tags_kernel`, `compact_kernel`, a same-contents control of each and `control_leak_q`. They differ from S1 in two
+  points. The timed window is enqueued behind a blocker launch of public size, so the interval between the two
+  events holds device execution only; and the SM clock is read after every measurement, with flags for a
+  measurement that was not queued or is more than 15% off the modal clock. `--lock-clock` asks `nvidia-smi -lgc`
+  (GPU_GUIDE §6) and records the answer. The classes are a fixed vs a random key and a fixed vs a random
+  permutation: in `write_epoch` the stages tags, sort and compact never receive the submissions, so the per-stage
+  targets of session 30 could not test these kernels against their data (`tests/unit/test_run_dudect.py`,
+  `test_issue25_tags_and_compact_get_the_same_device_input_in_both_classes`). Job spec `bench/jobs/M08_issue25k.json`.
+  ADR-023 scopes P3 to the kernels. This is the last job for ISSUE-25: an unusable result is recorded as NOT_MEASURED.

@@ -32,6 +32,8 @@ class Dev(np.ndarray):
 
 
 class _Event:
+    done = False  # as on a device that is still busy with earlier work; tests set it to True
+
     def __init__(self) -> None:
         self.t = 0.0
 
