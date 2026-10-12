@@ -733,7 +733,7 @@
   run names in the job spec are short for that reason
 - Not verified: the new targets on a CUDA device; whether a stage is long enough to be timed alone (medians come
   with the results); the runtime of the job; ISSUE-17 points 1 and 2 (untouched, still block M14)
-- Commit: 3838502 (prep, the commit of the job) and the closing commit of this entry
+- Commit: 3838502 (prep, the commit of the job), 4102240 (records)
 - Next: ingest 20261012-191630_M08_issue25, then M14 S1 ; human action: ISSUE-34 (run the job on Kaggle, put the
   results zip into gpujobs/inbox/). Do not change the repo before that
 
