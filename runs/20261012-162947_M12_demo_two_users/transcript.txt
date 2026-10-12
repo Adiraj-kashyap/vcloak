@@ -1,0 +1,67 @@
+V-cloak two-user demo: 30 messages, store=pg, WINDOW_S=2, EPOCH_MS=200, engine backend=numpy
+service: in-process uvicorn on loopback, sessions on, public development key (--dev)
+
+--- what alice reads back (30 messages, windows counted from the first) ---
+  w+0  alice #0  [00] try again
+  w+0    bob #0  [01] it decrypts
+  w+0  alice #1  [02] yes, go on
+  w+0    bob #1  [03] one more check
+  w+0  alice #2  [04] done on my side
+  w+0    bob #2  [05] try again
+  w+1  alice #3  [06] agreed
+  w+1    bob #3  [07] done on my side
+  w+1  alice #4  [08] that row moved
+  w+1    bob #4  [09] the epoch closed
+  w+1  alice #5  [10] which window was that?
+  w+1    bob #5  [11] agreed
+  w+1  alice #6  [12] which window was that?
+  w+1    bob #6  [13] send me the figure
+  w+1  alice #7  [14] one more check
+  w+1    bob #7  [15] which window was that?
+  w+2  alice #8  [16] agreed
+  w+2    bob #8  [17] send me the figure
+  w+2  alice #9  [18] the build is green
+  w+2    bob #9  [19] see the log
+  w+2  alice #10 [20] done on my side
+  w+2    bob #10 [21] send me the figure
+  w+2  alice #11 [22] that row moved
+  w+2    bob #11 [23] it decrypts
+  w+2  alice #12 [24] see the log
+  w+2    bob #12 [25] the epoch closed
+  w+3  alice #13 [26] done on my side
+  w+3    bob #13 [27] nothing leaked
+  w+3  alice #14 [28] one more check
+  w+3    bob #14 [29] yes, go on
+
+--- what bob reads back (30 messages, windows counted from the first) ---
+  w+0  alice #0  [00] try again
+  w+0    bob #0  [01] it decrypts
+  w+0  alice #1  [02] yes, go on
+  w+0    bob #1  [03] one more check
+  w+0  alice #2  [04] done on my side
+  w+0    bob #2  [05] try again
+  w+1  alice #3  [06] agreed
+  w+1    bob #3  [07] done on my side
+  w+1  alice #4  [08] that row moved
+  w+1    bob #4  [09] the epoch closed
+  w+1  alice #5  [10] which window was that?
+  w+1    bob #5  [11] agreed
+  w+1  alice #6  [12] which window was that?
+  w+1    bob #6  [13] send me the figure
+  w+1  alice #7  [14] one more check
+  w+1    bob #7  [15] which window was that?
+  w+2  alice #8  [16] agreed
+  w+2    bob #8  [17] send me the figure
+  w+2  alice #9  [18] the build is green
+  w+2    bob #9  [19] see the log
+  w+2  alice #10 [20] done on my side
+  w+2    bob #10 [21] send me the figure
+  w+2  alice #11 [22] that row moved
+  w+2    bob #11 [23] it decrypts
+  w+2  alice #12 [24] see the log
+  w+2    bob #12 [25] the epoch closed
+  w+3  alice #13 [26] done on my side
+  w+3    bob #13 [27] nothing leaked
+  w+3  alice #14 [28] one more check
+  w+3    bob #14 [29] yes, go on
+

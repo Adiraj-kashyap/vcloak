@@ -1,0 +1,27 @@
+{
+  "store": "pg",
+  "messages": 30,
+  "window_s": 2,
+  "epoch_ms": 200,
+  "engine_backend": "numpy",
+  "windows_used": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "repeats_dropped": 0,
+  "checks": {
+    "alice reads every message, in the order sent": true,
+    "bob reads every message, in the order sent": true,
+    "each message is attributed to its sender": true,
+    "both ends derived the same fingerprint": true,
+    "the conversation spans at least 2 windows": true,
+    "the store holds one row per message": true,
+    "every stored payload has the one fixed size": true,
+    "no stored payload contains a message text": true,
+    "every closed window was re-shuffled": true,
+    "the physical order is not the order sent": true
+  },
+  "result": "PASS"
+}

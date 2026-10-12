@@ -189,3 +189,28 @@ so a reading pattern that follows the ticks is uniform, and one that does not is
 read on a fixed schedule, not on a hunch). The tick is sent after the write, so under load it is late by the write
 time. With `--sessions` on a public address the passwords travel in plain HTTP unless TLS is put in front. The
 socket state is in memory like the rest of the session state (ISSUE-26).
+
+## ADR-019 — Client: static prekeys fetched without a session, a token derived from K_content, and the order checked inside the ciphertext — ACCEPTED — 2026-10-12
+Context: M12 asks for prekey upload/fetch endpoints, X25519 + HKDF to K_content, a conv_token derived client-side,
+and a sequence number inside the plaintext header with a client-side continuity check. It does not say who may
+fetch a prekey, how the token is derived, what the header holds, or what a retry does to the numbering (ISSUE-23).
+Decision: (1) `PUT /v1/prekeys` (session) sets the one prekey of the account; `GET /v1/prekeys/{username}` takes no
+session, because an authenticated fetch would give the server the relation "account A asked for B's key", which
+ADR-017 (6) says it must not hold. An unknown name and an account without a prekey get the same 404. The table is in
+memory with the accounts (ISSUE-26). (2) K_content is the existing derivation (ADR-003) over a transcript of both
+prekeys and both account names. (3) `conv_token = base64url(HKDF-SHA256(K_content, "vcloak-conv-token-v1", 24))`:
+both ends compute it, it is one-way, and it is bound into the associated data of every message. (4) The plaintext
+header is `version | sender | session | number`: `sender` is the rank of the party's prekey, `session` 8 random
+bytes per client start, `number` counts from 0 within the session. A reader accepts 0, 1, 2, ... per
+(sender, session); an already accepted number is a repeat and is dropped, a higher one raises. (5) A message is
+sent with `ack: "stored"`; after an unknown outcome the same ciphertext is sent again and blocks the next number
+until it is confirmed, so a retry can only produce a repeat, never a gap or two texts under one number. (6) The
+client reads the windows newest first and handles them oldest first, so a message is never seen before one that
+precedes it. (7) Both ends show a fingerprint of the transcript.
+Consequences: no forward secrecy and no ratchet: a prekey that leaks opens every conversation agreed with it, past
+and future (ISSUE-28). The server distributes the prekeys and can replace one; only the fingerprint comparison, which
+is manual, detects that. The open fetch lets anyone list which names have a prekey (registration already tells which
+names exist) and is not rate-limited. A reader cannot detect the loss of a sender's last messages or of a whole
+session; the sender detects the first for its own messages. The session id restarts the numbering when a client
+restarts, so a restarted client needs no stored counter. The order between the two senders is not verifiable.
+A client reads on a fixed schedule, not when it expects a message (ADR-018).

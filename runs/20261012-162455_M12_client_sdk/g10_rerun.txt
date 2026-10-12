@@ -1,0 +1,60 @@
+V-cloak two-user demo: 12 messages, store=pg, WINDOW_S=1, EPOCH_MS=200, engine backend=numpy
+service: in-process uvicorn on loopback, sessions on, public development key (--dev)
+
+--- what alice reads back (12 messages, windows counted from the first) ---
+  w+0  alice #0  [00] try again
+  w+0    bob #0  [01] it decrypts
+  w+0  alice #1  [02] yes, go on
+  w+0    bob #1  [03] one more check
+  w+1  alice #2  [04] done on my side
+  w+1    bob #2  [05] try again
+  w+1  alice #3  [06] agreed
+  w+1    bob #3  [07] done on my side
+  w+1  alice #4  [08] that row moved
+  w+2    bob #4  [09] the epoch closed
+  w+2  alice #5  [10] which window was that?
+  w+2    bob #5  [11] agreed
+
+--- what bob reads back (12 messages, windows counted from the first) ---
+  w+0  alice #0  [00] try again
+  w+0    bob #0  [01] it decrypts
+  w+0  alice #1  [02] yes, go on
+  w+0    bob #1  [03] one more check
+  w+1  alice #2  [04] done on my side
+  w+1    bob #2  [05] try again
+  w+1  alice #3  [06] agreed
+  w+1    bob #3  [07] done on my side
+  w+1  alice #4  [08] that row moved
+  w+2    bob #4  [09] the epoch closed
+  w+2  alice #5  [10] which window was that?
+  w+2    bob #5  [11] agreed
+
+
+Stored rows in physical order. The store holds row_id, bucket, win, seq_enc and payload only;
+`sender`, `#` and `message` are decrypted here by Alice's client and are unknown to the server.
+
+pos   win  bucket  row_id    payload  sha256        sender  #  message
+  0  w+0       23  fb3cb979     4124  b31ce994ebcb   alice  0  [00] try again
+  1  w+0       23  d48e8dbc     4124  714a2f8f5628     bob  0  [01] it decrypts
+  2  w+0       23  c5bb1288     4124  cbb931698889     bob  1  [03] one more check
+  3  w+0       23  9fadcd71     4124  7934df2faa84   alice  1  [02] yes, go on
+  4  w+1       23  6b27a21a     4124  2de7bf439cb6     bob  3  [07] done on my side
+  5  w+1       23  f5f47098     4124  dfc49169adc5   alice  4  [08] that row moved
+  6  w+1       23  f1c05fdf     4124  bd02b71a3a51   alice  3  [06] agreed
+  7  w+1       23  c421cc4e     4124  0b86f0504e7f   alice  2  [04] done on my side
+  8  w+1       23  99915935     4124  16f92934cf1f     bob  2  [05] try again
+  9  w+2       23  937c2afc     4124  23241e6c64ee     bob  5  [11] agreed
+ 10  w+2       23  b03cfeb9     4124  c447116492a3   alice  5  [10] which window was that?
+ 11  w+2       23  34515092     4124  5a184e01cff7     bob  4  [09] the epoch closed
+
+PASS alice reads every message, in the order sent
+PASS bob reads every message, in the order sent
+PASS each message is attributed to its sender
+PASS both ends derived the same fingerprint
+PASS the conversation spans at least 2 windows
+PASS the store holds one row per message
+PASS every stored payload has the one fixed size
+PASS no stored payload contains a message text
+PASS every closed window was re-shuffled
+PASS the physical order is not the order sent
+DEMO PASS store=pg messages=12 windows=3 -> C:\Users\HP\AppData\Local\Temp\vc_m12\20261012-163011_M12_demo_two_users_quick

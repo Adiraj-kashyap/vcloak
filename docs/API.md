@@ -51,7 +51,7 @@ epoch of messages, more while epochs overflow). A client that needs to know send
 
 | Name | Form |
 |---|---|
-| `conv_token` | The client's opaque handle for one conversation: 16 to 128 characters of `A-Z a-z 0-9 _ -`. Both ends of a conversation derive the same token (M12). The server hashes it to the 64-bit conversation id of the engine (ADR-015). A session does not bind it: the token is a capability, and the server keeps no user-to-conversation relation (ADR-017). |
+| `conv_token` | The client's opaque handle for one conversation: 16 to 128 characters of `A-Z a-z 0-9 _ -`. Both ends of a conversation derive the same token from their content key (*The client*, below). The server hashes it to the 64-bit conversation id of the engine (ADR-015). A session does not bind it: the token is a capability, and the server keeps no user-to-conversation relation (ADR-017). |
 | `payload_b64` | Standard base64 of one client ciphertext. It must decode to exactly `12 + BLOCK + 16` bytes (nonce, padded block, tag): every stored message has the same size. |
 | `win` | A visible round: `floor(unix_seconds / WINDOW_S)` in window mode. An integer from 0 to 2^31 - 2. |
 
@@ -167,6 +167,14 @@ the answer (as for login) carries the next one. 401 `{"error": "invalid_grant", 
 No body; `Authorization` and `DPoP` as for any authenticated request. Answers 204. The access tokens and the
 refresh tokens of that login stop working at once; other logins of the account are not touched.
 
+### `PUT /v1/prekeys` and `GET /v1/prekeys/{username}` (M12, ADR-019)
+`PUT` with `{"prekey_b64": "..."}` (a public X25519 key: 32 bytes, standard base64), `Authorization` and `DPoP` as
+for any authenticated request: sets the prekey of the account of the session. The newest replaces the one before.
+Answers 204. `GET` takes **no session**: it answers 200 `{"username": "...", "prekey_b64": "..."}`, or 404
+`{"error": "no_prekey"}` for an unknown name and for an account without a prekey alike. The fetch is open on
+purpose: with a session the server would learn which account asked for whose key. Prekeys are in memory with the
+accounts. The server could hand out a key of its own: the two clients compare a fingerprint (below).
+
 ### `POST /v1/auth/ws-ticket`
 No body; `Authorization` and `DPoP` as for any authenticated request. Answers 200
 `{"ticket": "...", "expires_in": 30}` with `Cache-Control: no-store`. A ticket opens one socket, within 30 s, for
@@ -204,6 +212,26 @@ when the socket opens.
 | 1001 | `shutdown` | the service stops |
 
 A socket lives as long as its login (refreshing keeps it), not as long as one access token.
+
+## The client (M12)
+
+`vcloak.client.sdk.VcloakClient` is the reference client; `vcloak-chat --server URL --user NAME --peer NAME` is a
+terminal chat on top of it, and `python scripts/demo_two_users.py` runs two of them against a live service.
+
+| Step | What the client does |
+|---|---|
+| Keys | One ES256 key per device for the proofs and one X25519 prekey, both in memory. `vcloak-chat --keyfile` keeps them in a file sealed with Argon2id + AES-256-GCM under a local passphrase. |
+| Agreement | `K_content = HKDF-SHA256(X25519(own prekey, peer prekey), info = "vcloak-content-v1" + transcript)`; the transcript is both prekeys in sorted order and both account names. |
+| Token | `conv_token = base64url(HKDF-SHA256(K_content, info = "vcloak-conv-token-v1", 24 bytes))`: 32 characters, the same at both ends, one-way. |
+| Fingerprint | 30 digits of SHA-256 over the transcript, shown at both ends, to be compared over another channel. |
+| Message | plaintext = `version(1)=1, sender(1), session(8), number(LE64), text (UTF-8)`, padded to `BLOCK`, AES-256-GCM with the token in the associated data. At most `BLOCK - 19` bytes of text. |
+| Send | `POST /v1/messages` with `"ack": "stored"`. 503: again after `Retry-After`. 504 or a broken connection: the same ciphertext again; the number is not reused for another text until the message is confirmed. |
+| Read | The windows from the start of the conversation to the open one, newest first, handled oldest first. For each (sender, session) the numbers must come as 0, 1, 2, ...: an accepted number again is a repeat and is dropped; a higher one is a missing or reordered message (`SequenceError`); a payload that does not authenticate is `TamperError`. |
+
+A reader alone cannot see the loss of a sender's *last* messages, or of a whole session it saw nothing of; the
+sender checks that every message the store confirmed comes back (`verify_delivered`). The order between the two
+senders is the server's arrival order and is not verifiable. The agreement uses one static prekey per device:
+there is no forward secrecy and no ratchet (ISSUE-28).
 
 ## Errors
 

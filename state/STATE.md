@@ -3,13 +3,13 @@
 ```yaml
 project: v-cloak
 kit_version: 1.0
-last_session: 23
+last_session: 24
 last_session_date: 2026-10-12
-current_module: M12
+current_module: M13
 current_step: S1
 status: NOT_STARTED          # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
-next_unit: M12
-last_checkpoint: 2026-10-12 M11 DONE (S5-S7: WS tickets and /v1/ws, E5 matrix 26/26, log redaction; audit PASS); M12 S1 next
+next_unit: M13
+last_checkpoint: 2026-10-12 M12 DONE (S1-S4: SDK, vcloak-chat, prekey routes, two-user demo on PostgreSQL 10/10; audit PASS); M13 S1 next
 quick_mode_default: false
 local:                      # the laptop (no GPU) — filled by M00 S7
   os: "Windows-11-10.0.26200-SP0"
@@ -53,7 +53,7 @@ gpu_job:                    # set by the gpu-job skill
 | M09 | Storage (PostgreSQL) | Divyansh | M06 | no | DONE | S5 | 1 |
 | M10 | Service & scheduler | Divyansh | M09 | no | DONE | S5 | 2 |
 | M11 | Session security (E5) | Divyansh | M10 | no | DONE | S7 | 2 |
-| M12 | Client SDK & CLI | Abhishek | M11 | no | NOT_STARTED | S1 | 0 |
+| M12 | Client SDK & CLI | Abhishek | M11 | no | DONE | S4 | 1 |
 | M13 | Frontend: chat + server view | Abhishek | M12 | no | NOT_STARTED | S1 | 0 |
 | M14 | Security evaluation (E0–E2, anon set) | Abhishek | M08, M10 | no | NOT_STARTED | S1 | 0 |
 | M15 | End-to-end performance (E6) | Divyansh | M10, M11 | no | NOT_STARTED | S1 | 0 |
@@ -117,3 +117,8 @@ gpu_job:                    # set by the gpu-job skill
 - SEC-DPOP-VERIFY-US is a laptop-CPU time of the session layer, not a GPU or end-to-end number: M15 must say whether
   its runs had `--sessions` on and how many sockets were open (ISSUE-27).
 - The log allow-list is final and pinned by tests/security/test_log_redaction.py; a new log field is a change there.
+- Client (M12 DONE, ADR-019): `vcloak.client.sdk.VcloakClient` is the reference client and imports nothing from
+  `vcloak.service`; M13's browser client must follow docs/API.md "The client" byte for byte (header, token, AAD) and
+  show the fingerprint. `scripts/demo_two_users.py` gives `LocalServer` (the service in-process) and `run_demo`; the
+  transcript is regenerated with `python scripts/demo_two_users.py`, never edited. Never write "forward secrecy" or
+  that the order between two senders is verified (ISSUE-28).

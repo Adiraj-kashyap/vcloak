@@ -33,3 +33,18 @@ send(text), read(win) → list[str], refresh), `src/vcloak/client/cli.py` (`vclo
 3. Where is the device key kept?
 
 ## Next: M13
+
+## Amendments
+- 2026-10-12 (session 24, ADR-019). The service had no prekey endpoints: `PUT /v1/prekeys` and
+  `GET /v1/prekeys/{username}` were added to M11's code (session.py, models.py, app.py). The fetch takes no session,
+  so that the server does not learn who asks for whose key.
+- The plaintext header holds `version | sender | session | number`, not a bare sequence number: a random session id
+  lets a restarted client number from 0 again, and the retry rule of ISSUE-23 (drop repeats) needs the sender.
+- `read(win)` returns one window on its own; the reader that verifies continuity from the start of the conversation
+  is `sync()` (`read()` without a window). Extra to the deliverables: `src/vcloak/client/device.py` (the device key and
+  the sealed key file), `tests/unit/test_client_sdk.py`, `tests/security/test_prekeys.py`.
+- The demo runs the service inside its own process (uvicorn on a loopback port) so that it can dump the store of
+  either backend after the chat; `scripts/smoke_service.py` remains the check of `vcloak serve` as a separate process.
+- The key file is sealed with Argon2id + AES-256-GCM (the construction of ADR-007), and holds the prekey as well as
+  the ES256 key, so that a restarted client keeps its conversations.
+

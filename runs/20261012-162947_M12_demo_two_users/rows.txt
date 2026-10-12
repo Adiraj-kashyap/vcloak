@@ -1,0 +1,34 @@
+Stored rows in physical order. The store holds row_id, bucket, win, seq_enc and payload only;
+`sender`, `#` and `message` are decrypted here by Alice's client and are unknown to the server.
+
+pos   win  bucket  row_id    payload  sha256        sender  #  message
+  0  w+0       56  9493dd83     4124  e8c99f23319c     bob  1  [03] one more check
+  1  w+0       56  b0faa9f4     4124  fcb929d124fb     bob  0  [01] it decrypts
+  2  w+0       56  8722d4b0     4124  477740a9bc12   alice  1  [02] yes, go on
+  3  w+0       56  dfdf9fd0     4124  b84fa35b7478     bob  2  [05] try again
+  4  w+0       56  39ccaebe     4124  8af802340659   alice  2  [04] done on my side
+  5  w+0       56  6de9b449     4124  525fac6df25f   alice  0  [00] try again
+  6  w+1       56  19c25026     4124  1719537ada73     bob  3  [07] done on my side
+  7  w+1       56  8064c455     4124  5e71df1c262e     bob  4  [09] the epoch closed
+  8  w+1       56  aceee30b     4124  92fd241f6e70     bob  7  [15] which window was that?
+  9  w+1       56  4ce90047     4124  a72190e79930   alice  7  [14] one more check
+ 10  w+1       56  54104371     4124  fc1575cc8de7   alice  5  [10] which window was that?
+ 11  w+1       56  16e6190b     4124  989730e396e6   alice  3  [06] agreed
+ 12  w+1       56  020213ad     4124  1a4c621d1622   alice  4  [08] that row moved
+ 13  w+1       56  09b29b45     4124  c9cb10f2a641     bob  6  [13] send me the figure
+ 14  w+1       56  e34e55bb     4124  e66396099587     bob  5  [11] agreed
+ 15  w+1       56  f819528c     4124  27cf79596615   alice  6  [12] which window was that?
+ 16  w+2       56  643addd4     4124  c905126c31ae     bob 11  [23] it decrypts
+ 17  w+2       56  869eb019     4124  a7fa135553c6   alice  8  [16] agreed
+ 18  w+2       56  50c8a862     4124  019a43e1ab59     bob  9  [19] see the log
+ 19  w+2       56  3da420b8     4124  5550046b273d     bob  8  [17] send me the figure
+ 20  w+2       56  e126d309     4124  03f4291c71b6   alice 11  [22] that row moved
+ 21  w+2       56  edb5d15a     4124  84e12fd2b971   alice 10  [20] done on my side
+ 22  w+2       56  3faea4d8     4124  dcd46a316422     bob 10  [21] send me the figure
+ 23  w+2       56  05138897     4124  5e5d70eb29e9   alice 12  [24] see the log
+ 24  w+2       56  dbc958c6     4124  34fd0602654d   alice  9  [18] the build is green
+ 25  w+2       56  91e6b7ad     4124  a60283a02f39     bob 12  [25] the epoch closed
+ 26  w+3       56  be0c52e2     4124  f2c1ab17dfff   alice 13  [26] done on my side
+ 27  w+3       56  13d39756     4124  4e49be4fe060   alice 14  [28] one more check
+ 28  w+3       56  c41c3623     4124  dc0337108959     bob 14  [29] yes, go on
+ 29  w+3       56  9768b8a6     4124  9a2735085caa     bob 13  [27] nothing leaked

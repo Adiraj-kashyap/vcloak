@@ -553,3 +553,26 @@
   behind the session layer
 - Commit: 3b755c6
 - Next: M12 S1 ; human action: none. Keep Docker Desktop running when you type continue
+
+## Session 24 — 2026-10-12 16:36 — M12 Client SDK & CLI — owner:Abhishek
+- Steps: S1→S4 (status after: DONE; next module M13 NOT_STARTED)
+- Did: src/vcloak/client/ (new): device.py (ES256 device key, DPoP proofs, key file sealed with Argon2id + AES-GCM),
+  sdk.py (`VcloakClient`: register, login, refresh, dpop_headers, publish_prekey, start_conversation, send, read, sync,
+  ticks; `Conversation`, `SeqChecker`), cli.py (`vcloak-chat`). crypto/client.py: `derive_conv_token`. Service:
+  `PUT /v1/prekeys`, open `GET /v1/prekeys/{username}` (session.py, models.py, app.py). scripts/demo_two_users.py
+  (in-process service, two SDK clients, transcript, stored rows in physical order). docs/API.md: prekey routes and
+  "The client". Tests: tests/unit/test_client_sdk.py (42), tests/security/test_prekeys.py (13),
+  tests/integration/test_two_users.py (10).
+- Evidence: runs/20261012-162947_M12_demo_two_users (transcript.txt, rows.txt, summary.json: PostgreSQL, 30 messages, 4 windows, 10/10 checks);
+  runs/20261012-162455_M12_client_sdk (pytest_all.txt 1945 passed; pytest_m12.txt 65 passed; ruff clean; check_* PASS; two smokes PASS;
+  g10_rerun.txt); evidence/terminal/M12_*
+- Metrics added: none (nothing measured: correctness only, numpy engine)
+- Decisions: ADR-019 (open prekey fetch, token from K_content, header with sender/session/number, retry rule)
+- Issues: opened ISSUE-28 (static prekeys, limits of the order check; medium); ISSUE-23 point 1 done (stays open for M15)
+- Deviations from spec: header is version/sender/session/number; `sync()` is the verifying reader, `read(win)` one
+  window; the demo runs the service in-process; the key file also holds the prekey (Amendments of ai/modules/M12)
+- Found on the way: the lenient reader dropped a message older than its start as a repeat; it now raises
+- Not verified: SDK over TLS; token expiry and 503/504 against the real service; `vcloak-chat` by hand; concurrent
+  senders; a CUDA engine behind the service
+- Commit: PENDING
+- Next: M13 S1 ; human action: none. Keep Docker Desktop running when you type continue

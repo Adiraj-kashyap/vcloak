@@ -1,0 +1,42 @@
+{
+  "run_id": "20261012-162947_M12_demo_two_users",
+  "module": "M12",
+  "step": "S4",
+  "owner": "Abhishek",
+  "git_sha": "2c0078bbbf2a8cd4672ffdc87973d9e61cfcf5f0",
+  "dirty": true,
+  "command": "python scripts/demo_two_users.py --store pg --seed 0",
+  "seed": 0,
+  "quick": false,
+  "params": {
+    "store": "pg",
+    "messages": 30,
+    "window_s": 2,
+    "epoch_ms": 200
+  },
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261012-162947",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U"
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791802788.062833
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791802797.4221327
+  },
+  "outputs": [
+    "rows.txt",
+    "summary.json",
+    "transcript.txt"
+  ],
+  "status": "OK",
+  "notes": "two-user round trip, correctness only: nothing timed, engine backend numpy (not a performance result)"
+}

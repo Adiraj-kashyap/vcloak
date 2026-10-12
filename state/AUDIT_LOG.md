@@ -669,3 +669,38 @@ Notes:
   the session layer in front of a CUDA engine (the service has never run on one).
 - Evidence capture: terminal only (scripts/capture_evidence.py does not exist before M13): TERM-M11-E5-MATRIX,
   TERM-M11-DPOP-VERIFY, TERM-M11-SMOKE-SESSIONS.
+
+## Audit M12 — 2026-10-12 — session 24 — result: PASS
+| Item | Result | Evidence |
+|---|---|---|
+| A1 | PASS | tests/integration/test_two_users.py::test_a1_two_users_exchange_30_messages_across_windows_in_order (SQLite) and ::test_a1_two_users_on_postgresql: both ends read back exactly what was sent, in order, with the senders (runs/20261012-162455_M12_client_sdk/pytest_m12.txt, 65 passed). Live: runs/20261012-162947_M12_demo_two_users (PostgreSQL, 30 messages, 4 windows, 10 of 10 checks) |
+| A2 | PASS | tests/integration/test_two_users.py::test_a2_the_server_never_receives_or_stores_plaintext: every request of the conversation (path, headers, body) and every stored row (payload, seq_enc, row_id) searched for each text, its hex and its first 8 bytes, and for K_content: none; every payload is 4124 bytes; the rows open under the clients' key only. runs/20261012-162455_M12_client_sdk/a2_grep_service.txt: 0 references to the content key or its functions in src/vcloak/service |
+| A3 | PASS | tests/unit/test_client_sdk.py test_a3_* (12 tests: swapped, reversed, dropped in the middle, dropped first, replayed, forged, foreign, moved to another window, rows disappearing, own tail lost) and tests/integration/test_two_users.py::test_a3_a_tampered_answer_of_the_real_server_is_detected (reordered, missing, forged answers of the real service) |
+| G1 | PASS | runs/20261012-162455_M12_client_sdk/pytest_all.txt (1945 passed, 1 skipped, 674 deselected: not gpu; the skip is tests/unit/test_oracle_chacha.py:82, no integration skip: PostgreSQL answered) |
+| G2 | PASS | runs/20261012-162455_M12_client_sdk/check_metrics.txt (331 rows, 0 problems). No metric was added: the demo and the tests are correctness checks; the counts in docs (30 messages, 18-byte header, BLOCK - 19, 30 digits) are parameters, not results |
+| G2b | PASS | nothing timed, no GPU metric recorded; both manifests say backend numpy, and the demo transcript says so in its first lines |
+| G3 | PASS | runs/20261012-162455_M12_client_sdk/check_oblivious.txt (11 files, 0 findings); no kernel source changed |
+| G4 | PASS | runs/20261012-162455_M12_client_sdk/check_secrets.txt (1019 files, 0 key-like runs), run after the evidence files and the smoke log were written. Passwords of the demo and the tests are random and stay in the process; the key file tests check that neither private key nor the passphrase is in the file |
+| G5 | N/A | no GPU twin |
+| G6 | PASS | src/vcloak/client/sdk.py, src/vcloak/client/cli.py (`vcloak-chat` in pyproject.toml), scripts/demo_two_users.py, tests/integration/test_two_users.py; docs/API.md (prekey routes, section "The client") |
+| G7 | PASS | checked after the closing commit |
+| G8 | PASS | STATE: M12 DONE, step S4, sessions 1; current_module M13, next_unit M13 |
+| G9 | PASS | SESSION_LOG session 24, this entry, ISSUE-28 opened, ISSUE-23 updated, ADR-019, M12 Amendments |
+| G10 | PASS | both manifests valid; the demo re-run in quick mode on PostgreSQL gives the same outcome, PASS (runs/20261012-162455_M12_client_sdk/g10_rerun.txt), and on SQLite (runs/20261012-162455_M12_client_sdk/demo_sqlite_quick.txt) |
+Notes:
+- The demo and the live tests run the service inside the client's process (uvicorn on a loopback port, plain HTTP, the
+  public development key). `vcloak serve --sessions` as a separate process was run by the two smokes only
+  (runs/20261012-162455_M12_client_sdk/smoke_sessions.txt, smoke_open.txt: PASS), with tests/dpop_client.py as the client, not the SDK.
+- In the demo each message is alone in its epoch (the sender waits for `stored`), so the order inside an open window is
+  the arrival order until the window closes; the dump is taken after every window was re-shuffled. Two senders that
+  alternate make the order between them deterministic; with concurrent senders it is the server's and is not verified.
+- "The physical order is not the order sent" holds for this run; it is a property of one random permutation per window,
+  not a measure of how well the order is hidden (that is M14).
+- Found by the tests while writing them: a reader without a strict start silently dropped a message older than the first
+  one it saw (it took it for a repeat). It now raises; test_seq_checker_without_a_strict_start_takes_the_first_number_as_given.
+- Not verified: the SDK over TLS or behind a proxy; `vcloak-chat` typed by hand in two terminals (its loop is tested
+  with scripted input); token expiry against the real server (the refresh-before-expiry path is tested with a fake
+  clock and a scripted server); 503/504 retries against the real server (scripted server only); concurrent senders;
+  a CUDA engine behind the service.
+- Evidence capture: terminal only (scripts/capture_evidence.py does not exist before M13): TERM-M12-DEMO,
+  TERM-M12-DEMO-SUMMARY, TERM-M12-PYTEST.

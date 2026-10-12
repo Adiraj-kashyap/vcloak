@@ -13,7 +13,13 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field
 
 from vcloak.crypto.client import PAYLOAD_LEN
-from vcloak.service.session import PASSWORD_MAX, PASSWORD_MIN, REFRESH_PATTERN, USERNAME_PATTERN
+from vcloak.service.session import (
+    PASSWORD_MAX,
+    PASSWORD_MIN,
+    PREKEY_PATTERN,
+    REFRESH_PATTERN,
+    USERNAME_PATTERN,
+)
 from vcloak.storage.repo import WIN_MAX
 
 TOKEN_PATTERN = r"^[A-Za-z0-9_-]{16,128}$"  # base64url or hex text; at least 96 bits when random
@@ -99,6 +105,15 @@ class TokenOut(_Body):
 class TicketOut(_Body):
     ticket: str  # single use, for the first frame of /v1/ws
     expires_in: int
+
+
+class PrekeyIn(_Body):
+    prekey_b64: str = Field(pattern=PREKEY_PATTERN)  # a public X25519 key: 32 bytes, standard base64
+
+
+class PrekeyOut(_Body):
+    username: str
+    prekey_b64: str
 
 
 def decode_payload(payload_b64: str, size: int = PAYLOAD_LEN) -> bytes:

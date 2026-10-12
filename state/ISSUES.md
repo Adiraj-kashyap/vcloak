@@ -573,6 +573,11 @@ BLOCKS: none   SEVERITY: low   OPENED: 2026-10-12 session 19
 3. Windows written before session 19 carry no pending mark; a store older than that (only the development
    database) is not repaired. The marks and the acknowledgement have never run on a CUDA device.
 Not a human action.
+Update of ISSUE-23 (2026-10-12, session 24, M12, ADR-019): point 1 is done. The SDK sends with `ack: "stored"`, sends a
+503 again after `Retry-After`, and after a 504 or a broken connection sends the same ciphertext again and holds the
+next number back until it is confirmed; the reader drops repeats by (sender, session, number). Tested against a
+scripted server (503, 504, lost answer, broken connection, five failed attempts) and, for the repeat, against the real
+service. Points 2 and 3 remain (M15).
 
 ### ISSUE-24 [CLOSED 1569d66] HUMAN ACTION REQUIRED — GPU JOB READY: ISSUE-17 dudect diagnostics (job 20261012-113437_M08_issue17)
 BLOCKS: M14   SEVERITY: high   OPENED: 2026-10-12 session 20
@@ -658,3 +663,16 @@ been run with a handful of sockets only (tests, one smoke client); `--public-ori
 a real TLS proxy. With `--sessions` on a public address without TLS in front, passwords travel in plain HTTP.
 Proposed fix: set a connection limit in `serve`, and measure the push with many sockets in M15 (name the socket count
 with the latency). Related: ISSUE-26 (session state in memory).
+
+### ISSUE-28 [OPEN] M12 client: static prekeys from the server, no forward secrecy; what the order check cannot see
+BLOCKS: none   SEVERITY: medium   OPENED: 2026-10-12 session 24
+1. Key agreement is one static X25519 prekey per device (ADR-019): no forward secrecy, no ratchet, no signed prekey.
+   The server hands out the prekeys and can replace one; only the manual fingerprint comparison detects it. The report
+   must say so wherever it says "end-to-end encrypted" (M20 limitations). `GET /v1/prekeys/{name}` is open and not
+   rate-limited; the prekeys are in memory with the accounts (ISSUE-26): after a server restart a client must publish again.
+2. A reader cannot detect the loss of a sender's last messages, or of a whole client session it saw nothing of; only
+   the sender detects it for its own messages (`verify_delivered`). The order between the two senders is not verifiable.
+3. `vcloak-chat` starts `--lookback` windows back without a strict start, so messages older than that are not shown
+   and their loss is not detected. It polls every `--poll` seconds instead of following the socket ticks.
+4. Not exercised: the SDK over TLS, token expiry and 503/504 against the real service, concurrent senders.
+Proposed: keep for the prototype; M13 shows the fingerprint in the chat view; M20 lists points 1 and 2 as limitations.

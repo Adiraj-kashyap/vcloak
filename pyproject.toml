@@ -11,6 +11,7 @@ dependencies = ["numpy"]
 
 [project.scripts]
 vcloak = "vcloak.cli:main"
+vcloak-chat = "vcloak.client.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

@@ -1,0 +1,7 @@
+# M12 tests (numpy backend, no GPU; correctness only)
+## module tests: tests/unit/test_client_sdk.py tests/security/test_prekeys.py tests/integration/test_two_users.py
+65 passed in 21.26s
+## full local suite: pytest -q -m 'not gpu'
+=========================== short test summary info ===========================
+SKIPPED [1] tests\unit\test_oracle_chacha.py:82: M02 references are wired in
+1945 passed, 1 skipped, 674 deselected, 1 warning in 242.43s (0:04:02)

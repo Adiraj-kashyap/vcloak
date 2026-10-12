@@ -6,6 +6,7 @@ plaintext to exactly BLOCK bytes (`0x80` then zeros) and encrypt it with AES-256
 """
 from __future__ import annotations
 
+import base64
 import os
 
 from cryptography.exceptions import InvalidTag
@@ -24,6 +25,8 @@ TAG_LEN = 16
 PAD_MARK = 0x80
 PAYLOAD_LEN = NONCE_LEN + BLOCK + TAG_LEN
 _INFO = b"vcloak-content-v1"
+_TOKEN_INFO = b"vcloak-conv-token-v1"
+CONV_TOKEN_BYTES = 24  # 32 base64url characters
 
 
 class ContentError(ValueError):
@@ -48,6 +51,15 @@ def derive_content_key(private: X25519PrivateKey, peer_public: bytes, transcript
     """K_content = HKDF-SHA256(X25519(private, peer_public), info = label || transcript)."""
     shared = private.exchange(X25519PublicKey.from_public_bytes(peer_public))
     return HKDF(algorithm=hashes.SHA256(), length=KEY_LEN, salt=None, info=_INFO + transcript_bytes).derive(shared)
+
+
+def derive_conv_token(k_content: bytes) -> str:
+    """The conversation token both ends send to the server (docs/API.md): HKDF-SHA256 of K_content under
+    its own label, as base64url. It is one-way: the token says nothing about K_content."""
+    if len(k_content) != KEY_LEN:
+        raise ValueError("K_content is 32 bytes")
+    raw = HKDF(algorithm=hashes.SHA256(), length=CONV_TOKEN_BYTES, salt=None, info=_TOKEN_INFO).derive(k_content)
+    return base64.urlsafe_b64encode(raw).decode("ascii")
 
 
 def pad(msg: bytes, block: int = BLOCK) -> bytes:

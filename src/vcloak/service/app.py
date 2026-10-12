@@ -5,6 +5,8 @@
     GET  /v1/windows    the visible round being written now
     GET  /healthz       liveness and the scheduler's public counters
     POST /v1/auth/register | login | refresh | logout | ws-ticket   (only with `sessions`, M11)
+    PUT  /v1/prekeys    publish the public X25519 prekey of the account (only with `sessions`, M12)
+    GET  /v1/prekeys/{username}   the prekey an account published; open, so a fetch names no account
     WS   /v1/ws         one frame per epoch boundary, the same for every socket (only with `sessions`)
 
 With a `SessionService` the two message routes take a DPoP-bound access token and a proof per request
@@ -52,6 +54,8 @@ from vcloak.service.models import (
     MessageAccepted,
     MessageIn,
     PayloadError,
+    PrekeyIn,
+    PrekeyOut,
     ReadIn,
     ReadOut,
     RefreshIn,
@@ -522,6 +526,26 @@ def _add_session_routes(app: FastAPI, sessions: SessionService, verify: Callable
             raise AuthRefused(verdict)
         sessions.revoke_family(verdict.family)
         return Response(status_code=204)
+
+    async def session_of(request: Request) -> Verdict:
+        # a dependency: the session is checked before the body, as for the message routes
+        verdict = verify(request, sessions)
+        if not verdict.ok:
+            raise AuthRefused(verdict)
+        return verdict
+
+    @app.put("/v1/prekeys", status_code=204)
+    async def put_prekey(body: PrekeyIn, verdict: Verdict = Depends(session_of)) -> Response:  # noqa: B008
+        sessions.publish_prekey(verdict, body.prekey_b64)
+        return Response(status_code=204)
+
+    @app.get("/v1/prekeys/{username}", response_model=PrekeyOut)
+    async def get_prekey(username: str) -> Any:
+        # no session on purpose: the server never learns which account asked for whose key (ADR-019)
+        prekey = sessions.prekey_of(username)
+        if prekey is None:
+            return JSONResponse({"error": "no_prekey"}, status_code=404, headers=NO_STORE)
+        return JSONResponse(PrekeyOut(username=username, prekey_b64=prekey).model_dump(), headers=NO_STORE)
 
 
 def _add_socket_routes(app: FastAPI, sessions: SessionService, hub: SocketHub,

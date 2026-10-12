@@ -62,6 +62,7 @@ _TOKEN_ERRORS = frozenset(TOKEN_CHECKS) - {"ath"}  # `ath` is a claim of the pro
 TICKET_CHECKS: tuple[str, ...] = ("ticket_format", "ticket_known", "ticket_unused", "ticket_exp", "ticket_session",
                                   "ticket_key")
 TICKET_PATTERN = r"^[A-Za-z0-9_-]{43}$"  # 32 random bytes, base64url
+PREKEY_PATTERN = r"^[A-Za-z0-9+/]{43}=$"  # a 32-byte X25519 public key, standard base64
 WS_METHOD = "GET"  # the method of the handshake a socket proof names
 TICKETS_PER_FAMILY = 8  # unspent tickets one login may hold; the oldest goes first
 
@@ -70,6 +71,7 @@ _JTI_RE = re.compile(r"[\x21-\x7e]{16,128}")  # at least 96 bits when random
 _USERNAME_RE = re.compile(USERNAME_PATTERN)
 _REFRESH_RE = re.compile(REFRESH_PATTERN)
 _TICKET_RE = re.compile(TICKET_PATTERN)
+_PREKEY_RE = re.compile(PREKEY_PATTERN)
 _WS_SCHEMES = {"ws": "http", "wss": "https"}
 _DEFAULT_PORTS = {"http": 80, "https": 443}
 # RFC 7638 §3.2: the required members of each key type, in lexicographic order
@@ -448,6 +450,7 @@ class SessionService:
         self._families: dict[str, _Family] = {}
         self._tickets: OrderedDict[bytes, _Ticket] = OrderedDict()  # SHA-256(ticket) -> record, oldest first
         self._revocation_listeners: list[Callable[[str], None]] = []
+        self._prekeys: dict[str, str] = {}  # account name -> its public X25519 prekey (M12, ADR-019)
         c = self.config
         self.login_ip = RateLimiter(c.login_ip_max, c.login_ip_window_s, now)
         self.login_account = RateLimiter(c.login_account_max, c.login_account_window_s, now)
@@ -653,6 +656,20 @@ class SessionService:
         for listener in list(self._revocation_listeners):
             listener(family)
         return True
+
+    # -- prekeys (M12, ADR-019) --
+
+    def publish_prekey(self, session: Verdict, prekey_b64: str) -> bool:
+        """Set the public prekey of the account of this session (the newest replaces the one before).
+        False when it is not the base64 of 32 bytes."""
+        if not session.ok or not session.sub or not _PREKEY_RE.fullmatch(prekey_b64):
+            return False
+        self._prekeys[session.sub] = prekey_b64
+        return True
+
+    def prekey_of(self, name: object) -> str | None:
+        """The public prekey an account published; None for an unknown name and for an account without one."""
+        return self._prekeys.get(name) if isinstance(name, str) else None
 
     # -- WebSocket tickets (S5) --
 
