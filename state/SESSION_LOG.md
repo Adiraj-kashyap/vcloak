@@ -627,5 +627,5 @@
   have shown the order of sending and the check would have passed only by luck of two messages sharing an epoch.
 - Not verified: S5, S5b, S6 (not started); audit item A6; the panel with --visible-round epoch, in the `closing` state, with more than
   200 rows or on PostgreSQL; the page in Firefox or Safari; a CUDA engine behind the service
-- Commit: (pending)
+- Commit: 535e109
 - Next: M13 S5 ; human action: none. Keep Docker Desktop running when you type continue
