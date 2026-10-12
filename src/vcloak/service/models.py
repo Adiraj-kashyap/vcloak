@@ -13,6 +13,7 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field
 
 from vcloak.crypto.client import PAYLOAD_LEN
+from vcloak.service.session import PASSWORD_MAX, PASSWORD_MIN, REFRESH_PATTERN, USERNAME_PATTERN
 from vcloak.storage.repo import WIN_MAX
 
 TOKEN_PATTERN = r"^[A-Za-z0-9_-]{16,128}$"  # base64url or hex text; at least 96 bits when random
@@ -68,6 +69,31 @@ class Health(_Body):
     overflow: int
     missed: int
     queued: int
+
+
+class RegisterIn(_Body):
+    username: str = Field(pattern=USERNAME_PATTERN)
+    password: str = Field(min_length=PASSWORD_MIN, max_length=PASSWORD_MAX)
+
+
+class Registered(_Body):
+    registered: bool = True
+
+
+class LoginIn(_Body):
+    username: str = Field(pattern=USERNAME_PATTERN)
+    password: str = Field(min_length=1, max_length=PASSWORD_MAX)
+
+
+class RefreshIn(_Body):
+    refresh_token: str = Field(pattern=REFRESH_PATTERN)
+
+
+class TokenOut(_Body):
+    access_token: str
+    refresh_token: str  # single use: the next refresh takes the one returned with it
+    expires_in: int  # seconds the access token lives
+    token_type: Literal["DPoP"] = "DPoP"
 
 
 def decode_payload(payload_b64: str, size: int = PAYLOAD_LEN) -> bytes:

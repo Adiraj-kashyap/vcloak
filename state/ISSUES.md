@@ -638,3 +638,13 @@ Proposed fix (one prep session and one runner session):
 3. A device-only series that leaves out h2d and d2h.
 Until then: M14 must not write that the device stages of the write path are timing-independent of the contents. It
 may quote the series that were measured, with their verdicts.
+
+### ISSUE-26 [OPEN] M11: accounts and sessions live in memory; a restart forgets every account and logs every client out
+BLOCKS: none   SEVERITY: medium   OPENED: 2026-10-12 session 22
+`SessionService` keeps the accounts (name, Argon2id hash string), the refresh families, the jti cache and the rate-limit
+counters in process memory (ADR-017). After a restart every registration is gone and every token is refused
+(`token_mac`, refresh `unknown`). This is enough for the tests and for one demo run, not for M12/M13 use across restarts.
+Also open: behind a reverse proxy all clients share one peer address for the per-address limits (no trusted-proxy
+setting), and the per-name login limit lets anyone lock a name out for 5 minutes at a time.
+Proposed fix: a small account table in the store (name, hash string only: nothing about conversations), in its own
+unit after M11; the token state can stay in memory. Decide before M13 whether the demo needs it.

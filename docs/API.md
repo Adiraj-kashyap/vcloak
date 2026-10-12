@@ -1,8 +1,9 @@
 # V-cloak service API (v1)
 
-The backend of `vcloak serve` (M10). Authentication (DPoP, sessions, the WebSocket) is added by M11 and will
-get its own section here; until then the service must only listen on localhost: `vcloak serve` refuses a
-`--host` that is not a loopback address unless `--allow-remote` is given.
+The backend of `vcloak serve` (M10). Sessions (M11) are described under *Sessions and DPoP* below: the service
+object and the routes exist, `vcloak serve` does not switch them on yet (M11 S5), and the WebSocket is not built.
+Until then the service must only listen on localhost: `vcloak serve` refuses a `--host` that is not a loopback
+address unless `--allow-remote` is given.
 
 All bodies are JSON. Unknown fields are rejected. The same contract is served in both modes
 (`--mode vcloak` and `--mode baseline`); `tests/service_contract.py` runs one set of tests against both.
@@ -49,7 +50,7 @@ epoch of messages, more while epochs overflow). A client that needs to know send
 
 | Name | Form |
 |---|---|
-| `conv_token` | The client's opaque handle for one conversation: 16 to 128 characters of `A-Z a-z 0-9 _ -`. Both ends of a conversation derive the same token (M12). The server hashes it to the 64-bit conversation id of the engine (ADR-015). M11 binds it to the session. |
+| `conv_token` | The client's opaque handle for one conversation: 16 to 128 characters of `A-Z a-z 0-9 _ -`. Both ends of a conversation derive the same token (M12). The server hashes it to the 64-bit conversation id of the engine (ADR-015). A session does not bind it: the token is a capability, and the server keeps no user-to-conversation relation (ADR-017). |
 | `payload_b64` | Standard base64 of one client ciphertext. It must decode to exactly `12 + BLOCK + 16` bytes (nonce, padded block, tag): every stored message has the same size. |
 | `win` | A visible round: `floor(unix_seconds / WINDOW_S)` in window mode. An integer from 0 to 2^31 - 2. |
 
@@ -98,6 +99,71 @@ Answer `200 {"status": "ok", "mode": "vcloak", "ready": true, "epochs": 0, "over
 | `overflow` | Messages left for a later epoch because the epoch was full (counted once per epoch they waited). |
 | `missed` | Epoch boundaries that passed while an earlier epoch was still being written. |
 | `queued` | Messages accepted and not yet written. |
+
+## Sessions and DPoP (M11, ADR-017)
+
+An app created with a `SessionService` (`create_app(backend, sessions=...)`) has the routes below, and
+`POST /v1/messages` and `POST /v1/read` then need a session. `GET /v1/windows` and `GET /healthz` stay open.
+Session state is in memory: a restart logs every client out and forgets the accounts.
+
+### The client key and the proof
+A client device makes one ES256 (P-256) key pair and keeps the private key. Every request that needs a session
+carries a fresh DPoP proof (RFC 9449) in the `DPoP` header: a JWS signed by that key with
+
+- header `{"typ": "dpop+jwt", "alg": "ES256", "jwk": {"kty": "EC", "crv": "P-256", "x": "...", "y": "..."}}`
+- claims `htm` (the method), `htu` (the URL without query and fragment), `iat` (now, in seconds), `jti` (a fresh
+  random value of 16 to 128 printable characters) and, when an access token is sent, `ath` = base64url(SHA-256(token)).
+
+and the access token in `Authorization: DPoP <access_token>`. The token is bound to the key: its `cnf.jkt` is the
+RFC 7638 thumbprint of the JWK. The server evaluates every check and then decides:
+
+| Check | Holds when |
+|---|---|
+| `proof_format` | exactly one `DPoP` header, three base64url parts, JSON objects, a 64-byte signature, at most 4096 characters |
+| `typ`, `alg`, `jwk` | `dpop+jwt`, `ES256`, a P-256 public key on the curve without a private member |
+| `signature` | the ES256 signature verifies under the `jwk` of the header |
+| `htm`, `htu` | the method, and the URL in normal form (lower-case scheme and host, default port dropped), are those of the request |
+| `iat` | within 60 s of the server clock |
+| `jti` | not seen in the last 300 s (remembered only for accepted requests) |
+| `authorization` | `Authorization` has the scheme `DPoP` and one token |
+| `token_format`, `token_mac` | the token is the server's JWS and its HMAC holds |
+| `token_exp` | the token is younger than 600 s |
+| `token_revoked` | the login it belongs to has not been logged out or revoked |
+| `key_binding` | the thumbprint of the proof's key equals `cnf.jkt` of the token |
+| `ath` | the proof names the hash of this token |
+
+A refused request gets 401, `{"error": "invalid_dpop_proof" | "invalid_token", "failed_check": "<first failed check>"}`
+and `WWW-Authenticate: DPoP error="...", error_description="<check>", algs="ES256"`. The session is checked
+before the body, so a request without one never gets a 422.
+
+### `POST /v1/auth/register`
+Request `{"username": "...", "password": "..."}`: a name of 3 to 32 characters of `a-z 0-9 _`, a password of 8 to
+128 characters. The password is stored as an Argon2id hash only (t=3, m=64 MiB, p=4, a salt per user, the
+parameters in the hash string). Answers 201 `{"registered": true}`, 409 `{"error": "username_taken"}`, or 429.
+
+### `POST /v1/auth/login`
+Request `{"username": "...", "password": "..."}` with a `DPoP` proof (no `ath`): the new tokens are bound to the
+key of that proof. Answers 200
+`{"access_token": "...", "refresh_token": "...", "expires_in": 600, "token_type": "DPoP"}` with
+`Cache-Control: no-store`; 401 `{"error": "invalid_credentials"}` for a wrong password and for an unknown name
+alike; 401 with the DPoP challenge for a bad proof; 429 `{"error": "rate_limited"}` with `Retry-After`.
+Limits: 20 attempts per address per 60 s; 5 attempts per name per 300 s without a success in between;
+registration 5 per address per hour.
+
+### `POST /v1/auth/refresh`
+Request `{"refresh_token": "..."}` with a `DPoP` proof of the same key (no `ath`). A refresh token works once:
+the answer (as for login) carries the next one. 401 `{"error": "invalid_grant", "reason": "..."}` otherwise:
+
+| `reason` | Meaning |
+|---|---|
+| `reuse` | the token was already spent: every token of that login is revoked now. Log in again. |
+| `family_revoked` | the login was logged out or revoked |
+| `key_binding` | the proof was signed by another key than the login's (the token is not spent) |
+| `expired`, `unknown` | older than 7 days, or not a token of this server (a restart forgets them all) |
+
+### `POST /v1/auth/logout`
+No body; `Authorization` and `DPoP` as for any authenticated request. Answers 204. The access tokens and the
+refresh tokens of that login stop working at once; other logins of the account are not touched.
 
 ## Errors
 

@@ -137,3 +137,29 @@ are not found. With `ack: "stored"` a submission takes up to EPOCH_MS; M15 must 
 measures. A retry after 504 or a broken connection can store a message twice: the client de-duplicates (M12).
 Supersedes the last sentence of the consequences of ADR-015.
 
+## ADR-017 — Sessions: a signed access token, an in-memory session state, and what a session does not bind — ACCEPTED — 2026-10-12
+Context: M11 S2 leaves the access-token format open (JWS HS256 over a server secret, or an opaque token with a
+server-side table) and does not say where accounts and refresh tokens live, how a logout reaches tokens already
+issued, what a refresh with the wrong key does, or whether a session is tied to a conversation.
+Decision: (1) The access token is a JWS, HS256, header `{"alg":"HS256","typ":"at+jwt"}`, claims `sub`, `cnf.jkt`,
+`fam`, `iat`, `exp` (600 s). The MAC key is 32 random bytes made at start and held in the process only, so no
+verification needs a table lookup and a restart invalidates every access token. The header is compared as a
+constant, so no other `alg` is ever evaluated. (2) `fam` names the refresh family of the login. A request is also
+checked against the live families (`token_revoked`), so a logout or a detected reuse ends the access tokens of that
+login at once, not after their 10 minutes. (3) Refresh tokens are 32 random bytes; the table is keyed by their
+SHA-256 and a spent token is kept until its expiry (7 days) so that reuse can be detected. A spent token that comes
+back revokes the family. A refresh with another key than the one the family is bound to is refused and does not
+spend the token or revoke the family. (4) Accounts (name, Argon2id hash string), refresh families, the jti cache
+and the rate-limit counters are in memory. (5) Login is limited to 20 attempts per address per 60 s and to 5
+attempts per name per 300 s without a success in between; registration to 5 per address per hour. The address is
+the peer address; forwarding headers are not read. (6) A session does not bind a conversation: `conv_token` stays a
+capability that the two ends derive, and the server keeps no user-to-conversation relation.
+(7) A refused request names the first failed check in `error_description` and in the body.
+Consequences: a restart logs every client out and loses the accounts (acceptable for the prototype and the demo;
+a durable account table is a later unit and must not hold anything about conversations). The per-name limit lets
+anyone lock a name out for 5 minutes at a time. Behind a reverse proxy every client shares one address until a
+trusted-proxy setting exists; `public_origin` must then be set for `htu`. An authenticated user who learns another
+conversation's token can fetch its ciphertexts, as before M11; the content stays protected by the client keys.
+Naming the failed check tells an attacker which check stopped a forged request, which the E5 matrix needs and
+RFC 9449 allows. This corrects docs/API.md of M10, which said M11 would bind `conv_token` to the session.
+

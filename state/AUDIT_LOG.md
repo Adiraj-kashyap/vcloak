@@ -612,3 +612,30 @@ Notes:
 - runs/20261012-150500_M08_issue17_ingest/gates_issue17.py is outside the ruff scope (runs/) and has 11 long lines and one unused loop variable; runs/20261012-150500_M08_issue17_ingest/ruff.txt is
   clean for src, tests, scripts, bench. The first pytest and check_secrets runs of this session failed on the run directory
   name above; the files kept are the runs after the allow-list entry. The manifest of runs/20261012-150500_M08_issue17_ingest is dirty: true.
+
+## Audit M11 (S1-S4, interim) — 2026-10-12 — session 22 — result: PASS (module IN_PROGRESS, S5-S7 not built)
+| Item | Result | Evidence |
+|---|---|---|
+| A1 | N/A | the E5 matrix is S6. What exists: 24 bent requests each refused with the expected first failed check, plus replay, stolen token, forged signature, expired and tampered token, refresh reuse (runs/20261012-153506_M11_session_s1_s4/pytest_security.txt, 88 passed) |
+| A2 | PASS | tests/security/test_session.py::test_rfc7638_thumbprint_vector against tests/golden/rfc7638_thumbprint.json (JWK and expected value copied from RFC 7638 section 3.1) (runs/20261012-153506_M11_session_s1_s4/pytest_security.txt) |
+| A3 | N/A | the final allow-list and the log test are S7. logsafe.py is unchanged; the one new event (`family_revoked error=refresh_reuse`) uses allowed fields, and test_refresh_rotates_and_a_reused_token_revokes_the_family searches the captured log for the tokens, the conversation token, the password, the name and the jkt |
+| A4 | PASS | runs/20261012-153506_M11_session_s1_s4/a4_grep.txt (0 matches for the key names and the gpu/crypto packages in src/vcloak/service/session.py); test_session_module_knows_no_content_or_engine_key |
+| G1 | PASS | runs/20261012-153506_M11_session_s1_s4/pytest_all.txt (1797 passed, 1 skipped, 674 deselected: not gpu; the skip is tests/unit/test_oracle_chacha.py:82, no integration skip, PostgreSQL answered) |
+| G2 | PASS | runs/20261012-153506_M11_session_s1_s4/check_metrics.txt (329 rows, 0 problems); no metric added, no number written into a doc other than configured limits |
+| G2b | N/A | nothing measured; no performance or side-channel metric |
+| G3 | PASS | runs/20261012-153506_M11_session_s1_s4/check_oblivious.txt (11 files, 0 findings); no kernel source changed |
+| G4 | PASS | runs/20261012-153506_M11_session_s1_s4/check_secrets.txt (0 key-like runs) after one allow-file entry: tests/golden/rfc7638_thumbprint.json holds the public RSA modulus and the thumbprint of the RFC example |
+| G5 | N/A | no GPU twin |
+| G6 | PASS (partial) | exist: src/vcloak/service/session.py, routes /v1/auth/register, login, refresh, logout (src/vcloak/service/app.py), docs/API.md section "Sessions and DPoP". Not yet due: /v1/auth/ws-ticket, /v1/ws, the final logsafe.py, tests/security/test_session_matrix.py, tests/security/test_logsafe.py, results/session/e5_matrix.json (S5-S7) |
+| G7 | PASS | checked after the closing commit |
+| G8 | PASS | STATE: M11 IN_PROGRESS, current_step S5, next_unit M11, sessions 1 |
+| G9 | PASS | SESSION_LOG session 22, this entry, ISSUE-26 opened, ADR-017, M11 Amendments |
+| G10 | PASS | runs/20261012-153506_M11_session_s1_s4/manifest.json (valid); the session and service tests run a second time give the same outcome (runs/20261012-153506_M11_session_s1_s4/g10_rerun.txt, 269 passed) |
+Notes:
+- Interim audit: M11 is not DONE and is not tagged. SEC-E5-PASS and SEC-DPOP-VERIFY-US are not recorded (S6).
+- The first pytest and check_secrets runs of this session failed on the new golden file (4 key-like runs) and ruff on one
+  line of tests/dpop_client.py; the files kept are the runs after the allow-file entry and the fix. The manifest is dirty: true.
+- Not verified: the session routes behind `vcloak serve` (not wired), behind a reverse proxy, or under concurrent load;
+  timing behaviour of `verify` (every check is evaluated, but no timing test exists); Argon2id at the default cost through
+  the API (the tests use t=1, m=64 KiB).
+- No evidence capture: web/**, results/** and METRICS_INDEX.md did not change.

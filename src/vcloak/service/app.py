@@ -1,9 +1,13 @@
-"""The HTTP service (docs/API.md): four routes over one of two backends.
+"""The HTTP service (docs/API.md): four routes over one of two backends, and the session routes.
 
     POST /v1/messages   queue one client ciphertext for the open epoch (`ack: stored` waits for the write)
     POST /v1/read       the payloads of one conversation in one visible round, in order
     GET  /v1/windows    the visible round being written now
     GET  /healthz       liveness and the scheduler's public counters
+    POST /v1/auth/register | login | refresh | logout   (only with `sessions`, M11)
+
+With a `SessionService` the two message routes take a DPoP-bound access token and a proof per request
+(session.py); without one the API is open, which `vcloak serve` allows on a loopback address only.
 
 `VcloakBackend` is the protected path: the epoch scheduler writes, and the read handler maps the
 conversation to its bucket on the engine, fetches exactly CAND_K candidates and lets the engine open
@@ -29,9 +33,9 @@ from pathlib import Path
 from typing import Any, Protocol, TypeVar
 
 import numpy as np
-from fastapi import FastAPI, Request
+from fastapi import Depends, FastAPI, Request
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, Response
 
 from vcloak import config
 from vcloak.crypto import keys as keyfile
@@ -42,17 +46,23 @@ from vcloak.gpu.runtime import Backend
 from vcloak.service.logsafe import SafeLogger, get_logger
 from vcloak.service.models import (
     Health,
+    LoginIn,
     MessageAccepted,
     MessageIn,
     PayloadError,
     ReadIn,
     ReadOut,
+    RefreshIn,
+    Registered,
+    RegisterIn,
+    TokenOut,
     WindowsOut,
     conv_id_of,
     decode_payload,
     encode_payload,
 )
 from vcloak.service.scheduler import QUEUE_EPOCHS, Clock, EpochScheduler, NotStored, QueueFull
+from vcloak.service.session import SessionService, TokenSet, Verdict
 from vcloak.storage.repo import CandidateOverflow, Repo
 
 T = TypeVar("T")
@@ -64,6 +74,14 @@ STOP_TIMEOUT_S = 10.0
 ACK_TIMEOUT_MIN_S = 5.0
 
 KeyProvider = Callable[[], bytearray]  # a fresh 32-byte master the caller hands to the key store
+
+
+class AuthRefused(Exception):
+    """A request whose proof or access token did not verify; answered with 401 and a DPoP challenge."""
+
+    def __init__(self, verdict: Verdict) -> None:
+        super().__init__(verdict.failed_check or "refused")
+        self.verdict = verdict
 
 
 class AckTimeout(RuntimeError):
@@ -253,7 +271,11 @@ class VcloakBackend:
 
 # ── the API ──────────────────────────────────────────────────────────────────
 
-def create_app(backend: ServiceBackend, *, payload_len: int = PAYLOAD_LEN) -> FastAPI:
+NO_STORE = {"Cache-Control": "no-store"}
+
+
+def create_app(backend: ServiceBackend, *, payload_len: int = PAYLOAD_LEN,
+               sessions: SessionService | None = None) -> FastAPI:
     log = get_logger("api")
 
     @asynccontextmanager
@@ -262,13 +284,39 @@ def create_app(backend: ServiceBackend, *, payload_len: int = PAYLOAD_LEN) -> Fa
         try:
             yield
         finally:
-            await backend.stop()
+            try:
+                await backend.stop()
+            finally:
+                if sessions is not None:
+                    sessions.close()
 
     app = FastAPI(title="V-cloak", version="1", lifespan=lifespan, docs_url=None, redoc_url=None)
     app.state.backend = backend
+    app.state.sessions = sessions
 
     def error(status: int, code: str, **headers: str) -> JSONResponse:
         return JSONResponse({"error": code}, status_code=status, headers=headers or None)
+
+    def verify(request: Request, s: SessionService, *, token_required: bool = True) -> Verdict:
+        """Check the proof (and the access token) of a request against the method and URL it was sent to."""
+        url = s.request_url(str(request.url), request.url.path)
+        return s.verify(request.method, url, request.headers.getlist("dpop"),
+                        request.headers.get("authorization"), token_required=token_required)
+
+    async def require_session(request: Request) -> Verdict | None:
+        """The session of a request; None when the app runs without sessions (open API)."""
+        if sessions is None:
+            return None
+        verdict = verify(request, sessions)
+        if not verdict.ok:
+            raise AuthRefused(verdict)
+        return verdict
+
+    @app.exception_handler(AuthRefused)
+    async def refused(_: Request, exc: AuthRefused) -> JSONResponse:
+        v = exc.verdict
+        return JSONResponse({"error": v.error, "failed_check": v.failed_check}, status_code=401,
+                            headers={"WWW-Authenticate": v.challenge(), **NO_STORE})
 
     @app.exception_handler(RequestValidationError)
     async def invalid(_: Request, exc: RequestValidationError) -> JSONResponse:
@@ -277,7 +325,8 @@ def create_app(backend: ServiceBackend, *, payload_len: int = PAYLOAD_LEN) -> Fa
                   for e in exc.errors()]
         return JSONResponse({"error": "invalid_request", "fields": fields}, status_code=422)
 
-    @app.post("/v1/messages", status_code=202, response_model=MessageAccepted)
+    @app.post("/v1/messages", status_code=202, response_model=MessageAccepted,
+              dependencies=[Depends(require_session)])
     async def post_message(body: MessageIn) -> Any:
         try:
             payload = decode_payload(body.payload_b64, payload_len)
@@ -298,7 +347,7 @@ def create_app(backend: ServiceBackend, *, payload_len: int = PAYLOAD_LEN) -> Fa
             return JSONResponse(MessageAccepted(stored=True).model_dump(), status_code=201)
         return MessageAccepted()
 
-    @app.post("/v1/read", response_model=ReadOut)
+    @app.post("/v1/read", response_model=ReadOut, dependencies=[Depends(require_session)])
     async def post_read(body: ReadIn) -> Any:
         try:
             payloads = await backend.read(body.conv_token, body.win)
@@ -317,4 +366,62 @@ def create_app(backend: ServiceBackend, *, payload_len: int = PAYLOAD_LEN) -> Fa
     async def healthz() -> Any:
         return Health(mode=backend.mode, ready=backend.ready, **backend.stats())
 
+    if sessions is not None:
+        _add_session_routes(app, sessions, verify)
     return app
+
+
+def _add_session_routes(app: FastAPI, sessions: SessionService, verify: Callable[..., Verdict]) -> None:
+    def client_ip(request: Request) -> str:
+        # the peer address: a forwarding header is the client's word and is not read
+        return request.client.host if request.client else "unknown"
+
+    def tokens(t: TokenSet) -> JSONResponse:
+        body = TokenOut(access_token=t.access_token, refresh_token=t.refresh_token, expires_in=t.expires_in)
+        return JSONResponse(body.model_dump(), headers=NO_STORE)
+
+    def limited(retry_after: int) -> JSONResponse:
+        return JSONResponse({"error": "rate_limited"}, status_code=429, headers={"Retry-After": str(retry_after)})
+
+    @app.post("/v1/auth/register", status_code=201, response_model=Registered)
+    async def register(body: RegisterIn, request: Request) -> Any:
+        result = await sessions.register(body.username, body.password, ip=client_ip(request))
+        if result.status == "rate_limited":
+            return limited(result.retry_after)
+        if result.status == "taken":
+            return JSONResponse({"error": "username_taken"}, status_code=409)
+        if result.status != "ok":
+            return JSONResponse({"error": "invalid_request", "fields": []}, status_code=422)
+        return Registered()
+
+    @app.post("/v1/auth/login", response_model=TokenOut)
+    async def login(body: LoginIn, request: Request) -> Any:
+        url = sessions.request_url(str(request.url), request.url.path)
+        result = await sessions.login(body.username, body.password, ip=client_ip(request), method=request.method,
+                                      url=url, proofs=request.headers.getlist("dpop"))
+        if result.status == "rate_limited":
+            return limited(result.retry_after)
+        if result.status == "invalid_proof" and result.verdict is not None:
+            raise AuthRefused(result.verdict)
+        if result.tokens is None:
+            # one answer for an unknown name and a wrong password
+            return JSONResponse({"error": "invalid_credentials"}, status_code=401, headers=NO_STORE)
+        return tokens(result.tokens)
+
+    @app.post("/v1/auth/refresh", response_model=TokenOut)
+    async def refresh(body: RefreshIn, request: Request) -> Any:
+        verdict = verify(request, sessions, token_required=False)
+        if not verdict.ok:
+            raise AuthRefused(verdict)
+        issued, reason = sessions.refresh(body.refresh_token, verdict.jkt)
+        if issued is None:
+            return JSONResponse({"error": "invalid_grant", "reason": reason}, status_code=401, headers=NO_STORE)
+        return tokens(issued)
+
+    @app.post("/v1/auth/logout", status_code=204)
+    async def logout(request: Request) -> Response:
+        verdict = verify(request, sessions)
+        if not verdict.ok:
+            raise AuthRefused(verdict)
+        sessions.revoke_family(verdict.family)
+        return Response(status_code=204)

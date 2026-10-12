@@ -510,3 +510,22 @@
 - Not verified: the cause of ISSUE-25; staging and clock state are not separated; one GPU model
 - Commit: 1569d66
 - Next: M11 S1 ; human action: none now (team decision on whole-call host timing before M14, see ISSUE-17). Keep Docker Desktop running when you type continue
+
+## Session 22 — 2026-10-12 15:50 — M11 Session security (E5) — owner:Divyansh
+- Steps: S1→S4 (status after: IN_PROGRESS, current_step S5)
+- Did: src/vcloak/service/session.py (new): accounts with Argon2id and three rate limits (S1); JWS HS256 access token
+  with `cnf.jkt` and `fam`, opaque single-use refresh tokens in families, RFC 7638 thumbprint (S2); `verify` with 16
+  named checks, all evaluated before the decision, ES256 always computed (S3); rotation, reuse detection, family
+  revocation with a listener hook (S4). app.py: `create_app(..., sessions=)`, the DPoP dependency on /v1/messages and
+  /v1/read, routes /v1/auth/register, login, refresh, logout. models.py: the four bodies. docs/API.md: section
+  "Sessions and DPoP". tests/dpop_client.py, tests/security/test_session.py (79), test_session_api.py (9).
+- Evidence: runs/20261012-153506_M11_session_s1_s4 (pytest_all.txt 1797 passed; pytest_security.txt 88 passed; ruff clean;
+  check_secrets, check_metrics, check_oblivious PASS; a4_grep.txt empty)
+- Metrics added: none (nothing measured)
+- Decisions: ADR-017 (token format, in-memory state, limits, no conversation binding)
+- Issues: opened ISSUE-26 (in-memory accounts and sessions, medium); closed none
+- Deviations from spec: `fam` claim and `token_revoked` check added; a dependency instead of a middleware; no server
+  nonce; docs/API.md no longer says M11 binds conv_token to the session (Amendments of ai/modules/M11, ADR-017)
+- Not verified: the routes behind `vcloak serve` (not wired yet); timing of `verify`; the default Argon2id cost over HTTP
+- Commit: (see next line)
+- Next: M11 S5 (WS tickets, /v1/ws, CLI switch), then S6, S7 ; human action: none. Keep Docker Desktop running when you type continue

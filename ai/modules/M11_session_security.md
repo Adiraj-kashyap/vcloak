@@ -41,4 +41,22 @@ WS tickets), routes `/v1/auth/register|login|refresh|logout|ws-ticket`, a WebSoc
 2. How is refresh-token theft detected?
 3. Why must logs never contain conversation ids or bucket numbers?
 
+## Amendments
+- 2026-10-12 (session 22, S1-S4): what was built differs from the text above in these points (ADR-017).
+  - S2: the access token is the JWS HS256 option. It carries one claim more, `fam` (the refresh family of the login),
+    and verification has one check more, `token_revoked`, so that a logout or a detected reuse ends the access
+    tokens of that login at once.
+  - S3: 16 named checks (`proof_format`, `typ`, `alg`, `jwk`, `signature`, `htm`, `htu`, `iat`, `jti`, `authorization`,
+    `token_format`, `token_mac`, `token_exp`, `token_revoked`, `key_binding`, `ath`). The verification is a function the
+    routes call through a FastAPI dependency, not an ASGI middleware. The server nonce of RFC 9449 section 8 is not
+    used; the replay defence is `iat` plus the jti cache. The 401 names the first failed check in the body too.
+  - S4: logout revokes the family; closing WebSockets is S5 (the hook `on_family_revoked` exists, nothing listens yet).
+  - `create_app(backend, sessions=...)` switches the session routes and the check on. `vcloak serve` does not pass a
+    `SessionService` yet: the CLI switch, the two smoke scripts and the loopback rule are S5 work.
+  - Accounts, refresh families, the jti cache and the rate limits are in memory (ISSUE-26).
+  - Extra files: `tests/dpop_client.py` (an independent ES256/DPoP client for the tests and the S6 matrix),
+    `tests/security/test_session.py`, `tests/security/test_session_api.py`, `tests/golden/rfc7638_thumbprint.json`.
+  - Required reading: RFC 7638 section 3 and RFC 9449 section 4.3 were read from rfc-editor.org this session; the
+    thumbprint vector is copied from the RFC text by a script, not typed.
+
 ## Next: M12
