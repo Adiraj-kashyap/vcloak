@@ -344,7 +344,7 @@ and divide; run the large-n configurations after a load that has brought the clo
 state, so that the clock no longer moves inside the timed runs; label that state in the metric note as now. Keep
 this session's numbers; index the new session separately and never merge the two in one figure.
 
-### ISSUE-16 [CLOSED @HASH@] HUMAN ACTION REQUIRED — GPU JOB READY: M08 obliviousness audit (job 20261012-041010_M08)
+### ISSUE-16 [CLOSED 7c31c24] HUMAN ACTION REQUIRED — GPU JOB READY: M08 obliviousness audit (job 20261012-041010_M08)
 BLOCKS: M08   SEVERITY: high   OPENED: 2026-10-12 session 15
 Why: the laptop has no GPU. M08 asks whether GPU execution time or control flow depends on secret data: dudect
 timing tests, the SASS branch listing (nvcc, cuobjdump) and the Nsight Compute divergence counters. None of it can

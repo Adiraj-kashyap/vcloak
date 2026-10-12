@@ -394,5 +394,5 @@
   the runner's PNGs only (Amendments).
 - Not verified: the cause of the three FAILs (nothing in ISSUE-17 has been tested); any result on a second session,
   seed or GPU; the machine code CuPy actually runs (nvrtc); divergence counters; the ncu parser on real output.
-- Commit: @HASH@
+- Commit: 7c31c24
 - Next: M09 S1 ; human action: none required (optional: ISSUE-18; `fix ISSUE-17` is needed before M14)
