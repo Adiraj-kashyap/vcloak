@@ -527,5 +527,5 @@
 - Deviations from spec: `fam` claim and `token_revoked` check added; a dependency instead of a middleware; no server
   nonce; docs/API.md no longer says M11 binds conv_token to the session (Amendments of ai/modules/M11, ADR-017)
 - Not verified: the routes behind `vcloak serve` (not wired yet); timing of `verify`; the default Argon2id cost over HTTP
-- Commit: (see next line)
+- Commit: eff55f1
 - Next: M11 S5 (WS tickets, /v1/ws, CLI switch), then S6, S7 ; human action: none. Keep Docker Desktop running when you type continue
