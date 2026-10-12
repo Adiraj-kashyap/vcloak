@@ -71,3 +71,11 @@ stores, with a switch between V-cloak and the unprotected baseline. This is the 
   stays until M18 (ISSUE-29). The headers are set by an ASGI middleware, so the redirect of `/app` and a 404 carry
   them too.
 - A pane reads once a second on a fixed schedule instead of following the socket ticks (ADR-020 (5)).
+- 2026-10-12 (session 26, S4): the panel shows the newest windows, not the current window only, each row marked
+  with the state of its window; the open window still lies in epoch order by design, so the S4 check ("the displayed
+  order differs from the send order") is made on closed, re-shuffled windows (ADR-021).
+- The "reveal true order" overlay is computed in the page from what the panes read and verified (payload bytes
+  matched to stored rows), not supplied by the server; `/v1/dump` therefore returns whole `seq_enc` and `payload`
+  values (base64) and the page truncates them for display (ADR-021).
+- `/v1/dump` takes `limit` and `windows`; it also serves the baseline backend (`state: "arrival"`), ahead of S5.
+- `tests/service_contract.py` expected 404 for `/v1/dump` (M10); it now expects the 403 of A3.

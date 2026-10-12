@@ -55,7 +55,7 @@ class LocalServer:
     """`vcloak serve <argv>` with sessions, inside this process: a real HTTP server on a loopback port,
     with the backend and the store reachable for inspection after it stopped."""
 
-    def __init__(self, argv: list[str], *, config: SessionConfig | None = None) -> None:
+    def __init__(self, argv: list[str], *, config: SessionConfig | None = None, dev: bool | None = None) -> None:
         import uvicorn
 
         a = build_parser().parse_args(["serve", *argv])
@@ -63,7 +63,8 @@ class LocalServer:
         self.sessions = SessionService(config or SessionConfig())
         self.port = free_port()
         self.base = f"http://127.0.0.1:{self.port}"
-        app = create_app(self.backend, sessions=self.sessions, dev=a.dev)
+        # `dev` is what the app is told (its dev routes); the key of the backend stays the one of `argv`
+        app = create_app(self.backend, sessions=self.sessions, dev=a.dev if dev is None else dev)
         self._server = uvicorn.Server(uvicorn.Config(app, host="127.0.0.1", port=self.port, access_log=False,
                                                      log_config=None, log_level="warning"))
         self._thread = threading.Thread(target=self._server.run, name="vcloak-demo-server", daemon=True)

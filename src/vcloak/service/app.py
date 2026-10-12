@@ -131,6 +131,8 @@ class ServiceBackend(Protocol):
 
     def stats(self) -> dict[str, int]: ...
 
+    async def stored(self, windows: int) -> list[dict[str, Any]]: ...
+
 
 # ── key providers (S5) ───────────────────────────────────────────────────────
 
@@ -298,6 +300,28 @@ class VcloakBackend:
         if self.scheduler is None:
             return {"epochs": 0, "overflow": 0, "missed": 0, "queued": 0}
         return self.scheduler.stats()
+
+    def _stored(self, windows: int) -> list[dict[str, Any]]:
+        current = self.current_window()
+        waiting = set(self.repo.pending_windows()) if self.visible_round == "window" else set()
+        out = []
+        for win in range(max(current - windows + 1, 0), current + 1):
+            rows = self.repo.window_rows(win)
+            if self.visible_round != "window":
+                state = "epoch"  # the stored round is the epoch: never re-shuffled
+            elif win == current:
+                state = "open"  # still filling: one permuted batch per epoch, the batches in arrival order
+            else:
+                state = "closing" if win in waiting else "reshuffled"
+            out.append({"win": win, "state": state,
+                        "rows": [{"row_id": str(r.row_id), "bucket": int(r.bucket), "seq_enc": bytes(r.seq_enc),
+                                  "payload": bytes(r.payload)} for r in rows]})
+        return out
+
+    async def stored(self, windows: int) -> list[dict[str, Any]]:
+        """The rows of the newest `windows` windows as the store holds them: what a copy of the database
+        shows, one window after the other, each in physical order. For `GET /v1/dump` (dev only)."""
+        return await self._blocking(lambda: self._stored(windows))
 
 
 # ── the sockets (M11 S5, ADR-018) ────────────────────────────────────────────

@@ -3,13 +3,13 @@
 ```yaml
 project: v-cloak
 kit_version: 1.0
-last_session: 25
+last_session: 26
 last_session_date: 2026-10-12
 current_module: M13
-current_step: S4
+current_step: S5
 status: IN_PROGRESS          # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
 next_unit: M13
-last_checkpoint: 2026-10-12 M13 S1-S3 passed (page at /app with CSP, two browser sessions, 30-message round trip in Chrome); M13 S4 next
+last_checkpoint: 2026-10-12 M13 S4 passed (/v1/dump dev-only, server-view panel with the client-side true order, in Chrome); M13 S5 next
 quick_mode_default: false
 local:                      # the laptop (no GPU) — filled by M00 S7
   os: "Windows-11-10.0.26200-SP0"
@@ -54,7 +54,7 @@ gpu_job:                    # set by the gpu-job skill
 | M10 | Service & scheduler | Divyansh | M09 | no | DONE | S5 | 2 |
 | M11 | Session security (E5) | Divyansh | M10 | no | DONE | S7 | 2 |
 | M12 | Client SDK & CLI | Abhishek | M11 | no | DONE | S4 | 1 |
-| M13 | Frontend: chat + server view | Abhishek | M12 | no | IN_PROGRESS | S4 | 1 |
+| M13 | Frontend: chat + server view | Abhishek | M12 | no | IN_PROGRESS | S5 | 2 |
 | M14 | Security evaluation (E0–E2, anon set) | Abhishek | M08, M10 | no | NOT_STARTED | S1 | 0 |
 | M15 | End-to-end performance (E6) | Divyansh | M10, M11 | no | NOT_STARTED | S1 | 0 |
 | M16 | Results export | Abhishek | M07, M08, M14 | no | NOT_STARTED | S1 | 0 |
@@ -114,6 +114,7 @@ gpu_job:                    # set by the gpu-job skill
   its runs had `--sessions` on and how many sockets were open (ISSUE-27).
 - The log allow-list is final (tests/security/test_log_redaction.py pins it); a new log field is a change there.
 - Client (M12, ADR-019): `vcloak.client` never imports `vcloak.service`. Never claim forward secrecy or a verified cross-sender order (ISSUE-28).
-- M13 (ADR-020): S1-S3 done. The page is `web/js/crypto.js` + `client.js` + `chat.js`; test it in the installed Chrome
-  with `scripts/headless.py` (browser tests SKIP without Chrome/Edge: read the skip count). S4 `/v1/dump` and S5 `/v1/mode` must
-  re-enable the two switches chat.js disables when live; S5b builds on headless.py; S6 fills `epoch`, `last_write_ms`, `gpu`.
+- M13 (ADR-020, ADR-021): S1-S4 done. Test the page in the installed Chrome with `scripts/headless.py` (browser tests
+  SKIP without Chrome/Edge: read the skip count). The true order in the panel comes from the panes, never the server;
+  only closed windows are shuffled as a whole. S5 `/v1/mode` re-enables the mode switch and takes ISSUE-30 points 1-2;
+  S5b builds on headless.py; S6 fills `epoch`, `last_write_ms`, `gpu`.

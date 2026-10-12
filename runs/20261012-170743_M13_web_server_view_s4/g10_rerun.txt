@@ -1,0 +1,13 @@
+{
+ "checks": {
+  "the panel shows the rows of the store in the store's order": true,
+  "every row is matched to a message by the panes": true,
+  "the panes read the conversation in the order sent": true,
+  "the displayed order differs from the send order": true,
+  "no message text is in the table": true,
+  "the reveal column is visible": true
+ },
+ "errors": [],
+ "ok": true
+}
+[2, 6, 1, 7, 4, 3, 5, 8, 9]

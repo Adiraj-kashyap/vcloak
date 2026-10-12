@@ -212,3 +212,17 @@ class BaselineBackend:
 
     def stats(self) -> dict[str, int]:
         return {"epochs": 0, "overflow": 0, "missed": 0, "queued": 0}
+
+    def _stored(self, windows: int) -> list[dict[str, Any]]:
+        current = self.current_window()
+        first = max(current - windows + 1, 0)
+        out: dict[int, dict[str, Any]] = {w: {"win": w, "state": "arrival", "rows": []}
+                                          for w in range(first, current + 1)}
+        for row_id, win, payload in self.store.dump():
+            if win in out:
+                out[win]["rows"].append({"row_id": str(row_id), "bucket": None, "seq_enc": None, "payload": payload})
+        return [out[w] for w in sorted(out)]
+
+    async def stored(self, windows: int) -> list[dict[str, Any]]:
+        """The rows of the newest `windows` windows in physical order, which here is the arrival order."""
+        return await self._blocking(lambda: self._stored(windows))

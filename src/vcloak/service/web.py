@@ -13,18 +13,27 @@ shell.
 
 `GET /v1/stats/live` is open like `/v1/windows`: public parameters and the public counters of `/healthz`,
 plus what the page needs to decide how to run (`dev`, `sessions`, the payload size).
+
+`GET /v1/dump` is the "what the server stores" panel: the rows of the newest windows exactly as the store
+holds them, in physical order. It exists with `--dev` only and answers 403 otherwise. It hands out what
+a copy of the database holds and nothing else: no key is used to build it, so it cannot say which row is
+which message. The page finds that out from its own clients.
 """
 from __future__ import annotations
 
+import base64
 from pathlib import Path
 from typing import Any
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
+from fastapi.responses import JSONResponse
 from starlette.staticfiles import StaticFiles
 from starlette.types import ASGIApp, Message, Receive, Scope, Send
 
 WEB_DIR = Path(__file__).resolve().parents[3] / "web"  # the repository's web/ (an editable install)
 MOUNT = "/app"
+DUMP_LIMIT, DUMP_LIMIT_MAX = 50, 500  # rows of one answer
+DUMP_WINDOWS, DUMP_WINDOWS_MAX = 4, 64  # windows looked at, the open one included
 
 CSP = "; ".join((
     "default-src 'self'",
@@ -102,3 +111,32 @@ def add_live_routes(app: FastAPI, backend: Any, *, dev: bool, sessions: bool, pa
             "payload_len": payload_len,
             "gpu": None,  # provenance of the compute backend: S6
         }
+
+    if not dev:
+        @app.get("/v1/dump")
+        async def dump_refused() -> JSONResponse:
+            return JSONResponse({"error": "dev_only"}, status_code=403, headers={"Cache-Control": "no-store"})
+        return
+
+    def b64(raw: bytes | None) -> str | None:
+        return None if raw is None else base64.b64encode(raw).decode("ascii")
+
+    @app.get("/v1/dump")
+    async def dump(limit: int = Query(DUMP_LIMIT, ge=1, le=DUMP_LIMIT_MAX),
+                   windows: int = Query(DUMP_WINDOWS, ge=1, le=DUMP_WINDOWS_MAX)) -> JSONResponse:
+        stored = await backend.stored(windows)
+        # the newest rows win the limit; a window that does not fit whole loses its tail
+        kept: list[dict[str, Any]] = []
+        room = limit
+        for w in reversed(stored):
+            kept.append({**w, "rows": w["rows"][:room]})
+            room -= len(kept[-1]["rows"])
+        kept.reverse()
+        rows = [{"pos": pos, "win": w["win"], "row_id": r["row_id"], "bucket": r["bucket"],
+                 "seq_enc_b64": b64(r["seq_enc"]), "payload_b64": b64(r["payload"])}
+                for pos, (w, r) in enumerate((w, r) for w in kept for r in w["rows"])]
+        total = sum(len(w["rows"]) for w in stored)
+        body = {"mode": backend.mode, "visible_round": backend.visible_round, "win": backend.current_window(),
+                "windows": [{"win": w["win"], "state": w["state"], "rows": len(w["rows"])} for w in stored],
+                "total": total, "truncated": total > len(rows), "rows": rows}
+        return JSONResponse(body, headers={"Cache-Control": "no-store"})

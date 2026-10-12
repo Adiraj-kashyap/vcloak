@@ -13,6 +13,7 @@ Nothing here measures anything: the engine is the numpy simulator and the store 
 """
 from __future__ import annotations
 
+import base64
 import json
 import re
 import threading
@@ -102,6 +103,72 @@ def test_stats_live_is_public_parameters_only() -> None:
                          "payload_len", "gpu"}
     assert body["mode"] == "vcloak" and body["dev"] is True and body["sessions"] is False
     assert body["payload_len"] == PAYLOAD_LEN and body["gpu"] is None
+
+
+# ── S4: the stored rows (dev only) ───────────────────────────────────────────
+def post_stored(c: TestClient, token: str, n: int) -> None:
+    for i in range(n):
+        payload = base64.b64encode(bytes([i]) * PAYLOAD_LEN).decode()
+        body = {"conv_token": token, "payload_b64": payload, "ack": "stored"}
+        assert c.post("/v1/messages", json=body).status_code == 201
+
+
+def test_dump_is_refused_without_dev() -> None:
+    """A3: without --dev the route gives nothing, whatever is asked."""
+    with app_client(dev=False) as c:
+        post_stored(c, "a" * 32, 3)
+        for path in ("/v1/dump", "/v1/dump?limit=5", "/v1/dump?limit=0", "/v1/dump?windows=1&limit=500"):
+            r = c.get(path)
+            assert r.status_code == 403 and r.json() == {"error": "dev_only"}, path
+            assert r.headers["cache-control"] == "no-store"
+
+
+def test_dump_is_the_store_in_physical_order() -> None:
+    """S4: the answer is the rows of the store, window after window, in the order the store holds them,
+    and a closed window is no longer in the order of arrival."""
+    with app_client("--epoch-ms", "50", "--window-s", "1", dev=True) as c:
+        post_stored(c, "b" * 32, 16)
+        deadline = time.monotonic() + 20
+        while True:
+            d = c.get("/v1/dump?limit=500&windows=16").json()
+            if d["total"] == 16 and all(w["state"] == "reshuffled" for w in d["windows"] if w["rows"]):
+                break
+            assert time.monotonic() < deadline, d["windows"]
+            time.sleep(0.1)
+        repo = c.app.state.backend.repo  # type: ignore[attr-defined]
+        stored = [r for w in d["windows"] for r in repo.window_rows(w["win"])]
+        assert [r["row_id"] for r in d["rows"]] == [str(r.row_id) for r in stored]
+        assert [base64.b64decode(r["payload_b64"]) for r in d["rows"]] == [r.payload for r in stored]
+        assert [base64.b64decode(r["seq_enc_b64"]) for r in d["rows"]] == [r.seq_enc for r in stored]
+        assert [r["pos"] for r in d["rows"]] == list(range(16))
+        assert set(d["rows"][0]) == {"pos", "win", "row_id", "bucket", "seq_enc_b64", "payload_b64"}
+        assert d["mode"] == "vcloak" and d["visible_round"] == "window" and d["truncated"] is False
+        assert [w["win"] for w in d["windows"]] == list(range(d["win"] - 15, d["win"] + 1))
+        assert d["windows"][-1]["state"] == "open"
+        wins = [r["win"] for r in d["rows"]]
+        assert wins == sorted(wins)
+        arrival = [base64.b64decode(r["payload_b64"])[0] for r in d["rows"]]
+        assert sorted(arrival) == list(range(16)) and arrival != sorted(arrival)
+
+        # the newest rows win the limit
+        few = c.get("/v1/dump?limit=5&windows=16").json()
+        assert few["truncated"] is True and few["total"] == 16 and len(few["rows"]) == 5
+        assert {r["row_id"] for r in few["rows"]} <= {r["row_id"] for r in d["rows"]}
+        assert max(r["win"] for r in few["rows"]) == max(wins)
+        assert c.get("/v1/dump?windows=1").json()["total"] == 0  # the open window only: nothing new in it
+        for bad in ("limit=0", "limit=501", "windows=0", "windows=65", "limit=x"):
+            assert c.get("/v1/dump?" + bad).status_code == 422, bad
+
+
+def test_dump_of_the_baseline_is_the_arrival_order() -> None:
+    with app_client("--mode", "baseline", "--window-s", "1", dev=True) as c:
+        post_stored(c, "c" * 32, 10)
+        d = c.get("/v1/dump?limit=500&windows=8").json()
+    assert d["mode"] == "baseline" and d["total"] == 10
+    assert [base64.b64decode(r["payload_b64"])[0] for r in d["rows"]] == list(range(10))
+    ids = [int(r["row_id"]) for r in d["rows"]]
+    assert ids == sorted(ids) and all(r["bucket"] is None and r["seq_enc_b64"] is None for r in d["rows"])
+    assert {w["state"] for w in d["windows"]} == {"arrival"}
 
 
 # ── A5: the files themselves ─────────────────────────────────────────────────
@@ -270,6 +337,88 @@ def test_thirty_messages_two_users_exact_order(page: Page, server: LocalServer) 
         blob = row.payload + row.seq_enc + row.row_id.bytes
         assert not any(n in blob for n in needles)
     assert page.errors() == []
+
+
+@needs_browser
+def test_the_server_view_shows_the_stored_rows_and_the_true_order(page: Page, server: LocalServer) -> None:
+    """S4: the panel is the store in physical order; with the reveal switch each row carries the position
+    of its message in the conversation, which the panes worked out themselves. In a closed window that
+    order is not the order of sending."""
+    marker = uuid.uuid4().hex[:8]
+    texts = [f"{marker} row {i:02d}" for i in range(24)]
+    for i, text in enumerate(texts):
+        page.evaluate(f"VC.chat.send({js('AB'[i % 2])}, {js(text)})")
+    page.wait_for(f"VC.chat.transcript('A').filter(m => m.text.startsWith({js(marker)})).length === 24", timeout=30)
+    assert page.evaluate("document.getElementById('revealSwitch').disabled") is False
+    assert page.evaluate("document.getElementById('modeSwitch').disabled") is True  # S5
+    assert page.evaluate("getComputedStyle(document.querySelector('th.reveal-col')).display") == "none"
+    page.evaluate("document.getElementById('revealSwitch').click()")
+    assert page.evaluate("getComputedStyle(document.querySelector('th.reveal-col')).display") == "table-cell"
+
+    # every message of this test in a closed, re-shuffled window, and read by the panel
+    mine = f"VC.chat.transcript('A').map((m, i) => [m, i + 1]).filter(x => x[0].text.startsWith({js(marker)}))"
+    page.wait_for(f"""(() => {{ const want = new Set({mine}.map(x => x[1]));
+        const got = VC.chat.serverView().rows.filter(r => want.has(r.n));
+        return got.length === 24 && got.every(r => r.state === 'reshuffled'); }})()""", timeout=30)
+    view = page.evaluate("VC.chat.serverView()")
+    known = {n: m for m, n in page.evaluate(mine)}
+    rows = [r for r in view["rows"] if r["n"] in known]
+    assert view["mode"] == "vcloak" and len(rows) == 24
+
+    # the panel is the store: the same rows in the same order
+    stored = [r for w in view["windows"] for r in server.backend.repo.window_rows(w["win"])]
+    assert [r["row_id"] for r in view["rows"]] == [str(r.row_id) for r in stored][-len(view["rows"]):]
+    by_id = {str(r.row_id): r for r in stored}
+    # the overlay is the client's sequence: row -> n -> the text sent as number n of the test
+    assert [known[n]["text"] for n in sorted(known)] == texts
+    for r in rows:
+        m = known[r["n"]]
+        assert base64.b64decode(m["stored"]) == by_id[r["row_id"]].payload
+        assert r["who"] == "AB"[texts.index(m["text"]) % 2] and r["number"] == m["number"] and r["win"] == m["win"]
+    # physical order against send order: the windows are in order, the rows inside them are not
+    shown = [r["n"] for r in rows]
+    assert [r["win"] for r in rows] == sorted(r["win"] for r in rows)
+    assert shown != sorted(shown), "the stored order is the order of sending"
+    assert max(sum(1 for r in rows if r["win"] == w) for w in {r["win"] for r in rows}) >= 6
+
+    # what the audience sees: one table line per row, the truncated fields, the overlay
+    table = page.evaluate("""Array.from(document.querySelectorAll('#dumpBody tr')).map(tr =>
+        Array.from(tr.cells).map(td => td.textContent))""")
+    assert len(table) == len(view["rows"])
+    for line, r in zip(table, view["rows"], strict=True):
+        assert line[1] == r["row_id"][:8] + "…" and line[3].startswith(str(r["win"]))
+        assert re.fullmatch(r"[0-9a-f]{8}…[0-9a-f]{4} \(44 B\)", line[4])
+        assert re.fullmatch(rf"[0-9a-f]{{8}}…[0-9a-f]{{4}} \({PAYLOAD_LEN} B\)", line[5])
+        assert line[6] == (f"#{r['n']} {r['who']}" if r["n"] else "—")
+    note = page.evaluate("document.getElementById('serverNote').textContent")
+    assert "the server did not supply it" in note and "number of rows per window" in note
+    assert marker not in json.dumps(table)
+    page.evaluate("document.getElementById('revealSwitch').click()")
+    assert page.evaluate("getComputedStyle(document.querySelector('th.reveal-col')).display") == "none"
+    assert page.errors() == []
+
+
+@needs_browser
+def test_without_dev_the_page_has_no_rows_and_no_reveal(browser: Browser) -> None:
+    """A3: a server that is not in dev mode gives the page no stored rows, and the reveal switch stays off."""
+    with LocalServer(ARGV, config=session_config(), dev=False) as plain:
+        page = open_app(browser, plain)
+        try:
+            assert page.evaluate("VC.state.live && !VC.state.dev") is True
+            assert page.evaluate("document.getElementById('conn').textContent") == "live"
+            assert page.evaluate("VC.chat.send('A', 'no rows for the page')") >= 0
+            page.wait_for("VC.chat.transcript('B').some(m => m.text === 'no rows for the page')", timeout=20)
+            page.evaluate("VC.chat.refreshDump()")
+            assert page.evaluate("document.getElementById('revealSwitch').disabled") is True
+            assert page.evaluate("document.getElementById('modeSwitch').disabled") is True
+            assert page.evaluate("document.querySelectorAll('#dumpBody tr').length") == 0
+            assert page.evaluate("VC.chat.serverView().rows.length") == 0
+            assert "--dev only" in page.evaluate("document.getElementById('serverNote').textContent")
+            assert page.errors() == []  # the page never asked for the rows
+            status = page.evaluate("VC.api.raw('GET', '/v1/dump?limit=5').then(r => [r.status, r.body.error])")
+            assert status == [403, "dev_only"]
+        finally:
+            page.close()
 
 
 @needs_browser

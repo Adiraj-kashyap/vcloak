@@ -333,7 +333,7 @@
                 if (accept(conv, m)) {
                   var mine = m.sender === conv.role;
                   out.push({ sender: mine ? self.username : conv.peer, mine: mine, session: m.session,
-                             number: m.number, text: m.text, win: win });
+                             number: m.number, text: m.text, win: win, stored: cr.b64(payload) });
                 } else {
                   conv.repeats += 1;
                 }

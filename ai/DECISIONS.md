@@ -237,3 +237,24 @@ sent before the first one it saw of a session (ISSUE-28 point 2 applies to it mo
 reader). Script running in the page can use the keys while it runs; the CSP is the defence against that, and it is
 untested against a real injection. The page needs a browser with X25519 in WebCrypto and a secure context (https,
 or http on loopback); it was run in Chrome only.
+
+## ADR-021 — Server view: `/v1/dump` hands out stored rows only; the true order is worked out in the page; the panel spans closed windows — ACCEPTED — 2026-10-12
+Context: M13 S4 asks for a panel with the stored rows "for the current window" and a dev toggle that overlays each
+row's real send index. Two things in that sentence do not hold in the system as built. (a) The open window is not
+shuffled as a whole: the scheduler stores one permuted batch per epoch and re-shuffles a window only after it closed
+(ADR-004), so rows typed seconds apart lie in arrival order while the window is open. A panel of the current window
+alone would show the order of sending. (b) The server could produce the send index only by opening `seq_enc` with
+`K_seq` for a debug route.
+Decision: (1) `GET /v1/dump?limit=&windows=` (with `--dev`; 403 `dev_only` otherwise, also for malformed queries)
+returns the rows of the newest windows in physical order with the state of each window (`open`, `closing`,
+`reshuffled`, `epoch`, `arrival`), read through `Repo.window_rows` in the engine thread. It uses no key. (2) The
+overlay is computed by the page: a verified message keeps the ciphertext the server returned for it, and a stored
+row is matched to a message by its payload bytes. The number shown is the position in the conversation as a pane
+read and verified it since the page opened, with the sender. (3) The panel shows the windows of the last 240 s (at
+least 2, at most 64 windows, at most 200 rows), marks the state of each row's window and says in its note that the
+open window still lies in epoch order. (4) Without `--dev` the page does not ask for the rows at all. (5) The M10
+contract test that expected 404 for `/v1/dump` now expects the 403.
+Consequences: the server never decrypts a sequence number for the demo, and the overlay doubles as a statement that
+only the clients know the order. The overlay is empty for rows no pane has read (after a reload, other
+conversations). The dump carries full payloads (4124 B each), so the page fetches up to about 1 MB a second on
+loopback in dev. The route is unauthenticated in dev (ISSUE-30).

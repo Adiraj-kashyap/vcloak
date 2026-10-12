@@ -693,3 +693,19 @@ BLOCKS: none   SEVERITY: low   OPENED: 2026-10-12 session 25
 5. On a live server the page footer still reads "data: seed" and the strip reads "cpu": both come from the prototype
    and are wired in S6 and M18.
 Proposed: point 1 in M18; points 2-4 are limitations to state in docs/DEMO.md and M20; point 5 closes with S6.
+
+### ISSUE-30 [OPEN] M13 server view: `/v1/dump` is open in dev; what the panel does not show or test
+BLOCKS: none   SEVERITY: low   OPENED: 2026-10-12 session 26
+1. With `--dev` `GET /v1/dump` needs no session. `--dev --sessions --host <not loopback>` is accepted by `serve`,
+   and would hand the stored rows to anyone who can reach the port. The rows are what the threat model already gives
+   the attacker, and `--dev` uses the public key, but the route should refuse a non-loopback client or `serve` should
+   refuse that combination.
+2. The baseline dump has `row_id`, `win` and `payload` only: `BaselineStore.dump()` does not return the `ts` and
+   `conv` columns the table holds in the clear. S5 needs them for an honest baseline panel and caption.
+3. The panel fetches whole payloads (4124 B a row, up to 200 rows) once a second; fine on loopback, not measured.
+4. The overlay forgets at a reload and shows "—" for rows of other conversations; it numbers messages in the order
+   one pane read them, which is verified per sender only (ISSUE-28 point 2).
+5. Not exercised: the panel with `--visible-round epoch` in a browser (the state `epoch` is only reached in code
+   review), the `closing` state (it lasts a few epochs; no test waits for it), more than 200 rows, PostgreSQL behind
+   the page (the browser tests use SQLite), a window in which the permutation happens to keep the order.
+Proposed: points 1 and 2 in S5 (it touches the same routes); 3-5 stay as stated limits in docs/DEMO.md.

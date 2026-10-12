@@ -1,7 +1,7 @@
 # Demo guide
 
-How to show V-cloak running. This file grows with the frontend: the chat section is M13 (steps S1-S3 so far);
-the server view, the mode switch and the live strip are added by S4-S6, the dashboard by M18.
+How to show V-cloak running. This file grows with the frontend: the chat section is M13 (steps S1-S4 so far);
+the mode switch and the live strip are added by S5-S6, the dashboard by M18.
 
 ## 1. The chat
 
@@ -48,6 +48,35 @@ What that does and does not give:
   only satisfies the login route of the demo accounts; a real client would ask the user for it.
 - The server forgets accounts at a restart (ISSUE-26). The panes then register the same names again by themselves.
 
+### What the server stores (presenter note 1)
+The panel under the panes is `GET /v1/dump`: the rows of the last windows exactly as the store holds them, top to
+bottom in physical order. It needs `--dev`; without it the route answers 403, the panel says so and "Reveal true
+order" stays disabled.
+
+| Column | What it is |
+|---|---|
+| `row_id` | A random UUID per row, new again after the re-shuffle. No serial number. |
+| `bucket` | `PRF(K_bkt, conversation) mod BUCKETS`: all rows of one conversation share it, and so do other conversations. |
+| `win` | The window the row was stored in, with its state: `open`, `closing` or `re-shuffled`. |
+| `seq_enc` | 44 bytes: the position of the message, sealed under the server's `K_seq` (first and last bytes shown). |
+| `payload` | The client's ciphertext, one fixed size for every message (first and last bytes shown). |
+| `sent` (Reveal true order) | `#n U`: the row is message n of the conversation, sent by user U. |
+
+How to show it: send eight or so messages within one window, wait for the window to close (`--window-s 5` makes that
+quick), switch "Reveal true order" on. The rows of the closed window carry numbers that are not in order.
+
+What to say, and what not to:
+- The revealed number does not come from the server. Each pane keeps the ciphertext of every message it read back and
+  verified; the page looks up each stored payload among them. A row shows "—" when no pane has read it since the page
+  was opened (after a reload, or a row of another conversation).
+- The **open** window is not shuffled as a whole yet: each epoch is permuted, but the epochs lie in arrival order
+  until the window closes. Messages typed seconds apart are in different epochs, so in the open window the revealed
+  numbers ascend. That is the design (the re-shuffle of a closed window is what hides the order), and the panel's
+  note says so. Do not point at the open window as the result.
+- The panel still shows what the store leaks: which window a row is in, how many rows a window holds, and the bucket.
+- With few rows a permutation can leave some rows where they were; the order is a pseudo-random permutation keyed by
+  the window, not a guarantee that every row moves.
+
 ### Not shown yet
-The stored rows under the panes, "Reveal true order" and the baseline switch need the dev routes of S4 and S5; until
-then the panel says that the server does not hand out its rows, and both switches are disabled on a live server.
+The baseline switch needs the dev route of S5 and stays disabled on a live server; the strip at the top shows the
+window and the queue but not yet the epoch or the compute backend (S6).

@@ -1,0 +1,51 @@
+{
+  "run_id": "20261012-170743_M13_web_server_view_s4",
+  "module": "M13",
+  "step": "S4",
+  "owner": "Abhishek",
+  "git_sha": "0f0f3a88de5002e84da5cbe70ecd7372487dee00",
+  "dirty": true,
+  "command": "pytest -q; ruff check; check_*; headless page check of the server view",
+  "seed": 0,
+  "quick": false,
+  "params": {},
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261012-170743",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U"
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791805064.0804489
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791806231.081548
+  },
+  "outputs": [
+    "a5_grep.txt",
+    "chat_file_demo.png",
+    "check_metrics.txt",
+    "check_oblivious.txt",
+    "check_secrets.txt",
+    "file_demo_check.json",
+    "file_demo_check.py",
+    "g10_rerun.txt",
+    "page_checks.json",
+    "page_checks.py",
+    "pytest_all.txt",
+    "pytest_m13.txt",
+    "pytest_skips.txt",
+    "ruff.txt",
+    "server_view_light.png",
+    "server_view_reveal_dark.png",
+    "server_view_reveal_light.png"
+  ],
+  "status": "OK",
+  "notes": "M13 S4: full suite 1966 passed, 675 skipped; 21 web app tests in headless Chrome (none skipped); /v1/dump and the server-view panel checked against the store; the file:// demo path re-checked; screenshots of the panel with and without the revealed order. Correctness only, numpy engine, SQLite: no metric."
+}

@@ -108,6 +108,26 @@ public parameters, the public counters of `/healthz`, and what the web page need
 `sessions` say how the service was started; `payload_len` is the size every `payload_b64` must decode to; `slots` is
 null in baseline mode. `gpu` is null for now (the provenance of the compute backend is added with the live strip).
 
+### `GET /v1/dump` (M13, `--dev` only)
+The stored rows as the store holds them: what someone with a copy of the database sees. Without `--dev` the answer is
+`403 {"error": "dev_only"}` whatever is asked. It needs no session: `--dev` is for a throw-away store on a loopback
+host. Query: `limit` (rows, 1..500, default 50) and `windows` (how many windows back from the open one, 1..64,
+default 4). Answer `200`:
+
+```json
+{"mode": "vcloak", "visible_round": "window", "win": 29363120,
+ "windows": [{"win": 29363119, "state": "reshuffled", "rows": 8}, {"win": 29363120, "state": "open", "rows": 1}],
+ "total": 9, "truncated": false,
+ "rows": [{"pos": 0, "win": 29363119, "row_id": "3d5709fe-…", "bucket": 18, "seq_enc_b64": "…", "payload_b64": "…"}]}
+```
+
+`rows` are in physical order, one window after the other (oldest first); `pos` is the position in this answer. When
+more than `limit` rows are in the windows asked for, the newest windows are kept and `truncated` is true. `state` of
+a window: `open` (still filling: each epoch is permuted, the epochs lie in arrival order), `closing` (closed, its
+re-shuffle has not been written yet), `reshuffled`, `epoch` (`--visible-round epoch`: never re-shuffled), `arrival`
+(baseline: `row_id` is the serial id, `bucket` and `seq_enc_b64` are null). No key is used to build the answer, so
+it does not say which row is which message; the page works that out from what its own clients read (docs/DEMO.md).
+
 ### `GET /app/` (M13)
 The web app: the files of `web/` as they are on disk (`/app` redirects to `/app/`). Every answer under `/app` carries
 `Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'; style-src-attr 'unsafe-inline';
@@ -260,6 +280,7 @@ there is no forward secrecy and no ratchet (ISSUE-28).
 | 503 | `{"error": "queue_full"}` with `Retry-After: 1` | The submission queue is at its bound (16 epochs of `SLOTS` by default), or the service is shutting down. |
 | 503 | `{"error": "not_stored"}` with `Retry-After: 1` | `ack: stored` only: the service stopped before the message was written. |
 | 504 | `{"error": "ack_timeout"}` | `ack: stored` only: the message is still queued after every epoch the queue could hold had time to close (at least 5 s). It is not withdrawn. |
+| 403 | `{"error": "dev_only"}` | `GET /v1/dump` on a service started without `--dev`. |
 | 503 | `{"error": "candidate_overflow"}` | A bucket-round holds more than `CAND_K` rows. `CAND_K` is a capacity limit: the read fails instead of returning a truncated conversation (ADR-014). |
 
 ## Logging

@@ -63,6 +63,7 @@
         VC.state.dev = !!s.dev;
         VC.state.sessions = !!s.sessions;
         VC.state.payloadLen = s.payload_len;
+        VC.state.windowS = s.window_s;
         if (s.mode) VC.state.mode = s.mode;
         VC.state.backend = (s.gpu && s.gpu.backend) || "cpu";
         VC.state.runner = (s.gpu && s.gpu.runner) || "local";
@@ -89,8 +90,8 @@
         .catch(function () { return DEMO.dashboard; });
     },
 
-    dump: function (limit) {
-      return get("/v1/dump?limit=" + (limit || 50)).catch(function () {
+    dump: function (limit, windows) {
+      return get("/v1/dump?limit=" + (limit || 50) + (windows ? "&windows=" + windows : "")).catch(function () {
         /* a live server that does not hand out its rows: say so, never show demo rows in their place */
         if (VC.state.live) return { rows: [], unavailable: true };
         var d = JSON.parse(JSON.stringify(DEMO.dump || { rows: [] }));

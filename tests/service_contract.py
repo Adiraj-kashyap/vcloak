@@ -266,8 +266,11 @@ class ServiceContract:
 
     def test_no_interactive_docs_and_unknown_routes(self, harness: Harness) -> None:
         async def scenario(client: httpx.AsyncClient) -> None:
-            for path in ("/docs", "/redoc", "/v1/dump", "/v1/messages/1"):
+            for path in ("/docs", "/redoc", "/v1/messages/1"):
                 assert (await client.get(path)).status_code == 404
+            # the stored rows are a dev route (M13 S4): without --dev it answers 403 and gives nothing
+            refused = await client.get("/v1/dump")
+            assert refused.status_code == 403 and refused.json() == {"error": "dev_only"}
             assert (await client.get("/v1/messages")).status_code == 405
 
         harness.serve(scenario)

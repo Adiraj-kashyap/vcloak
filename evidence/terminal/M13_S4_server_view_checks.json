@@ -1,0 +1,132 @@
+{
+ "browser": "Chrome/154.0.8037.98",
+ "live_ready": true,
+ "view": {
+  "mode": "vcloak",
+  "windows_with_rows": [
+   {
+    "win": 0,
+    "state": "reshuffled",
+    "rows": 8
+   },
+   {
+    "win": 1,
+    "state": "open",
+    "rows": 1
+   }
+  ],
+  "rows_physical_order": [
+   {
+    "pos": 0,
+    "win": 0,
+    "state": "reshuffled",
+    "row_id": "b8fc9ed6",
+    "revealed": "#2 B"
+   },
+   {
+    "pos": 1,
+    "win": 0,
+    "state": "reshuffled",
+    "row_id": "4eb7cb52",
+    "revealed": "#6 B"
+   },
+   {
+    "pos": 2,
+    "win": 0,
+    "state": "reshuffled",
+    "row_id": "0ec68033",
+    "revealed": "#1 A"
+   },
+   {
+    "pos": 3,
+    "win": 0,
+    "state": "reshuffled",
+    "row_id": "f4993948",
+    "revealed": "#7 A"
+   },
+   {
+    "pos": 4,
+    "win": 0,
+    "state": "reshuffled",
+    "row_id": "b602facd",
+    "revealed": "#4 B"
+   },
+   {
+    "pos": 5,
+    "win": 0,
+    "state": "reshuffled",
+    "row_id": "84eb7bf8",
+    "revealed": "#3 A"
+   },
+   {
+    "pos": 6,
+    "win": 0,
+    "state": "reshuffled",
+    "row_id": "44038760",
+    "revealed": "#5 A"
+   },
+   {
+    "pos": 7,
+    "win": 0,
+    "state": "reshuffled",
+    "row_id": "a362b235",
+    "revealed": "#8 B"
+   },
+   {
+    "pos": 8,
+    "win": 1,
+    "state": "open",
+    "row_id": "3c3802fb",
+    "revealed": "#9 A"
+   }
+  ],
+  "revealed_order": [
+   2,
+   6,
+   1,
+   7,
+   4,
+   3,
+   5,
+   8,
+   9
+  ],
+  "send_order": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9
+  ]
+ },
+ "checks": {
+  "the panel shows the rows of the store in the store's order": true,
+  "every row is matched to a message by the panes": true,
+  "the panes read the conversation in the order sent": true,
+  "the displayed order differs from the send order": true,
+  "no message text is in the table": true,
+  "the reveal column is visible": true
+ },
+ "note": "V‑cloak. Random row ids, a bucket, a coarse window id, no timestamp. A closed window has been re-shuffled as a whole: its physical order is the engine's permutation, not the order anyone typed. The open window is still filling: each epoch is permuted, but its epochs lie in arrival order until the window closes. Showing 9 of 9 stored row(s) in the last 48 window(s). What still shows: the window of a row, the number of rows per window, and the bucket. The revealed number is the position of the message in the conversation as the panes read and verified it; the server did not supply it and cannot. “—” is a row no pane has read since this page opened.",
+ "table": [
+  "1 | b8fc9ed6… | 32 | 358361123re-shuffled | 3ebf3396…8987 (44 B) | 3a55c877…5642 (4124 B) | #2 B",
+  "2 | 4eb7cb52… | 32 | 358361123re-shuffled | a418b738…b525 (44 B) | 95fe72c7…cc0b (4124 B) | #6 B",
+  "3 | 0ec68033… | 32 | 358361123re-shuffled | 402defb1…50dd (44 B) | 37a165ec…9cd2 (4124 B) | #1 A",
+  "4 | f4993948… | 32 | 358361123re-shuffled | 502901b7…1780 (44 B) | c9569334…a4ce (4124 B) | #7 A",
+  "5 | b602facd… | 32 | 358361123re-shuffled | da07d9d8…4ecf (44 B) | c13da6e7…24bc (4124 B) | #4 B",
+  "6 | 84eb7bf8… | 32 | 358361123re-shuffled | 0354d625…e5b4 (44 B) | 11d92aee…f3ea (4124 B) | #3 A",
+  "7 | 44038760… | 32 | 358361123re-shuffled | 6234cc53…be09 (44 B) | 70d01b5d…3fb0 (4124 B) | #5 A",
+  "8 | a362b235… | 32 | 358361123re-shuffled | 62b959fe…1d33 (44 B) | ae71581c…0322 (4124 B) | #8 B",
+  "9 | 3c3802fb… | 32 | 358361124open | d3a711c3…a16a (44 B) | af8122f4…6fe9 (4124 B) | #9 A"
+ ],
+ "switches": {
+  "reveal_disabled": false,
+  "mode_disabled": true
+ },
+ "errors": [],
+ "ok": true
+}

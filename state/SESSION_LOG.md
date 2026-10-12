@@ -604,3 +604,28 @@
   injected script; token expiry and 503/504 in the browser; the page behind TLS; a CUDA engine behind the service
 - Commit: 3126fea
 - Next: M13 S4 ; human action: none. Keep Docker Desktop running when you type continue
+
+## Session 26 — 2026-10-12 17:27 — M13 Frontend: chat + server view — owner:Abhishek
+- Steps: S4→S4 (status after: IN_PROGRESS; checkpoint S5)
+- Did: src/vcloak/service/web.py: `GET /v1/dump?limit=&windows=` (403 `dev_only` without --dev), the rows of the newest
+  windows in physical order with the state of each window; `stored()` on VcloakBackend (app.py) and BaselineBackend.
+  web/js/chat.js: the panel on the live dump (truncated hex fields, window state, note on what still leaks), "Reveal
+  true order" worked out in the page from the ciphertexts the panes read and verified (client.js keeps them), refresh
+  on the panes' one-second schedule, no request at all without dev; api.js, app.css. tests/integration/test_web_app.py
+  (+5: 21); tests/service_contract.py (404 → 403); scripts/demo_two_users.py (`LocalServer(dev=)`); docs/API.md,
+  docs/DEMO.md ("What the server stores").
+- Evidence: runs/20261012-170743_M13_web_server_view_s4 (pytest_all.txt 1966 passed, 675 skipped; pytest_m13.txt 21 passed in Chrome;
+  page_checks.json; file_demo_check.json; server_view_reveal_light.png, server_view_reveal_dark.png, server_view_light.png; ruff clean;
+  check_* PASS; a5_grep.txt empty; g10_rerun.txt); evidence/terminal/M13_S4_*
+- Metrics added: none (nothing measured: correctness only, numpy engine)
+- Decisions: ADR-021 (dump without a key, true order computed by the page, the panel spans closed windows)
+- Issues: opened ISSUE-30 (dump open in dev, baseline dump lacks ts/conv, untested panel states; low); closed none
+- Deviations from spec: the panel shows the newest windows, not only the current one, and the S4 check is made on
+  closed windows; the overlay is client-side; the M10 contract test changed from 404 to 403 (Amendments of
+  ai/modules/M13)
+- Found on the way: the open window lies in epoch order until it closes, so a panel of the current window alone would
+  have shown the order of sending and the check would have passed only by luck of two messages sharing an epoch.
+- Not verified: S5, S5b, S6 (not started); audit item A6; the panel with --visible-round epoch, in the `closing` state, with more than
+  200 rows or on PostgreSQL; the page in Firefox or Safari; a CUDA engine behind the service
+- Commit: (pending)
+- Next: M13 S5 ; human action: none. Keep Docker Desktop running when you type continue

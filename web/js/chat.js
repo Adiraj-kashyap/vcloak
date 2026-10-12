@@ -199,8 +199,9 @@
     }).then(function () {
       describeKeys();
       USERS.forEach(function (u) { enable(u, true); document.getElementById("msgs" + u).innerHTML = ""; renderLive(u); });
-      setInterval(readAll, READ_EVERY_MS);
-      return readAll().then(function () { return true; });
+      // the panel follows the panes on the same fixed schedule
+      setInterval(function () { readAll().then(refreshDump); }, READ_EVERY_MS);
+      return readAll().then(refreshDump).then(function () { return true; });
     }).catch(function (e) {
       USERS.forEach(function (u) { alertPane(u, "Not connected — " + (e.message || e)); });
       return false;
@@ -208,35 +209,136 @@
   }
 
   /* ── the server view ── */
+  var DUMP_ROWS = 200;
+  var DUMP_SPAN_S = 240;   // how far back the panel looks, in seconds of windows
+  var view = { rows: [], windows: [], sig: null };
+
   function shortId(s) { return String(s).length > 13 ? String(s).slice(0, 8) + "…" : String(s); }
+  function unpad(b64) { return String(b64).replace(/=+$/, ""); }
+
+  /* The first and last bytes of a stored field, in hex. */
+  function shortHex(b64) {
+    if (b64 === null || b64 === undefined) return "—";
+    var raw;
+    try { raw = atob(b64); } catch (e) { return "?"; }
+    function hex(from, to) {
+      var out = "";
+      for (var i = from; i < to; i++) out += ("0" + raw.charCodeAt(i).toString(16)).slice(-2);
+      return out;
+    }
+    return raw.length <= 6 ? hex(0, raw.length) : hex(0, 4) + "…" + hex(raw.length - 2, raw.length) + " (" + raw.length + " B)";
+  }
+
+  /* Which stored payload is which message: from what a pane read back and verified with its own key,
+   * never from the server. n is the position in that pane's conversation since the page opened. */
+  function truth() {
+    var best = null;
+    USERS.forEach(function (u) {
+      var p = panes[u];
+      if (p && (!best || p.messages.length > best.p.messages.length)) best = { u: u, p: p };
+    });
+    var map = {};
+    if (!best) return map;
+    best.p.messages.forEach(function (m, i) {
+      if (!m.stored) return;
+      var other = best.u === "A" ? "B" : "A";
+      map[unpad(m.stored)] = { n: i + 1, who: m.mine ? best.u : other, number: m.number };
+    });
+    return map;
+  }
+
+  /* The rows of the panel, the same shape live and demo. */
+  function dumpRows(d) {
+    if (!VC.state.live) {
+      return (d.rows || []).map(function (r, i) {
+        return { pos: i, row_id: r.row_id, bucket: r.bucket, win: r.win, state: "", seq_enc: r.seq_enc,
+                 payload: r.payload, sent: r.sent !== undefined ? { n: r.sent } : null };
+      });
+    }
+    var states = {}, known = truth();
+    (d.windows || []).forEach(function (w) { states[w.win] = w.state; });
+    return (d.rows || []).map(function (r) {
+      return { pos: r.pos, row_id: r.row_id, bucket: r.bucket === null ? "—" : r.bucket, win: r.win,
+               state: states[r.win] || "", seq_enc: shortHex(r.seq_enc_b64), payload: shortHex(r.payload_b64),
+               payload_b64: r.payload_b64, sent: known[unpad(r.payload_b64)] || null };
+    });
+  }
+
+  var STATE_LABEL = { open: "open", closing: "closing", reshuffled: "re-shuffled", epoch: "epoch round", arrival: "" };
+
+  function serverNote(d, rows) {
+    var note = document.getElementById("serverNote");
+    if (!note) return;
+    note.textContent = "";
+    function say(strong, text) {
+      if (strong) note.appendChild(VC.el("b", "", strong));
+      note.appendChild(document.createTextNode(text));
+    }
+    if (d.unavailable) {
+      say("", VC.state.dev
+        ? "The server gave no answer to GET /v1/dump."
+        : "This server does not hand out its stored rows: GET /v1/dump exists with --dev only.");
+      return;
+    }
+    var mode = d.mode || VC.state.mode;
+    if (mode === "baseline") {
+      say("Unprotected baseline.", " Rows carry a sequential id and sit in arrival order, so the row order is the conversation order — no key needed to read it.");
+    } else if (!VC.state.live) {
+      say("V‑cloak.", " Random UUIDs, a shared bucket, a coarse window id, and no timestamp. The physical order of these rows is the engine's permutation, not the order anyone typed.");
+    } else if (d.visible_round === "epoch") {
+      say("V‑cloak, epoch rounds.", " Random row ids, a bucket, a round id per epoch, no timestamp. Each epoch is permuted on its own and never re-shuffled, so the rounds still lie in arrival order.");
+    } else {
+      say("V‑cloak.", " Random row ids, a bucket, a coarse window id, no timestamp. A closed window has been re-shuffled as a whole: its physical order is the engine's permutation, not the order anyone typed. The open window is still filling: each epoch is permuted, but its epochs lie in arrival order until the window closes.");
+    }
+    if (VC.state.live) {
+      say("", " Showing " + rows.length + " of " + d.total + " stored row(s) in the last " + (d.windows || []).length +
+          " window(s). What still shows: the window of a row, the number of rows per window, and the bucket.");
+      if (VC.state.reveal) {
+        say("", " The revealed number is the position of the message in the conversation as the panes read and verified it; " +
+            "the server did not supply it and cannot. “—” is a row no pane has read since this page opened.");
+      }
+    }
+  }
+
+  function paintDump(d) {
+    var body = document.getElementById("dumpBody");
+    if (!body) return;
+    var rows = dumpRows(d);
+    var sig = JSON.stringify([d.mode, d.unavailable, d.total, VC.state.reveal, rows.map(function (r) {
+      return [r.row_id, r.state, r.sent && r.sent.n];
+    })]);
+    view.rows = rows;
+    view.windows = d.windows || [];
+    view.mode = d.mode || VC.state.mode;
+    if (sig === view.sig) return;       // nothing moved: leave the table alone
+    view.sig = sig;
+    body.textContent = "";
+    rows.forEach(function (r, i) {
+      var tr = VC.el("tr", r.state ? "win-" + r.state : "");
+      tr.appendChild(VC.el("td", "", String(i + 1)));
+      var id = VC.el("td", "", shortId(r.row_id));
+      id.title = String(r.row_id);
+      tr.appendChild(id);
+      tr.appendChild(VC.el("td", "", String(r.bucket)));
+      var win = VC.el("td", "", String(r.win));
+      if (STATE_LABEL[r.state]) win.appendChild(VC.el("span", "winstate", STATE_LABEL[r.state]));
+      tr.appendChild(win);
+      tr.appendChild(VC.el("td", "", String(r.seq_enc)));
+      tr.appendChild(VC.el("td", "", String(r.payload)));
+      var sent = VC.el("td", "reveal-col sent-badge", r.sent ? "#" + r.sent.n + (r.sent.who ? " " + r.sent.who : "") : "—");
+      if (r.sent && r.sent.who) sent.title = "Message " + r.sent.number + " of user " + r.sent.who + ", as the panes verified it";
+      tr.appendChild(sent);
+      body.appendChild(tr);
+    });
+    serverNote(d, rows);
+  }
 
   function refreshDump() {
-    VC.api.dump(50).then(function (d) {
-      var body = document.getElementById("dumpBody");
-      var note = document.getElementById("serverNote");
-      if (!body) return;
-      body.innerHTML = "";
-      (d.rows || []).forEach(function (r, i) {
-        var tr = document.createElement("tr");
-        tr.innerHTML =
-          "<td>" + (i + 1) + "</td>" +
-          "<td>" + esc(shortId(r.row_id)) + "</td>" +
-          "<td>" + esc(r.bucket) + "</td>" +
-          "<td>" + esc(r.win) + "</td>" +
-          "<td>" + esc(r.seq_enc) + "</td>" +
-          "<td>" + esc(r.payload) + "</td>" +
-          "<td class='reveal-col sent-badge'>" + (r.sent !== undefined ? "#" + r.sent : "—") + "</td>";
-        body.appendChild(tr);
-      });
-      if (!note) return;
-      if (d.unavailable) {
-        note.textContent = "This server does not hand out its stored rows (GET /v1/dump gave no answer).";
-        return;
-      }
-      note.innerHTML = VC.state.mode === "baseline"
-        ? "<b>Unprotected baseline.</b> Rows carry a sequential id and sit in arrival order, so the row order <i>is</i> the conversation order — no key needed to read it."
-        : "<b>V&#8209;cloak.</b> Random UUIDs, a shared bucket, a coarse window id, and no timestamp. The physical order of these rows is the GPU's permutation, not the order anyone typed.";
-    });
+    var windows = VC.state.live && VC.state.windowS
+      ? Math.max(2, Math.min(64, Math.ceil(DUMP_SPAN_S / VC.state.windowS))) : 0;
+    // without --dev the route answers 403: the page does not ask
+    if (VC.state.live && !VC.state.dev) return Promise.resolve(paintDump({ rows: [], unavailable: true }));
+    return VC.api.dump(DUMP_ROWS, windows).then(paintDump);
   }
 
   function init() {
@@ -271,13 +373,14 @@
     if (revealSwitch) revealSwitch.addEventListener("change", function () {
       document.body.classList.toggle("reveal", this.checked);
       VC.state.reveal = this.checked;
+      refreshDump();
     });
 
     if (live) {
-      // the store mode and the true order are the server's to give: both switches act on the live
-      // server only through its dev routes
+      // the store mode is the server's to change (its dev route, S5). The true order needs the stored
+      // rows, which the server hands out with --dev only.
       if (modeSwitch) modeSwitch.disabled = true;
-      if (revealSwitch) revealSwitch.disabled = true;
+      if (revealSwitch) revealSwitch.disabled = !VC.state.dev;
       ready = startLive();
       refreshDump();
       return;
@@ -304,9 +407,17 @@
     panes: panes,
     send: sendLive,
     read: readAll,
+    /* what the panel shows now: one entry per row, with the overlay of the reveal switch */
+    serverView: function () {
+      return { mode: view.mode, windows: view.windows, rows: view.rows.map(function (r) {
+        return { pos: r.pos, row_id: r.row_id, win: r.win, state: r.state, payload_b64: r.payload_b64,
+                 n: r.sent ? r.sent.n : null, who: r.sent ? r.sent.who || null : null,
+                 number: r.sent && r.sent.number !== undefined ? r.sent.number : null };
+      }) };
+    },
     transcript: function (u) {
       return panes[u].messages.map(function (m) {
-        return { sender: m.sender, mine: m.mine, session: m.session, number: m.number, text: m.text, win: m.win };
+        return { sender: m.sender, mine: m.mine, session: m.session, number: m.number, text: m.text, win: m.win, stored: m.stored };
       });
     }
   };

@@ -734,3 +734,34 @@ Notes:
 - The gap test simulates the withholding server inside the page (the pane's fetch is wrapped), not in the store.
 - The screenshots are in the run directory, not in evidence/screens: that set is written by capture_evidence.py (S5b).
 - Not verified: listed in SESSION_LOG session 25 and ISSUE-29 point 4.
+
+## Audit M13 — 2026-10-12 — session 26 — result: PASS for S4 (checkpoint; module not complete: A6 open, S5-S6 not started)
+| Item | Result | Evidence |
+|---|---|---|
+| A1 nothing in the chat path decrypts on the server | PASS | runs/20261012-170743_M13_web_server_view_s4/pytest_m13.txt: test_thirty_messages_two_users_exact_order (unchanged); `/v1/dump` is built without a key (src/vcloak/service/web.py), and test_the_server_view_shows_the_stored_rows_and_the_true_order finds the marker of the 24 messages nowhere in the table |
+| A2 the device key cannot be exported | PASS | runs/20261012-170743_M13_web_server_view_s4/pytest_m13.txt: test_the_private_keys_cannot_be_exported (unchanged) |
+| A3 /v1/dump and the reveal toggle disabled without --dev | PASS | runs/20261012-170743_M13_web_server_view_s4/pytest_m13.txt: test_dump_is_refused_without_dev (403 `dev_only` for four queries, one of them malformed) and test_without_dev_the_page_has_no_rows_and_no_reveal (Chrome: switch disabled, no rows, no request made, a direct request gets 403); runs/20261012-170743_M13_web_server_view_s4/pytest_all.txt: the service contract expects the 403 on both backends and both stores |
+| A4 the app loads from file:// with demo data | PASS | runs/20261012-170743_M13_web_server_view_s4/file_demo_check.json and chat_file_demo.png (protocol file:, chip "demo data", 8 sample rows, the reveal and baseline switches work on the sample rows, no page error) |
+| A5 CSP present, no inline script, no CDN | PASS | runs/20261012-170743_M13_web_server_view_s4/pytest_m13.txt (the CSP and source tests), runs/20261012-170743_M13_web_server_view_s4/a5_grep.txt empty |
+| A6 capture_evidence.py | NOT DONE | step S5b |
+| G1 | PASS | runs/20261012-170743_M13_web_server_view_s4/pytest_all.txt (1966 passed, 675 skipped); runs/20261012-170743_M13_web_server_view_s4/pytest_skips.txt: 674 skips name CUDA/CuPy/GPU, 1 is tests/unit/test_oracle_chacha.py:82; no PostgreSQL skip, no browser skip. First run of the session had 4 failures (M10 contract expected 404 for /v1/dump): the expectation was changed to the 403 of A3 (ADR-021 (5)) |
+| G2 | PASS | runs/20261012-170743_M13_web_server_view_s4/check_metrics.txt (331 rows, 0 problems). No metric added; the numbers the panel shows are row fields and counts from /v1/dump |
+| G2b | PASS | nothing timed; manifest says backend numpy |
+| G3 | PASS | runs/20261012-170743_M13_web_server_view_s4/check_oblivious.txt (11 files, 0 findings); no kernel source changed |
+| G4 | PASS | runs/20261012-170743_M13_web_server_view_s4/check_secrets.txt (1061 files, 0 key-like runs), run after the evidence files were written |
+| G5 | N/A | no GPU twin |
+| G6 | PARTIAL | added: /v1/dump, the server-view panel. Missing until S5-S5b: /v1/mode, scripts/capture_evidence.py |
+| G7 | PASS | checked after the closing commit |
+| G8 | PASS | STATE: M13 IN_PROGRESS, step S5, sessions 2; next_unit M13 |
+| G9 | PASS | SESSION_LOG session 26, this entry, ISSUE-30 opened, ADR-021, M13 Amendments |
+| G10 | PASS | manifest valid; runs/20261012-170743_M13_web_server_view_s4/page_checks.py run twice with the same outcome (page_checks.json, g10_rerun.txt: six checks true, no page error) |
+Notes:
+- The S4 check was made on closed, re-shuffled windows. In the open window rows of different epochs lie in arrival
+  order by design, and the panel says so; a reader of the screenshots should not take the open window as the result.
+- "The overlay matches the client's true sequence" is checked as: stored row -> revealed number -> the text the test
+  sent at that position, with the row's payload bytes equal to what the pane read. The sender waits for `stored`
+  between messages, so the send order is the order of awaited sends; concurrent senders are not tested.
+- One run of the order check has a chance of about 1/k! per window of k rows of meeting an unchanged order; the test
+  requires a window of at least 6 rows among 24 messages.
+- Browser: Chrome headless only; uvicorn inside the test process on loopback, public development key, SQLite.
+- Not verified: listed in SESSION_LOG session 26 and ISSUE-30 point 5.
