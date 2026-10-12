@@ -80,8 +80,7 @@ gpu_job:                    # set by the gpu-job skill
 - **M19 is calendar-bound.** Once M16 has real results, treat M19 as the highest-priority unmet unit
   even if other modules look more urgent — criterion 9 awards nothing without a dated submission proof.
 - The five quick-tagged `P-*` rows from M06 are smoke values, superseded by the M07 rows of session 20261011-213139.
-- Kaggle unpacks an uploaded job.zip into a folder. Cell 2 of the notebook finds either form; in a GPU JOB READY
-  issue never tell the human to set a path to job.zip on Kaggle.
+- Kaggle unpacks an uploaded job.zip into a folder: in a GPU JOB READY issue never give a path to job.zip on Kaggle.
 - M07 results are one runner session (20261011-213139, T4 / Xeon 2.00GHz x4). 65 of its 213 rows are UNSTABLE
   (ISSUE-15); never quote K-BITONIC-BW-PCT below 2^18 as bandwidth (ISSUE-14). Figures and notes are regenerated
   with `python -m vcloak.bench.report`, never edited by hand.
@@ -117,8 +116,6 @@ gpu_job:                    # set by the gpu-job skill
 - SEC-DPOP-VERIFY-US is a laptop-CPU time of the session layer, not a GPU or end-to-end number: M15 must say whether
   its runs had `--sessions` on and how many sockets were open (ISSUE-27).
 - The log allow-list is final and pinned by tests/security/test_log_redaction.py; a new log field is a change there.
-- Client (M12 DONE, ADR-019): `vcloak.client.sdk.VcloakClient` is the reference client and imports nothing from
-  `vcloak.service`; M13's browser client must follow docs/API.md "The client" byte for byte (header, token, AAD) and
-  show the fingerprint. `scripts/demo_two_users.py` gives `LocalServer` (the service in-process) and `run_demo`; the
-  transcript is regenerated with `python scripts/demo_two_users.py`, never edited. Never write "forward secrecy" or
-  that the order between two senders is verified (ISSUE-28).
+- Client (M12 DONE, ADR-019): `vcloak.client.sdk` is the reference client and imports nothing from `vcloak.service`;
+  M13's browser client follows docs/API.md "The client" byte for byte and shows the fingerprint. The demo transcript
+  comes from `python scripts/demo_two_users.py` only. Never claim forward secrecy or a verified cross-sender order (ISSUE-28).
