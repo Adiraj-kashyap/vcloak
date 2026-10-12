@@ -1,0 +1,335 @@
+{
+ "module": "M13",
+ "run": "runs/20261012-184104_M13_live_strip_s6 (git c48e7a4, dirty)",
+ "date": "2026-10-12",
+ "views": {
+  "chat": {
+   "messages": 8,
+   "vcloak": {
+    "mode": "vcloak",
+    "revealed_order": [
+     7,
+     1,
+     4,
+     3,
+     6,
+     5,
+     8,
+     2
+    ],
+    "windows": 1,
+    "states": [
+     "reshuffled"
+    ],
+    "payloads": [
+     "5ZOSkcU5W5LemnD3",
+     "CtPIO7n9Y4BjaRB6",
+     "CwHC92mk2QpPooK5",
+     "HY+BtL3iIaIO5Vul",
+     "R/V7bmV3r7gemOae",
+     "qRl/R2m5ZESzaWqz",
+     "rOYZQlUFMBXNxa+N",
+     "vei2iZvl9zmwVksl"
+    ],
+    "columns_shown": [
+     "#",
+     "row_id",
+     "bucket",
+     "win",
+     "seq_enc",
+     "payload",
+     "sent"
+    ],
+    "note": "V‑cloak. Random row ids, a bucket, a coarse window id, no timestamp. A closed window has been re-shuffled as a whole: its physical order is the engine's permutation, not the order anyone typed. The open window is still filling: each epoch is permuted, but its epochs lie in arrival order until the window closes. Showing 8 of 8 stored row(s) in the last 48 window(s). What still shows: the window of a row, the number of rows per window, and the bucket. This server was started with --compare: it stores every message in both layouts, so the switch shows the same messages either way. A real V‑cloak server keeps no arrival-order table. The revealed number is the position of the message in the conversation as the panes read and verified it; the server did not supply it and cannot. “—” is a row no pane has read since this page opened.",
+    "strip_mode": "vcloak",
+    "strip": {
+     "epoch": "8959056178",
+     "backend": "numpy · local",
+     "slots": "64",
+     "fill_hidden": false,
+     "no_epoch_hidden": true,
+     "server_epoch": 8959056178,
+     "server_gpu": {
+      "backend": "numpy",
+      "runner": "local",
+      "device": "12th Gen Intel(R) Core(TM) i7-1255U",
+      "util": null
+     },
+     "server_slots": 64
+    },
+    "reveal_on": true,
+    "files": {
+     "light": {
+      "file": "screens/M13_chat_vcloak_reveal_light_20261012.png",
+      "width": 1440,
+      "height": 1249,
+      "bytes": 180269,
+      "sha256": "8e85bd9b618e88f6397d30ecc881e21b32805a51c9f351d47b42a8074decbc7f"
+     },
+     "dark": {
+      "file": "screens/M13_chat_vcloak_reveal_dark_20261012.png",
+      "width": 1440,
+      "height": 1249,
+      "bytes": 185846,
+      "sha256": "ecedb185197f0ee2604ceccac4f7e77a49ead2e7d13d6018c5e841f53fe6a318"
+     }
+    }
+   },
+   "baseline": {
+    "mode": "baseline",
+    "revealed_order": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "windows": 1,
+    "states": [
+     "arrival"
+    ],
+    "payloads": [
+     "5ZOSkcU5W5LemnD3",
+     "CtPIO7n9Y4BjaRB6",
+     "CwHC92mk2QpPooK5",
+     "HY+BtL3iIaIO5Vul",
+     "R/V7bmV3r7gemOae",
+     "qRl/R2m5ZESzaWqz",
+     "rOYZQlUFMBXNxa+N",
+     "vei2iZvl9zmwVksl"
+    ],
+    "columns_shown": [
+     "#",
+     "row_id",
+     "ts",
+     "conv",
+     "win",
+     "payload",
+     "sent"
+    ],
+    "note": "Unprotected baseline. Each row carries a serial id, its arrival time (ts) and its conversation id (conv) in the clear, and the rows lie in arrival order. Without any key the table tells who is in a conversation with whom, when each message came and in which order. Only the text is encrypted. Showing 8 of 8 stored row(s) in the last 48 window(s). This server was started with --compare: it stores every message in both layouts, so the switch shows the same messages either way. A real V‑cloak server keeps no arrival-order table. The revealed number is the position of the message in the conversation as the panes read and verified it; the server did not supply it and cannot. “—” is a row no pane has read since this page opened.",
+    "strip_mode": "baseline",
+    "strip": {
+     "epoch": "—",
+     "backend": "none",
+     "slots": "—",
+     "fill_hidden": true,
+     "no_epoch_hidden": false,
+     "server_epoch": null,
+     "server_gpu": null,
+     "server_slots": null
+    },
+    "reveal_on": true,
+    "files": {
+     "light": {
+      "file": "screens/M13_chat_baseline_reveal_light_20261012.png",
+      "width": 1440,
+      "height": 1249,
+      "bytes": 167388,
+      "sha256": "f37d36f15b116241a9f22f10565e2553d6546e39fa31d66847876e1d501720c6"
+     },
+     "dark": {
+      "file": "screens/M13_chat_baseline_reveal_dark_20261012.png",
+      "width": 1440,
+      "height": 1249,
+      "bytes": 171454,
+      "sha256": "7eeb310fc3b47e491697f0203bc02d3c626ccea83f75f773a649c740b890e460"
+     }
+    }
+   },
+   "order_after_switching_back": [
+    7,
+    1,
+    4,
+    3,
+    6,
+    5,
+    8,
+    2
+   ],
+   "footer": "dashboard data: seed"
+  },
+  "dashboard": {
+   "state": "seed",
+   "dashboard": {
+    "source": "seed-oracle",
+    "session": "seed",
+    "quick": false,
+    "tiles": 10,
+    "charts": 7,
+    "not_measured": 3,
+    "chip": "SEED DATA"
+   },
+   "files": {
+    "light": {
+     "file": "screens/M13_dashboard_light_20261012.png",
+     "width": 1440,
+     "height": 2539,
+     "bytes": 306462,
+     "sha256": "b7ed1a28bdbc13834c60fd32da584e2a0b7307d37ec4d9c24268696de3066542"
+    },
+    "dark": {
+     "file": "screens/M13_dashboard_dark_20261012.png",
+     "width": 1440,
+     "height": 2539,
+     "bytes": 311230,
+     "sha256": "753b202fde50da7ee7aa33bf63c673af380c2db7b4623d9fc2446d6d422a57a9"
+    }
+   }
+  },
+  "experiments": {
+   "state": "seed",
+   "source_line": "stored measurement (demo mode)",
+   "dashboard_source": "seed-oracle",
+   "files": {
+    "light": {
+     "file": "screens/M13_experiments_light_20261012.png",
+     "width": 1440,
+     "height": 1482,
+     "bytes": 113870,
+     "sha256": "3bc55954862979ac7641f8f9a473a8d8ab95dedb6d9722142f080e8ab6610e31"
+    },
+    "dark": {
+     "file": "screens/M13_experiments_dark_20261012.png",
+     "width": 1440,
+     "height": 1482,
+     "bytes": 116474,
+     "sha256": "02bf8dc3f4d0bb02f61edfeab77b783d7a4b198be54fa13ab38591bf53e001f7"
+    }
+   }
+  },
+  "logs": {
+   "state": "seed",
+   "demo_lines": true,
+   "lines": 22,
+   "files": {
+    "light": {
+     "file": "screens/M13_logs_light_20261012.png",
+     "width": 1440,
+     "height": 902,
+     "bytes": 125319,
+     "sha256": "c512dc2387b42761a6c51a34230a02ba77a0554e5cd0b560e7b39c27b60e7a0e"
+    },
+    "dark": {
+     "file": "screens/M13_logs_dark_20261012.png",
+     "width": 1440,
+     "height": 902,
+     "bytes": 130316,
+     "sha256": "432b473e0fdd6dea99e736504e405d0026b11156efdeb6e77cb96b59b0c2e2a8"
+    }
+   }
+  },
+  "arch": {
+   "state": "seed",
+   "static": true,
+   "files": {
+    "light": {
+     "file": "screens/M13_arch_light_20261012.png",
+     "width": 1440,
+     "height": 1186,
+     "bytes": 107143,
+     "sha256": "24dcfecdf821e4e2999f8788431e819dcbbdef7abd3f96d15686abd0ca1aefc7"
+    },
+    "dark": {
+     "file": "screens/M13_arch_dark_20261012.png",
+     "width": 1440,
+     "height": 1186,
+     "bytes": 109767,
+     "sha256": "e8e1ecda38ac2483dffec7b76f62c88eda20ad2cf7da8dbc858977df583cb4f7"
+    }
+   }
+  }
+ },
+ "checks": {
+  "the page is live, in dev mode, with a mode switch": true,
+  "chat: V-cloak rows are of closed windows and their revealed order is not monotonic": true,
+  "chat: the baseline revealed order is monotonic": true,
+  "chat: both panels hold the same ciphertexts": true,
+  "chat: reveal was on and the strip showed the mode in both pictures": true,
+  "chat: the strip showed the server's epoch and backend in V-cloak mode, and no epoch in baseline mode": true,
+  "chat: switching back gives the V-cloak order again": true,
+  "chat: the panes read the conversation in the order sent": true,
+  "chat: no pane stopped": true,
+  "chat: no message text is in the table": true,
+  "dashboard: the view was the one on screen": true,
+  "experiments: the view was the one on screen": true,
+  "logs: the view was the one on screen": true,
+  "arch: the view was the one on screen": true,
+  "no exception, console error or blocked request in the page": true
+ },
+ "serve_argv": [
+  "--dev",
+  "--compare",
+  "--sessions",
+  "--store",
+  "sqlite",
+  "--window-s",
+  "5",
+  "--epoch-ms",
+  "200"
+ ],
+ "viewport": [
+  1440,
+  900
+ ],
+ "browser": "Chrome/154.0.8037.98",
+ "live_ready": true,
+ "conn": "live · dev",
+ "stats_live": {
+  "mode": "vcloak",
+  "dev": true,
+  "sessions": true,
+  "win": 358362245,
+  "window_s": 5,
+  "epoch_ms": 200,
+  "slots": 64,
+  "queued": 0,
+  "epochs": 4,
+  "payload_len": 4124,
+  "switchable": true,
+  "now_ms": 1791811228636,
+  "epoch": 8959056143,
+  "last_epoch": 8959056142,
+  "last_write_ms": 9.5,
+  "gpu": {
+   "backend": "numpy",
+   "runner": "local",
+   "device": "12th Gen Intel(R) Core(TM) i7-1255U",
+   "util": null
+  }
+ },
+ "errors": [],
+ "ok": true,
+ "superseded": [],
+ "index_rows": [
+  "SCR-M13-CHAT-VCLOAK-REVEAL-LIGHT",
+  "SCR-M13-CHAT-VCLOAK-REVEAL-DARK",
+  "SCR-M13-CHAT-BASELINE-REVEAL-LIGHT",
+  "SCR-M13-CHAT-BASELINE-REVEAL-DARK",
+  "SCR-M13-DASHBOARD-LIGHT",
+  "SCR-M13-DASHBOARD-DARK",
+  "SCR-M13-EXPERIMENTS-LIGHT",
+  "SCR-M13-EXPERIMENTS-DARK",
+  "SCR-M13-LOGS-LIGHT",
+  "SCR-M13-LOGS-DARK",
+  "SCR-M13-ARCH-LIGHT",
+  "SCR-M13-ARCH-DARK"
+ ],
+ "files_written": [
+  "screens/M13_chat_vcloak_reveal_light_20261012.png",
+  "screens/M13_chat_vcloak_reveal_dark_20261012.png",
+  "screens/M13_chat_baseline_reveal_light_20261012.png",
+  "screens/M13_chat_baseline_reveal_dark_20261012.png",
+  "screens/M13_dashboard_light_20261012.png",
+  "screens/M13_dashboard_dark_20261012.png",
+  "screens/M13_experiments_light_20261012.png",
+  "screens/M13_experiments_dark_20261012.png",
+  "screens/M13_logs_light_20261012.png",
+  "screens/M13_logs_dark_20261012.png",
+  "screens/M13_arch_light_20261012.png",
+  "screens/M13_arch_dark_20261012.png"
+ ]
+}

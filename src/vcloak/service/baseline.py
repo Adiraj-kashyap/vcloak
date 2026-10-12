@@ -227,6 +227,11 @@ class BaselineBackend:
     def stats(self) -> dict[str, int]:
         return {"epochs": 0, "overflow": 0, "missed": 0, "queued": 0}
 
+    def live(self) -> dict[str, Any]:
+        # no epochs and no kernels: a message is in the table when its request returns
+        return {"now_ms": self._clock.now_ms(), "epoch": None, "last_epoch": None, "last_write_ms": None,
+                "gpu": None}
+
     def _stored(self, windows: int) -> list[dict[str, Any]]:
         current = self.current_window()
         first = max(current - windows + 1, 0)

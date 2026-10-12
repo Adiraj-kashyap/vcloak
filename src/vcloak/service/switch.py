@@ -103,5 +103,8 @@ class SwitchBackend:
     def stats(self) -> dict[str, int]:
         return dict(self._active.stats())
 
+    def live(self) -> dict[str, Any]:
+        return dict(self._active.live())
+
     async def stored(self, windows: int) -> list[dict[str, Any]]:
         return list(await self._active.stored(windows))

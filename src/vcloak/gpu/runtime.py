@@ -78,6 +78,17 @@ def get_backend(name: str | None = None) -> Backend:
     return Backend(name="numpy", is_gpu=False, xp=numpy)
 
 
+def runner_name() -> str:
+    """Where this process runs: `colab`, `kaggle` or `local` (VCLOAK_RUNNER overrides, as in colab/gpu_entry.py)."""
+    if os.environ.get("VCLOAK_RUNNER"):
+        return os.environ["VCLOAK_RUNNER"]
+    if "COLAB_GPU" in os.environ or "COLAB_RELEASE_TAG" in os.environ:
+        return "colab"
+    if os.environ.get("KAGGLE_KERNEL_RUN_TYPE"):
+        return "kaggle"
+    return "local"
+
+
 # ── device descriptions ──────────────────────────────────────────────────────
 
 

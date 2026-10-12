@@ -95,3 +95,22 @@ stores, with a switch between V-cloak and the unprotected baseline. This is the 
 - `test_a_withheld_message_is_flagged_in_the_pane` now withholds the message by its ciphertext instead of "the first
   new payload B is handed" (ISSUE-31 point 1: the old hook picked the last message when the two fell into different
   windows, and a missing last message cannot be noticed).
+- 2026-10-12 (session 29, S6): `/v1/stats/live` has `now_ms` (the clock the epochs are cut on), `epoch` (the open
+  epoch, `now_ms // epoch_ms`) and `last_epoch` (the last one in the store) beside the fields of the contract in
+  ai/ARCHITECTURE.md §4b, and `gpu` is `{backend, runner, device, util}`. The strip counts on from `now_ms` between
+  two answers and never uses the wall clock of the browser; with no answer for 3 s it shows no epoch.
+- `last_write_ms`, `gpu.device` and `gpu.util` are given with `--dev` only (null otherwise): the route is open, and
+  the time of each epoch write is a timing of the write path, which ISSUE-17 says is not constant. `last_write_ms`
+  is not shown on the strip: on the laptop it is a host wall clock on the numpy engine, never a result.
+- In baseline mode `epoch`, `last_epoch`, `slots` and `gpu` are null and the strip says that the baseline has no
+  epochs; on `--compare` this hides the V-cloak scheduler that still runs underneath.
+- The S6 check is `tests/integration/test_web_app.py` (the strip against the server's epoch in the same breath, with
+  the page's `Date.now` broken; the server stopped) and `scripts/strip_drift.py` for a longer record in `runs/`.
+- The footer reads "dashboard data: <source>" instead of "data: <source>" (ISSUE-31 point 4).
+- `capture_evidence.py` no longer overwrites the picture of another run made on the same day (S5b said "re-running
+  overwrites cleanly", which now holds for a second call with the same run directory only): the earlier picture
+  moves to `evidence/superseded/<name>.<time of its run>.png` and the new row says so. Found in this session: the
+  re-capture after S6 replaced the twelve pictures of session 28, and the SHA-256 values in that run's record then
+  matched no file. They were restored from commit c48e7a4 and moved by the script (ISSUE-32 points 1 and 5).
+- The "dev" mark beside "Reveal true order" was drawn as a second switch track (`.switch span` matched it); the rule
+  is now `.switch > span` (ISSUE-31 point 4).

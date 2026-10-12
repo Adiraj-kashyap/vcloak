@@ -1,0 +1,121 @@
+.s.............................................sssssssssssssssssssssssss [  2%]
+ssssssssssssssssssss.s.s.....................sssssssssssssssssssss...... [  5%]
+...sssssssss.....sssss.........sssssssss...sss.s............ssssssssssss [  8%]
+........................................................................ [ 10%]
+........................................................................ [ 13%]
+.....sssssssssssssssssssss........................ssssssssssssssssssssss [ 16%]
+ss.......sssssss...sss.s..ssssssssssssssssssssssssssss.................. [ 18%]
+....................s.s...............sssssssssssssss................... [ 21%]
+.................ssssssssssssssssssssssssssssssssssss..................s [ 24%]
+sssssssssssssssss.s.s......ssssss....................................... [ 26%]
+.......sssssssssssssssssssssssssssssssssssssssssssss.........sssssssss.. [ 29%]
+.............s.......ssssssssssss....................................... [ 32%]
+...........................s.s.s.......................s.s....sssssssss. [ 35%]
+..................................................ssssssssssssssssssssss [ 37%]
+ssssssssssssssssssssssssssss............................................ [ 40%]
+........................................................................ [ 43%]
+....ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss [ 45%]
+ssssssssssssssssssssssssssssssssssssssssssssssssssss.s.................. [ 48%]
+....................................ssssssssssssssssssssssssssssssssssss [ 51%]
+ssssssssssssssssss..................ssssssssssssssssss.sssssssssssssss.. [ 53%]
+.......sssssssss.....sssss......ssssss.....sssss.s.s............ssssssss [ 56%]
+ssss.........sssssssss.s.s.sssssssssssss................................ [ 59%]
+........................................................................ [ 62%]
+........................................................................ [ 64%]
+........................................................................ [ 67%]
+........................................................................ [ 70%]
+........................................................................ [ 72%]
+........................................................................ [ 75%]
+................................F....................................... [ 78%]
+........................................................................ [ 80%]
+........................................................................ [ 83%]
+........................................................................ [ 86%]
+...........................s............................................ [ 89%]
+........................................................................ [ 91%]
+........................................................................ [ 94%]
+.....s.................................................................. [ 97%]
+........................................................................ [ 99%]
+...                                                                      [100%]
+================================== FAILURES ===================================
+_____________ test_repository_is_clean_and_secrets_dir_is_ignored _____________
+
+    def test_repository_is_clean_and_secrets_dir_is_ignored() -> None:
+        if not (REPO / ".git").exists():
+            pytest.skip("not a git checkout (runner bundle)")
+        assert "secrets/" in (REPO / ".gitignore").read_text(encoding="utf-8").split()
+        assert check_secrets.tracked_secrets() == []
+>       assert check_secrets.main([]) == 0
+E       assert 1 == 0
+E        +  where 1 = <function main at 0x0000028DF52B7690>([])
+E        +    where <function main at 0x0000028DF52B7690> = check_secrets.main
+
+tests\unit\test_check_secrets.py:84: AssertionError
+---------------------------- Captured stdout call -----------------------------
+KEY-LIKE: runs/20261012-181114_M13_evidence_capture_s5b/capture_evidence.json:52  hex  len=64  id=7e78c332-ef13e538-58acc4ec-e6f74740-19786145-dedcb1f3-ebcf317a-4c1c0d24
+KEY-LIKE: runs/20261012-181114_M13_evidence_capture_s5b/capture_evidence.json:59  hex  len=64  id=4070eba4-cfdafe7a-b6c1efb1-e87be34c-49c5b40e-5af9616a-40fe9e2c-c48d5e91
+KEY-LIKE: runs/20261012-181114_M13_evidence_capture_s5b/capture_evidence.json:107  hex  len=64  id=e8b3f9c5-55f4c225-f84466fa-dbd7a832-79f2dfce-6bc8954e-ea22efb5-fd0ce0c9
+KEY-LIKE: runs/20261012-181114_M13_evidence_capture_s5b/capture_evidence.json:114  hex  len=64  id=9bae3366-a83be657-6e034127-30b2746c-4b28ffa4-ec30cf5e-baa154a0-765b19ea
+KEY-LIKE: runs/20261012-181114_M13_evidence_capture_s5b/capture_evidence.json:147  hex  len=64  id=e563d3d1-d5ad8245-2d29aaea-6882d2d2-392b9a8d-2abbee5d-c24f16c8-5e5248aa
+KEY-LIKE: runs/20261012-181114_M13_evidence_capture_s5b/capture_evidence.json:154  hex  len=64  id=6295f4e0-03ad7f79-ab81bdda-29c045b7-7dfcc08c-5fae44b3-7d86ae62-3ac9df05
+KEY-LIKE: runs/20261012-181114_M13_evidence_capture_s5b/capture_evidence.json:168  hex  len=64  id=32d3a18c-7f2f642c-8290d571-831fdfd6-d775e66c-e34ee803-1b48c1c2-a95d067b
+KEY-LIKE: runs/20261012-181114_M13_evidence_capture_s5b/capture_evidence.json:175  hex  len=64  id=1bbdd26f-4a6f5c97-3fe671cf-3d70e092-1a60cc2a-4530d219-5468ac14-a26d3bc7
+KEY-LIKE: runs/20261012-181114_M13_evidence_capture_s5b/capture_evidence.json:189  hex  len=64  id=38afba9c-22144749-b18ff1ca-5d42e8cd-07ad21d8-a4873c57-e3660295-65d7ee1c
+KEY-LIKE: runs/20261012-181114_M13_evidence_capture_s5b/capture_evidence.json:196  hex  len=64  id=b440422b-1ceb50da-f659f7a6-10c6e4a8-a4b04f5c-30bd10bc-f7bf63bc-682421f7
+KEY-LIKE: runs/20261012-181114_M13_evidence_capture_s5b/capture_evidence.json:209  hex  len=64  id=61adee8a-e31977a2-04704117-9f9421e8-c876361c-6f4fa6c7-9e86740b-eb32a815
+KEY-LIKE: runs/20261012-181114_M13_evidence_capture_s5b/capture_evidence.json:216  hex  len=64  id=facdd421-1dcebd1f-925e1ffe-9a6ac53a-f5479bd0-9a2ab516-a07a8a3d-048c465c
+check_secrets: 1207 files scanned, 12 key-like runs, 0 tracked files under secrets/ -> FAIL
+============================== warnings summary ===============================
+.venv\Lib\site-packages\fastapi\testclient.py:1
+  D:\PJT\vcloak\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+SKIPPED [4] tests\gpu\test_aead.py: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [45] tests\gpu\test_aead.py:123: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [21] tests\gpu\test_aead.py:172: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [9] tests\gpu\test_aead.py:186: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [5] tests\gpu\test_aead.py:197: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [9] tests\gpu\test_aead.py:205: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [3] tests\gpu\test_aead.py:218: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [9] tests\gpu\test_aead.py:337: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [3] tests\gpu\test_aead.py:364: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [21] tests\gpu\test_bitonic.py:140: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [24] tests\gpu\test_bitonic.py:149: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [7] tests\gpu\test_bitonic.py:158: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [3] tests\gpu\test_bitonic.py:168: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [1] tests\gpu\test_bitonic.py: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [21] tests\gpu\test_bitonic.py:213: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [7] tests\gpu\test_bitonic.py:225: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [5] tests\gpu\test_chacha.py: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [15] tests\gpu\test_chacha.py:119: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [36] tests\gpu\test_chacha.py:131: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [18] tests\gpu\test_chacha.py:142: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [6] tests\gpu\test_chacha.py:175: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [45] tests\gpu\test_chacha.py:193: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [9] tests\gpu\test_chacha.py:204: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [9] tests\gpu\test_chacha.py:316: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [3] tests\gpu\test_chacha.py:335: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [5] tests\gpu\test_engine.py: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [9] tests\gpu\test_planted_leak.py:28: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [50] tests\gpu\test_restore.py:143: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [120] tests\gpu\test_restore.py:153: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [1] tests\gpu\test_restore.py: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [54] tests\gpu\test_restore.py:177: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [18] tests\gpu\test_restore.py:191: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [9] tests\gpu\test_restore.py:227: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [3] tests\gpu\test_restore.py:247: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [3] tests\gpu\test_timing.py: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [9] tests\integration\test_engine_vs_oracle.py:106: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [5] tests\integration\test_engine_vs_oracle.py:114: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [6] tests\integration\test_engine_vs_oracle.py:119: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [5] tests\integration\test_engine_vs_oracle.py:124: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [5] tests\integration\test_engine_vs_oracle.py: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [12] tests\integration\test_engine_vs_oracle.py:161: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [9] tests\integration\test_engine_vs_oracle.py:169: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [9] tests\integration\test_engine_vs_oracle.py:234: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [3] tests\integration\test_engine_vs_oracle.py:254: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [1] tests\unit\test_oracle_chacha.py:82: M02 references are wired in
+SKIPPED [1] tests\unit\test_runtime_backend.py:94: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+FAILED tests/unit/test_check_secrets.py::test_repository_is_clean_and_secrets_dir_is_ignored
+1 failed, 1991 passed, 675 skipped, 1 warning in 237.00s (0:03:56)

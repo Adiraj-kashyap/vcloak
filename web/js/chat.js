@@ -379,6 +379,7 @@
       var sw = document.getElementById("modeSwitch"), ls = document.getElementById("ls-mode");
       if (sw) sw.checked = VC.state.mode === "baseline";
       if (ls) ls.textContent = VC.state.mode;
+      if (VC.strip) VC.strip.tick();
       return readAll().then(refreshDump);
     }
     switching = held(0).then(done, function (e) {

@@ -81,24 +81,47 @@ def row_file(line: str) -> str:
     return cells[1].split(" ", 1)[0] if len(cells) > 1 else ""
 
 
-def upsert_rows(text: str, rows: list[dict[str, str]]) -> tuple[str, list[tuple[str, str]]]:
+KEPT = re.compile(r"; the earlier picture \(runs/[^)\s]+\) is kept as superseded/\S+")
+
+
+def run_of(source: str) -> str:
+    """`runs/<dir>` of a source cell (`runs/<dir> (git 1234567[, dirty])`)."""
+    return source.split(" ", 1)[0]
+
+
+def kept_name(file: str, run: str) -> str:
+    """The name under superseded/ of `file` as the run `run` left it: the file name with the time of that run
+    (after a dot: one long word of letters, digits, `_` and `-` reads as a key to scripts/check_secrets.py)."""
+    p = Path(file)
+    return f"{p.stem}.{Path(run).name.split('_', 1)[0]}{p.suffix}"
+
+
+def upsert_rows(text: str, rows: list[dict[str, str]]) -> tuple[str, list[tuple[str, str, str]]]:
     """`text` of the index with `rows` in it: a row whose ID exists takes the place of the old one and
     keeps its "Used in" cell, a new one goes to the end. Returns the new text and, for every replaced
-    row that pointed at another file, `(id, old file)`."""
+    row whose file has to be kept, `(id, old file, name under superseded/)`: a row that pointed at
+    another file, and a row of another run that pointed at the same file (the same day), which the new
+    picture would otherwise overwrite. A second call of the same run overwrites its own pictures."""
     if INDEX_HEAD not in text:
         raise ValueError("evidence/INDEX.md has no table head")
     lines = text.rstrip("\n").split("\n")
     at = {row_cells(line)[0]: i for i, line in enumerate(lines) if line.startswith("| ") and line != INDEX_HEAD}
-    replaced: list[tuple[str, str]] = []
+    replaced: list[tuple[str, str, str]] = []
     for r in rows:
         r = dict(r)
         old = lines[at[r["id"]]] if r["id"] in at else None
         if old is not None:
             cells = row_cells(old)
             r["used"] = cells[6] if len(cells) > 6 else "—"
+            earlier = run_of(cells[4]) if len(cells) > 4 else ""
+            r["what"] += "".join(KEPT.findall(old))  # what earlier runs left stays on record
             if row_file(old) != r["file"]:
-                replaced.append((r["id"], row_file(old)))
+                replaced.append((r["id"], row_file(old), Path(row_file(old)).name))
                 r["what"] += f"; supersedes {row_file(old)}, kept in superseded/"
+            elif earlier != run_of(r["source"]):
+                name = kept_name(r["file"], earlier)
+                replaced.append((r["id"], row_file(old), name))
+                r["what"] += f"; the earlier picture ({earlier}) is kept as superseded/{name}"
             lines[at[r["id"]]] = index_row(**r)
         else:
             at[r["id"]] = len(lines)
@@ -204,8 +227,24 @@ def panel(page: Any) -> dict[str, Any]:
             .filter(th => getComputedStyle(th).display !== 'none').map(th => th.textContent)"""),
         "note": page.evaluate("document.getElementById('serverNote').textContent"),
         "strip_mode": page.evaluate("document.getElementById('ls-mode').textContent"),
+        # the strip at the moment of the picture, beside what the server said at that moment
+        "strip": page.evaluate("""VC.api.raw('GET', '/v1/stats/live').then(r => ({
+            epoch: document.getElementById('ls-epoch').textContent,
+            backend: document.getElementById('ls-backend').textContent,
+            slots: document.getElementById('ls-slots').textContent,
+            fill_hidden: document.getElementById('ls-fillnote').hidden,
+            no_epoch_hidden: document.getElementById('ls-noepoch').hidden,
+            server_epoch: r.body.epoch, server_gpu: r.body.gpu, server_slots: r.body.slots}))"""),
         "reveal_on": page.evaluate("document.getElementById('revealSwitch').checked"),
     }
+
+
+def strip_agrees(s: dict[str, Any], epochs: int = 3) -> bool:
+    """The strip of a V-cloak picture: the server's epoch (the two were read a moment apart), slots, backend."""
+    gpu = s["server_gpu"]
+    return (s["epoch"].isdigit() and abs(int(s["epoch"]) - s["server_epoch"]) <= epochs
+            and s["slots"] == str(s["server_slots"]) and not s["fill_hidden"] and s["no_epoch_hidden"]
+            and gpu is not None and s["backend"] == f'{gpu["backend"]} · {gpu["runner"]}')
 
 
 def monotonic(order: list[int]) -> bool:
@@ -249,6 +288,9 @@ def capture_chat(page: Any, tmp: Path, module: str, date: str) -> tuple[dict[str
         "chat: both panels hold the same ciphertexts": v["payloads"] == b["payloads"] and len(v["payloads"]) == n,
         "chat: reveal was on and the strip showed the mode in both pictures":
             v["reveal_on"] and b["reveal_on"] and (v["strip_mode"], b["strip_mode"]) == CHAT_MODES,
+        "chat: the strip showed the server's epoch and backend in V-cloak mode, and no epoch in baseline mode":
+            strip_agrees(v["strip"]) and b["strip"]["epoch"] == "—" and b["strip"]["server_epoch"] is None
+            and b["strip"]["fill_hidden"] and not b["strip"]["no_epoch_hidden"],
         "chat: switching back gives the V-cloak order again": out["order_after_switching_back"] == v["revealed_order"],
         "chat: the panes read the conversation in the order sent": texts["A"] == texts["B"] == [t for _, t in TALK],
         "chat: no pane stopped":
@@ -287,8 +329,13 @@ def describe_chat(mode: str, chat: dict[str, Any], backend: str) -> str:
     text = (f"the chat with the server-view panel on a live `serve {' '.join(SERVE_ARGV[:2])}` ({backend} engine, "
             f"SQLite), {what}: {chat['messages']} messages sent by the two panes, the stored rows in physical order "
             f"with the revealed send order {order} (the same ciphertexts in both modes). Correctness, no result")
+    s = p["strip"]
+    # the epoch on the strip moves on while the page is photographed: the row gives the one read just before
+    text += (f'; the strip shows the server\'s open epoch (it read {s["epoch"]}, as the server did, just before the '
+             f'picture, and counts on) and the backend "{s["backend"]}"'
+             if mode == "vcloak" else "; the strip shows no epoch and no backend, as the baseline has neither")
     if chat["footer"]:
-        text += f'; the page footer reads "{chat["footer"]}", which is the dashboard\'s provenance, not the chat\'s'
+        text += f'; the page footer reads "{chat["footer"]}", the provenance of the dashboard view'
     return text
 
 
@@ -403,11 +450,11 @@ def main(argv: list[str] | None = None) -> int:
         if out["ok"]:
             text, replaced = upsert_rows(index.read_text(encoding="utf-8"), rows + [r for _, r in terminal])
             out["superseded"] = []
-            for rid, old in replaced:  # the old picture is kept, never deleted (ai/EVIDENCE.md rule 2)
+            for rid, old, name in replaced:  # the old picture is kept, never deleted (ai/EVIDENCE.md rule 2)
                 if (evidence / old).is_file():
                     (evidence / "superseded").mkdir(exist_ok=True)
-                    shutil.move(evidence / old, evidence / "superseded" / Path(old).name)
-                    out["superseded"].append({"id": rid, "file": old})
+                    shutil.move(evidence / old, evidence / "superseded" / name)
+                    out["superseded"].append({"id": rid, "file": old, "kept_as": "superseded/" + name})
             (evidence / "screens").mkdir(exist_ok=True)
             for r in rows:
                 shutil.copyfile(tmp / Path(r["file"]).name, evidence / r["file"])

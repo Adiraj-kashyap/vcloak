@@ -830,3 +830,41 @@ Notes:
 - The first capture run and some of the 30 repeats of the old test ran side by side on this laptop; the second
   capture run and the repeats of the changed test did not overlap.
 - Browser: Chrome headless only; uvicorn inside the process on loopback, public development key, SQLite, numpy engine.
+
+## Audit M13 — 2026-10-12 — session 29 — result: PASS (S1-S6 done; module DONE)
+| Item | Result | Evidence |
+|---|---|---|
+| A1 nothing in the chat path decrypts on the server | PASS | runs/20261012-184104_M13_live_strip_s6/pytest_m13.txt (41 passed; ids in pytest_m13_collected.txt): test_thirty_messages_two_users_exact_order; capture_evidence.json check "no message text is in the table" |
+| A2 the device key cannot be exported | PASS | runs/20261012-184104_M13_live_strip_s6/pytest_m13.txt: test_the_private_keys_cannot_be_exported; recorded in docs/DEMO.md |
+| A3 /v1/dump and the reveal toggle disabled without --dev | PASS | runs/20261012-184104_M13_live_strip_s6/pytest_m13.txt: test_dump_is_refused_without_dev, test_without_dev_the_page_has_no_rows_and_no_reveal; new: test_without_dev_stats_live_gives_no_timing_and_no_host_description |
+| A4 the app loads from file:// with demo data | PASS | runs/20261012-184104_M13_live_strip_s6/file_demo_check.json (ok true, strip_ok true: the strip runs on the demo clock and reads "demo") and chat_file_demo.png |
+| A5 CSP present, no inline script, no CDN | PASS | runs/20261012-184104_M13_live_strip_s6/pytest_m13.txt (the CSP and source tests), runs/20261012-184104_M13_live_strip_s6/a5_grep.txt empty (`://` in web/, without the SVG namespace and the word file://) |
+| A6 capture_evidence.py runs clean, rows carry run dirs and data-state labels | PASS | runs/20261012-184104_M13_live_strip_s6/capture_run3.txt and capture_run4.txt (exit 0, 15 checks true, no page error), capture_evidence.json; evidence/INDEX.md: 12 SCR-M13 rows, each with this run dir, `measured` (4 chat) or `seed` (8), and where the earlier picture is kept; superseded_check.txt |
+| S6 check: the strip ticks with real epochs and does not drift | PASS | runs/20261012-184104_M13_live_strip_s6/strip_drift.json (61 samples in 120 s: strip minus server between -1 and 0 epochs, 601 epochs passed on both sides, 602 written meanwhile, drift 0); runs/20261012-184104_M13_live_strip_s6/pytest_m13.txt: test_the_strip_ticks_with_the_epochs_of_the_server, test_the_strip_stops_when_the_server_stops |
+| G1 | PASS | runs/20261012-184104_M13_live_strip_s6/pytest_all.txt (1993 passed, 675 skipped; 674 skips name CUDA/CuPy/GPU, 1 is tests/unit/test_oracle_chacha.py:82; no PostgreSQL skip, no browser skip). The first full run of the session had 1 failure (pytest_all_first.txt), see Notes |
+| G2 | PASS | runs/20261012-184104_M13_live_strip_s6/check_metrics.txt (331 rows, 0 problems). No metric added |
+| G2b | PASS | nothing timed as a result; manifest says backend numpy |
+| G3 | PASS | runs/20261012-184104_M13_live_strip_s6/check_oblivious.txt (11 files, 0 findings); no kernel source changed |
+| G4 | PASS | runs/20261012-184104_M13_live_strip_s6/check_secrets.txt (0 key-like runs), run after the last evidence file was written |
+| G5 | N/A | no GPU twin |
+| G6 | PASS | every path of the Deliverables exists (web/, service/web.py, the three routes, web/js/crypto.js, tests/integration/test_web_app.py, docs/DEMO.md, scripts/capture_evidence.py); docs/API.md and docs/DEMO.md updated |
+| G7 | PASS | checked after the closing commit |
+| G8 | PASS | STATE: M13 DONE, step S6, sessions 5; next_unit M14 |
+| G9 | PASS | SESSION_LOG session 29, this entry, ISSUE-31 and ISSUE-32 updated, ISSUE-33 opened, M13 Amendments |
+| G10 | PASS | manifest valid; scripts/strip_drift.py run again for 20 s with the same outcome (runs/20261012-184104_M13_live_strip_s6/g10_rerun/strip_drift.json: 11 samples, -1..0, drift 0); the capture run twice on the final script with all checks true |
+Notes:
+- G1 failed once in this session and the cause was this session's work: the first two capture runs overwrote the
+  twelve pictures of session 28 (same day, same file names), so the SHA-256 values in that run's record matched no
+  file and tests/unit/test_check_secrets.py failed. The pictures were restored from commit c48e7a4 and the script now
+  moves the picture of another run to evidence/superseded/ before writing (ISSUE-32). Nothing was allow-listed.
+- "Does not drift" is shown for two minutes on loopback with the page in the foreground of a headless Chrome. It is
+  not shown over a network, in a background tab, or for hours (ISSUE-33 point 4).
+- The CUDA side of the strip (`backend: cupy`, `gpu.util`) has never run (ISSUE-33 point 1). On this laptop the strip
+  reads "numpy · local", and its tooltip says that this is never a GPU result.
+- `last_write_ms` is served with --dev only and is not on the strip; one reading of it sits in capture_evidence.json
+  as part of the copied answer of the route. It is a host wall clock on the numpy engine and is no metric.
+- The docs/API.md example of the answer carries made-up values to show the shape and says so.
+- Eight of the twelve pictures still show bundled sample data (`seed`); M18 replaces them (ISSUE-32 point 1).
+- Still open on M13 and not blocking: ISSUE-29 (CSP relaxation until M18), ISSUE-30 points 3-5, ISSUE-31 points 2-3
+  and the repeat of the browser test file before M17, ISSUE-32 points 1 and 3-5, ISSUE-33.
+- Browser: Chrome headless only; uvicorn inside the process on loopback, public development key, SQLite, numpy engine.

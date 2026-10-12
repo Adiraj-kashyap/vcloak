@@ -1,0 +1,124 @@
+{
+ "serve_argv": [
+  "--dev",
+  "--sessions",
+  "--store",
+  "sqlite",
+  "--epoch-ms",
+  "200"
+ ],
+ "browser": "Chrome/154.0.8037.98",
+ "backend": "numpy",
+ "tolerance_epochs": 3,
+ "summary": {
+  "samples": 11,
+  "epoch_ms": 200,
+  "span_page_s": 20.06,
+  "server_epochs_passed": 101,
+  "strip_epochs_passed": 101,
+  "epochs_written_meanwhile": 101,
+  "shown_minus_server": {
+   "min": -1,
+   "max": 0,
+   "first": 0,
+   "last": 0
+  },
+  "counted_minus_server": {
+   "min": 0,
+   "max": 1
+  },
+  "drift_epochs": 0
+ },
+ "page_errors": [],
+ "samples": [
+  {
+   "server": 8959057774,
+   "last_written": 8959057773,
+   "epochs_written": 2,
+   "counted": 8959057774,
+   "shown": "8959057774",
+   "page_ms": 422.40000009536743
+  },
+  {
+   "server": 8959057784,
+   "last_written": 8959057783,
+   "epochs_written": 12,
+   "counted": 8959057784,
+   "shown": "8959057784",
+   "page_ms": 2433.300000190735
+  },
+  {
+   "server": 8959057794,
+   "last_written": 8959057793,
+   "epochs_written": 22,
+   "counted": 8959057794,
+   "shown": "8959057794",
+   "page_ms": 4438.600000143051
+  },
+  {
+   "server": 8959057804,
+   "last_written": 8959057803,
+   "epochs_written": 32,
+   "counted": 8959057804,
+   "shown": "8959057804",
+   "page_ms": 6443.5
+  },
+  {
+   "server": 8959057814,
+   "last_written": 8959057813,
+   "epochs_written": 42,
+   "counted": 8959057815,
+   "shown": "8959057814",
+   "page_ms": 8448.300000190735
+  },
+  {
+   "server": 8959057825,
+   "last_written": 8959057823,
+   "epochs_written": 52,
+   "counted": 8959057825,
+   "shown": "8959057824",
+   "page_ms": 10453.900000095367
+  },
+  {
+   "server": 8959057835,
+   "last_written": 8959057834,
+   "epochs_written": 63,
+   "counted": 8959057835,
+   "shown": "8959057834",
+   "page_ms": 12460.600000143051
+  },
+  {
+   "server": 8959057845,
+   "last_written": 8959057843,
+   "epochs_written": 72,
+   "counted": 8959057845,
+   "shown": "8959057844",
+   "page_ms": 14465.100000143051
+  },
+  {
+   "server": 8959057855,
+   "last_written": 8959057854,
+   "epochs_written": 83,
+   "counted": 8959057855,
+   "shown": "8959057854",
+   "page_ms": 16471.700000047684
+  },
+  {
+   "server": 8959057865,
+   "last_written": 8959057864,
+   "epochs_written": 93,
+   "counted": 8959057865,
+   "shown": "8959057864",
+   "page_ms": 18476.800000190735
+  },
+  {
+   "server": 8959057875,
+   "last_written": 8959057874,
+   "epochs_written": 103,
+   "counted": 8959057875,
+   "shown": "8959057875",
+   "page_ms": 20482
+  }
+ ],
+ "passed": true
+}

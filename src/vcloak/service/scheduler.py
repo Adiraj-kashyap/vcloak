@@ -151,6 +151,10 @@ class EpochScheduler:
         self.missed = 0  # epoch boundaries that passed while an earlier epoch was still being written
         self.errors = 0  # epochs whose write failed; their submissions went back to the queue
         self.rewrites: Counter[int] = Counter()  # re-shuffles per window (audit A2: never above 1)
+        # for the live strip of the web page: the last epoch in the store, and the host time its write took
+        # (engine call and insert, as the loop saw it; a wall clock, never a performance result)
+        self.last_epoch: int | None = None
+        self.last_write_ms: float | None = None
 
     # ── rounds ───────────────────────────────────────────────────────────────
 
@@ -242,6 +246,7 @@ class EpochScheduler:
             raise ValueError("an epoch closes on a multiple of EPOCH_MS only")
         epoch = boundary_ms // self.epoch_ms - 1
         batch = self._cut(boundary_ms)
+        t0 = time.perf_counter()
         try:
             await self._blocking(lambda: self._write(epoch, batch))
         except Exception as e:  # noqa: BLE001 - nothing accepted may be lost: back to the head of the queue
@@ -251,6 +256,7 @@ class EpochScheduler:
             self._notify()
             return
         self.epochs += 1
+        self.last_epoch, self.last_write_ms = epoch, (time.perf_counter() - t0) * 1000
         for p in batch:  # the epoch is committed: answer the senders that wait for it
             if p.stored is not None and not p.stored.done():
                 p.stored.set_result(None)

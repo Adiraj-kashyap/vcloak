@@ -85,7 +85,7 @@
 
     var fp = document.getElementById("footProv");
     if (fp) fp.textContent = (data.provenance && data.provenance.session_id)
-      ? "data: " + data.provenance.session_id : "";
+      ? "dashboard data: " + data.provenance.session_id : "";
   }
 
   function init() {

@@ -1,7 +1,7 @@
 # Demo guide
 
-How to show V-cloak running. This file grows with the frontend: the chat section is M13 (steps S1-S5 so far);
-the live strip is completed by S6, the dashboard by M18.
+How to show V-cloak running. This file grows with the frontend: the chat section is M13 (steps S1-S6);
+the dashboard is M18.
 
 ## 1. The chat
 
@@ -118,12 +118,28 @@ state.
 - The data state is read from the page. Until M18 the four other views show the bundled sample data, so their rows say
   `seed`: they show the interface, never a result. The chat rows say `measured` because the conversation and the
   stored rows are from a real run of the service; nothing in them is a timing.
-- A picture is taken as the page is. The footer of the chat pictures reads "data: seed" (the dashboard's provenance
-  line) and the strip shows no epoch yet; both are stated in the index row, not cropped.
-- A second run on the same day overwrites the files and replaces their rows. On a later day the file names change and
-  the older pictures move to `evidence/superseded/`.
+- A picture is taken as the page is. The footer reads "dashboard data: seed" until M18 generates the dashboard's
+  data; the index row of a chat picture quotes it, and the epoch and backend the strip showed.
+- Calling the script again for the same run directory overwrites that run's pictures and replaces their rows. A
+  picture of another run is never overwritten: it moves to `evidence/superseded/` first (with the time of its run in
+  the name when both runs fall on one day), and the new row says where it is kept.
 - If a check fails (the V-cloak order came out monotonic, a pane stopped, the page logged an error) nothing is written
   to `evidence/` and the script exits 1; what it saw is in `capture_evidence.json` of the run directory.
 
-### Not shown yet
-The strip at the top shows the window, the queue and the store mode, but not yet the epoch or the compute backend (S6).
+### The strip at the top
+From left to right: the open epoch, the window, how many accepted messages wait for the next write against the slots
+of an epoch, the store mode, and what computes (`numpy · local` on the laptop: the thread model on the host CPU,
+correctness only, never a GPU result; hover for the device).
+
+- The epoch is the server's, not the page's: every second the page asks `GET /v1/stats/live` for the server's clock
+  and counts on from that answer until the next one. It never counts from the clock of the browser's machine, so a
+  wrong clock there does not show; the error is at most the travel time of one answer.
+- When the server stops answering, the strip greys out and shows `—` within three seconds. It does not go on counting.
+  The moving clock of the page opened from a file is demo data and the chip at the top right says so.
+- In baseline mode there is no epoch, no slot count and no compute backend, because the baseline has none: it stores
+  each message as it arrives. With `--compare` the V-cloak scheduler still runs underneath; the strip shows the store
+  that answers.
+- The fill is almost always `0 / 64` in a demo: an epoch is 200 ms, so a typed message waits for a fraction of a
+  second. It is a count at the moment of the answer, not a load figure.
+- Not on the strip: the time of the last write. The API gives it with `--dev` (`last_write_ms`), a host wall clock
+  on the numpy engine; it is not a performance number and is kept off the screen and out of the pictures.

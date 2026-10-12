@@ -75,13 +75,21 @@
       });
     },
 
+    /* `at` is the page's clock (performance.now) at the middle of the request: the strip counts the
+     * server's `now_ms` on from there. */
     stats: function () {
-      return get("/v1/stats/live").catch(function () {
+      var t0 = performance.now();
+      return get("/v1/stats/live").then(function (s) {
+        s.at = (t0 + performance.now()) / 2;
+        return s;
+      }).catch(function () {
+        /* a live server that stopped answering: say so, never tick a clock of our own in its place */
+        if (VC.state.live) return { unavailable: true };
         /* demo clock so the strip still ticks offline */
         var t = Date.now();
-        return { epoch: Math.floor(t / 200) % 100000, win: 41, slots: 64,
+        return { now_ms: t, epoch_ms: 200, epoch: Math.floor(t / 200), win: 41, slots: 64,
                  queued: Math.floor((t / 200) % 7), mode: VC.state.mode,
-                 gpu: null, demo: true };
+                 gpu: null, demo: true, at: performance.now() };
       });
     },
 

@@ -105,10 +105,22 @@ Answer `200 {"status": "ok", "mode": "vcloak", "ready": true, "epochs": 0, "over
 ### `GET /v1/stats/live` (M13)
 Open, like `/v1/windows`. Answer `200 {"mode": "vcloak", "dev": true, "sessions": true, "win": 29363120,
 "window_s": 60, "epoch_ms": 200, "slots": 64, "queued": 0, "epochs": 12, "payload_len": 4124, "switchable": false,
-"gpu": null}`:
+"now_ms": 1760000000123, "epoch": 8800000000, "last_epoch": 8799999999, "last_write_ms": 3.4,
+"gpu": {"backend": "numpy", "runner": "local", "device": "...", "util": null}}` (the values show the shape; they
+are not results):
 public parameters, the public counters of `/healthz`, and what the web page needs to decide how to run. `dev` and
 `sessions` say how the service was started; `payload_len` is the size every `payload_b64` must decode to; `slots` is
-null in baseline mode. `switchable` says that `POST /v1/mode` works (`--dev --compare`). `gpu` is null for now (the provenance of the compute backend is added with the live strip).
+null in baseline mode. `switchable` says that `POST /v1/mode` works (`--dev --compare`).
+
+`now_ms` is the clock the epochs are cut on and `epoch` the epoch that is open by it (`now_ms // epoch_ms`);
+`last_epoch` is the last epoch in the store (null before the first). A page that shows a running epoch counts on
+from `now_ms` and asks again; it must not use its own wall clock. `gpu` says what executes the kernels: `backend`
+(`numpy` is the thread model on the host CPU, `cupy` a CUDA device) and `runner` (`local`, `colab`, `kaggle`).
+In baseline mode `epoch`, `last_epoch` and `gpu` are null: there are no epochs and nothing is computed.
+With `--dev` only: `last_write_ms` (host wall-clock time of the last epoch write, one decimal; not a performance
+result), `gpu.device` (the device name) and `gpu.util` (NVML utilisation in percent, null without a GPU). Without
+`--dev` these three are null: per-epoch timing and the description of the host are not given to whoever can reach
+the port.
 
 ### `GET /v1/dump` (M13, `--dev` only)
 The stored rows as the store holds them: what someone with a copy of the database sees. Without `--dev` the answer is

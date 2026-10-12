@@ -685,3 +685,31 @@
   Firefox or Safari; a CUDA engine behind the service
 - Commit: 424a870
 - Next: M13 S6 ; human action: none. Keep Docker Desktop running when you type continue
+
+## Session 29 — 2026-10-12 18:56 — M13 Frontend: chat + server view — owner:Abhishek
+- Steps: S6→S6 (status after: DONE; audit PASS)
+- Did: `/v1/stats/live` gains `now_ms`, `epoch`, `last_epoch`, `last_write_ms` and `gpu {backend, runner, device,
+  util}` (scheduler.py, app.py `live()`, baseline.py, switch.py, web.py, runtime.py `runner_name`); `last_write_ms`,
+  `device` and `util` only with --dev. web/js/main.js: the strip counts the server's clock on between two answers,
+  shows no epoch after 3 s without an answer, and says that the baseline has no epochs; api.js no longer falls back
+  to a demo clock on a live page. Footer "dashboard data: ..."; the "dev" mark is no longer drawn as a switch.
+  scripts/strip_drift.py (new). capture_evidence.py checks and quotes the strip, and keeps the picture of another
+  run in evidence/superseded/ instead of overwriting it. docs/API.md, docs/DEMO.md ("The strip at the top").
+- Evidence: runs/20261012-184104_M13_live_strip_s6 (strip_drift.json; pytest_all.txt 1993 passed, 675 skipped; pytest_m13.txt 41 passed;
+  capture_run3.txt, capture_run4.txt, capture_evidence.json, superseded_check.txt; file_demo_check.json; ruff clean
+  on src tests scripts bench; check_* PASS; a5_grep.txt empty); evidence/screens/M13_*_20261012.png (12, re-captured);
+  evidence/superseded/ (the 12 of session 28)
+- Metrics added: none (nothing measured: pictures and correctness only, numpy engine)
+- Decisions: none (no ADR; the choices are in the Amendments of ai/modules/M13)
+- Issues: opened ISSUE-33 (limits of the strip; low); ISSUE-31 point 4 and ISSUE-32 point 2 done, both stay open
+- Deviations from spec: three fields of the route are dev-only; `last_write_ms` is not on the strip; a capture by
+  another run no longer overwrites (Amendments)
+- Found on the way: the first two capture runs of this session overwrote the pictures of session 28, which broke that
+  run's recorded hashes and one test of the full suite; restored from git and fixed in the script, nothing
+  allow-listed. The index row first quoted an epoch two ticks older than the one in the picture; it now says when it
+  was read. `ruff check .` reports old scripts under runs/ and the colab notebook: only the code directories are linted.
+- Not verified: the strip on a CUDA backend; drift beyond two minutes, over a network or in a background tab; a
+  server clock that steps back; Firefox or Safari; the browser test file repeated many times (5 green runs today)
+- Commit: PENDING
+- Next: M14 S1 ; human action: none yet. ISSUE-17 and ISSUE-25 (open, high) block M14: the next session starts with
+  them. Keep Docker Desktop running when you type continue

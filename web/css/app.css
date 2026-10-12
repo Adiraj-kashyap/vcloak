@@ -117,6 +117,8 @@ a { color: var(--s1); }
 .ls-item b { font: 650 14px var(--mono); font-variant-numeric: tabular-nums; }
 .ls-item i { font-style: normal; color: var(--muted); }
 .ls-right { margin-left: auto; }
+.ls-item [hidden] { display: none; }
+.ls-stale b { color: var(--muted); }
 .ls-fillwrap { gap: 8px; }
 .ls-fill { display: block; width: 90px; height: 7px; border-radius: 99px; background: var(--grid); overflow: hidden; }
 .ls-fill > span { display: block; height: 100%; width: 0; background: var(--s1); transition: width .35s ease; }
@@ -155,11 +157,11 @@ main { max-width: 1240px; margin: 0 auto; padding: 22px 16px 60px; }
 
 .switch { display: inline-flex; align-items: center; gap: 7px; cursor: pointer; font-size: 12.5px; color: var(--ink-2); flex: none; }
 .switch input { position: absolute; opacity: 0; width: 0; height: 0; }
-.switch span {
+.switch > span {
   width: 34px; height: 19px; border-radius: 99px; background: var(--grid);
   position: relative; transition: background .18s; flex: none;
 }
-.switch span::after {
+.switch > span::after {
   content: ""; position: absolute; top: 2px; left: 2px; width: 15px; height: 15px;
   border-radius: 50%; background: var(--raised); box-shadow: 0 1px 2px rgba(0,0,0,.25); transition: transform .18s;
 }

@@ -1,0 +1,14 @@
+same  evidence/superseded/M13_arch_dark_20261012.20261012-181114.png
+same  evidence/superseded/M13_arch_light_20261012.20261012-181114.png
+same  evidence/superseded/M13_chat_baseline_reveal_dark_20261012.20261012-181114.png
+same  evidence/superseded/M13_chat_baseline_reveal_light_20261012.20261012-181114.png
+same  evidence/superseded/M13_chat_vcloak_reveal_dark_20261012.20261012-181114.png
+same  evidence/superseded/M13_chat_vcloak_reveal_light_20261012.20261012-181114.png
+same  evidence/superseded/M13_dashboard_dark_20261012.20261012-181114.png
+same  evidence/superseded/M13_dashboard_light_20261012.20261012-181114.png
+same  evidence/superseded/M13_experiments_dark_20261012.20261012-181114.png
+same  evidence/superseded/M13_experiments_light_20261012.20261012-181114.png
+same  evidence/superseded/M13_logs_dark_20261012.20261012-181114.png
+same  evidence/superseded/M13_logs_light_20261012.20261012-181114.png
+12 pictures of runs/20261012-181114_M13_evidence_capture_s5b: kept file, recorded hash and commit c48e7a4 agree: True
+moved by this capture: 12

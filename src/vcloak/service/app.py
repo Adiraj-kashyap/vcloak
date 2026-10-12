@@ -44,9 +44,10 @@ from fastapi.responses import JSONResponse, Response
 from vcloak import config
 from vcloak.crypto import keys as keyfile
 from vcloak.crypto.client import PAYLOAD_LEN
+from vcloak.gpu import telemetry
 from vcloak.gpu.engine import GpuEngine
 from vcloak.gpu.keystore import DeviceKeyStore
-from vcloak.gpu.runtime import Backend
+from vcloak.gpu.runtime import Backend, runner_name
 from vcloak.service.logsafe import SafeLogger, get_logger
 from vcloak.service.models import (
     Health,
@@ -131,6 +132,8 @@ class ServiceBackend(Protocol):
 
     def stats(self) -> dict[str, int]: ...
 
+    def live(self) -> dict[str, Any]: ...
+
     async def stored(self, windows: int) -> list[dict[str, Any]]: ...
 
 
@@ -186,6 +189,7 @@ class VcloakBackend:
         self.keys: DeviceKeyStore | None = None
         self.engine: Any = None
         self.scheduler: EpochScheduler | None = None
+        self._compute: dict[str, Any] | None = None  # set in `_boot`: what executes the kernels
 
     @property
     def ready(self) -> bool:
@@ -206,6 +210,9 @@ class VcloakBackend:
             if isinstance(master, bytearray):
                 keyfile.zeroize(master)
         self.engine = self._engine_factory(self.keys)
+        gpu = self.keys.backend
+        self._compute = {"backend": gpu.name, "runner": runner_name(), "is_gpu": gpu.is_gpu,
+                         "device": gpu.device_info().get("device")}
         self.repo.init_schema()
         # what a stopped or killed service left in its arrival-time layout (ISSUE-22)
         self._pending = self.repo.pending_windows() if self.visible_round == "window" else []
@@ -300,6 +307,16 @@ class VcloakBackend:
         if self.scheduler is None:
             return {"epochs": 0, "overflow": 0, "missed": 0, "queued": 0}
         return self.scheduler.stats()
+
+    def live(self) -> dict[str, Any]:
+        """The epoch clock and the compute backend, for the strip of the web page (`/v1/stats/live`):
+        the clock the scheduler cuts epochs on, the epoch that is open by it, the last one in the store."""
+        now, s, c = self._clock.now_ms(), self.scheduler, self._compute
+        util = telemetry.sample().get("util_gpu_pct") if c and c["is_gpu"] else None  # NVML: a GPU only
+        return {"now_ms": now, "epoch": now // self.epoch_ms,
+                "last_epoch": s.last_epoch if s else None, "last_write_ms": s.last_write_ms if s else None,
+                "gpu": {"backend": c["backend"], "runner": c["runner"], "device": c["device"], "util": util}
+                if c else None}
 
     def _stored(self, windows: int) -> list[dict[str, Any]]:
         current = self.current_window()

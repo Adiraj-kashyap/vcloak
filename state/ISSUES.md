@@ -741,6 +741,11 @@ flake_fixed/ holds the repeats of the changed test (counts in SESSION_LOG sessio
 earlier failure was this one (the output of the failures of session 27 was not kept, and one of them logged a
 DevTools keep-alive timeout). Points 2-4 unchanged; the issue stays open for them and for a repeat of the whole file
 before M17.
+Update 2026-10-12 session 29 (M13 S6): point 4 done. The footer reads "dashboard data: <source>"; the "dev" mark was
+drawn as a second switch track because `.switch span` matched it (now `.switch > span`), seen fixed in the pictures of
+runs/20261012-184104_M13_live_strip_s6. Points 2-3 remain as stated limits, and the repeat of the whole browser test
+file owed before M17 (point 1) is still owed: it ran five times in this session, all green, which is not many.
+
 
 ### ISSUE-32 [OPEN] M13 capture_evidence.py: what the pictures do not show, and what the script does not do
 BLOCKS: none   SEVERITY: low   OPENED: 2026-10-12 session 28
@@ -759,4 +764,32 @@ BLOCKS: none   SEVERITY: low   OPENED: 2026-10-12 session 28
 5. The supersede path (a row whose file name changed) is unit-tested on the index text; the file move itself has not
    happened yet, because no second day exists.
 Proposed: 1 in M18, 2 in S6 (re-run the script at the end of that session), 3-5 as they come up in M16/M18.
+Update 2026-10-12 session 29 (M13 S6): point 2 done (re-captured with the finished strip; the rows give the epoch
+the strip and the server read just before the picture). Point 1 happened one session early and went wrong first: the
+re-capture overwrote the twelve pictures of session 28, so the SHA-256 values in that run's record matched no file
+(check_secrets flagged them, the full test run failed on it). The pictures were restored from commit c48e7a4; the
+script now moves the picture of another run to `evidence/superseded/<name>.<time of its run>.png` before it writes,
+and the row says where it is kept (superseded_check.txt: 12 files equal to the recorded hashes). Point 5: the file
+move has now happened, for the same-day case; the other-day case is still unit-tested only. Points 3-4 unchanged.
+The eight `seed` pictures were re-captured too (the strip and the footer changed); M18 still has to replace them.
+
+### ISSUE-33 [OPEN] M13 live strip: what it does not show, and what was not run
+BLOCKS: none   SEVERITY: low   OPENED: 2026-10-12 session 29
+1. The CUDA path of the strip has never run: `gpu.util` (an NVML reading taken in the request handler on every
+   poll) and `backend: cupy` exist in code only. The service has never run on a CUDA device (STATE notes).
+2. `last_write_ms` is the host wall-clock time of the last epoch write as the event loop saw it (it includes the
+   wait for the engine thread). It is a timing of the write path, which is not constant time (ISSUE-17), so the
+   route gives it with `--dev` only and the page does not show it. It is not a metric and must not become one (M15
+   measures the service).
+3. On `--compare` in baseline mode the strip shows no epoch although the V-cloak scheduler runs underneath.
+4. The strip is within half a round trip of the server's clock. Checked on loopback only (strip_drift.json: 61
+   samples in 120 s, at most one epoch behind, no drift); not over a real network, not with a throttled background
+   tab, not longer than two minutes. If the server's clock steps back, `epoch` steps back while the scheduler keeps
+   counting forward (`_next_boundary`): the strip would then show an epoch below `last_epoch`. Not handled.
+5. `runner` is read from the environment (`VCLOAK_RUNNER`, Colab and Kaggle variables); everything else is `local`.
+6. Every open page asks once a second, with no back-off. The fill is one reading per second of a queue that empties
+   five times a second, so it shows 0 almost always; it is not a load figure.
+7. The architecture view is "static + /v1/stats/live" in ai/FRONTEND.md §2; it does not use the route yet (M18).
+Proposed: 1 with the first service run on a runner (M15 or later); 4 and 6 stay as stated limits in docs/DEMO.md;
+7 in M18.
 

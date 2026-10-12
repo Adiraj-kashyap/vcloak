@@ -1,0 +1,58 @@
+{
+  "run_id": "20261012-184104_M13_live_strip_s6",
+  "module": "M13",
+  "step": "S6",
+  "owner": "Abhishek",
+  "git_sha": "c48e7a417a891f76f59b578fe48ab2d386fc61d6",
+  "dirty": true,
+  "command": "strip_drift.py --seconds 120; capture_evidence.py --module M13; pytest -q; ruff check; check_*; file_demo_check.py",
+  "seed": 0,
+  "quick": false,
+  "params": {},
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261012-184104",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U"
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791810664.5308394
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791811590.0583532
+  },
+  "outputs": [
+    "a5_grep.txt",
+    "capture_evidence.json",
+    "capture_run1.txt",
+    "capture_run2.txt",
+    "capture_run3.txt",
+    "capture_run4.txt",
+    "chat_file_demo.png",
+    "check_metrics.txt",
+    "check_oblivious.txt",
+    "check_secrets.txt",
+    "file_demo_check.json",
+    "file_demo_check.py",
+    "file_demo_check.txt",
+    "g10_rerun",
+    "g10_rerun.txt",
+    "pytest_all.txt",
+    "pytest_all_first.txt",
+    "pytest_all_tail.txt",
+    "pytest_m13.txt",
+    "pytest_m13_collected.txt",
+    "ruff.txt",
+    "strip_drift.json",
+    "strip_drift.txt",
+    "superseded_check.txt"
+  ],
+  "status": "OK",
+  "notes": "M13 S6 (live strip) and the module audit. strip_drift.json: the epoch on the strip against the server's epoch, 61 samples in 120 s, at most one epoch behind, no drift (g10_rerun/: 11 samples in 20 s, the same outcome). strip_drift.json, ruff.txt, a5_grep.txt and the first file_demo_check were written into a directory made by hand at 18:38:30 and moved here when this run directory was created with its manifest; file names inside were kept. capture_evidence.py --module M13 ran four times: runs 1 and 2 overwrote the pictures of session 28 (a fault, found by check_secrets in pytest_all_first.txt: 1 failed); the pictures were restored from commit c48e7a4, the script changed, and run 3 moved them to evidence/superseded/ (superseded_check.txt); run 4 overwrote its own pictures. capture_evidence.json is the record of run 4. pytest_all.txt (final tree): 1993 passed, 675 skipped. capture_evidence.json holds one `last_write_ms` reading of the numpy engine in its copy of /v1/stats/live: a host wall clock, not a metric. Pictures and correctness only, numpy engine, SQLite: nothing measured."
+}

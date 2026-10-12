@@ -39,7 +39,8 @@ def test_a_second_run_replaces_its_rows_and_adds_none() -> None:
 def test_a_row_whose_file_changed_reports_the_old_file_and_keeps_used_in() -> None:
     once, _ = ce.upsert_rows(HEAD, [row(used="report Fig. 4.2")])
     later, replaced = ce.upsert_rows(once, [row(file="screens/M13_dashboard_light_20261013.png")])
-    assert replaced == [("SCR-M13-DASHBOARD-LIGHT", "screens/M13_dashboard_light_20261012.png")]
+    assert replaced == [("SCR-M13-DASHBOARD-LIGHT", "screens/M13_dashboard_light_20261012.png",
+                         "M13_dashboard_light_20261012.png")]
     cells = ce.row_cells(later.rstrip("\n").split("\n")[-1])
     assert cells[6] == "report Fig. 4.2" and "supersedes screens/M13_dashboard_light_20261012.png" in cells[1]
 
@@ -89,3 +90,34 @@ def test_views_and_modes_are_the_ones_the_page_has() -> None:
     for view in ce.VIEWS:
         assert f'data-view="{view}"' in html and f'id="view-{view}"' in html
     assert len(ce.THEMES) * (len(ce.CHAT_MODES) + len(ce.PLAIN_VIEWS)) >= 8  # the S5b check
+
+
+def test_the_strip_of_a_picture_must_agree_with_the_server() -> None:
+    gpu = {"backend": "numpy", "runner": "local", "device": "a cpu", "util": None}
+    strip = {"epoch": "1000", "backend": "numpy · local", "slots": "64", "fill_hidden": False,
+             "no_epoch_hidden": True, "server_epoch": 1002, "server_gpu": gpu, "server_slots": 64}
+    assert ce.strip_agrees(strip)
+    assert not ce.strip_agrees({**strip, "epoch": "—"})  # nothing shown
+    assert not ce.strip_agrees({**strip, "server_epoch": 1010})  # a clock of its own
+    assert not ce.strip_agrees({**strip, "backend": "cupy · kaggle"})  # a backend the server did not name
+    assert not ce.strip_agrees({**strip, "server_gpu": None})
+    assert not ce.strip_agrees({**strip, "slots": "—"})
+
+
+def test_another_run_on_the_same_day_keeps_the_picture_of_the_earlier_run() -> None:
+    """The file name carries the day only: a later run of that day would overwrite the picture of an
+    earlier one, and with it what the record of that run points at."""
+    once, _ = ce.upsert_rows(HEAD, [row()])
+    later_run = "runs/20261012-111111_M13_y (git def5678)"
+    later, replaced = ce.upsert_rows(once, [row(source=later_run)])
+    kept = "M13_dashboard_light_20261012.20261012-000000.png"
+    assert replaced == [("SCR-M13-DASHBOARD-LIGHT", "screens/M13_dashboard_light_20261012.png", kept)]
+    note = f"; the earlier picture (runs/20261012-000000_M13_x) is kept as superseded/{kept}"
+    assert note in later and later.count("SCR-M13-DASHBOARD-LIGHT") == 1
+    # the same run again overwrites its own picture, and the row still says what the earlier run left
+    again, replaced = ce.upsert_rows(later, [row(source=later_run, what="the dashboard again")])
+    assert replaced == [] and note in again and again.count("is kept as") == 1
+    # a third run keeps the second, and both notes stay
+    third, replaced = ce.upsert_rows(again, [row(source="runs/20261012-222222_M13_z (git 0000000)")])
+    assert [r[2] for r in replaced] == ["M13_dashboard_light_20261012.20261012-111111.png"]
+    assert third.count("is kept as") == 2 and note in third

@@ -30,6 +30,7 @@ from fastapi.testclient import TestClient
 
 from demo_two_users import LocalServer, free_port, sign_in
 from headless import Browser, Page, find_browser
+from strip_drift import sample, summarize
 from vcloak.cli import build_backend, build_parser
 from vcloak.crypto.client import PAYLOAD_LEN
 from vcloak.service.app import create_app
@@ -101,9 +102,58 @@ def test_stats_live_is_public_parameters_only() -> None:
     with app_client(dev=True) as c:
         body = c.get("/v1/stats/live").json()
     assert set(body) == {"mode", "dev", "sessions", "win", "window_s", "epoch_ms", "slots", "queued", "epochs",
-                         "payload_len", "switchable", "gpu"}
+                         "payload_len", "switchable", "now_ms", "epoch", "last_epoch", "last_write_ms", "gpu"}
     assert body["mode"] == "vcloak" and body["dev"] is True and body["sessions"] is False
-    assert body["payload_len"] == PAYLOAD_LEN and body["gpu"] is None
+    assert body["payload_len"] == PAYLOAD_LEN
+
+
+# ── S6: what the strip is given ──────────────────────────────────────────────
+def wait_for_an_epoch(c: TestClient) -> dict[str, Any]:
+    deadline = time.monotonic() + 20
+    while (body := c.get("/v1/stats/live").json())["last_epoch"] is None:
+        assert time.monotonic() < deadline, "no epoch was written"
+        time.sleep(0.05)
+    return body
+
+
+def test_stats_live_carries_the_epoch_clock_and_the_compute_backend(monkeypatch: pytest.MonkeyPatch) -> None:
+    for name in ("VCLOAK_RUNNER", "COLAB_GPU", "COLAB_RELEASE_TAG", "KAGGLE_KERNEL_RUN_TYPE"):
+        monkeypatch.delenv(name, raising=False)
+    with app_client("--epoch-ms", "50", dev=True) as c:
+        before = time.time_ns() // 1_000_000
+        first = wait_for_an_epoch(c)
+        # the clock is the one the epochs are cut on, and the open epoch is that clock in epochs
+        assert before <= first["now_ms"] <= time.time_ns() // 1_000_000
+        assert first["epoch"] == first["now_ms"] // 50
+        assert 0 <= first["epoch"] - first["last_epoch"] <= 20  # written epochs follow the open one
+        assert first["gpu"]["backend"] == "numpy" and first["gpu"]["runner"] == "local"
+        assert first["gpu"]["device"] and first["gpu"]["util"] is None  # no NVML reading without a GPU
+        assert isinstance(first["last_write_ms"], float) and first["last_write_ms"] >= 0
+        time.sleep(0.5)
+        later = c.get("/v1/stats/live").json()
+        assert later["last_epoch"] > first["last_epoch"] and later["epoch"] > first["epoch"]
+        assert later["epochs"] > first["epochs"]
+
+
+def test_stats_live_names_the_runner_it_is_told(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("VCLOAK_RUNNER", "kaggle")
+    with app_client(dev=True) as c:
+        assert c.get("/v1/stats/live").json()["gpu"]["runner"] == "kaggle"
+
+
+def test_without_dev_stats_live_gives_no_timing_and_no_host_description() -> None:
+    with app_client("--epoch-ms", "50", dev=False) as c:
+        body = wait_for_an_epoch(c)
+    assert body["last_write_ms"] is None
+    assert body["gpu"] == {"backend": "numpy", "runner": body["gpu"]["runner"], "device": None, "util": None}
+    assert body["epoch"] == body["now_ms"] // 50  # the clock and the epoch are public parameters
+
+
+def test_stats_live_of_the_baseline_has_no_epoch_and_no_backend() -> None:
+    with app_client("--mode", "baseline", dev=True) as c:
+        body = c.get("/v1/stats/live").json()
+    assert body["mode"] == "baseline" and body["now_ms"] > 0
+    assert (body["epoch"], body["last_epoch"], body["last_write_ms"], body["gpu"], body["slots"]) == (None,) * 5
 
 
 # ── S4: the stored rows (dev only) ───────────────────────────────────────────
@@ -518,6 +568,12 @@ def test_the_mode_switch_shows_the_same_conversation_both_ways(browser: Browser)
             assert len({r["conv"] for r in plain["rows"]}) == 1 and all(r["ts"] for r in plain["rows"])
             assert page.evaluate(switch + ".checked") is True and page.evaluate("VC.state.mode") == "baseline"
             assert page.evaluate("document.getElementById('ls-mode').textContent") == "baseline"
+            # S6: the baseline has no epochs and computes nothing, and the strip says so at once
+            page.wait_for("document.getElementById('ls-epoch').textContent === '—'", timeout=5)
+            hidden = "['ls-noepoch', 'ls-fillnote'].map(i => document.getElementById(i).hidden)"
+            assert page.evaluate(hidden) == [False, True]
+            assert page.evaluate("document.getElementById('ls-backend').textContent") == "none"
+            assert page.evaluate("VC.strip.epoch()") is None
             assert shown_as("clear-col") == "table-cell" and shown_as("cloak-col") == "none"
             assert "Unprotected baseline" in note() and "who is in a conversation with whom" in note()
             assert "--compare" in note()
@@ -569,6 +625,52 @@ def test_the_page_says_when_the_mode_cannot_be_changed(browser: Browser, server:
         assert "409 not_switchable" in page.evaluate("document.getElementById('serverNote').textContent")
         assert page.evaluate("[VC.state.mode, document.getElementById('modeSwitch').checked]") == ["vcloak", False]
         assert page.evaluate("VC.chat.serverView().mode") == "vcloak"
+    finally:
+        page.close()
+
+
+@needs_browser
+def test_the_strip_ticks_with_the_epochs_of_the_server(page: Page, server: LocalServer) -> None:
+    """S6: the epoch on the strip is the server's open epoch, it moves on with it, and the server writes
+    epochs meanwhile. The clock of the browser's machine has no part in it."""
+    page.wait_for("VC.strip.epoch() !== null", timeout=10)
+    strip = "document.getElementById('{}').textContent"
+    assert page.evaluate(strip.format("ls-backend")) == "numpy · local"
+    assert "never a GPU result" in page.evaluate("document.getElementById('ls-backend').parentNode.title")
+    assert page.evaluate(strip.format("ls-slots")) == "64" and page.evaluate(strip.format("ls-queued")).isdigit()
+    assert page.evaluate("document.getElementById('ls-noepoch').hidden") is True
+    # a page that counted with the wall clock of its machine would now jump: this one must not notice
+    page.evaluate("(Date.now = () => 0, true)")
+    samples = []
+    for _ in range(8):
+        samples.append(sample(page))
+        time.sleep(0.5)
+    s = summarize(samples, EPOCH_MS)
+    assert -3 <= s["shown_minus_server"]["min"] and s["shown_minus_server"]["max"] <= 3, s
+    assert s["server_epochs_passed"] >= 30 and abs(s["strip_epochs_passed"] - s["server_epochs_passed"]) <= 3, s
+    assert s["epochs_written_meanwhile"] >= 20, s  # real epochs, not a counter of the page
+    assert all(x["last_written"] <= x["server"] for x in samples)
+    shown = [int(x["shown"]) for x in samples]
+    assert shown == sorted(shown) and len(set(shown)) == len(shown)
+
+
+@needs_browser
+def test_the_strip_stops_when_the_server_stops(browser: Browser) -> None:
+    """S6: a live page whose server went away shows no epoch. It never goes on counting by itself."""
+    srv = LocalServer(ARGV, config=session_config()).start()
+    try:
+        page = open_app(browser, srv)
+    except BaseException:
+        srv.stop()
+        raise
+    try:
+        page.wait_for("VC.strip.epoch() !== null", timeout=10)
+        srv.stop()
+        page.wait_for("document.getElementById('ls-epoch').textContent === '—'", timeout=15)
+        assert page.evaluate("document.getElementById('livestrip').classList.contains('ls-stale')") is True
+        assert page.evaluate("document.getElementById('ls-backend').textContent") == "no answer"
+        time.sleep(1.5)
+        assert page.evaluate("[VC.strip.epoch(), document.getElementById('ls-epoch').textContent]") == [None, "—"]
     finally:
         page.close()
 

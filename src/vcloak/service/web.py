@@ -12,7 +12,9 @@ answer under `/app` carries a Content-Security-Policy that allows exactly that:
 shell.
 
 `GET /v1/stats/live` is open like `/v1/windows`: public parameters and the public counters of `/healthz`,
-plus what the page needs to decide how to run (`dev`, `sessions`, the payload size).
+plus what the page needs to decide how to run (`dev`, `sessions`, the payload size) and what its strip
+shows: the clock the epochs are cut on, the open epoch, the last epoch in the store, and which backend
+computes on which runner. The time of the last write, the device name and its load are given with `--dev` only.
 
 `GET /v1/dump` is the "what the server stores" panel: the rows of the newest windows exactly as the store
 holds them, in physical order. It exists with `--dev` only and answers 403 otherwise. It hands out what
@@ -123,7 +125,12 @@ def add_live_routes(app: FastAPI, backend: Any, *, dev: bool, sessions: bool, pa
 
     @app.get("/v1/stats/live")
     async def stats_live() -> dict[str, Any]:
-        stats = backend.stats()
+        stats, live = backend.stats(), backend.live()
+        gpu = live["gpu"]
+        if gpu is not None and not dev:
+            # the device name and its load describe the host: the open API says only what computes, and where
+            gpu = {**gpu, "device": None, "util": None}
+        write_ms = live["last_write_ms"]
         return {
             "mode": backend.mode,
             "dev": dev,
@@ -136,7 +143,13 @@ def add_live_routes(app: FastAPI, backend: Any, *, dev: bool, sessions: bool, pa
             "epochs": stats["epochs"],
             "payload_len": payload_len,
             "switchable": switchable,
-            "gpu": None,  # provenance of the compute backend: S6
+            # the strip of the page follows this clock between two answers (`now_ms // epoch_ms` is `epoch`)
+            "now_ms": live["now_ms"],
+            "epoch": live["epoch"],  # the open epoch; null in baseline mode, which has none
+            "last_epoch": live["last_epoch"],  # the last one in the store
+            # host time of the last write: per-epoch timing is not handed to whoever can reach the port
+            "last_write_ms": round(write_ms, 1) if dev and write_ms is not None else None,
+            "gpu": gpu,
         }
 
     if not dev:
