@@ -447,5 +447,5 @@
   logsafe test under tests/unit; extra files and CLI options (Amendments of ai/modules/M10)
 - Not verified: the service on a CUDA device; whether an epoch fits EPOCH_MS (nothing timed); restart and crash
   behaviour (ISSUE-22); the passphrase prompt on a terminal; --clock sim and --store pg as a live process
-- Commit: PENDING
+- Commit: 3e7b118
 - Next: M11 S1 ; human action: none. Keep Docker Desktop running when you type continue
