@@ -900,3 +900,37 @@ Notes:
 - The runtime in ISSUE-34 is a plan from the measuring times of the earlier job, not a measurement.
 - capture-evidence was not run: web/, results/ and METRICS_INDEX.md are unchanged.
 
+## Audit M08 (fix ISSUE-25, ingest) — 2026-10-13 — session 31 — result: PASS for the ingest (the measurement is a negative result; ISSUE-25 stays open, M08 stays DONE)
+| Item | Result | Evidence |
+|---|---|---|
+| Bundle integrity: job id, git sha, bundle sha, 9 commands exit 0, backend cupy | PASS | runs/20261013-000602_M08_i25_ingest/gates.txt (first gates); gpujobs/out/20261012-191630_M08_issue25/result.json |
+| Controls of the session: planted leak detected, full-N control_null PASS in each of the 4 runs | PASS | runs/20261013-000602_M08_i25_ingest/gates.txt (381.7530 quick; 2.2810, 1.8856, 2.2996, 1.1958) |
+| Every verdict recomputed from the raw npz (124 series) | PASS | runs/20261013-000602_M08_i25_ingest/gates.txt, runs/20261013-000602_M08_i25_ingest/gates_issue25.py |
+| ISSUE-25 fix 2: three more seeds with the null target as control | DONE, measured | runs/20261012-135427_M08_dudect_i25_s8, runs/20261012-145303_M08_dudect_i25_s10, runs/20261012-155223_M08_dudect_i25_s11, runs/20261012-165055_M08_dudect_i25_s12 |
+| ISSUE-25 reading rules a to e applied as written | DONE | runs/20261013-000602_M08_i25_ingest/gates.txt (READING, COUNT and SEEDS lines); state/ISSUES.md ISSUE-25 "Result, session 31" |
+| M08 dudect verdicts of the write-path stages | FAIL (measured) | 56 of 124 series FAIL; h2d, d2h, tags, compact FAIL in 4 of 4 seeds in at least one target. Recorded as measured, not a failure of the audit |
+| G1 | PASS | runs/20261013-000602_M08_i25_ingest/pytest_all_rerun.txt (`-m "not gpu"`: 2003 passed, 1 skipped (tests/unit/test_oracle_chacha.py:82), 674 deselected). The first full run (runs/20261013-000602_M08_i25_ingest/pytest_all.txt) had 1 failure, see the notes |
+| G2 | PASS | runs/20261013-000602_M08_i25_ingest/check_metrics.txt (475 rows, 0 problems); 144 rows added by `gpujob.py ingest`, none by hand |
+| G2b | PASS | the 144 rows are backend cupy, runner kaggle, from the ingested bundle; nothing timed locally |
+| G3 | PASS | runs/20261013-000602_M08_i25_ingest/check_oblivious.txt; no kernel changed |
+| G4 | PASS | runs/20261013-000602_M08_i25_ingest/check_secrets.txt (1495 files, 0 key-like runs, after the evidence copies) |
+| G5 | N/A | no kernel or twin changed |
+| G6 | PASS | no source file changed; the gate script is in the run directory |
+| G7 | PASS | checked after the closing commit |
+| G8 | PASS | STATE: status NOT_STARTED (M14), gpu_job.pending null, last_ingested this job, M08 sessions 6 |
+| G9 | PASS | SESSION_LOG session 31, this entry, ISSUE-25 result, ISSUE-34 closed, M08 Amendments, evidence/INDEX.md |
+| G10 | PASS | manifests of the 5 ingested runs: cupy, this job, this session (gates.txt); manifest of the ingest run valid |
+Notes:
+- G1 failed once and the cause was this session's work: a row of evidence/INDEX.md spelled out a figure file name of 48
+  characters of the base64url alphabet, which check_secrets reads as key-like (the limit found in session 30). The row
+  was reworded; nothing was allow-listed. runs/20261013-000602_M08_i25_ingest/pytest_check_secrets_rerun.txt, then the full suite again.
+- The audit result is PASS because the ingest and its records are sound, not because the write path passed: the
+  stage series FAIL. Nothing in results/ or docs/ says otherwise (they still show the S2 targets only, ISSUE-17 point 1).
+- Rule c of ISSUE-25 is not met, yet the contents are not excluded: compact_ms of write_epoch_fresh_st FAILS in four
+  seeds with one sign. The rules did not foresee a stage that also fails with equal contents; this is written into
+  the issue instead of being read in either direction.
+- All 12 write_epoch targets ran at 585 MHz and the four controls at 1065 to 1110 MHz: the control is not at the
+  clock of what it controls. Not separated by this job.
+- This job and the ISSUE-17 job have the same driver (580.178.04) but are two runner sessions: values are not pooled.
+- capture-evidence: figures and terminal output were copied from the run directories and indexed by hand (5 rows);
+  `capture_evidence.py` was not run, because web/ is unchanged and no dashboard data exists before M18.

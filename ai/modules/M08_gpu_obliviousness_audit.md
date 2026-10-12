@@ -111,3 +111,12 @@ paper's setup section and the panel will ask to see. Follow `ai/EVIDENCE.md`.
   diagnostics with one series per engine stage and `core_ms` (device stages without h2d and d2h), as targets of their
   own (`*_st`), so the targets of the M08 and ISSUE-17 jobs stay what they measured. Job spec `bench/jobs/M08_issue25.json`.
   Run names in that spec are short because a run directory name of 43 or more characters trips `check_secrets.py`.
+- 2026-10-13 (session 31, fix ISSUE-25 ingest). Job 20261012-191630_M08_issue25 on a Kaggle T4, seeds 8, 10, 11, 12:
+  - The per-stage series do not clear the write path. With the same contents in both classes, `h2d_ms` and `d2h_ms`
+    FAIL in all four seeds (`write_epoch_null_st`) and `tags_ms` and `compact_ms` FAIL in all four
+    (`write_epoch_age_st`). With fixed against random contents `compact_ms` FAILS in all four seeds
+    (`write_epoch_fresh_st`), and `core_ms` at seed 12. The control of each run (`control_null`) PASSES.
+  - The reading rules a to e of ISSUE-25 were applied as written: chance is not the reading (b), and the condition
+    for a dependence on the contents (c) is not met, because the same stage also fails with equal contents. That is
+    not an exclusion; the issue stays open with a kernel-window target for `tags` and `compact` as the next step.
+  - Every verdict was recomputed from the raw data by `runs/20261013-000602_M08_i25_ingest/gates_issue25.py`.

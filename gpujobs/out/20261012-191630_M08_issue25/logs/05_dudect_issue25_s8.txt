@@ -1,0 +1,79 @@
+target control_null
+  control_null: 20000/200000  max|t| ms 1.138
+  control_null: 40000/200000  max|t| ms 1.960
+  control_null: 60000/200000  max|t| ms 1.977
+  control_null: 80000/200000  max|t| ms 1.547
+  control_null: 100000/200000  max|t| ms 2.315
+  control_null: 120000/200000  max|t| ms 2.102
+  control_null: 140000/200000  max|t| ms 2.053
+  control_null: 160000/200000  max|t| ms 1.896
+  control_null: 180000/200000  max|t| ms 1.931
+  control_null: 200000/200000  max|t| ms 2.281
+target write_epoch_null_st
+  write_epoch_null_st: 20000/200000  max|t| device_ms 3.510  call_ms 2.304  core_ms 3.042  h2d_ms 2.917  tags_ms 1.796  sort_ms 4.483  compact_ms 1.853  d2h_ms 6.177  seal_ms 3.356  bucket_ms 3.998
+  write_epoch_null_st: 40000/200000  max|t| device_ms 4.624  call_ms 1.631  core_ms 4.548  h2d_ms 2.421  tags_ms 2.452  sort_ms 4.345  compact_ms 2.352  d2h_ms 6.370  seal_ms 3.807  bucket_ms 2.504
+  write_epoch_null_st: 60000/200000  max|t| device_ms 3.869  call_ms 2.612  core_ms 2.387  h2d_ms 2.580  tags_ms 2.036  sort_ms 3.941  compact_ms 1.217  d2h_ms 7.262  seal_ms 3.555  bucket_ms 3.330
+  write_epoch_null_st: 80000/200000  max|t| device_ms 3.914  call_ms 2.970  core_ms 2.941  h2d_ms 3.120  tags_ms 3.017  sort_ms 5.676  compact_ms 1.764  d2h_ms 8.187  seal_ms 3.370  bucket_ms 4.177
+  write_epoch_null_st: 100000/200000  max|t| device_ms 5.080  call_ms 3.760  core_ms 3.332  h2d_ms 4.290  tags_ms 2.926  sort_ms 6.282  compact_ms 1.944  d2h_ms 8.778  seal_ms 3.803  bucket_ms 4.434
+  write_epoch_null_st: 120000/200000  max|t| device_ms 5.232  call_ms 4.675  core_ms 2.760  h2d_ms 5.526  tags_ms 3.049  sort_ms 6.409  compact_ms 2.218  d2h_ms 9.264  seal_ms 4.247  bucket_ms 4.214
+  write_epoch_null_st: 140000/200000  max|t| device_ms 5.529  call_ms 4.714  core_ms 3.160  h2d_ms 5.881  tags_ms 3.151  sort_ms 7.326  compact_ms 1.944  d2h_ms 9.437  seal_ms 3.923  bucket_ms 3.789
+  write_epoch_null_st: 160000/200000  max|t| device_ms 5.479  call_ms 4.660  core_ms 3.413  h2d_ms 6.691  tags_ms 2.980  sort_ms 7.466  compact_ms 2.387  d2h_ms 9.522  seal_ms 4.539  bucket_ms 4.475
+  write_epoch_null_st: 180000/200000  max|t| device_ms 5.588  call_ms 5.172  core_ms 2.676  h2d_ms 7.591  tags_ms 3.080  sort_ms 7.047  compact_ms 2.280  d2h_ms 9.496  seal_ms 4.788  bucket_ms 4.031
+  write_epoch_null_st: 200000/200000  max|t| device_ms 5.608  call_ms 5.574  core_ms 2.775  h2d_ms 7.365  tags_ms 3.216  sort_ms 6.898  compact_ms 2.024  d2h_ms 10.003  seal_ms 4.949  bucket_ms 3.567
+target write_epoch_age_st
+  write_epoch_age_st: 20000/200000  max|t| device_ms 2.528  call_ms 4.620  core_ms 1.332  h2d_ms 5.013  tags_ms 4.558  sort_ms 2.665  compact_ms 1.794  d2h_ms 2.585  seal_ms 3.415  bucket_ms 1.662
+  write_epoch_age_st: 40000/200000  max|t| device_ms 2.114  call_ms 7.121  core_ms 1.162  h2d_ms 7.543  tags_ms 5.140  sort_ms 2.688  compact_ms 2.009  d2h_ms 1.981  seal_ms 4.626  bucket_ms 1.831
+  write_epoch_age_st: 60000/200000  max|t| device_ms 1.545  call_ms 7.234  core_ms 1.110  h2d_ms 8.104  tags_ms 6.818  sort_ms 2.207  compact_ms 3.388  d2h_ms 2.580  seal_ms 4.556  bucket_ms 1.796
+  write_epoch_age_st: 80000/200000  max|t| device_ms 1.079  call_ms 8.183  core_ms 1.536  h2d_ms 9.190  tags_ms 8.235  sort_ms 1.430  compact_ms 4.006  d2h_ms 2.118  seal_ms 4.391  bucket_ms 1.137
+  write_epoch_age_st: 100000/200000  max|t| device_ms 1.494  call_ms 9.502  core_ms 1.659  h2d_ms 10.917  tags_ms 9.464  sort_ms 2.383  compact_ms 3.672  d2h_ms 1.649  seal_ms 5.481  bucket_ms 1.539
+  write_epoch_age_st: 120000/200000  max|t| device_ms 1.505  call_ms 9.447  core_ms 1.515  h2d_ms 11.327  tags_ms 10.698  sort_ms 2.215  compact_ms 4.631  d2h_ms 1.881  seal_ms 5.522  bucket_ms 1.298
+  write_epoch_age_st: 140000/200000  max|t| device_ms 1.342  call_ms 9.949  core_ms 1.918  h2d_ms 11.605  tags_ms 11.212  sort_ms 2.282  compact_ms 5.507  d2h_ms 3.712  seal_ms 5.290  bucket_ms 1.097
+  write_epoch_age_st: 160000/200000  max|t| device_ms 1.373  call_ms 10.666  core_ms 1.662  h2d_ms 12.444  tags_ms 12.719  sort_ms 2.533  compact_ms 5.324  d2h_ms 4.298  seal_ms 5.396  bucket_ms 1.736
+  write_epoch_age_st: 180000/200000  max|t| device_ms 1.754  call_ms 11.137  core_ms 1.834  h2d_ms 13.294  tags_ms 13.805  sort_ms 2.574  compact_ms 4.972  d2h_ms 4.258  seal_ms 5.471  bucket_ms 2.314
+  write_epoch_age_st: 200000/200000  max|t| device_ms 1.657  call_ms 11.119  core_ms 1.801  h2d_ms 14.226  tags_ms 13.960  sort_ms 2.802  compact_ms 5.080  d2h_ms 4.352  seal_ms 5.738  bucket_ms 2.243
+target write_epoch_fresh_st
+  write_epoch_fresh_st: 20000/200000  max|t| device_ms 2.404  call_ms 3.340  core_ms 1.941  h2d_ms 6.617  tags_ms 1.963  sort_ms 2.159  compact_ms 1.873  d2h_ms 2.299  seal_ms 2.016  bucket_ms 2.143
+  write_epoch_fresh_st: 40000/200000  max|t| device_ms 3.040  call_ms 4.525  core_ms 2.892  h2d_ms 7.125  tags_ms 1.878  sort_ms 3.069  compact_ms 2.464  d2h_ms 1.581  seal_ms 2.810  bucket_ms 2.042
+  write_epoch_fresh_st: 60000/200000  max|t| device_ms 2.913  call_ms 3.929  core_ms 3.214  h2d_ms 5.915  tags_ms 2.490  sort_ms 3.160  compact_ms 2.083  d2h_ms 3.109  seal_ms 2.690  bucket_ms 2.080
+  write_epoch_fresh_st: 80000/200000  max|t| device_ms 2.221  call_ms 3.631  core_ms 2.906  h2d_ms 7.104  tags_ms 1.702  sort_ms 3.148  compact_ms 2.223  d2h_ms 3.504  seal_ms 2.625  bucket_ms 1.972
+  write_epoch_fresh_st: 100000/200000  max|t| device_ms 1.635  call_ms 3.641  core_ms 2.045  h2d_ms 8.184  tags_ms 2.542  sort_ms 2.864  compact_ms 2.918  d2h_ms 4.341  seal_ms 3.039  bucket_ms 2.674
+  write_epoch_fresh_st: 120000/200000  max|t| device_ms 1.608  call_ms 3.423  core_ms 1.627  h2d_ms 9.544  tags_ms 2.527  sort_ms 1.822  compact_ms 4.082  d2h_ms 4.903  seal_ms 2.997  bucket_ms 2.169
+  write_epoch_fresh_st: 140000/200000  max|t| device_ms 1.970  call_ms 3.615  core_ms 1.699  h2d_ms 10.331  tags_ms 2.183  sort_ms 1.996  compact_ms 4.679  d2h_ms 5.099  seal_ms 3.945  bucket_ms 2.149
+  write_epoch_fresh_st: 160000/200000  max|t| device_ms 1.408  call_ms 3.944  core_ms 1.623  h2d_ms 11.152  tags_ms 2.029  sort_ms 1.930  compact_ms 4.999  d2h_ms 5.599  seal_ms 3.474  bucket_ms 2.259
+  write_epoch_fresh_st: 180000/200000  max|t| device_ms 1.925  call_ms 3.424  core_ms 2.385  h2d_ms 11.853  tags_ms 2.468  sort_ms 1.160  compact_ms 5.149  d2h_ms 6.360  seal_ms 3.447  bucket_ms 2.613
+  write_epoch_fresh_st: 200000/200000  max|t| device_ms 2.087  call_ms 3.549  core_ms 2.296  h2d_ms 12.213  tags_ms 2.535  sort_ms 1.378  compact_ms 5.835  d2h_ms 7.067  seal_ms 3.230  bucket_ms 2.917
+run dir     /kaggle/working/vcloak_job/runs/20261012-135427_M08_dudect_i25_s8
+backend     cupy   N per class 100000   quick False
+  control_null    ms         max|t|      2.281  PASS  (expected PASS)  r=1
+  write_epoch_null_st device_ms  max|t|      5.608  FAIL  (expected PASS)  r=1
+  write_epoch_null_st call_ms    max|t|      5.574  FAIL  (expected PASS)  r=1
+  write_epoch_null_st core_ms    max|t|      2.775  PASS  (expected PASS)  r=1
+  write_epoch_null_st h2d_ms     max|t|      7.365  FAIL  (expected PASS)  r=1
+  write_epoch_null_st tags_ms    max|t|      3.216  PASS  (expected PASS)  r=1
+  write_epoch_null_st sort_ms    max|t|      6.898  FAIL  (expected PASS)  r=1
+  write_epoch_null_st compact_ms max|t|      2.024  PASS  (expected PASS)  r=1
+  write_epoch_null_st d2h_ms     max|t|     10.003  FAIL  (expected PASS)  r=1
+  write_epoch_null_st seal_ms    max|t|      4.949  FAIL  (expected PASS)  r=1
+  write_epoch_null_st bucket_ms  max|t|      3.567  PASS  (expected PASS)  r=1
+  write_epoch_age_st device_ms  max|t|      1.657  PASS  (expected PASS)  r=1
+  write_epoch_age_st call_ms    max|t|     11.119  FAIL  (expected PASS)  r=1
+  write_epoch_age_st core_ms    max|t|      1.801  PASS  (expected PASS)  r=1
+  write_epoch_age_st h2d_ms     max|t|     14.226  FAIL  (expected PASS)  r=1
+  write_epoch_age_st tags_ms    max|t|     13.960  FAIL  (expected PASS)  r=1
+  write_epoch_age_st sort_ms    max|t|      2.802  PASS  (expected PASS)  r=1
+  write_epoch_age_st compact_ms max|t|      5.080  FAIL  (expected PASS)  r=1
+  write_epoch_age_st d2h_ms     max|t|      4.352  PASS  (expected PASS)  r=1
+  write_epoch_age_st seal_ms    max|t|      5.738  FAIL  (expected PASS)  r=1
+  write_epoch_age_st bucket_ms  max|t|      2.243  PASS  (expected PASS)  r=1
+  write_epoch_fresh_st device_ms  max|t|      2.087  PASS  (expected PASS)  r=1
+  write_epoch_fresh_st call_ms    max|t|      3.549  PASS  (expected PASS)  r=1
+  write_epoch_fresh_st core_ms    max|t|      2.296  PASS  (expected PASS)  r=1
+  write_epoch_fresh_st h2d_ms     max|t|     12.213  FAIL  (expected PASS)  r=1
+  write_epoch_fresh_st tags_ms    max|t|      2.535  PASS  (expected PASS)  r=1
+  write_epoch_fresh_st sort_ms    max|t|      1.378  PASS  (expected PASS)  r=1
+  write_epoch_fresh_st compact_ms max|t|      5.835  FAIL  (expected PASS)  r=1
+  write_epoch_fresh_st d2h_ms     max|t|      7.067  FAIL  (expected PASS)  r=1
+  write_epoch_fresh_st seal_ms    max|t|      3.230  PASS  (expected PASS)  r=1
+  write_epoch_fresh_st bucket_ms  max|t|      2.917  PASS  (expected PASS)  r=1
+metrics     35
+status      OK   dudect FAIL: write_epoch_null_st, write_epoch_age_st, write_epoch_fresh_st

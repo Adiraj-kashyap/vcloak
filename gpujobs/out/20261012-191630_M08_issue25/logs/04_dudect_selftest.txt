@@ -1,0 +1,28 @@
+target control_leak
+  control_leak: 2000/20000  max|t| ms 122.319
+  control_leak: 4000/20000  max|t| ms 168.828
+  control_leak: 6000/20000  max|t| ms 211.499
+  control_leak: 8000/20000  max|t| ms 246.053
+  control_leak: 10000/20000  max|t| ms 258.177
+  control_leak: 12000/20000  max|t| ms 286.189
+  control_leak: 14000/20000  max|t| ms 310.278
+  control_leak: 16000/20000  max|t| ms 337.424
+  control_leak: 18000/20000  max|t| ms 361.418
+  control_leak: 20000/20000  max|t| ms 381.753
+target control_null
+  control_null: 2000/20000  max|t| ms 1.561
+  control_null: 4000/20000  max|t| ms 1.736
+  control_null: 6000/20000  max|t| ms 1.937
+  control_null: 8000/20000  max|t| ms 1.599
+  control_null: 10000/20000  max|t| ms 1.120
+  control_null: 12000/20000  max|t| ms 1.472
+  control_null: 14000/20000  max|t| ms 1.556
+  control_null: 16000/20000  max|t| ms 2.364
+  control_null: 18000/20000  max|t| ms 2.290
+  control_null: 20000/20000  max|t| ms 1.799
+run dir     /kaggle/working/vcloak_job/runs/20261012-135342_M08_i25_selftest_quick
+backend     cupy   N per class 10000   quick True
+  control_leak    ms         max|t|    381.753  FAIL  (expected FAIL)  r=2
+  control_null    ms         max|t|      1.799  PASS  (expected PASS)  r=1
+metrics     4
+status      OK

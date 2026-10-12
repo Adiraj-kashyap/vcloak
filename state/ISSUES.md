@@ -462,7 +462,7 @@ Still open, so the issue is not closed:
    the symmetric staging the S2 staging and measure again). The FAILs are never removed from the table.
 2. The ADR on whole-call host timing (is the host Python of write_epoch inside the threat model?) is a decision of the
    team. It is needed before M14, not before M11 to M13.
-3. ISSUE-25.
+3. ISSUE-25 (measured per stage in session 31: still open, see its result).
 What M14 may write until then: with symmetric staging no timing difference between the classes was detected for AEAD
 open at N = 100000 per class in two seeds, and the FAILs of the S2 staging are reproduced with identical contents. It
 must not write that AEAD open is constant time, and nothing about the write path beyond the measured series.
@@ -663,6 +663,56 @@ Update 2026-10-12 session 30 (prep; nothing measured, the issue stays open):
      its median and a FAIL or PASS of it is marked as below the rule.
 - Not covered by this job: the clock (every failing series so far ran at 585 MHz; the job cannot set it), a second
   GPU model, write_epoch itself per stage (its device series PASSED three times).
+Result, session 31 (job 20261012-191630_M08_issue25, runner session 20261012-135251, Kaggle Tesla T4, driver 580.178.04,
+N = 100000 per class, threshold 4.5; runs/20261012-135427_M08_dudect_i25_s8, runs/20261012-145303_M08_dudect_i25_s10,
+runs/20261012-155223_M08_dudect_i25_s11, runs/20261012-165055_M08_dudect_i25_s12; every max abs(t) recomputed from the raw npz in
+runs/20261013-000602_M08_i25_ingest/gates.txt, 249 gates PASS, 0 FAIL). Values are given in the order seed 8, 10, 11, 12.
+The issue stays OPEN: the cause is located more narrowly, it is not removed, and the contents are not excluded.
+- The runs are valid: full-N control_null PASS in each (2.2810, 1.8856, 2.2996, 1.1958), planted leak detected
+  (381.7530, quick, N 10000), 0 mismatches, 9 commands exit 0, git sha and bundle sha match the pack.
+- 56 of the 124 series FAIL. This is not the pattern of chance: the same series fail in all four seeds with the same sign.
+- The seed-8 finding of the earlier job is not reproduced as such: device_ms of write_epoch_age_st PASSES in all four
+  seeds (1.6571, 4.3280, 1.9554, 2.0564) and that of write_epoch_fresh_st in three (2.0867, 4.0613, 1.4242; FAIL 6.8732 at
+  seed 12). The sum hides what the stages show.
+- Transfers, same contents (write_epoch_null_st, class = batch built first or second): h2d_ms FAILS in 4 of 4 seeds
+  (7.3647, 7.7220, 5.1919, 25.6954) and d2h_ms in 4 of 4 (10.0027, 8.2372, 9.6120, 13.9003), t negative every time; core_ms
+  PASSES in 4 of 4 (2.7747, 2.5635, 2.7617, 2.0612); device_ms FAILS at seeds 8 and 12 (5.6077, 5.1424). So the control of
+  the run is itself separated in the two stages that copy host memory.
+- Device stages, same contents (write_epoch_age_st, long-lived ints vs new ints): tags_ms FAILS in 4 of 4 seeds (13.9597,
+  8.5119, 9.5266, 9.0150) and compact_ms in 4 of 4 (5.0805, 5.3882, 5.2484, 7.3084), t positive every time, while both
+  series PASS in write_epoch_null_st in 4 of 4. The raw means of tags_ms differ by 84 to 180 ns. core_ms PASSES in 4 of 4
+  (1.8005, 3.8004, 3.6308, 3.3354). So two stages that run only on the device separate classes whose contents are equal.
+- Fixed vs random contents (write_epoch_fresh_st): compact_ms FAILS in 4 of 4 seeds (5.8350, 7.8222, 4.9391, 9.9600), t
+  negative at the maximum every time (raw means differ by -82 to +430 ns); h2d_ms FAILS in 4 of 4 (12.2133, 8.1278,
+  12.6966, 6.3898; positive, the opposite sign of the null) and d2h_ms in 4 of 4 (7.0672, 5.1914, 6.3207, 6.3779). At seed
+  12 core_ms (8.8268, 69 of 101 tests above 4.5), device_ms (6.8732) and tags_ms (4.8655) FAIL as well; core_ms PASSES at
+  the other three seeds (2.2959, 4.0678, 2.1933).
+- Rule a (H5): supported in the two device_ms FAILs of write_epoch_null_st (h2d and d2h FAIL, core_ms PASSES); not
+  supported in the device_ms FAIL of write_epoch_fresh_st at seed 12 (core_ms FAILS).
+- Rule b (H6): chance or runner drift is NOT the reading. Series that FAIL in more seeds than in write_epoch_null_st:
+  age_st call_ms (4 vs 2), tags_ms (4 vs 0), compact_ms (4 vs 0); fresh_st compact_ms (4 vs 0), core_ms and tags_ms (1 vs 0).
+- Rule c (contents): the condition is not met for any series, so by the rule a dependence on the contents is not the
+  reading. This is NOT an exclusion: compact_ms of write_epoch_fresh_st FAILS in four seeds with one sign and passes in
+  the null; the rule fails only because the same series of write_epoch_age_st FAILS too (with the opposite sign). The
+  rules written in session 30 did not foresee a stage that fails in both. Whether the compact_ms FAIL of fresh_st comes
+  from the contents or from the host state is not decided by this job.
+- Rule d: failing series per target, null / age / fresh: 6 / 5 / 3, 3 / 4 / 4, 5 / 5 / 3, 5 / 5 / 8 (table COUNT in gates.txt).
+- Rule e: bucket_ms has a median of about 33 us, below the 50 us rule, in all 12 runs; its two FAILs (null_st, seeds 10
+  and 12) are below the rule. All other stages are above it (h2d about 91, tags 100, d2h 141, compact 320 us).
+- Clock: all 12 write_epoch targets ran at 585 MHz (LOW), the four controls at 1065 to 1110 MHz (LOW). No write_epoch
+  series has been measured at another clock; the control is not at the clock of what it controls.
+- Hypotheses now, none tested:
+  H7: a stage interval is taken between two CUDA events of the engine's stream, so it holds the time the host needs to
+      issue the launches of that stage; the host state (object age, allocation order) would then reach tags_ms and
+      compact_ms without any dependence of a kernel on the data.
+  H8: the compaction time depends on the contents (the permutation that the tags give).
+- Proposed next step (one prep session and one runner session): a kernel-window target for the stages tags and compact,
+  as aead_*_kernel did for ISSUE-17: inputs staged on the device in pools of equal size for both classes, outputs
+  preallocated, r > 1 launches inside one event pair, fixed vs random contents and a same-contents null beside it. It
+  separates H7 from H8. A warm-up that brings the SM clock up before the write_epoch targets, if the runner allows it.
+- Evidence: evidence/terminal/M08_issue25_gates.txt, M08_issue25_gpu_run_output.txt; evidence/figures/M08_issue25_s*_dudect_*.png.
+Until that is measured, M14 must not write that the device stages of the write path, or the compaction, are
+timing-independent of the contents. It may quote these series with their verdicts, the FAILs included.
 
 ### ISSUE-26 [OPEN] M11: accounts and sessions live in memory; a restart forgets every account and logs every client out
 BLOCKS: none   SEVERITY: medium   OPENED: 2026-10-12 session 22
@@ -813,7 +863,7 @@ BLOCKS: none   SEVERITY: low   OPENED: 2026-10-12 session 29
 Proposed: 1 with the first service run on a runner (M15 or later); 4 and 6 stay as stated limits in docs/DEMO.md;
 7 in M18.
 
-### ISSUE-34 [OPEN] HUMAN ACTION REQUIRED — GPU JOB READY: ISSUE-25 per-stage dudect of the write_epoch diagnostics (job 20261012-191630_M08_issue25)
+### ISSUE-34 [CLOSED HASH_PENDING] HUMAN ACTION REQUIRED — GPU JOB READY: ISSUE-25 per-stage dudect of the write_epoch diagnostics (job 20261012-191630_M08_issue25)
 BLOCKS: M14   SEVERITY: high   OPENED: 2026-10-12 session 30
 Why: ISSUE-25 can only be settled by a measurement on the GPU, and this laptop has none.
 GPU JOB READY — 20261012-191630_M08_issue25              (runtime not measured; plan for about 4.5 hours, see the note below)
@@ -847,3 +897,5 @@ Note on the runtime: the job has four measuring runs (seeds 8, 10, 11, 12), each
   about one hour per run before warm-up and calibration. The new series add no calls. This is a plan, not a measurement.
 Confirm by running: ls gpujobs/inbox/      (it must list results_20261012-191630_M08_issue25.zip)
 Then type: continue
+Closed 2026-10-13 session 31: the human ran the job on Kaggle (session 20261012-135251, Tesla T4) and the results zip
+was ingested; all 9 commands exit 0, git sha and bundle sha match (runs/20261013-000602_M08_i25_ingest/gates.txt).

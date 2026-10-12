@@ -1,0 +1,91 @@
+{
+  "run_id": "20261012-135342_M08_i25_selftest_quick",
+  "module": "M08",
+  "step": "S2",
+  "owner": "Aditya",
+  "git_sha": "383850239da2ad27ba9984e28fd0b6416f073f55",
+  "dirty": false,
+  "command": "python bench/run_dudect.py --targets controls --seed 8 --quick --name i25_selftest --out runs",
+  "seed": 8,
+  "quick": true,
+  "params": {
+    "targets": [
+      "control_leak",
+      "control_null"
+    ],
+    "n_per_class": 10000,
+    "calibration_per_class": 500,
+    "chunk": 1000,
+    "min_measurement_ms": 0.05,
+    "t_threshold": 4.5,
+    "percentile_crops": 100,
+    "log2n": 16,
+    "write_slots": 4096,
+    "leak_spins": 1000
+  },
+  "env": {
+    "os": "Linux-6.18.48+-x86_64-with-glibc2.39",
+    "python": "3.13.15",
+    "backend": "cupy",
+    "runner": "kaggle",
+    "session_id": "20261012-135251",
+    "gpu": "Tesla T4",
+    "cc": "7.5",
+    "cuda": "12090",
+    "cupy": "14.0.1",
+    "driver": "580.178.04"
+  },
+  "telemetry_start": {
+    "available": true,
+    "gpu": "Tesla T4",
+    "driver": "580.178.04",
+    "clocks": "unlocked",
+    "sm_clock_max_mhz": 1590,
+    "ts": 1791813222.9558775,
+    "sm_clock_mhz": 765,
+    "mem_clock_mhz": 5000,
+    "temperature_c": 59,
+    "power_w": 28.329,
+    "power_limit_w": 70.0,
+    "util_gpu_pct": 5,
+    "util_mem_pct": 0,
+    "throttle_reasons": 0,
+    "pstate": 0,
+    "mem_used_mb": 655.1875
+  },
+  "telemetry_end": {
+    "available": true,
+    "gpu": "Tesla T4",
+    "driver": "580.178.04",
+    "clocks": "unlocked",
+    "sm_clock_max_mhz": 1590,
+    "ts": 1791813266.9674413,
+    "sm_clock_mhz": 1050,
+    "mem_clock_mhz": 5000,
+    "temperature_c": 62,
+    "power_w": 29.592,
+    "power_limit_w": 70.0,
+    "util_gpu_pct": 0,
+    "util_mem_pct": 0,
+    "throttle_reasons": 0,
+    "pstate": 0,
+    "mem_used_mb": 657.1875
+  },
+  "outputs": [
+    "dudect_control_leak.json",
+    "dudect_control_leak.png",
+    "dudect_control_leak_raw.npz",
+    "dudect_control_null.json",
+    "dudect_control_null.png",
+    "dudect_control_null_raw.npz",
+    "summary.json",
+    "telemetry.csv"
+  ],
+  "status": "OK",
+  "notes": "",
+  "gpu_job": {
+    "job_id": "20261012-191630_M08_issue25",
+    "bundle_sha256": "b8f1a56e924dc623d25a6cf1db0d442e7f99ed639201f5443e512500f6d84e8b",
+    "packed_from_git_sha": "383850239da2ad27ba9984e28fd0b6416f073f55"
+  }
+}

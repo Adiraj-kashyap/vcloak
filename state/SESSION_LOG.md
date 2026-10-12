@@ -737,3 +737,32 @@
 - Next: ingest 20261012-191630_M08_issue25, then M14 S1 ; human action: ISSUE-34 (run the job on Kaggle, put the
   results zip into gpujobs/inbox/). Do not change the repo before that
 
+
+- GPU-JOB 20261012-191630_M08_issue25 ingested 2026-10-13 00:05: runner kaggle, gpu Tesla T4, session 20261012-135251, overall exit 0, runs 20261012-135342_M08_i25_selftest_quick, 20261012-135427_M08_dudect_i25_s8, 20261012-145303_M08_dudect_i25_s10, 20261012-155223_M08_dudect_i25_s11, 20261012-165055_M08_dudect_i25_s12, 144 metrics indexed.
+
+## Session 31 — 2026-10-13 00:06 — fix ISSUE-25 (M08 GPU obliviousness audit), ingest — owner:Aditya
+- Steps: none new (M08 stays DONE); the ingest half of `fix ISSUE-25` (status after: NOT_STARTED for M14, no job pending)
+- Did: ingested job 20261012-191630_M08_issue25 (9 commands exit 0, shas match). runs/20261013-000602_M08_i25_ingest/gates_issue25.py
+  recomputes every verdict from the raw npz and applies the reading rules a to e of ISSUE-25. No file under src/,
+  kernels/, bench/, tests/, results/ or web/ changed.
+- Result (negative): 56 of 124 series FAIL, the same ones in all four seeds. With EQUAL contents: h2d_ms and d2h_ms
+  (write_epoch_null_st) and tags_ms and compact_ms (write_epoch_age_st) FAIL in 4 of 4 seeds. Fixed vs random contents:
+  compact_ms FAILS in 4 of 4 seeds, core_ms and device_ms at seed 12. core_ms PASSES in 11 of 12 runs; control_null
+  PASSES in all four. Rule b: chance is not the reading. Rule c: not met, the contents are neither shown nor excluded.
+- Evidence: runs/20261012-135342_M08_i25_selftest_quick, runs/20261012-135427_M08_dudect_i25_s8, runs/20261012-145303_M08_dudect_i25_s10,
+  runs/20261012-155223_M08_dudect_i25_s11, runs/20261012-165055_M08_dudect_i25_s12 (cupy, Tesla T4); runs/20261013-000602_M08_i25_ingest
+  (gates.txt 249 PASS / 0 FAIL; pytest_all_rerun.txt 2003 passed, 1 skipped (tests/unit/test_oracle_chacha.py:82), 674 deselected; check_* PASS);
+  evidence/terminal/M08_issue25_*, evidence/figures/M08_issue25_* (56 t-curves)
+- Metrics added: 144 rows by `gpujob.py ingest`: T-DUDECT-MAXT-* and T-DUDECT-N-* of control_null and of the three
+  `*_st` targets with their 10 series, for seeds 8, 10, 11, 12 and the self-test (one row per run; the run dir tells them apart)
+- Decisions: none. The ADR on whole-call host timing is still open for the team (ISSUE-17 point 2, needed before M14)
+- Issues: closed ISSUE-34; ISSUE-25 updated with the result, stays OPEN (high, BLOCKS M14); ISSUE-17 point 3 cross-referenced
+- Deviations from spec: none new (Amendments of ai/modules/M08 record the result)
+- Found on the way: the first full test run failed on a 48-character figure file name in a new row of evidence/INDEX.md
+  (check_secrets); reworded, nothing allow-listed. The control of each run (control_null, a sort) ran at 1065 to 1110 MHz, every write_epoch target
+  at 585 MHz; bucket_ms is below the 50 us rule (about 33 us)
+- Not verified: the cause of any stage FAIL (H7 host launch time inside a stage interval, H8 contents: both untested);
+  a write_epoch series at another clock; a second GPU model; write_epoch itself per stage
+- Commit: HASH_PENDING
+- Next: fix ISSUE-25, prep of the kernel-window target for tags and compact (then a GPU job), M14 S1 after it ;
+  human action: none now. The team decision on whole-call host timing (ISSUE-17 point 2) is needed before M14
