@@ -114,7 +114,6 @@ gpu_job:                    # set by the gpu-job skill
   its runs had `--sessions` on and how many sockets were open (ISSUE-27).
 - The log allow-list is final (tests/security/test_log_redaction.py pins it); a new log field is a change there.
 - Client (M12, ADR-019): `vcloak.client` never imports `vcloak.service`. Never claim forward secrecy or a verified cross-sender order (ISSUE-28).
-- M13 (ADR-020, ADR-021): S1-S4 done. Test the page in the installed Chrome with `scripts/headless.py` (browser tests
-  SKIP without Chrome/Edge: read the skip count). The true order in the panel comes from the panes, never the server;
-  only closed windows are shuffled as a whole. S5 `/v1/mode` re-enables the mode switch and takes ISSUE-30 points 1-2;
-  S5b builds on headless.py; S6 fills `epoch`, `last_write_ms`, `gpu`.
+- M13 (ADR-020, ADR-021): S1-S4 done. Test the page in Chrome with `scripts/headless.py` (browser tests SKIP without it: read
+  the skip count). The panel's true order comes from the panes, never the server; only closed windows are shuffled as a whole.
+  S5 `/v1/mode` re-enables the mode switch and takes ISSUE-30 points 1-2; S5b builds on headless.py; S6 fills `epoch`, `gpu`.
