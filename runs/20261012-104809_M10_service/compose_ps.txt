@@ -1,0 +1,2 @@
+NAME          IMAGE         COMMAND                  SERVICE   CREATED          STATUS                    PORTS
+vcloak-db-1   postgres:16   "docker-entrypoint.s…"   db        18 minutes ago   Up 18 minutes (healthy)   127.0.0.1:54329->5432/tcp

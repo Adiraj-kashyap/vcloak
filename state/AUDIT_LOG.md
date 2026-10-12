@@ -511,3 +511,28 @@ Notes:
 - Same code and tests as the audit above (commit db7b746); only the server differs. Closes ISSUE-20, opens ISSUE-21
   for the two things still untested (concurrent swap, WAL lifetime).
 - Docker 29.8.2 with Compose v5.5.1, Linux engine on WSL 2 (runs/20261012-103011_M09_storage_pg16_docker/docker_version.txt). The first pull timed out once.
+
+## Audit M10 — 2026-10-12 — session 18 — result: PASS
+| Item | Result | Evidence |
+|---|---|---|
+| A1 Epoch boundaries are wall-clock aligned and never extended (slow engine: overflow carries) | PASS | runs/20261012-104809_M10_service/pytest_checks_verbose.txt: test_a1_a_slow_engine_does_not_extend_the_epoch_and_the_overflow_carries (injected engine of 2.5 epochs per call: epochs 0, 3, 6 written, 4 boundaries counted as missed, 36 carried, arrival order kept), test_a1_an_arrival_after_the_boundary_is_never_taken_into_the_closed_epoch, test_a1_wall_clock_epochs_never_close_before_their_boundary (real clock, 100 ms epochs) |
+| A2 Window rewrite happens exactly once per closed window | PASS | runs/20261012-104809_M10_service/pytest_checks_verbose.txt: test_a2_each_closed_window_is_rewritten_exactly_once on SQLite and on PostgreSQL (spy on rewrite_window: calls 0, 1, 2 once each; empty and open windows not rewritten), test_a2_window_close_reshuffles_once_and_only_closed_windows; on PostgreSQL each closed partition has one xmin (test_closed_windows_are_fresh_partitions_without_arrival_columns) |
+| A3 Baseline and V-cloak share the API contract (same tests) | PASS | runs/20261012-104809_M10_service/pytest.txt (190 passed): class ServiceContract of tests/service_contract.py runs as TestVcloakSqlite, TestBaselineSqlite, TestVcloakPg, TestBaselinePg |
+| A4 No forbidden fields in logs (logsafe unit test) | PASS | runs/20261012-104809_M10_service/pytest_checks_verbose.txt: test_a4_the_log_of_a_service_run_holds_no_forbidden_value plus the allow-list tests of tests/unit/test_logsafe.py; runs/20261012-104809_M10_service/serve_vcloak.log is the log of a real process |
+| G1 | PASS | runs/20261012-104809_M10_service/pytest.txt (190 passed, 0 skipped: 129 unit, 61 on PostgreSQL 16); runs/20261012-104809_M10_service/pytest_all.txt (1600 passed, 675 skipped: 674 need a CUDA device, 1 old oracle skip; none for a missing database) |
+| G2 | PASS | runs/20261012-104809_M10_service/check_metrics.txt (263 rows, 0 problems). No metric was added: nothing was measured |
+| G2b | N/A | no performance or side-channel metric; the backend was numpy |
+| G3 | PASS | runs/20261012-104809_M10_service/check_oblivious.txt (kernels/: 11 files, 0 findings); M10 adds no kernel. Host code sees the conversation id by design (S4 of the data flow); the read fetches exactly CAND_K rows |
+| G4 | PASS | runs/20261012-104809_M10_service/check_secrets.txt (760 files, 0 key-like runs). --dev builds the public test key from range(32); the passphrase is read from the environment or a prompt and never logged; tests seal the TEST master under throw-away passphrases in tmp_path |
+| G5 | N/A | no GPU twin in this module |
+| G6 | PASS | runs/20261012-104809_M10_service/deliverables_ls.txt (8 of 8 paths); docs/API.md written; runs/20261012-104809_M10_service/cli_help.txt |
+| G7 | PASS | checked after the closing commit |
+| G8 | PASS | STATE: M10 DONE at S5, sessions 1, next_unit M11, gpu_job.pending null |
+| G9 | PASS | SESSION_LOG session 18, this entry, ISSUE-21 updated, ISSUE-22 opened |
+| G10 | PASS | runs/20261012-104809_M10_service/manifest.json (git sha, seed, command, env); runs/20261012-104809_M10_service/g10_rerun.txt: the module tests re-run to the same result (190 passed) |
+Notes:
+- Step checks: S2 test_s2_100_sim_epochs_complete_and_the_rows_are_stored (SQLite and PostgreSQL); S3 test_round_trip_200_messages_across_3_windows_in_order (both modes, both stores); S4 test_s4_attack_on_the_baseline_dump_recovers_the_order (tau = 1 as a test assertion, not a recorded metric); S5 test_s5_shutdown_writes_the_queue_and_zeroizes_the_keys.
+- Live process: runs/20261012-104809_M10_service/smoke_vcloak.txt and runs/20261012-104809_M10_service/smoke_baseline.txt (vcloak serve --dev on the wall clock, SQLite store, 12 messages encrypted, sent, read and decrypted in order). The PostgreSQL store was exercised through the tests only, not through a live process.
+- Defect found and fixed outside the deliverables: PgRepo.rewrite_window (M09) took the partition lock before the parent lock and deadlocked against a reader on a second connection (runs/20261012-104809_M10_service/issue21_before_fix.txt: 25 DeadlockDetected in the reader; runs/20261012-104809_M10_service/issue21_after_fix.txt: passes; runs/20261012-104809_M10_service/pytest_m09_storage_after_lock_fix.txt: 118 passed).
+- Not verified: the service on a CUDA device (engine and key store in a worker thread under CuPy); whether an epoch finishes inside EPOCH_MS on any store (nothing was timed; ISSUE-12 still applies at 65536 slots); restart behaviour (ISSUE-22); the passphrase prompt on a real terminal; --clock sim and --store pg as a live process.
+- The manifest is dirty: true: the tests ran on the working tree that this session commits. The smoke outputs predate the lock fix, which does not touch the SQLite path they use.

@@ -1,0 +1,12 @@
+_ test_issue21_a_second_connection_reads_whole_windows_while_they_are_reshuffled _
+dsn = 'host=127.0.0.1 port=54329 dbname=vcloak user=vcloak connect_timeout=5'
+>           assert errors == [], sorted(set(errors))  # a reader never fails on a partition that is being replaced
+E           AssertionError: ['DeadlockDetected']
+E           assert ['DeadlockDet...etected', ...] == []
+E             
+E             Left contains 25 more items, first extra item: 'DeadlockDetected'
+E             Use -v to get more diff
+tests\integration\test_service.py:140: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/integration/test_service.py::test_issue21_a_second_connection_reads_whole_windows_while_they_are_reshuffled
+1 failed, 60 deselected in 26.39s

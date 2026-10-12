@@ -429,3 +429,23 @@
 - Not verified: the points of ISSUE-21
 - Commit: 28c3080
 - Next: M10 S1 ; human action: none. Keep Docker Desktop running when you type continue
+
+## Session 18 — 2026-10-12 10:58 — M10 Service & scheduler — owner:Divyansh
+- Steps: S1-S5 (status after: DONE)
+- Did: src/vcloak/service: models.py (bodies, exact payload size, token to conv id), logsafe.py (allow-list logger,
+  one-second timestamps), scheduler.py (WallClock, SimClock, EpochScheduler: aligned epochs, carry-over with public
+  overflow and missed counters, one re-shuffle per closed window, --visible-round), app.py (four routes, VcloakBackend
+  with the read handler and the key lifecycle), baseline.py (schema baseline, BIGSERIAL + timestamptz, same API);
+  src/vcloak/cli.py (vcloak serve) and the console script; docs/API.md; scripts/smoke_service.py.
+- Also: PgRepo.rewrite_window now locks the parent table before the partition (deadlock against a second reader).
+- Evidence: runs/20261012-104809_M10_service (pytest.txt 190 passed, 61 of them on postgres:16; pytest_all.txt 1600 passed, 675 skipped
+  for CUDA; smoke_vcloak.txt and smoke_baseline.txt PASS; issue21_before_fix.txt / issue21_after_fix.txt; check_* PASS; ruff clean)
+- Metrics added: none (nothing measured; the backend was numpy)
+- Decisions: ADR-015 (conv id and seq assigned by the server, epoch cut rule, queue bound, shutdown, epoch rounds)
+- Issues: opened ISSUE-22 (restart leaves windows un-shuffled; 202 before durability); ISSUE-21 point 1 tested and fixed, stays open for WAL lifetime
+- Deviations from spec: server-derived conv_id and seq; 202 answer; missed counter; baseline inserts at once;
+  logsafe test under tests/unit; extra files and CLI options (Amendments of ai/modules/M10)
+- Not verified: the service on a CUDA device; whether an epoch fits EPOCH_MS (nothing timed); restart and crash
+  behaviour (ISSUE-22); the passphrase prompt on a terminal; --clock sim and --store pg as a live process
+- Commit: PENDING
+- Next: M11 S1 ; human action: none. Keep Docker Desktop running when you type continue

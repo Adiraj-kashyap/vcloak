@@ -481,3 +481,26 @@ BLOCKS: none   SEVERITY: low   OPENED: 2026-10-12 session 17
    window stay on disk was not measured, and removed segments are not overwritten (docs/ENV.md says so). The
    requirement "retention < W" is configured, not demonstrated. M14 is the place to test it (copy `pg_wal` after a
    window has been rewritten and look for its rows).
+
+Update of ISSUE-21 (2026-10-12, session 18, M10): point 1 is tested and one defect is fixed. With a second connection
+reading a closed window in a loop while it is re-shuffled 25 times, `rewrite_window` deadlocked: it locked the
+partition before the parent table, the opposite of a reader (runs/20261012-104809_M10_service/issue21_before_fix.txt, 25 DeadlockDetected). It now
+locks `messages` first; the reader never fails and always sees the whole window
+(runs/20261012-104809_M10_service/issue21_after_fix.txt, tests/integration/test_service.py). Inside the service the case cannot arise: one thread and one
+connection serialise epochs, re-shuffles and reads. Still open: a writer on a second connection during the swap (the
+scheduler never inserts into a closed window, so this is untested by design), and point 2 (WAL lifetime, for M14).
+
+### ISSUE-22 [OPEN] M10: a restart leaves windows un-shuffled, and a crash loses messages that were accepted but not yet written
+BLOCKS: none   SEVERITY: medium   OPENED: 2026-10-12 session 18
+1. The scheduler keeps the set of windows it wrote and has not yet re-shuffled in memory only. After a restart the
+   window that was open at shutdown, and any window that closed while the service was down, stays in its
+   arrival-time layout for ever: nothing durable says which windows were re-shuffled. P1 does not hold for those
+   windows. Fix in its own unit: a small durable marker per window (a public fact: "window w was rewritten"), or
+   re-shuffle every window older than the current one at startup; then a test that restarts the backend mid-window.
+2. `POST /v1/messages` answers 202 when the message is queued, before the epoch is written. A clean shutdown writes
+   the queue first (tested); a crash or a kill loses up to one epoch of accepted messages, more if epochs are
+   overflowing. The client has no acknowledgement of durability. M12 (client SDK) must read back or retry; M15 must
+   say which of the two it measures.
+3. Until M11 the API has no authentication and takes the conversation token in the clear from any caller: listen on
+   127.0.0.1 only (the default of `vcloak serve`).
+Not a human action. Must be closed, or stated as a limitation, before the security evaluation of M14 is written up.

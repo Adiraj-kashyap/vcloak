@@ -1,0 +1,6 @@
+2026-10-12T10:48:58 INFO vcloak.cli event=serve clock=wall mode=baseline port=8012 store=sqlite visible_round=window
+INFO:     Started server process [2932]
+INFO:     Waiting for application startup.
+2026-10-12T10:48:58 INFO vcloak.baseline event=started mode=baseline window_s=60
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8012 (Press CTRL+C to quit)

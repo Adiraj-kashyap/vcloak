@@ -1,0 +1,32 @@
+============================= test session starts =============================
+platform win32 -- Python 3.14.0, pytest-9.1.1, pluggy-1.6.0 -- D:\PJT\vcloak\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: D:\PJT\vcloak
+configfile: pyproject.toml
+plugins: anyio-4.15.1
+collecting ... collected 190 items / 168 deselected / 22 selected
+
+tests/integration/test_service.py::TestVcloakPg::test_round_trip_200_messages_across_3_windows_in_order PASSED [  4%]
+tests/integration/test_service.py::TestVcloakPg::test_s2_100_sim_epochs_complete_and_the_rows_are_stored PASSED [  9%]
+tests/integration/test_service.py::TestVcloakPg::test_a2_each_closed_window_is_rewritten_exactly_once PASSED [ 13%]
+tests/integration/test_service.py::TestVcloakPg::test_s5_shutdown_writes_the_queue_and_zeroizes_the_keys PASSED [ 18%]
+tests/integration/test_service.py::TestVcloakPg::test_s5_master_buffer_is_zeroized_at_startup PASSED [ 22%]
+tests/integration/test_service.py::TestVcloakPg::test_wall_clock_service_round_trip PASSED [ 27%]
+tests/integration/test_service.py::TestBaselinePg::test_round_trip_200_messages_across_3_windows_in_order PASSED [ 31%]
+tests/integration/test_service.py::TestBaselinePg::test_s4_attack_on_the_baseline_dump_recovers_the_order PASSED [ 36%]
+tests/integration/test_service.py::test_issue21_a_second_connection_reads_whole_windows_while_they_are_reshuffled PASSED [ 40%]
+tests/unit/test_service_sqlite.py::TestVcloakSqlite::test_round_trip_200_messages_across_3_windows_in_order PASSED [ 45%]
+tests/unit/test_service_sqlite.py::TestVcloakSqlite::test_s2_100_sim_epochs_complete_and_the_rows_are_stored PASSED [ 50%]
+tests/unit/test_service_sqlite.py::TestVcloakSqlite::test_a2_each_closed_window_is_rewritten_exactly_once PASSED [ 54%]
+tests/unit/test_service_sqlite.py::TestVcloakSqlite::test_s5_shutdown_writes_the_queue_and_zeroizes_the_keys PASSED [ 59%]
+tests/unit/test_service_sqlite.py::TestVcloakSqlite::test_s5_master_buffer_is_zeroized_at_startup PASSED [ 63%]
+tests/unit/test_service_sqlite.py::TestVcloakSqlite::test_wall_clock_service_round_trip PASSED [ 68%]
+tests/unit/test_service_sqlite.py::TestBaselineSqlite::test_round_trip_200_messages_across_3_windows_in_order PASSED [ 72%]
+tests/unit/test_service_sqlite.py::TestBaselineSqlite::test_s4_attack_on_the_baseline_dump_recovers_the_order PASSED [ 77%]
+tests/unit/test_scheduler.py::test_a1_an_arrival_after_the_boundary_is_never_taken_into_the_closed_epoch PASSED [ 81%]
+tests/unit/test_scheduler.py::test_a1_a_slow_engine_does_not_extend_the_epoch_and_the_overflow_carries PASSED [ 86%]
+tests/unit/test_scheduler.py::test_a1_wall_clock_epochs_never_close_before_their_boundary PASSED [ 90%]
+tests/unit/test_scheduler.py::test_a2_window_close_reshuffles_once_and_only_closed_windows PASSED [ 95%]
+tests/unit/test_logsafe.py::test_a4_the_log_of_a_service_run_holds_no_forbidden_value PASSED [100%]
+
+===================== 22 passed, 168 deselected in 10.62s =====================

@@ -94,3 +94,23 @@ database may be a private cluster started from an installed PostgreSQL (`scripts
 service; both take their settings from `vcloak.storage.pgconf.HYGIENE`.
 Consequences: M10 has to handle `CandidateOverflow` (K is a capacity limit, not a soft target). ADR-008 names
 PostgreSQL 16; evaluation runs (M14, M15) must record the server version they used (ISSUE-20).
+
+## ADR-015 — Service contract details fixed in M10 — ACCEPTED — 2026-10-12
+Context: `POST /v1/messages` carries `{payload_b64, conv_token}` only, while `Submission` needs a 64-bit `conv_id`
+and a `seq`. The module does not say what happens to an epoch when the engine is still busy, to queued messages at
+shutdown, or how an epoch-level round fits the store's `int4 win`.
+Decision: (1) `conv_id` = the first 8 bytes (little-endian) of SHA-256(`"vcloak-conv-id-v1\0"` + token); the token is
+16-128 characters of `A-Z a-z 0-9 _ -`. (2) The server assigns `seq` = `epoch << 24 | arrival index in the epoch`: the
+order of a conversation is the order in which the server accepted its messages; no per-conversation counter is kept
+and the value never repeats across restarts on a wall clock. (3) An epoch takes the arrivals before its closing
+boundary, first come first, at most SLOTS; the rest waits. A boundary that passes while the engine is busy is skipped
+and counted (`missed`), its arrivals go into the next epoch written; messages carried because an epoch was full are
+counted in `overflow`. `write_epoch` is called for an empty epoch too. (4) The queue is bounded (16 x SLOTS by
+default); beyond it, and during shutdown, a submission gets 503. Shutdown writes the queue on the next boundaries,
+then zeroizes the keys. A failed epoch puts its batch back at the head of the queue. (5) One thread owns the engine
+and the key store: epochs, re-shuffles and reads are serialised on it. (6) With `--visible-round epoch` the stored
+round is `epoch - origin`, and on the wall clock the origin is 2026-01-01T00:00:00Z. (7) The baseline stores its rows
+at once (no epoch), with the hashed conversation id in the clear.
+Consequences: a client cannot choose the order of its messages (M12 may carry its own sequence inside the plaintext).
+Two tokens that collide in 64 bits would share a conversation. A read waits behind the epoch being written. Windows
+left open, or closed while the service was down, are not re-shuffled after a restart (ISSUE-22).

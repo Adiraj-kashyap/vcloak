@@ -191,6 +191,9 @@ class PgRepo:
                 self._copy(name + "_new", rows)
             try:
                 with self._conn.transaction():
+                    # the parent first, then the partition: the order in which a reader takes its locks.
+                    # Locking the partition first deadlocks against a reader on another connection (ISSUE-21).
+                    self._conn.execute("LOCK TABLE messages IN ACCESS EXCLUSIVE MODE")
                     exists = self._has_partition(win)
                     have = 0
                     if exists:

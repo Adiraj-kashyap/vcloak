@@ -1,0 +1,53 @@
+{
+  "run_id": "20261012-104809_M10_service",
+  "module": "M10",
+  "step": "S1-S5",
+  "owner": "Divyansh",
+  "git_sha": "756161faf96be9ee98bddcfdc61ec38a50c66707",
+  "dirty": true,
+  "command": "docker compose up -d --wait db; pytest -q -rs tests/integration/test_service.py tests/unit/test_service_sqlite.py tests/unit/test_scheduler.py tests/unit/test_logsafe.py; pytest -q -rs; python scripts/smoke_service.py --mode vcloak; python scripts/smoke_service.py --mode baseline",
+  "seed": 0,
+  "quick": false,
+  "params": {},
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261012-104809",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U"
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791782289.7447686
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791782857.8293471
+  },
+  "outputs": [
+    "check_metrics.txt",
+    "check_oblivious.txt",
+    "check_secrets.txt",
+    "cli_help.txt",
+    "compose_ps.txt",
+    "deliverables_ls.txt",
+    "g10_rerun.txt",
+    "issue21_after_fix.txt",
+    "issue21_before_fix.txt",
+    "pytest.txt",
+    "pytest_all.txt",
+    "pytest_checks_verbose.txt",
+    "pytest_m09_storage_after_lock_fix.txt",
+    "pytest_pg_service.txt",
+    "ruff.txt",
+    "serve_baseline.log",
+    "serve_vcloak.log",
+    "smoke_baseline.txt",
+    "smoke_vcloak.txt"
+  ],
+  "status": "OK",
+  "notes": "M10 service: API, scheduler, read handler, baseline and key lifecycle. Module tests on SQLite and on the docker-compose postgres:16, full suite, live vcloak serve round trip in both modes (sqlite store). Also the ISSUE-21 concurrent-reader test before and after the lock-order fix in PgRepo.rewrite_window. Backend numpy: correctness only, nothing timed"
+}

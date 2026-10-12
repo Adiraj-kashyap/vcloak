@@ -41,3 +41,23 @@ the engine permutes, and the repo persists. Windows are re-shuffled on close. It
 3. How does the baseline differ from V-cloak, and why do you need it?
 
 ## Next: M11
+
+## Amendments
+- 2026-10-12 (session 18): what was built differs from the text above in these points (ADR-015).
+  - S1: `payload_b64` must decode to exactly `12 + BLOCK + 16` bytes (nonce, block, tag), the size
+    `vcloak.crypto.client` produces. `POST /v1/messages` answers `202 {"accepted": true}`; `/healthz` also carries the
+    scheduler's public counters. A 422 names the field and the reason, never the rejected value.
+  - S2: `conv_id` and `seq` are derived by the server (hash of the token; arrival position). Re-shuffle goes through
+    `storage.reshuffle.reshuffle_window` (ADR-014), not two direct calls. A window without rows is not rewritten.
+    A boundary that passes while the engine is busy is skipped and counted (`missed`). Nothing is logged per epoch.
+  - S2: `--visible-round epoch` stores `epoch - origin` as the round and does not re-shuffle.
+  - S3: a bucket-window above `CAND_K` answers `503 candidate_overflow`.
+  - S4: the baseline keeps the hashed conversation id (`conv bytea`) so that the same read route works; it inserts at
+    once instead of per epoch. The tau = 1 check is a test assertion, not a recorded metric.
+  - S5: the key file comes from `--key-file` / `VCLOAK_KEY_FILE`; `VCLOAK_PASSPHRASE` is removed from the environment
+    once read. Shutdown writes the queue before it zeroizes.
+  - A4: the allow-list test lives in `tests/unit/test_logsafe.py` (M11 extends it under `tests/security`).
+  - Extra files: `src/vcloak/service/__init__.py`, `tests/service_contract.py` (the shared tests of A3),
+    `tests/unit/test_service_sqlite.py`, `tests/unit/test_scheduler.py`, `tests/unit/test_logsafe.py`,
+    `scripts/smoke_service.py`. Extra options of `vcloak serve`: `--store`, `--dsn`, `--key-file`, `--host`, `--port`
+    and the public parameters.

@@ -1,0 +1,288 @@
+"""The HTTP service (docs/API.md): four routes over one of two backends.
+
+    POST /v1/messages   queue one client ciphertext for the open epoch
+    POST /v1/read       the payloads of one conversation in one visible round, in order
+    GET  /v1/windows    the visible round being written now
+    GET  /healthz       liveness and the scheduler's public counters
+
+`VcloakBackend` is the protected path: the epoch scheduler writes, and the read handler maps the
+conversation to its bucket on the engine, fetches exactly CAND_K candidates and lets the engine open
+and order them (R1-R4). `BaselineBackend` (baseline.py) is the unprotected comparison. Both sit behind
+`create_app`, so the API contract is one.
+
+Key lifecycle (ADR-007): at startup the master key goes from the key provider straight into the device
+key store, which zeroizes the host copy; at shutdown the device subkeys are zeroized. The engine and the
+key store are used from one thread only.
+"""
+from __future__ import annotations
+
+import asyncio
+import getpass
+import os
+from collections.abc import AsyncIterator, Callable
+from concurrent.futures import ThreadPoolExecutor
+from contextlib import asynccontextmanager, suppress
+from pathlib import Path
+from typing import Any, Protocol, TypeVar
+
+import numpy as np
+from fastapi import FastAPI, Request
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
+
+from vcloak import config
+from vcloak.crypto import keys as keyfile
+from vcloak.crypto.client import PAYLOAD_LEN
+from vcloak.gpu.engine import GpuEngine
+from vcloak.gpu.keystore import DeviceKeyStore
+from vcloak.gpu.runtime import Backend
+from vcloak.service.logsafe import SafeLogger, get_logger
+from vcloak.service.models import (
+    Health,
+    MessageAccepted,
+    MessageIn,
+    PayloadError,
+    ReadIn,
+    ReadOut,
+    WindowsOut,
+    conv_id_of,
+    decode_payload,
+    encode_payload,
+)
+from vcloak.service.scheduler import Clock, EpochScheduler, QueueFull
+from vcloak.storage.repo import CandidateOverflow, Repo
+
+T = TypeVar("T")
+
+PASSPHRASE_ENV = "VCLOAK_PASSPHRASE"
+KEY_FILE_ENV = "VCLOAK_KEY_FILE"
+DEFAULT_KEY_FILE = Path("secrets") / "k_master.sealed"
+STOP_TIMEOUT_S = 10.0
+
+KeyProvider = Callable[[], bytearray]  # a fresh 32-byte master the caller hands to the key store
+
+
+class ServiceBackend(Protocol):
+    mode: str
+    visible_round: str
+    window_s: int
+    epoch_ms: int
+
+    @property
+    def ready(self) -> bool: ...
+
+    async def start(self) -> None: ...
+
+    async def stop(self) -> None: ...
+
+    def current_window(self) -> int: ...
+
+    async def submit(self, conv_token: str, payload: bytes) -> None: ...
+
+    async def read(self, conv_token: str, win: int) -> list[bytes]: ...
+
+    def stats(self) -> dict[str, int]: ...
+
+
+# ── key providers (S5) ───────────────────────────────────────────────────────
+
+def dev_master() -> bytearray:
+    """The fixed, public development key of `--dev` (the same bytes as the test key). Not a secret:
+    a store written under it has no protection."""
+    return bytearray(range(keyfile.KEY_LEN))
+
+
+def sealed_master(path: str | Path | None = None, *, prompt: Callable[[str], str] = getpass.getpass) -> KeyProvider:
+    """A provider that unseals the master key file with the passphrase from VCLOAK_PASSPHRASE, or from a
+    prompt when the variable is not set. The variable is removed from the environment once it is read."""
+    key_path = Path(path or os.environ.get(KEY_FILE_ENV) or DEFAULT_KEY_FILE)
+
+    def provide() -> bytearray:
+        passphrase = os.environ.pop(PASSPHRASE_ENV, None)
+        if passphrase is None:
+            passphrase = prompt("V-cloak master key passphrase: ")
+        return keyfile.unseal_master(key_path, passphrase)
+
+    return provide
+
+
+# ── the protected backend ────────────────────────────────────────────────────
+
+class VcloakBackend:
+    mode = "vcloak"
+
+    def __init__(self, repo: Repo, clock: Clock, key_provider: KeyProvider, *, gpu: Backend | None = None,
+                 slots: int = config.SLOTS, buckets: int = config.BUCKETS, window_s: int = config.WINDOW_S,
+                 epoch_ms: int = config.EPOCH_MS, cand_k: int = config.CAND_K, visible_round: str = "window",
+                 epoch_origin: int = 0, max_queue: int | None = None, autorun: bool = True,
+                 engine_factory: Callable[[DeviceKeyStore], Any] | None = None,
+                 log: SafeLogger | None = None) -> None:
+        self.repo, self._clock, self._key_provider, self._gpu = repo, clock, key_provider, gpu
+        self.slots, self.buckets, self.window_s, self.epoch_ms = slots, buckets, window_s, epoch_ms
+        self.cand_k, self.visible_round = cand_k, visible_round
+        self._origin, self._max_queue, self._autorun = epoch_origin, max_queue, autorun
+        self._engine_factory = engine_factory or (
+            lambda keys: GpuEngine(keys, slots=slots, buckets=buckets, window_s=window_s, epoch_ms=epoch_ms))
+        self._log = log or get_logger("service")
+        self._executor: ThreadPoolExecutor | None = None
+        self._task: asyncio.Task[int] | None = None
+        self.keys: DeviceKeyStore | None = None
+        self.engine: Any = None
+        self.scheduler: EpochScheduler | None = None
+
+    @property
+    def ready(self) -> bool:
+        return self.scheduler is not None and self.keys is not None and self.keys.ready
+
+    async def _blocking(self, fn: Callable[[], T]) -> T:
+        if self._executor is None:
+            raise RuntimeError("the backend is not started")
+        return await asyncio.get_running_loop().run_in_executor(self._executor, fn)
+
+    def _boot(self) -> None:
+        """In the engine thread: master key to the device, then the engine and the schema."""
+        self.keys = DeviceKeyStore(self._gpu)
+        master = self._key_provider()
+        try:
+            self.keys.load_master(master)  # zeroizes `master`
+        finally:
+            if isinstance(master, bytearray):
+                keyfile.zeroize(master)
+        self.engine = self._engine_factory(self.keys)
+        self.repo.init_schema()
+
+    async def start(self) -> None:
+        self._executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix="vcloak-engine")
+        try:
+            await self._blocking(self._boot)
+        except BaseException:
+            await self._shutdown_keys()
+            raise
+        self.scheduler = EpochScheduler(self.engine, self.repo, self._clock, visible_round=self.visible_round,
+                                        epoch_origin=self._origin, max_queue=self._max_queue,
+                                        executor=self._executor)
+        if self._autorun:
+            self._task = asyncio.create_task(self.scheduler.run(), name="vcloak-scheduler")
+        self._log.event("started", mode=self.mode, visible_round=self.visible_round, slots=self.slots,
+                        buckets=self.buckets, window_s=self.window_s, epoch_ms=self.epoch_ms, cand_k=self.cand_k,
+                        backend=self.keys.backend.name if self.keys else "none")
+
+    async def _shutdown_keys(self) -> None:
+        keys, executor = self.keys, self._executor
+        if keys is not None and executor is not None:
+            await asyncio.get_running_loop().run_in_executor(executor, keys.zeroize)
+        if executor is not None:
+            executor.shutdown(wait=True)
+        self._executor = None
+
+    async def stop(self) -> None:
+        """Write what is queued, stop the scheduler, zeroize the device keys."""
+        sched = self.scheduler
+        try:
+            if sched is not None:
+                budget = sched.finish()
+                if self._task is not None:
+                    try:
+                        await asyncio.wait_for(self._task, STOP_TIMEOUT_S)
+                    except (asyncio.TimeoutError, asyncio.CancelledError):
+                        self._log.warning("stop_timeout", queued=sched.queued)
+                    except Exception as e:  # noqa: BLE001 - the keys are zeroized whatever the scheduler did
+                        self._log.failure("scheduler_failed", e)
+                elif budget:
+                    await sched.run(budget)
+                sched.stop()
+                if sched.queued:
+                    self._log.warning("stopped_with_queue", queued=sched.queued)
+        finally:
+            if self._task is not None and not self._task.done():
+                self._task.cancel()
+                with suppress(asyncio.CancelledError, Exception):
+                    await self._task
+            self._task = None
+            await self._shutdown_keys()
+            self._log.event("stopped", mode=self.mode, ready=self.ready)
+
+    def current_window(self) -> int:
+        if self.scheduler is None:
+            raise RuntimeError("the backend is not started")
+        return self.scheduler.current_round()
+
+    async def submit(self, conv_token: str, payload: bytes) -> None:
+        if self.scheduler is None:
+            raise QueueFull("the backend is not started")
+        self.scheduler.submit(conv_id_of(conv_token), payload)
+
+    def _read(self, conv_id: int, win: int) -> list[bytes]:
+        bucket = int(self.engine.bucket_of(np.array([conv_id], dtype=np.uint64))[0])
+        candidates = self.repo.fetch_candidates(bucket, win, self.cand_k)  # exactly CAND_K rows, or CandidateOverflow
+        return self.engine.read_window(conv_id, candidates, self.cand_k)
+
+    async def read(self, conv_token: str, win: int) -> list[bytes]:
+        conv_id = conv_id_of(conv_token)
+        return await self._blocking(lambda: self._read(conv_id, win))
+
+    def stats(self) -> dict[str, int]:
+        if self.scheduler is None:
+            return {"epochs": 0, "overflow": 0, "missed": 0, "queued": 0}
+        return self.scheduler.stats()
+
+
+# ── the API ──────────────────────────────────────────────────────────────────
+
+def create_app(backend: ServiceBackend, *, payload_len: int = PAYLOAD_LEN) -> FastAPI:
+    log = get_logger("api")
+
+    @asynccontextmanager
+    async def lifespan(_: FastAPI) -> AsyncIterator[None]:
+        await backend.start()
+        try:
+            yield
+        finally:
+            await backend.stop()
+
+    app = FastAPI(title="V-cloak", version="1", lifespan=lifespan, docs_url=None, redoc_url=None)
+    app.state.backend = backend
+
+    def error(status: int, code: str, **headers: str) -> JSONResponse:
+        return JSONResponse({"error": code}, status_code=status, headers=headers or None)
+
+    @app.exception_handler(RequestValidationError)
+    async def invalid(_: Request, exc: RequestValidationError) -> JSONResponse:
+        # the field and the reason, never the rejected value
+        fields = [{"field": ".".join(str(p) for p in e.get("loc", ())[1:]), "reason": e.get("type", "invalid")}
+                  for e in exc.errors()]
+        return JSONResponse({"error": "invalid_request", "fields": fields}, status_code=422)
+
+    @app.post("/v1/messages", status_code=202, response_model=MessageAccepted)
+    async def post_message(body: MessageIn) -> Any:
+        try:
+            payload = decode_payload(body.payload_b64, payload_len)
+        except PayloadError:
+            return JSONResponse({"error": "invalid_request",
+                                 "fields": [{"field": "payload_b64", "reason": "payload_size"}]}, status_code=422)
+        try:
+            await backend.submit(body.conv_token, payload)
+        except QueueFull:
+            return error(503, "queue_full", **{"Retry-After": "1"})
+        return MessageAccepted()
+
+    @app.post("/v1/read", response_model=ReadOut)
+    async def post_read(body: ReadIn) -> Any:
+        try:
+            payloads = await backend.read(body.conv_token, body.win)
+        except CandidateOverflow as e:
+            # CAND_K is below the occupancy of a bucket-window: a capacity fault, never a truncated answer
+            log.failure("candidate_overflow", e, win=body.win)
+            return error(503, "candidate_overflow")
+        return ReadOut(win=body.win, payloads_b64=[encode_payload(p) for p in payloads])
+
+    @app.get("/v1/windows", response_model=WindowsOut)
+    async def get_windows() -> Any:
+        return WindowsOut(win=backend.current_window(), window_s=backend.window_s, epoch_ms=backend.epoch_ms,
+                          visible_round=backend.visible_round, mode=backend.mode)
+
+    @app.get("/healthz", response_model=Health)
+    async def healthz() -> Any:
+        return Health(mode=backend.mode, ready=backend.ready, **backend.stats())
+
+    return app

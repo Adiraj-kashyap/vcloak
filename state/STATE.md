@@ -3,13 +3,13 @@
 ```yaml
 project: v-cloak
 kit_version: 1.0
-last_session: 17
+last_session: 18
 last_session_date: 2026-10-12
-current_module: M10
+current_module: M11
 current_step: S1
 status: NOT_STARTED          # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
-next_unit: M10
-last_checkpoint: 2026-10-12 M09 DONE (S1-S5, audit PASS on 17rc1 and on Docker postgres:16, ISSUE-21 open); M10 not started
+next_unit: M11
+last_checkpoint: 2026-10-12 M10 DONE (S1-S5, audit PASS on SQLite and Docker postgres:16, ISSUE-22 open); M11 not started
 quick_mode_default: false
 local:                      # the laptop (no GPU) — filled by M00 S7
   os: "Windows-11-10.0.26200-SP0"
@@ -51,7 +51,7 @@ gpu_job:                    # set by the gpu-job skill
 | M07 | GPU performance metrics (E4) | Aditya | M06 | no | DONE | S6 | 2 |
 | M08 | GPU obliviousness audit (E3) | Aditya | M06 | no | DONE | S5 | 2 |
 | M09 | Storage (PostgreSQL) | Divyansh | M06 | no | DONE | S5 | 1 |
-| M10 | Service & scheduler | Divyansh | M09 | no | NOT_STARTED | S1 | 0 |
+| M10 | Service & scheduler | Divyansh | M09 | no | DONE | S5 | 1 |
 | M11 | Session security (E5) | Divyansh | M10 | no | NOT_STARTED | S1 | 0 |
 | M12 | Client SDK & CLI | Abhishek | M11 | no | NOT_STARTED | S1 | 0 |
 | M13 | Frontend: chat + server view | Abhishek | M12 | no | NOT_STARTED | S1 | 0 |
@@ -99,3 +99,8 @@ gpu_job:                    # set by the gpu-job skill
   database answers, so read the skip count before calling G1 a pass. M09 passed on both servers.
 - Repo contract (ADR-014): `fetch_candidates` raises `CandidateOverflow` above K; `rewrite_window` needs the stored row
   count; re-shuffle through `storage.reshuffle.reshuffle_window(repo, engine, win)`. M10 must handle the overflow.
+- Service (ADR-015): `python -m vcloak.cli serve --dev --store sqlite` runs it without a database; `scripts/smoke_service.py`
+  is the live round trip. The server assigns conv_id (hash of conv_token) and seq (arrival position). One thread owns
+  the engine. Log only through `service.logsafe` (new fields go on its allow-list in M11, never around it).
+- ISSUE-22 (medium): after a restart, open or missed windows are never re-shuffled, and a crash loses queued messages.
+  Close it or state it as a limitation before M14 is written up. The service has never run on a CUDA device.

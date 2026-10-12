@@ -9,6 +9,9 @@ description = "V-cloak: a GPU-resident oblivious-permutation layer that hides th
 requires-python = ">=3.10"
 dependencies = ["numpy"]
 
+[project.scripts]
+vcloak = "vcloak.cli:main"
+
 [tool.setuptools.packages.find]
 where = ["src"]
 

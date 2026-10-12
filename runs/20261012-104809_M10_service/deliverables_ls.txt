@@ -1,0 +1,8 @@
+docs/API.md
+src/vcloak/cli.py
+src/vcloak/service/app.py
+src/vcloak/service/baseline.py
+src/vcloak/service/logsafe.py
+src/vcloak/service/models.py
+src/vcloak/service/scheduler.py
+tests/integration/test_service.py
