@@ -1,0 +1,9 @@
+run dir     /kaggle/working/vcloak_job/runs/20261012-040027_M08_ncu
+ncu         NVIDIA (R) Nsight Compute Command Line Profiler
+metrics     queried 0 branch metric(s), 0 csv rows
+  bitonic_pairs_global   -
+  bitonic_shared         -
+  bitonic_shared_full    -
+  aead_open_seq          -
+  planted_leak           -
+status      NOT_MEASURED   the driver refused the GPU performance counters to this user (ERR_NVGPUCTRPERM)

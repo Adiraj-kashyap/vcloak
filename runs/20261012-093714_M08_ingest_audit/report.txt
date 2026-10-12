@@ -1,0 +1,3 @@
+report_oblivious: session 20261012-031230  28 files -> results/oblivious
+  controls OK   dudect FAIL: write_epoch:call_ms, aead_tag:ms, aead_conv:ms
+  SASS conditional branches explained 16/16   ncu: the driver refused the GPU performance counters to this user (ERR_NVGPUCTRPERM)

@@ -1,0 +1,4 @@
+report_oblivious was run 3 times on the same four run dirs; docs/REPORT_CH4_NOTES.md after the last run is compared with the copy kept after the first (notes_first_generation.md):
+identical
+gates_m08.py recomputes max abs(t) of every series from the raw npz of the bundle (gates.txt): the verdicts reproduce.
+The GPU measurements themselves can only be reproduced on a runner: bench/jobs/M08.json, --quick for the quick sizes.

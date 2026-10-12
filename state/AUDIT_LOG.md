@@ -441,3 +441,36 @@ Notes: a prep session cannot pass A1-A5 for results that do not exist; the modul
 - The local manifests say dirty:true because the new run dirs were untracked when they were written; the bundled
   paths were clean and the job is commit fe51656.
 - ruff: the new files pass; the old line-length finding in scripts/record_env.py:161 is unchanged (runs/20261012-040948_M08_prep_audit/ruff.txt).
+
+## Audit M08 — 2026-10-12 — session 16 — result: PASS (three dudect findings open as ISSUE-17, which blocks M14)
+| Item | Result | Evidence |
+|---|---|---|
+| A1 the planted-leak self-test is detected | PASS | runs/20261012-031245_M08_dudect_selftest_quick/summary.json: control_leak FAIL as expected, T-DUDECT-MAXT-CONTROL-LEAK 376.9125 at 10000 per class (quick); null control PASS in the quick run (1.933) and at full N (2.0786); runs/20261012-093714_M08_ingest_audit/gates.txt |
+| A2 all 5 targets have verdicts at full N | PASS | runs/20261012-031331_M08_dudect/summary.json: bitonic_equal PASS, bitonic_sorted PASS, write_epoch device PASS / whole call FAIL, aead_tag FAIL, aead_conv FAIL, 100000 per class, quick false; max abs(t) of every series recomputed from the raw npz equals the summary (runs/20261012-093714_M08_ingest_audit/gates.txt) |
+| A3 SASS branches all explained | PASS | runs/20261012-040020_M08_sass (nvcc -cubin -arch=sm_75, cuobjdump -sass, 6 kernels); bench/sass_explained.json: 16 of 16 conditional branches traced to ids, public parameters or constant loop counters, each checked against the listing by report_oblivious (runs/20261012-093714_M08_ingest_audit/report.txt); no BSSY/BSYNC; limits in ISSUE-19 |
+| A4 ncu metrics collected or NOT_MEASURED with the reason | PASS | runs/20261012-040027_M08_ncu: ERR_NVGPUCTRPERM in ncu_query_metrics.txt and ncu_profile_raw.txt; 8 rows NOT_MEASURED with that reason; ISSUE-18 |
+| A5 a FAIL on any target opens a high-severity issue that BLOCKS M14 | PASS | state/ISSUES.md ISSUE-17 (high, BLOCKS: M14) for the 3 failing series; the FAILs are in METRICS_INDEX, results/oblivious/summary_table.csv and docs/REPORT_CH4_NOTES.md 4.O.3 unchanged |
+| G1 | PASS | runs/20261012-093714_M08_ingest_audit/pytest.txt (80 passed, 9 gpu-skipped); runs/20261012-093714_M08_ingest_audit/pytest_all.txt (1292 passed, 1 skipped, 674 deselected) |
+| G2 | PASS | runs/20261012-093714_M08_ingest_audit/check_metrics.txt (263 rows, 0 problems) after the table fix below; every value in the notes section carries its metric tag |
+| G3 | PASS | runs/20261012-093714_M08_ingest_audit/check_oblivious.txt (kernels/: 11 files, 0 findings); the same check passed on the runner (gpujobs/out/20261012-041010_M08/logs/02_check_oblivious.txt) |
+| G4 | PASS | runs/20261012-093714_M08_ingest_audit/check_secrets.txt (0 key-like runs); the job used fixed TEST keys |
+| G5 | PASS | gpujobs/out/20261012-041010_M08/logs/03_pytest_planted_leak.txt: 9 passed on the T4 (3 sizes x 3 seeds, byte equality of the planted kernel with its NumPy twin; M08 adds no other kernel); 0 output mismatches in every dudect target |
+| G6 | PASS | runs/20261012-093714_M08_ingest_audit/deliverables_ls.txt: bench/run_dudect.py, bench/run_ncu.sh, bench/run_ncu.ps1, scripts/sass_check.py, results/oblivious/dudect_*.json+png, sass_*.txt, ncu_divergence.csv, docs/REPORT_CH4_NOTES.md (section 4.O) |
+| G7 | PASS | checked after the closing commit |
+| G8 | PASS | STATE: M08 DONE at S5, sessions 2, gpu_job.pending null, last_ingested 20261012-041010_M08, next_unit M09 |
+| G9 | PASS | SESSION_LOG session 16, this entry, ISSUE-16 closed, ISSUE-17/18/19 opened |
+| G10 | PASS | the four ingested run dirs have valid manifests (git fe51656, seed 8, command, env); runs/20261012-093714_M08_ingest_audit/g10_report_rerun.txt: the report regenerates identically and the verdicts are recomputed from the raw data; the measurements themselves need a runner |
+Notes:
+- The module passes its checklist and still reports a negative result: 3 of 6 target series FAIL (aead_conv 11.6369,
+  write_epoch whole call 8.2776, aead_tag 6.2415). The cause is not known. ISSUE-17 lists untested hypotheses
+  (asymmetric staging of the classes by the harness, host work inside the timed window, a device effect) and the
+  controls that would separate them. No claim of timing independence for AEAD open or the whole write path may be
+  made until then.
+- One runner session, one shared T4. Every full-N target ran at a LOW SM clock (585 to 1065 MHz of 1590).
+- The SASS listing is the nvcc build; the nvrtc code that CuPy executes was not listed (ISSUE-19). The checker's
+  own classification (16 DATA, 0 public) is wrong for the reason given there; A3 rests on the manual reading.
+- No dynamic divergence evidence (ISSUE-18); the ncu CSV parser is still untested on real output.
+- scripts/gpujob.py wrote the stat `max |t|` into METRICS_INDEX and broke 9 rows (check_metrics FAIL, caught here).
+  The writer now sanitises cells and the 9 rows were rewritten by the same rule (`max abs(t)`); values untouched.
+- The dudect PNGs are the runner's own plots (no PDF / 300 dpi export); a paper-ready export is left to M16.
+- ruff: the old line-length finding in scripts/record_env.py:161 is unchanged (runs/20261012-093714_M08_ingest_audit/ruff.txt).

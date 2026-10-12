@@ -371,3 +371,28 @@
 - Commit: fe51656 (code), 901c171 (job, logs, state)
 - Next: M08 ingest (gates A1-A5, metrics, evidence, S5 report) ; human action: ISSUE-16 — upload the job, drop the
   results zip in gpujobs/inbox/
+
+- GPU-JOB 20261012-041010_M08 ingested 2026-10-12 09:32: runner kaggle, gpu Tesla T4, session 20261012-031230, overall exit 0, runs 20261012-031245_M08_dudect_selftest_quick, 20261012-031331_M08_dudect, 20261012-040020_M08_sass, 20261012-040027_M08_ncu, 31 metrics indexed.
+
+## Session 16 — 2026-10-12 09:58 — M08 GPU obliviousness audit (ingest) — owner:Aditya
+- Steps: S1-S4 checks applied to the ingested job, S5 done (status after: DONE)
+- Did: ingested job 20261012-041010_M08 (8 commands, all exit 0); runs/20261012-093714_M08_ingest_audit/gates_m08.py (40 PASS, 0 FAIL, 3 dudect
+  findings; max abs(t) recomputed from the raw npz); read the 16 conditional SASS branches in the listings and
+  recorded them in bench/sass_explained.json; src/vcloak/bench/report_oblivious.py (S5 table, results/oblivious/,
+  notes section 4.O, 8 tests); report.py keeps that section; fixed the index writer of gpujob.py (pipe in a cell).
+- Evidence: runs/20261012-031245_M08_dudect_selftest_quick, runs/20261012-031331_M08_dudect, runs/20261012-040020_M08_sass, runs/20261012-040027_M08_ncu (Tesla T4, kaggle session 20261012-031230);
+  runs/20261012-093714_M08_ingest_audit (gates.txt, report.txt, pytest.txt 80 passed / 9 gpu-skipped, pytest_all.txt 1292 passed);
+  results/oblivious (29 files); evidence/gpu, evidence/figures, evidence/terminal (11 index rows).
+- Results: planted leak detected (376.9125, quick); null control 2.0786; bitonic_equal 1.2708 PASS, bitonic_sorted
+  2.6965 PASS, write_epoch device 2.7559 PASS; FAIL: aead_conv 11.6369, write_epoch whole call 8.2776, aead_tag
+  6.2415 (100000 per class). SASS: 16 of 16 conditional branches public, no divergence control. ncu: NOT_MEASURED.
+- Metrics added: 31 rows (T-DUDECT-*, T-SASS-BRA-*, T-NCU-* of which 8 NOT_MEASURED)
+- Decisions: none (no ADR). Whether whole-call host timing is in the threat model is left open in ISSUE-17.
+- Issues: closed ISSUE-16; opened ISSUE-17 (dudect FAILs, high, BLOCKS M14), ISSUE-18 (ncu counters denied,
+  optional human action), ISSUE-19 (SASS checker over-reports; no nvrtc listing)
+- Deviations from spec: the S4 issue is optional, not a gate (Kaggle cannot change the setting); dudect figures are
+  the runner's PNGs only (Amendments).
+- Not verified: the cause of the three FAILs (nothing in ISSUE-17 has been tested); any result on a second session,
+  seed or GPU; the machine code CuPy actually runs (nvrtc); divergence counters; the ncu parser on real output.
+- Commit: @HASH@
+- Next: M09 S1 ; human action: none required (optional: ISSUE-18; `fix ISSUE-17` is needed before M14)

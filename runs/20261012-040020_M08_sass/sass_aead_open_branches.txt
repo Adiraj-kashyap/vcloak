@@ -1,0 +1,10 @@
+# SASS branches of aead_open.cu
+# class: public | DATA | unknown | unconditional | sync (see scripts/sass_check.py; DATA and unknown must be explained by reading the listing)
+
+aead_open_seq: 624 instructions, 4 branches (3 conditional: 0 public, 3 DATA, 0 unknown), 0 divergence-control
+  0050  DATA          @P0 EXIT  <- P0: const, global, id, imm, param
+  08c0  DATA          @P0 BRA 0x2a0  <- P0: const, global, id, imm, param
+  0fd0  DATA          @P0 BRA 0x9b0  <- P0: const, global, id, imm, param
+  26d0  unconditional EXIT
+  26e0  unconditional BRA 0x26e0
+

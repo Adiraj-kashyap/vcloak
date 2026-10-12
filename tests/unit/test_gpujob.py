@@ -198,3 +198,9 @@ def test_pack_allow_lists_its_bundle_digest_without_going_stale(repo):
     assert job["job_id"] in entry["reason"] and job["bundle_sha256"] not in allow.read_text(encoding="utf-8")
     _git(repo, "commit", "-q", "-am", "allow-list the bundle digest")
     assert gpujob.verify(_fake_results(repo, job_zip), root=repo)[0] == []
+
+
+def test_index_cells_never_hold_a_pipe() -> None:
+    assert gpujob._cell("max |t|") == "max abs(t)"
+    assert gpujob._cell("ncu --query-metrics | grep -i branch") == "ncu --query-metrics / grep -i branch"
+    assert gpujob._cell("p99") == "p99"

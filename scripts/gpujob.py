@@ -18,6 +18,7 @@ import argparse
 import datetime as _dt
 import hashlib
 import json
+import re
 import shutil
 import subprocess
 import sys
@@ -239,6 +240,11 @@ def _summarise(result: dict) -> list[str]:
     return lines
 
 
+def _cell(text: str) -> str:
+    """A table cell cannot hold a pipe: `|t|` becomes `abs(t)`, any other pipe a slash."""
+    return re.sub(r"\|([^|\s]+)\|", r"abs(\1)", text).replace("|", "/")
+
+
 def _index_metrics(root: Path, run_dir: Path) -> int:
     """Append this run's summary.json metrics to state/METRICS_INDEX.md. Values are copied, never retyped."""
     summary = run_dir / "summary.json"
@@ -252,9 +258,9 @@ def _index_metrics(root: Path, run_dir: Path) -> int:
     for x in json.loads(summary.read_text(encoding="utf-8")).get("metrics", []):
         if f"| {x['id']} |" in text and f"| {rel} |" in text:
             continue
-        cells = [x["id"], str(x["value"]), x.get("unit", "-"), x.get("stat", "-"), m["module"], rel,
-                 m["command"].replace("|", "/"), m["run_id"][:8], "yes" if m["quick"] else "no",
-                 m["env"]["backend"], m["env"]["runner"]]
+        cells = [_cell(c) for c in (
+            x["id"], str(x["value"]), x.get("unit", "-"), x.get("stat", "-"), m["module"], rel, m["command"],
+            m["run_id"][:8], "yes" if m["quick"] else "no", m["env"]["backend"], m["env"]["runner"])]
         assert len(cells) == METRIC_COLS
         rows.append("| " + " | ".join(cells) + " |")
     if rows:

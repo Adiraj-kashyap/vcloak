@@ -1,0 +1,142 @@
+============================= test session starts ==============================
+platform linux -- Python 3.13.15, pytest-8.4.2, pluggy-1.6.0 -- /usr/bin/python3
+rootdir: /kaggle/working/vcloak_job
+configfile: pyproject.toml
+plugins: typeguard-4.6.0, anyio-4.14.2, langsmith-0.12.1
+collecting ... collected 9 items
+
+tests/gpu/test_planted_leak.py::test_planted_leak_matches_its_twin[1-6] PASSED [ 11%]
+tests/gpu/test_planted_leak.py::test_planted_leak_matches_its_twin[1-10] PASSED [ 22%]
+tests/gpu/test_planted_leak.py::test_planted_leak_matches_its_twin[1-16] PASSED [ 33%]
+tests/gpu/test_planted_leak.py::test_planted_leak_matches_its_twin[2-6] PASSED [ 44%]
+tests/gpu/test_planted_leak.py::test_planted_leak_matches_its_twin[2-10] PASSED [ 55%]
+tests/gpu/test_planted_leak.py::test_planted_leak_matches_its_twin[2-16] PASSED [ 66%]
+tests/gpu/test_planted_leak.py::test_planted_leak_matches_its_twin[3-6] PASSED [ 77%]
+tests/gpu/test_planted_leak.py::test_planted_leak_matches_its_twin[3-10] PASSED [ 88%]
+tests/gpu/test_planted_leak.py::test_planted_leak_matches_its_twin[3-16] PASSED [100%]
+
+============================== 9 passed in 6.78s ===============================
+target control_leak
+  control_leak: 2000/20000  max|t| ms 139.218
+  control_leak: 4000/20000  max|t| ms 171.125
+  control_leak: 6000/20000  max|t| ms 207.152
+  control_leak: 8000/20000  max|t| ms 236.733
+  control_leak: 10000/20000  max|t| ms 261.141
+  control_leak: 12000/20000  max|t| ms 291.028
+  control_leak: 14000/20000  max|t| ms 320.769
+  control_leak: 16000/20000  max|t| ms 345.608
+  control_leak: 18000/20000  max|t| ms 363.618
+  control_leak: 20000/20000  max|t| ms 376.912
+target control_null
+  control_null: 2000/20000  max|t| ms 1.423
+  control_null: 4000/20000  max|t| ms 1.730
+  control_null: 6000/20000  max|t| ms 2.336
+  control_null: 8000/20000  max|t| ms 2.216
+  control_null: 10000/20000  max|t| ms 1.977
+  control_null: 12000/20000  max|t| ms 2.015
+  control_null: 14000/20000  max|t| ms 2.100
+  control_null: 16000/20000  max|t| ms 1.857
+  control_null: 18000/20000  max|t| ms 2.014
+  control_null: 20000/20000  max|t| ms 1.933
+run dir     /kaggle/working/vcloak_job/runs/20261012-031245_M08_dudect_selftest_quick
+backend     cupy   N per class 10000   quick True
+  control_leak    ms         max|t|    376.912  FAIL  (expected FAIL)  r=2
+  control_null    ms         max|t|      1.933  PASS  (expected PASS)  r=1
+metrics     4
+status      OK
+target control_null
+  control_null: 20000/200000  max|t| ms 1.473
+  control_null: 40000/200000  max|t| ms 0.992
+  control_null: 60000/200000  max|t| ms 1.200
+  control_null: 80000/200000  max|t| ms 1.161
+  control_null: 100000/200000  max|t| ms 1.558
+  control_null: 120000/200000  max|t| ms 1.712
+  control_null: 140000/200000  max|t| ms 1.943
+  control_null: 160000/200000  max|t| ms 1.782
+  control_null: 180000/200000  max|t| ms 2.022
+  control_null: 200000/200000  max|t| ms 2.079
+target bitonic_equal
+  bitonic_equal: 20000/200000  max|t| ms 1.901
+  bitonic_equal: 40000/200000  max|t| ms 1.761
+  bitonic_equal: 60000/200000  max|t| ms 1.360
+  bitonic_equal: 80000/200000  max|t| ms 1.365
+  bitonic_equal: 100000/200000  max|t| ms 1.355
+  bitonic_equal: 120000/200000  max|t| ms 1.502
+  bitonic_equal: 140000/200000  max|t| ms 1.318
+  bitonic_equal: 160000/200000  max|t| ms 1.494
+  bitonic_equal: 180000/200000  max|t| ms 1.583
+  bitonic_equal: 200000/200000  max|t| ms 1.271
+target bitonic_sorted
+  bitonic_sorted: 20000/200000  max|t| ms 1.818
+  bitonic_sorted: 40000/200000  max|t| ms 2.387
+  bitonic_sorted: 60000/200000  max|t| ms 2.994
+  bitonic_sorted: 80000/200000  max|t| ms 2.802
+  bitonic_sorted: 100000/200000  max|t| ms 3.153
+  bitonic_sorted: 120000/200000  max|t| ms 3.040
+  bitonic_sorted: 140000/200000  max|t| ms 3.409
+  bitonic_sorted: 160000/200000  max|t| ms 2.987
+  bitonic_sorted: 180000/200000  max|t| ms 2.531
+  bitonic_sorted: 200000/200000  max|t| ms 2.697
+target write_epoch
+  write_epoch: 20000/200000  max|t| device_ms 2.552  call_ms 1.978
+  write_epoch: 40000/200000  max|t| device_ms 1.680  call_ms 3.203
+  write_epoch: 60000/200000  max|t| device_ms 2.629  call_ms 4.600
+  write_epoch: 80000/200000  max|t| device_ms 2.722  call_ms 4.788
+  write_epoch: 100000/200000  max|t| device_ms 2.907  call_ms 6.124
+  write_epoch: 120000/200000  max|t| device_ms 3.162  call_ms 6.909
+  write_epoch: 140000/200000  max|t| device_ms 2.956  call_ms 7.320
+  write_epoch: 160000/200000  max|t| device_ms 2.447  call_ms 7.560
+  write_epoch: 180000/200000  max|t| device_ms 2.368  call_ms 7.801
+  write_epoch: 200000/200000  max|t| device_ms 2.756  call_ms 8.278
+target aead_tag
+  aead_tag: 20000/200000  max|t| ms 2.557
+  aead_tag: 40000/200000  max|t| ms 3.251
+  aead_tag: 60000/200000  max|t| ms 3.918
+  aead_tag: 80000/200000  max|t| ms 4.761
+  aead_tag: 100000/200000  max|t| ms 5.830
+  aead_tag: 120000/200000  max|t| ms 5.714
+  aead_tag: 140000/200000  max|t| ms 5.988
+  aead_tag: 160000/200000  max|t| ms 6.691
+  aead_tag: 180000/200000  max|t| ms 6.523
+  aead_tag: 200000/200000  max|t| ms 6.241
+target aead_conv
+  aead_conv: 20000/200000  max|t| ms 4.550
+  aead_conv: 40000/200000  max|t| ms 6.411
+  aead_conv: 60000/200000  max|t| ms 6.995
+  aead_conv: 80000/200000  max|t| ms 7.981
+  aead_conv: 100000/200000  max|t| ms 8.665
+  aead_conv: 120000/200000  max|t| ms 9.392
+  aead_conv: 140000/200000  max|t| ms 10.072
+  aead_conv: 160000/200000  max|t| ms 11.388
+  aead_conv: 180000/200000  max|t| ms 11.603
+  aead_conv: 200000/200000  max|t| ms 11.637
+run dir     /kaggle/working/vcloak_job/runs/20261012-031331_M08_dudect
+backend     cupy   N per class 100000   quick False
+  control_null    ms         max|t|      2.079  PASS  (expected PASS)  r=1
+  bitonic_equal   ms         max|t|      1.271  PASS  (expected PASS)  r=1
+  bitonic_sorted  ms         max|t|      2.697  PASS  (expected PASS)  r=1
+  write_epoch     device_ms  max|t|      2.756  PASS  (expected PASS)  r=1
+  write_epoch     call_ms    max|t|      8.278  FAIL  (expected PASS)  r=1
+  aead_tag        ms         max|t|      6.241  FAIL  (expected PASS)  r=1
+  aead_conv       ms         max|t|     11.637  FAIL  (expected PASS)  r=1
+metrics     13
+status      OK   dudect FAIL: write_epoch, aead_tag, aead_conv
+run dir     /kaggle/working/vcloak_job/runs/20261012-040020_M08_sass
+arch        sm_75 (cupy device properties)
+  bitonic.cu       bitonic_shared_full      branches   6  conditional   5  DATA 5  unknown 0  sync 0
+  bitonic.cu       bitonic_shared           branches   4  conditional   3  DATA 3  unknown 0  sync 0
+  bitonic.cu       bitonic_pairs_global     branches   2  conditional   1  DATA 1  unknown 0  sync 0
+  aead_open.cu     aead_open_seq            branches   4  conditional   3  DATA 3  unknown 0  sync 0
+  chacha_tags.cu   chacha_tags              branches   3  conditional   2  DATA 2  unknown 0  sync 0
+  chacha_tags.cu   chacha_blocks            branches   3  conditional   2  DATA 2  unknown 0  sync 0
+control     planted leak classified DATA: True
+status      OK   16 branch(es) classified DATA or unknown by the static trace: explain each from the listing
+run dir     /kaggle/working/vcloak_job/runs/20261012-040027_M08_ncu
+ncu         NVIDIA (R) Nsight Compute Command Line Profiler
+metrics     queried 0 branch metric(s), 0 csv rows
+  bitonic_pairs_global   -
+  bitonic_shared         -
+  bitonic_shared_full    -
+  aead_open_seq          -
+  planted_leak           -
+status      NOT_MEASURED   the driver refused the GPU performance counters to this user (ERR_NVGPUCTRPERM)

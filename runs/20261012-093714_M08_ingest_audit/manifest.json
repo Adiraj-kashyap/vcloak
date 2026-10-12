@@ -1,0 +1,47 @@
+{
+  "run_id": "20261012-093714_M08_ingest_audit",
+  "module": "M08",
+  "step": "S5",
+  "owner": "Aditya",
+  "git_sha": "e142a746471b69d48b8b53c0b05f32a07235ca70",
+  "dirty": true,
+  "command": "gpujob.py ingest; gates_m08.py; python -m vcloak.bench.report_oblivious; pytest (module + full, numpy); check_oblivious.py kernels/; check_metrics.py; check_secrets.py",
+  "seed": 0,
+  "quick": false,
+  "params": {},
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261012-093713",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U"
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791778035.1230674
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791779292.5743382
+  },
+  "outputs": [
+    "audit.txt",
+    "check_metrics.txt",
+    "check_oblivious.txt",
+    "check_secrets.txt",
+    "deliverables_ls.txt",
+    "g10_report_rerun.txt",
+    "gates.txt",
+    "gates_m08.py",
+    "notes_first_generation.md",
+    "pytest.txt",
+    "pytest_all.txt",
+    "report.txt",
+    "ruff.txt"
+  ],
+  "status": "OK",
+  "notes": "M08 ingest: gates 40 PASS 0 FAIL, 3 dudect findings (ISSUE-17); report_oblivious; audit PASS"
+}

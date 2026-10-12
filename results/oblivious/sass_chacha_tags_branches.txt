@@ -1,0 +1,15 @@
+# SASS branches of chacha_tags.cu
+# class: public | DATA | unknown | unconditional | sync (see scripts/sass_check.py; DATA and unknown must be explained by reading the listing)
+
+chacha_tags: 168 instructions, 3 branches (2 conditional: 0 public, 2 DATA, 0 unknown), 0 divergence-control
+  0050  DATA          @P0 EXIT  <- P0: global, id, imm, param
+  0820  DATA          @P0 BRA 0x200  <- P0: global, id, imm, param
+  09f0  unconditional EXIT
+  0a00  unconditional BRA 0xa00
+
+chacha_blocks: 176 instructions, 3 branches (2 conditional: 0 public, 2 DATA, 0 unknown), 0 divergence-control
+  0050  DATA          @P0 EXIT  <- P0: global, id, imm, param
+  0870  DATA          @P0 BRA 0x250  <- P0: global, id, imm, param
+  0ab0  unconditional EXIT
+  0ac0  unconditional BRA 0xac0
+

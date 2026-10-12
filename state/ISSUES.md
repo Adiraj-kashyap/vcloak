@@ -344,7 +344,7 @@ and divide; run the large-n configurations after a load that has brought the clo
 state, so that the clock no longer moves inside the timed runs; label that state in the metric note as now. Keep
 this session's numbers; index the new session separately and never merge the two in one figure.
 
-### ISSUE-16 [OPEN] HUMAN ACTION REQUIRED — GPU JOB READY: M08 obliviousness audit (job 20261012-041010_M08)
+### ISSUE-16 [CLOSED @HASH@] HUMAN ACTION REQUIRED — GPU JOB READY: M08 obliviousness audit (job 20261012-041010_M08)
 BLOCKS: M08   SEVERITY: high   OPENED: 2026-10-12 session 15
 Why: the laptop has no GPU. M08 asks whether GPU execution time or control flow depends on secret data: dudect
 timing tests, the SASS branch listing (nvcc, cuobjdump) and the Nsight Compute divergence counters. None of it can
@@ -379,3 +379,74 @@ Things that may come back as NOT_MEASURED and are not your fault: the Nsight cou
   refuse them, ERR_NVGPUCTRPERM) and the SASS listing if the runner has no cuobjdump. Both are recorded as such.
 Confirm by running: .venv\Scripts\python scripts\gpujob.py verify gpujobs\inbox\results_20261012-041010_M08.zip
 Then open a new session and type: continue
+Closed 2026-10-12 session 16: the human ran the job on Kaggle (session 20261012-031230, Tesla T4) and the results
+zip was ingested; all 8 commands exit 0, git sha and bundle sha match (runs/20261012-093714_M08_ingest_audit/gates.txt).
+
+### ISSUE-17 [OPEN] M08 dudect: three target series FAIL at N = 100000 (aead_conv, write_epoch whole call, aead_tag)
+BLOCKS: M14   SEVERITY: high   OPENED: 2026-10-12 session 16
+Finding (job 20261012-041010_M08, runner session 20261012-031230, Tesla T4, threshold 4.5; all values from
+runs/20261012-031331_M08_dudect/summary.json and dudect_<target>.json, recomputed from the raw npz in runs/20261012-093714_M08_ingest_audit/gates.txt):
+- aead_conv (AEAD open, every row matches q vs no row matches q): max abs(t) 11.6369 (T-DUDECT-MAXT-AEAD-CONV), raw
+  t -8.684; class means 0.164110 ms and 0.164602 ms; the t of every crop has the same sign and the t-curve grows
+  steadily with N (results/oblivious/dudect_aead_conv.png): a small shift of the whole distribution.
+- write_epoch, whole call (fixed vs random contents): max abs(t) 8.2776 (T-DUDECT-MAXT-WRITE-EPOCH-CALL), raw t
+  -2.215; class means 4.193689 ms and 4.228817 ms. The device-stage series of the same calls PASSES (2.7559).
+- aead_tag (all tags valid vs all invalid): max abs(t) 6.2415 (T-DUDECT-MAXT-AEAD-TAG) at crop 8; raw t -2.412; class
+  means 0.173499 ms and 0.173728 ms. Only the lower crops exceed the threshold: the weakest of the three.
+What is established: the harness detects the planted leak (376.9125, quick) and does not separate identical classes
+(null control 2.0786 at full N); outputs were correct in every run (0 mismatches); the nvcc listing of
+aead_open_seq has 3 conditional branches, all on the thread id, n and the ChaCha round counter (ISSUE-19 for the
+limits of that listing). So a timing difference between the classes was measured, and the kernel has no branch
+on the data.
+What is NOT established: the cause. Nothing below has been tested; these are hypotheses.
+- H1 (harness staging, aead_conv): class 0 always uploads the same host array, class 1 one of a pool of 64 arrays.
+  The host cache and TLB state after the upload differ between the classes, and the timed window (start event,
+  Python launch path of gpu_open_and_key, kernel, end event) contains host work.
+- H2 (harness staging, aead_tag): class 1 uploads an array the host has just written, class 0 one it has only read.
+- H3 (device): the time of the kernel or of its memory traffic depends on the data (operand values, the values
+  stored to out_hi/out_lo) without any branch.
+- H4 (write_epoch whole call): the host stage of the engine is Python working on the submissions; it is not
+  constant time, and class 0 rebuilds its batch from long-lived Python ints while class 1 uses freshly created ones.
+- All three failing series ran with the SM clock at 585 MHz of 1590 (LOW); so did the passing write_epoch device series.
+Proposed fix (one prep session and one runner session; `fix ISSUE-17`):
+1. Symmetric staging: both classes drawn from pools of the same size, staged on the device before the run and
+   selected by a device-to-device copy, so that the host does the same work on the same kind of memory for both.
+2. An AEAD null control with the old asymmetric staging (one fixed buffer vs a pool of 64 inputs of the SAME class):
+   a FAIL there convicts the harness (H1/H2), a PASS leaves H3.
+3. Kernel-only window: r > 1 launches with the outputs preallocated, to shrink the share of host launch code.
+4. Replication: a second seed and the two class roles swapped, for every failing target.
+5. write_epoch whole call: a null control with identical contents rebuilt from fresh objects in both classes (H4);
+   re-measure after ISSUE-12 has vectorised the host row building. Whether whole-call host timing is inside the
+   threat model is a decision for the team (an ADR), not something this job can settle.
+Until then: M14 must not claim that AEAD open or the whole write path is timing-independent. The FAILs stay in
+the index, in results/oblivious/summary_table.csv and in docs/REPORT_CH4_NOTES.md section 4.O.3.
+
+### ISSUE-18 [OPEN] M08 ncu: the runner refuses the GPU performance counters (ERR_NVGPUCTRPERM); divergence is NOT_MEASURED
+BLOCKS: none   SEVERITY: medium   OPENED: 2026-10-12 session 16
+`ncu --query-metrics` and `ncu --csv --section SourceCounters` both stop with ERR_NVGPUCTRPERM on the Kaggle T4
+(runs/20261012-040027_M08_ncu/ncu_query_metrics.txt, ncu_profile_raw.txt; ncu 2025.1.1.0). The eight
+T-NCU-BRANCHEFF-* / T-NCU-DIVERGENT-* rows are NOT_MEASURED with that reason. The ncu CSV parser has therefore
+still only seen hand-written samples.
+Optional human action (nothing is blocked; A4 accepts NOT_MEASURED with the reason). The counters are a setting of
+the machine that owns the GPU, and a Kaggle container cannot change it. They could be measured on:
+- a Linux machine with an NVIDIA GPU where you are administrator: run the job as root, or let the administrator set
+  the driver option NVreg_RestrictProfilingToAdminUsers=0 (file under /etc/modprobe.d, then reload the driver);
+- a Windows machine with an NVIDIA GPU: NVIDIA Control Panel -> Desktop -> Enable Developer Settings, then
+  Developer -> Manage GPU Performance Counters -> allow access to all users;
+- Google Colab: not tried; it may refuse in the same way.
+These steps are the ones NVIDIA documents (https://developer.nvidia.com/ERR_NVGPUCTRPERM) and have not been tried
+in this project. If no such machine exists, the rows stay NOT_MEASURED and the static SASS reading (16 of 16
+conditional branches public, no BSSY/BSYNC) is the only divergence evidence; say so in the report.
+
+### ISSUE-19 [OPEN] M08 SASS: sass_check.py labels every conditional branch DATA; no listing of the nvrtc code that runs
+BLOCKS: none   SEVERITY: low   OPENED: 2026-10-12 session 16
+1. The trace of the checker is static and flow-insensitive, so a register that once held a loaded value and is later
+   reused as a loop counter (R25 in bitonic_shared, R29 in bitonic_shared_full) taints the predicate: 16 of 16
+   conditional branches are reported DATA, 0 public (runs/20261012-040020_M08_sass/sass_*_branches.txt). A3 is met by
+   the manual reading in bench/sass_explained.json, which report_oblivious checks against the listing instruction
+   by instruction; the checker is not usable as an automatic gate. Fix: follow the last definition before the
+   branch in address order (reaching definitions per basic block) and re-run `sass_check.py --listing` on the saved
+   listings, which needs no GPU.
+2. The listing is the nvcc build (nvcc 12.8, -arch=sm_75). CuPy runs an nvrtc build of the same source, and the job
+   could not list it ("neither cuobjdump nor nvdisasm produced a listing"). The two compilers may emit different
+   code. Fix in a later GPU job: save the cubin that CuPy caches, or build with the nvcc backend of CuPy for the audit.

@@ -1,0 +1,9 @@
+metric_id,value,unit,stat,note,run_dir
+T-NCU-DIVERGENT-BITONIC-PAIRS-GLOBAL,NOT_MEASURED,branches,sum,the driver refused the GPU performance counters to this user (ERR_NVGPUCTRPERM),runs/20261012-040027_M08_ncu
+T-NCU-BRANCHEFF-BITONIC-PAIRS-GLOBAL,NOT_MEASURED,%,ratio of sums,the driver refused the GPU performance counters to this user (ERR_NVGPUCTRPERM),runs/20261012-040027_M08_ncu
+T-NCU-DIVERGENT-BITONIC-SHARED,NOT_MEASURED,branches,sum,the driver refused the GPU performance counters to this user (ERR_NVGPUCTRPERM),runs/20261012-040027_M08_ncu
+T-NCU-BRANCHEFF-BITONIC-SHARED,NOT_MEASURED,%,ratio of sums,the driver refused the GPU performance counters to this user (ERR_NVGPUCTRPERM),runs/20261012-040027_M08_ncu
+T-NCU-DIVERGENT-BITONIC-SHARED-FULL,NOT_MEASURED,branches,sum,the driver refused the GPU performance counters to this user (ERR_NVGPUCTRPERM),runs/20261012-040027_M08_ncu
+T-NCU-BRANCHEFF-BITONIC-SHARED-FULL,NOT_MEASURED,%,ratio of sums,the driver refused the GPU performance counters to this user (ERR_NVGPUCTRPERM),runs/20261012-040027_M08_ncu
+T-NCU-DIVERGENT-AEAD-OPEN-SEQ,NOT_MEASURED,branches,sum,the driver refused the GPU performance counters to this user (ERR_NVGPUCTRPERM),runs/20261012-040027_M08_ncu
+T-NCU-BRANCHEFF-AEAD-OPEN-SEQ,NOT_MEASURED,%,ratio of sums,the driver refused the GPU performance counters to this user (ERR_NVGPUCTRPERM),runs/20261012-040027_M08_ncu

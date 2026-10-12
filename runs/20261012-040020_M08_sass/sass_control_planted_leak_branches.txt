@@ -1,0 +1,20 @@
+# SASS branches of bench/planted/planted_leak.cu
+# class: public | DATA | unknown | unconditional | sync (see scripts/sass_check.py; DATA and unknown must be explained by reading the listing)
+
+planted_leak: 72 instructions, 12 branches (11 conditional: 0 public, 11 DATA, 0 unknown), 2 divergence-control
+  0050  DATA          @P0 EXIT  <- P0: global, id, imm, param
+  00a0  sync          BSSY B0, 0x3c0
+  00d0  DATA          @!P0 BRA 0x3b0  <- !P0: global, id, imm, param
+  0100  DATA          @!P0 BRA 0x3b0  <- !P0: global, id, imm, param
+  0160  DATA          @!P0 BRA 0x340  <- !P0: global, id, imm, param
+  01a0  DATA          @!P0 BRA 0x2f0  <- !P0: global, id, imm, param
+  01d0  DATA          @!P1 BRA 0x270  <- !P1: global, id, imm, param
+  0260  DATA          @P1 BRA 0x200  <- P1: global, id, imm, param
+  02e0  DATA          @!P0 BRA 0x340  <- !P0: global, id, imm, param
+  0330  DATA          @P0 BRA 0x300  <- P0: global, id, imm, param
+  0350  DATA          @!P0 BRA 0x3b0  <- !P0: global, id, imm, param
+  03a0  DATA          @P0 BRA 0x370  <- P0: global, id, imm, param
+  03b0  sync          BSYNC B0
+  03f0  unconditional EXIT
+  0400  unconditional BRA 0x400
+

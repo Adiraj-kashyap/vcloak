@@ -1,0 +1,18 @@
+============================= test session starts ==============================
+platform linux -- Python 3.13.15, pytest-8.4.2, pluggy-1.6.0 -- /usr/bin/python3
+rootdir: /kaggle/working/vcloak_job
+configfile: pyproject.toml
+plugins: typeguard-4.6.0, anyio-4.14.2, langsmith-0.12.1
+collecting ... collected 9 items
+
+tests/gpu/test_planted_leak.py::test_planted_leak_matches_its_twin[1-6] PASSED [ 11%]
+tests/gpu/test_planted_leak.py::test_planted_leak_matches_its_twin[1-10] PASSED [ 22%]
+tests/gpu/test_planted_leak.py::test_planted_leak_matches_its_twin[1-16] PASSED [ 33%]
+tests/gpu/test_planted_leak.py::test_planted_leak_matches_its_twin[2-6] PASSED [ 44%]
+tests/gpu/test_planted_leak.py::test_planted_leak_matches_its_twin[2-10] PASSED [ 55%]
+tests/gpu/test_planted_leak.py::test_planted_leak_matches_its_twin[2-16] PASSED [ 66%]
+tests/gpu/test_planted_leak.py::test_planted_leak_matches_its_twin[3-6] PASSED [ 77%]
+tests/gpu/test_planted_leak.py::test_planted_leak_matches_its_twin[3-10] PASSED [ 88%]
+tests/gpu/test_planted_leak.py::test_planted_leak_matches_its_twin[3-16] PASSED [100%]
+
+============================== 9 passed in 6.78s ===============================

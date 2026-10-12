@@ -1,0 +1,77 @@
+target control_null
+  control_null: 20000/200000  max|t| ms 1.473
+  control_null: 40000/200000  max|t| ms 0.992
+  control_null: 60000/200000  max|t| ms 1.200
+  control_null: 80000/200000  max|t| ms 1.161
+  control_null: 100000/200000  max|t| ms 1.558
+  control_null: 120000/200000  max|t| ms 1.712
+  control_null: 140000/200000  max|t| ms 1.943
+  control_null: 160000/200000  max|t| ms 1.782
+  control_null: 180000/200000  max|t| ms 2.022
+  control_null: 200000/200000  max|t| ms 2.079
+target bitonic_equal
+  bitonic_equal: 20000/200000  max|t| ms 1.901
+  bitonic_equal: 40000/200000  max|t| ms 1.761
+  bitonic_equal: 60000/200000  max|t| ms 1.360
+  bitonic_equal: 80000/200000  max|t| ms 1.365
+  bitonic_equal: 100000/200000  max|t| ms 1.355
+  bitonic_equal: 120000/200000  max|t| ms 1.502
+  bitonic_equal: 140000/200000  max|t| ms 1.318
+  bitonic_equal: 160000/200000  max|t| ms 1.494
+  bitonic_equal: 180000/200000  max|t| ms 1.583
+  bitonic_equal: 200000/200000  max|t| ms 1.271
+target bitonic_sorted
+  bitonic_sorted: 20000/200000  max|t| ms 1.818
+  bitonic_sorted: 40000/200000  max|t| ms 2.387
+  bitonic_sorted: 60000/200000  max|t| ms 2.994
+  bitonic_sorted: 80000/200000  max|t| ms 2.802
+  bitonic_sorted: 100000/200000  max|t| ms 3.153
+  bitonic_sorted: 120000/200000  max|t| ms 3.040
+  bitonic_sorted: 140000/200000  max|t| ms 3.409
+  bitonic_sorted: 160000/200000  max|t| ms 2.987
+  bitonic_sorted: 180000/200000  max|t| ms 2.531
+  bitonic_sorted: 200000/200000  max|t| ms 2.697
+target write_epoch
+  write_epoch: 20000/200000  max|t| device_ms 2.552  call_ms 1.978
+  write_epoch: 40000/200000  max|t| device_ms 1.680  call_ms 3.203
+  write_epoch: 60000/200000  max|t| device_ms 2.629  call_ms 4.600
+  write_epoch: 80000/200000  max|t| device_ms 2.722  call_ms 4.788
+  write_epoch: 100000/200000  max|t| device_ms 2.907  call_ms 6.124
+  write_epoch: 120000/200000  max|t| device_ms 3.162  call_ms 6.909
+  write_epoch: 140000/200000  max|t| device_ms 2.956  call_ms 7.320
+  write_epoch: 160000/200000  max|t| device_ms 2.447  call_ms 7.560
+  write_epoch: 180000/200000  max|t| device_ms 2.368  call_ms 7.801
+  write_epoch: 200000/200000  max|t| device_ms 2.756  call_ms 8.278
+target aead_tag
+  aead_tag: 20000/200000  max|t| ms 2.557
+  aead_tag: 40000/200000  max|t| ms 3.251
+  aead_tag: 60000/200000  max|t| ms 3.918
+  aead_tag: 80000/200000  max|t| ms 4.761
+  aead_tag: 100000/200000  max|t| ms 5.830
+  aead_tag: 120000/200000  max|t| ms 5.714
+  aead_tag: 140000/200000  max|t| ms 5.988
+  aead_tag: 160000/200000  max|t| ms 6.691
+  aead_tag: 180000/200000  max|t| ms 6.523
+  aead_tag: 200000/200000  max|t| ms 6.241
+target aead_conv
+  aead_conv: 20000/200000  max|t| ms 4.550
+  aead_conv: 40000/200000  max|t| ms 6.411
+  aead_conv: 60000/200000  max|t| ms 6.995
+  aead_conv: 80000/200000  max|t| ms 7.981
+  aead_conv: 100000/200000  max|t| ms 8.665
+  aead_conv: 120000/200000  max|t| ms 9.392
+  aead_conv: 140000/200000  max|t| ms 10.072
+  aead_conv: 160000/200000  max|t| ms 11.388
+  aead_conv: 180000/200000  max|t| ms 11.603
+  aead_conv: 200000/200000  max|t| ms 11.637
+run dir     /kaggle/working/vcloak_job/runs/20261012-031331_M08_dudect
+backend     cupy   N per class 100000   quick False
+  control_null    ms         max|t|      2.079  PASS  (expected PASS)  r=1
+  bitonic_equal   ms         max|t|      1.271  PASS  (expected PASS)  r=1
+  bitonic_sorted  ms         max|t|      2.697  PASS  (expected PASS)  r=1
+  write_epoch     device_ms  max|t|      2.756  PASS  (expected PASS)  r=1
+  write_epoch     call_ms    max|t|      8.278  FAIL  (expected PASS)  r=1
+  aead_tag        ms         max|t|      6.241  FAIL  (expected PASS)  r=1
+  aead_conv       ms         max|t|     11.637  FAIL  (expected PASS)  r=1
+metrics     13
+status      OK   dudect FAIL: write_epoch, aead_tag, aead_conv

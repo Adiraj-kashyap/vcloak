@@ -1,0 +1,88 @@
+{
+  "metrics": [
+    {
+      "id": "T-NCU-DIVERGENT-BITONIC-PAIRS-GLOBAL",
+      "value": "NOT_MEASURED",
+      "unit": "branches",
+      "stat": "sum",
+      "note": "the driver refused the GPU performance counters to this user (ERR_NVGPUCTRPERM)"
+    },
+    {
+      "id": "T-NCU-BRANCHEFF-BITONIC-PAIRS-GLOBAL",
+      "value": "NOT_MEASURED",
+      "unit": "%",
+      "stat": "ratio of sums",
+      "note": "the driver refused the GPU performance counters to this user (ERR_NVGPUCTRPERM)"
+    },
+    {
+      "id": "T-NCU-DIVERGENT-BITONIC-SHARED",
+      "value": "NOT_MEASURED",
+      "unit": "branches",
+      "stat": "sum",
+      "note": "the driver refused the GPU performance counters to this user (ERR_NVGPUCTRPERM)"
+    },
+    {
+      "id": "T-NCU-BRANCHEFF-BITONIC-SHARED",
+      "value": "NOT_MEASURED",
+      "unit": "%",
+      "stat": "ratio of sums",
+      "note": "the driver refused the GPU performance counters to this user (ERR_NVGPUCTRPERM)"
+    },
+    {
+      "id": "T-NCU-DIVERGENT-BITONIC-SHARED-FULL",
+      "value": "NOT_MEASURED",
+      "unit": "branches",
+      "stat": "sum",
+      "note": "the driver refused the GPU performance counters to this user (ERR_NVGPUCTRPERM)"
+    },
+    {
+      "id": "T-NCU-BRANCHEFF-BITONIC-SHARED-FULL",
+      "value": "NOT_MEASURED",
+      "unit": "%",
+      "stat": "ratio of sums",
+      "note": "the driver refused the GPU performance counters to this user (ERR_NVGPUCTRPERM)"
+    },
+    {
+      "id": "T-NCU-DIVERGENT-AEAD-OPEN-SEQ",
+      "value": "NOT_MEASURED",
+      "unit": "branches",
+      "stat": "sum",
+      "note": "the driver refused the GPU performance counters to this user (ERR_NVGPUCTRPERM)"
+    },
+    {
+      "id": "T-NCU-BRANCHEFF-AEAD-OPEN-SEQ",
+      "value": "NOT_MEASURED",
+      "unit": "%",
+      "stat": "ratio of sums",
+      "note": "the driver refused the GPU performance counters to this user (ERR_NVGPUCTRPERM)"
+    }
+  ],
+  "reason": "the driver refused the GPU performance counters to this user (ERR_NVGPUCTRPERM)",
+  "ncu_version": "NVIDIA (R) Nsight Compute Command Line Profiler\nCopyright (c) 2018-2025 NVIDIA Corporation\nVersion 2025.1.1.0 (build 35528883) (public-release)",
+  "branch_metrics_queried": [],
+  "profile_command": "ncu --csv --section SourceCounters /usr/bin/python3 /kaggle/working/vcloak_job/bench/ncu_workload.py --log2n 16 --seed 8",
+  "rows": 0,
+  "per_kernel": {},
+  "control": {
+    "kernel": "planted_leak",
+    "divergent_seen": null
+  },
+  "device": {
+    "backend": "cupy",
+    "is_gpu": true,
+    "device": "Tesla T4",
+    "gpu": "Tesla T4",
+    "cc": "7.5",
+    "sm_count": 40,
+    "vram_total_bytes": 15636037632,
+    "vram_free_bytes": 15419113472,
+    "mem_clock_khz": 5001000,
+    "mem_bus_width_bits": 256,
+    "peak_bw_gbs": 320.064,
+    "max_log2n": 24,
+    "cuda": "12090",
+    "cupy": "14.0.1",
+    "os": "Linux-6.18.48+-x86_64-with-glibc2.39",
+    "python": "3.13.15"
+  }
+}

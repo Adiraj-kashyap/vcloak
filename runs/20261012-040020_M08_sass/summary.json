@@ -1,0 +1,427 @@
+{
+  "metrics": [
+    {
+      "id": "T-SASS-BRA-BITONIC-SHARED-FULL",
+      "value": 6,
+      "unit": "branches",
+      "stat": "count",
+      "note": "bitonic.cu: 5 conditional (0 public, 5 DATA, 0 unknown by the static trace), 0 divergence-control, 128 instructions"
+    },
+    {
+      "id": "T-SASS-BRA-BITONIC-SHARED",
+      "value": 4,
+      "unit": "branches",
+      "stat": "count",
+      "note": "bitonic.cu: 3 conditional (0 public, 3 DATA, 0 unknown by the static trace), 0 divergence-control, 120 instructions"
+    },
+    {
+      "id": "T-SASS-BRA-BITONIC-PAIRS-GLOBAL",
+      "value": 2,
+      "unit": "branches",
+      "stat": "count",
+      "note": "bitonic.cu: 1 conditional (0 public, 1 DATA, 0 unknown by the static trace), 0 divergence-control, 72 instructions"
+    },
+    {
+      "id": "T-SASS-BRA-AEAD-OPEN-SEQ",
+      "value": 4,
+      "unit": "branches",
+      "stat": "count",
+      "note": "aead_open.cu: 3 conditional (0 public, 3 DATA, 0 unknown by the static trace), 0 divergence-control, 624 instructions"
+    },
+    {
+      "id": "T-SASS-BRA-CHACHA-TAGS",
+      "value": 3,
+      "unit": "branches",
+      "stat": "count",
+      "note": "chacha_tags.cu: 2 conditional (0 public, 2 DATA, 0 unknown by the static trace), 0 divergence-control, 168 instructions"
+    },
+    {
+      "id": "T-SASS-BRA-CHACHA-BLOCKS",
+      "value": 3,
+      "unit": "branches",
+      "stat": "count",
+      "note": "chacha_tags.cu: 2 conditional (0 public, 2 DATA, 0 unknown by the static trace), 0 divergence-control, 176 instructions"
+    }
+  ],
+  "reason": null,
+  "log": {
+    "arch": "sm_75",
+    "arch_from": "cupy device properties",
+    "files": {
+      "bitonic.cu": {
+        "command": "nvcc -cubin -arch=sm_75 -std=c++17 -I /kaggle/working/vcloak_job/kernels -o /tmp/tmpcetct1w1/bitonic.cubin /kaggle/working/vcloak_job/kernels/bitonic.cu",
+        "disassembler": "cuobjdump -sass",
+        "ok": true
+      },
+      "aead_open.cu": {
+        "command": "nvcc -cubin -arch=sm_75 -std=c++17 -I /kaggle/working/vcloak_job/kernels -o /tmp/tmpcetct1w1/aead_open.cubin /kaggle/working/vcloak_job/kernels/aead_open.cu",
+        "disassembler": "cuobjdump -sass",
+        "ok": true
+      },
+      "chacha_tags.cu": {
+        "command": "nvcc -cubin -arch=sm_75 -std=c++17 -I /kaggle/working/vcloak_job/kernels -o /tmp/tmpcetct1w1/chacha_tags.cubin /kaggle/working/vcloak_job/kernels/chacha_tags.cu",
+        "disassembler": "cuobjdump -sass",
+        "ok": true
+      }
+    },
+    "nvrtc": {
+      "bitonic.cu": {
+        "ok": false,
+        "how": "neither cuobjdump nor nvdisasm produced a listing"
+      },
+      "aead_open.cu": {
+        "ok": false,
+        "how": "neither cuobjdump nor nvdisasm produced a listing"
+      },
+      "chacha_tags.cu": {
+        "ok": false,
+        "how": "neither cuobjdump nor nvdisasm produced a listing"
+      }
+    }
+  },
+  "control": {
+    "file": "bench/planted/planted_leak.cu",
+    "detected": true,
+    "command": "nvcc -cubin -arch=sm_75 -std=c++17 -I /kaggle/working/vcloak_job/kernels -o /tmp/tmpcetct1w1/planted_leak.cubin /kaggle/working/vcloak_job/bench/planted/planted_leak.cu",
+    "disassembler": "cuobjdump -sass"
+  },
+  "analysis": "static, per function, flow-insensitive; DATA and unknown need a reading of the listing",
+  "functions": {
+    "bitonic.cu": [
+      {
+        "function": "bitonic_shared_full",
+        "instructions": 128,
+        "branches": 6,
+        "conditional": 5,
+        "public": 0,
+        "data": 5,
+        "unknown": 0,
+        "sync": 0
+      },
+      {
+        "function": "bitonic_shared",
+        "instructions": 120,
+        "branches": 4,
+        "conditional": 3,
+        "public": 0,
+        "data": 3,
+        "unknown": 0,
+        "sync": 0
+      },
+      {
+        "function": "bitonic_pairs_global",
+        "instructions": 72,
+        "branches": 2,
+        "conditional": 1,
+        "public": 0,
+        "data": 1,
+        "unknown": 0,
+        "sync": 0
+      }
+    ],
+    "aead_open.cu": [
+      {
+        "function": "aead_open_seq",
+        "instructions": 624,
+        "branches": 4,
+        "conditional": 3,
+        "public": 0,
+        "data": 3,
+        "unknown": 0,
+        "sync": 0
+      }
+    ],
+    "chacha_tags.cu": [
+      {
+        "function": "chacha_tags",
+        "instructions": 168,
+        "branches": 3,
+        "conditional": 2,
+        "public": 0,
+        "data": 2,
+        "unknown": 0,
+        "sync": 0
+      },
+      {
+        "function": "chacha_blocks",
+        "instructions": 176,
+        "branches": 3,
+        "conditional": 2,
+        "public": 0,
+        "data": 2,
+        "unknown": 0,
+        "sync": 0
+      }
+    ]
+  },
+  "to_explain": {
+    "bitonic.cu": [
+      {
+        "function": "bitonic_shared_full",
+        "addr": "0050",
+        "instr": "@P0 EXIT",
+        "class": "DATA",
+        "predicate": [
+          "P0"
+        ],
+        "leaves": [
+          "const",
+          "global",
+          "id",
+          "imm",
+          "param",
+          "shared",
+          "unknown"
+        ]
+      },
+      {
+        "function": "bitonic_shared_full",
+        "addr": "02b0",
+        "instr": "@!P0 BRA 0x6a0",
+        "class": "DATA",
+        "predicate": [
+          "!P0"
+        ],
+        "leaves": [
+          "const",
+          "global",
+          "id",
+          "imm",
+          "param",
+          "shared",
+          "unknown"
+        ]
+      },
+      {
+        "function": "bitonic_shared_full",
+        "addr": "02e0",
+        "instr": "@!P0 BRA 0x670",
+        "class": "DATA",
+        "predicate": [
+          "!P0"
+        ],
+        "leaves": [
+          "const",
+          "global",
+          "id",
+          "imm",
+          "param",
+          "shared",
+          "unknown"
+        ]
+      },
+      {
+        "function": "bitonic_shared_full",
+        "addr": "0660",
+        "instr": "@P0 BRA 0x300",
+        "class": "DATA",
+        "predicate": [
+          "P0"
+        ],
+        "leaves": [
+          "const",
+          "global",
+          "id",
+          "imm",
+          "param",
+          "shared",
+          "unknown"
+        ]
+      },
+      {
+        "function": "bitonic_shared_full",
+        "addr": "0690",
+        "instr": "@!P0 BRA 0x2d0",
+        "class": "DATA",
+        "predicate": [
+          "!P0"
+        ],
+        "leaves": [
+          "const",
+          "global",
+          "id",
+          "imm",
+          "param",
+          "shared",
+          "unknown"
+        ]
+      },
+      {
+        "function": "bitonic_shared",
+        "addr": "0050",
+        "instr": "@P0 EXIT",
+        "class": "DATA",
+        "predicate": [
+          "P0"
+        ],
+        "leaves": [
+          "global",
+          "id",
+          "imm",
+          "param",
+          "shared"
+        ]
+      },
+      {
+        "function": "bitonic_shared",
+        "addr": "0290",
+        "instr": "@!P0 BRA 0x620",
+        "class": "DATA",
+        "predicate": [
+          "!P0"
+        ],
+        "leaves": [
+          "global",
+          "id",
+          "imm",
+          "param",
+          "shared"
+        ]
+      },
+      {
+        "function": "bitonic_shared",
+        "addr": "0610",
+        "instr": "@P0 BRA 0x2b0",
+        "class": "DATA",
+        "predicate": [
+          "P0"
+        ],
+        "leaves": [
+          "global",
+          "id",
+          "imm",
+          "param",
+          "shared"
+        ]
+      },
+      {
+        "function": "bitonic_pairs_global",
+        "addr": "0050",
+        "instr": "@P0 EXIT",
+        "class": "DATA",
+        "predicate": [
+          "P0"
+        ],
+        "leaves": [
+          "const",
+          "global",
+          "id",
+          "imm",
+          "param"
+        ]
+      }
+    ],
+    "aead_open.cu": [
+      {
+        "function": "aead_open_seq",
+        "addr": "0050",
+        "instr": "@P0 EXIT",
+        "class": "DATA",
+        "predicate": [
+          "P0"
+        ],
+        "leaves": [
+          "const",
+          "global",
+          "id",
+          "imm",
+          "param"
+        ]
+      },
+      {
+        "function": "aead_open_seq",
+        "addr": "08c0",
+        "instr": "@P0 BRA 0x2a0",
+        "class": "DATA",
+        "predicate": [
+          "P0"
+        ],
+        "leaves": [
+          "const",
+          "global",
+          "id",
+          "imm",
+          "param"
+        ]
+      },
+      {
+        "function": "aead_open_seq",
+        "addr": "0fd0",
+        "instr": "@P0 BRA 0x9b0",
+        "class": "DATA",
+        "predicate": [
+          "P0"
+        ],
+        "leaves": [
+          "const",
+          "global",
+          "id",
+          "imm",
+          "param"
+        ]
+      }
+    ],
+    "chacha_tags.cu": [
+      {
+        "function": "chacha_tags",
+        "addr": "0050",
+        "instr": "@P0 EXIT",
+        "class": "DATA",
+        "predicate": [
+          "P0"
+        ],
+        "leaves": [
+          "global",
+          "id",
+          "imm",
+          "param"
+        ]
+      },
+      {
+        "function": "chacha_tags",
+        "addr": "0820",
+        "instr": "@P0 BRA 0x200",
+        "class": "DATA",
+        "predicate": [
+          "P0"
+        ],
+        "leaves": [
+          "global",
+          "id",
+          "imm",
+          "param"
+        ]
+      },
+      {
+        "function": "chacha_blocks",
+        "addr": "0050",
+        "instr": "@P0 EXIT",
+        "class": "DATA",
+        "predicate": [
+          "P0"
+        ],
+        "leaves": [
+          "global",
+          "id",
+          "imm",
+          "param"
+        ]
+      },
+      {
+        "function": "chacha_blocks",
+        "addr": "0870",
+        "instr": "@P0 BRA 0x250",
+        "class": "DATA",
+        "predicate": [
+          "P0"
+        ],
+        "leaves": [
+          "global",
+          "id",
+          "imm",
+          "param"
+        ]
+      }
+    ]
+  }
+}

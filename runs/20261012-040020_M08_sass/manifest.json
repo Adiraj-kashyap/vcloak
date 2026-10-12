@@ -1,0 +1,85 @@
+{
+  "run_id": "20261012-040020_M08_sass",
+  "module": "M08",
+  "step": "S3",
+  "owner": "Aditya",
+  "git_sha": "fe51656455505df756624305b18a55a11825afd4",
+  "dirty": false,
+  "command": "python scripts/sass_check.py --compile --out runs",
+  "seed": 0,
+  "quick": false,
+  "params": {
+    "files": [
+      "bitonic.cu",
+      "aead_open.cu",
+      "chacha_tags.cu"
+    ],
+    "arch": ""
+  },
+  "env": {
+    "os": "Linux-6.18.48+-x86_64-with-glibc2.39",
+    "python": "3.13.15",
+    "backend": "cupy",
+    "runner": "kaggle",
+    "session_id": "20261012-031230",
+    "gpu": "Tesla T4",
+    "cc": "7.5",
+    "cuda": "12090",
+    "cupy": "14.0.1",
+    "driver": "580.178.04"
+  },
+  "telemetry_start": {
+    "available": true,
+    "gpu": "Tesla T4",
+    "driver": "580.178.04",
+    "clocks": "unlocked",
+    "sm_clock_max_mhz": 1590,
+    "ts": 1791777620.3460813,
+    "sm_clock_mhz": 735,
+    "mem_clock_mhz": 5000,
+    "temperature_c": 73,
+    "power_w": 34.376,
+    "power_limit_w": 70.0,
+    "util_gpu_pct": 5,
+    "util_mem_pct": 0,
+    "throttle_reasons": 0,
+    "pstate": 0,
+    "mem_used_mb": 655.1875
+  },
+  "telemetry_end": {
+    "available": true,
+    "gpu": "Tesla T4",
+    "driver": "580.178.04",
+    "clocks": "unlocked",
+    "sm_clock_max_mhz": 1590,
+    "ts": 1791777626.8216405,
+    "sm_clock_mhz": 585,
+    "mem_clock_mhz": 5000,
+    "temperature_c": 72,
+    "power_w": 33.196,
+    "power_limit_w": 70.0,
+    "util_gpu_pct": 0,
+    "util_mem_pct": 0,
+    "throttle_reasons": 0,
+    "pstate": 0,
+    "mem_used_mb": 655.1875
+  },
+  "outputs": [
+    "sass_aead_open.txt",
+    "sass_aead_open_branches.txt",
+    "sass_bitonic.txt",
+    "sass_bitonic_branches.txt",
+    "sass_chacha_tags.txt",
+    "sass_chacha_tags_branches.txt",
+    "sass_control_planted_leak.txt",
+    "sass_control_planted_leak_branches.txt",
+    "summary.json"
+  ],
+  "status": "OK",
+  "notes": "16 branch(es) classified DATA or unknown by the static trace: explain each from the listing",
+  "gpu_job": {
+    "job_id": "20261012-041010_M08",
+    "bundle_sha256": "13fe614f268f1dec64f40871733c1946cd3214d7fdd472d18cd7fc498b24fbd8",
+    "packed_from_git_sha": "fe51656455505df756624305b18a55a11825afd4"
+  }
+}

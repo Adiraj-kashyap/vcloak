@@ -43,6 +43,9 @@ STAGE_GROUPS = {  # device stages of write_epoch, grouped so that four hues and 
 }
 
 
+M08_BEGIN, M08_END = "<!-- BEGIN M08 OBLIVIOUS -->", "<!-- END M08 OBLIVIOUS -->"
+
+
 class ReportError(Exception):
     """The inputs cannot back a figure (wrong backend, mixed sessions, missing file)."""
 
@@ -583,7 +586,11 @@ def generate(kernels: str | Path, cpu: str | Path, crossover: str | Path, pipeli
     (out / "perf_summary.json").write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
     if notes:
         Path(notes).parent.mkdir(parents=True, exist_ok=True)
-        Path(notes).write_text(build_notes(runs, prov, root, figures), encoding="utf-8")
+        old = Path(notes).read_text(encoding="utf-8") if Path(notes).exists() else ""
+        text = build_notes(runs, prov, root, figures)
+        if M08_BEGIN in old and M08_END in old:  # the obliviousness section belongs to report_oblivious: keep it
+            text = text.rstrip("\n") + "\n\n" + old[old.index(M08_BEGIN):old.index(M08_END) + len(M08_END)] + "\n"
+        Path(notes).write_text(text, encoding="utf-8")
     return summary
 
 

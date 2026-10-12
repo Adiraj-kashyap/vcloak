@@ -1,0 +1,10 @@
+run dir     /kaggle/working/vcloak_job/runs/20261012-040020_M08_sass
+arch        sm_75 (cupy device properties)
+  bitonic.cu       bitonic_shared_full      branches   6  conditional   5  DATA 5  unknown 0  sync 0
+  bitonic.cu       bitonic_shared           branches   4  conditional   3  DATA 3  unknown 0  sync 0
+  bitonic.cu       bitonic_pairs_global     branches   2  conditional   1  DATA 1  unknown 0  sync 0
+  aead_open.cu     aead_open_seq            branches   4  conditional   3  DATA 3  unknown 0  sync 0
+  chacha_tags.cu   chacha_tags              branches   3  conditional   2  DATA 2  unknown 0  sync 0
+  chacha_tags.cu   chacha_blocks            branches   3  conditional   2  DATA 2  unknown 0  sync 0
+control     planted leak classified DATA: True
+status      OK   16 branch(es) classified DATA or unknown by the static trace: explain each from the listing

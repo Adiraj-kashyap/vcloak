@@ -1,0 +1,69 @@
+# SASS branches of aead_open.cu
+# class: public | DATA | unknown | unconditional | sync (see scripts/sass_check.py; DATA and unknown must be explained by reading the listing)
+
+aead_open_seq: 624 instructions, 4 branches (3 conditional: 0 public, 3 DATA, 0 unknown), 0 divergence-control
+  0050  DATA          @P0 EXIT  <- P0: const, global, id, imm, param
+  08c0  DATA          @P0 BRA 0x2a0  <- P0: const, global, id, imm, param
+  0fd0  DATA          @P0 BRA 0x9b0  <- P0: const, global, id, imm, param
+  26d0  unconditional EXIT
+  26e0  unconditional BRA 0x26e0
+
+# SASS branches of bitonic.cu
+# class: public | DATA | unknown | unconditional | sync (see scripts/sass_check.py; DATA and unknown must be explained by reading the listing)
+
+bitonic_shared_full: 128 instructions, 6 branches (5 conditional: 0 public, 5 DATA, 0 unknown), 0 divergence-control
+  0050  DATA          @P0 EXIT  <- P0: const, global, id, imm, param, shared, unknown
+  02b0  DATA          @!P0 BRA 0x6a0  <- !P0: const, global, id, imm, param, shared, unknown
+  02e0  DATA          @!P0 BRA 0x670  <- !P0: const, global, id, imm, param, shared, unknown
+  0660  DATA          @P0 BRA 0x300  <- P0: const, global, id, imm, param, shared, unknown
+  0690  DATA          @!P0 BRA 0x2d0  <- !P0: const, global, id, imm, param, shared, unknown
+  07a0  unconditional EXIT
+  07b0  unconditional BRA 0x7b0
+
+bitonic_shared: 120 instructions, 4 branches (3 conditional: 0 public, 3 DATA, 0 unknown), 0 divergence-control
+  0050  DATA          @P0 EXIT  <- P0: global, id, imm, param, shared
+  0290  DATA          @!P0 BRA 0x620  <- !P0: global, id, imm, param, shared
+  0610  DATA          @P0 BRA 0x2b0  <- P0: global, id, imm, param, shared
+  0720  unconditional EXIT
+  0730  unconditional BRA 0x730
+
+bitonic_pairs_global: 72 instructions, 2 branches (1 conditional: 0 public, 1 DATA, 0 unknown), 0 divergence-control
+  0050  DATA          @P0 EXIT  <- P0: const, global, id, imm, param
+  0410  unconditional EXIT
+  0420  unconditional BRA 0x420
+
+# SASS branches of chacha_tags.cu
+# class: public | DATA | unknown | unconditional | sync (see scripts/sass_check.py; DATA and unknown must be explained by reading the listing)
+
+chacha_tags: 168 instructions, 3 branches (2 conditional: 0 public, 2 DATA, 0 unknown), 0 divergence-control
+  0050  DATA          @P0 EXIT  <- P0: global, id, imm, param
+  0820  DATA          @P0 BRA 0x200  <- P0: global, id, imm, param
+  09f0  unconditional EXIT
+  0a00  unconditional BRA 0xa00
+
+chacha_blocks: 176 instructions, 3 branches (2 conditional: 0 public, 2 DATA, 0 unknown), 0 divergence-control
+  0050  DATA          @P0 EXIT  <- P0: global, id, imm, param
+  0870  DATA          @P0 BRA 0x250  <- P0: global, id, imm, param
+  0ab0  unconditional EXIT
+  0ac0  unconditional BRA 0xac0
+
+# SASS branches of bench/planted/planted_leak.cu
+# class: public | DATA | unknown | unconditional | sync (see scripts/sass_check.py; DATA and unknown must be explained by reading the listing)
+
+planted_leak: 72 instructions, 12 branches (11 conditional: 0 public, 11 DATA, 0 unknown), 2 divergence-control
+  0050  DATA          @P0 EXIT  <- P0: global, id, imm, param
+  00a0  sync          BSSY B0, 0x3c0
+  00d0  DATA          @!P0 BRA 0x3b0  <- !P0: global, id, imm, param
+  0100  DATA          @!P0 BRA 0x3b0  <- !P0: global, id, imm, param
+  0160  DATA          @!P0 BRA 0x340  <- !P0: global, id, imm, param
+  01a0  DATA          @!P0 BRA 0x2f0  <- !P0: global, id, imm, param
+  01d0  DATA          @!P1 BRA 0x270  <- !P1: global, id, imm, param
+  0260  DATA          @P1 BRA 0x200  <- P1: global, id, imm, param
+  02e0  DATA          @!P0 BRA 0x340  <- !P0: global, id, imm, param
+  0330  DATA          @P0 BRA 0x300  <- P0: global, id, imm, param
+  0350  DATA          @!P0 BRA 0x3b0  <- !P0: global, id, imm, param
+  03a0  DATA          @P0 BRA 0x370  <- P0: global, id, imm, param
+  03b0  sync          BSYNC B0
+  03f0  unconditional EXIT
+  0400  unconditional BRA 0x400
+

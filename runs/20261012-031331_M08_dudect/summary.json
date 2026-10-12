@@ -1,0 +1,672 @@
+{
+  "metrics": [
+    {
+      "id": "T-DUDECT-MAXT-CONTROL-NULL",
+      "value": 2.0786,
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "PASS at threshold 4.5; max at crop 11 (below 0.557061131); Welch t, raw + 100 crops; series ms; r 1"
+    },
+    {
+      "id": "T-DUDECT-N-CONTROL-NULL",
+      "value": 100000,
+      "unit": "measurements",
+      "stat": "per class",
+      "note": "exactly this many of each class, randomly interleaved"
+    },
+    {
+      "id": "T-DUDECT-MAXT-BITONIC-EQUAL",
+      "value": 1.2708,
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "PASS at threshold 4.5; max at crop 11 (below 0.588947177); Welch t, raw + 100 crops; series ms; r 1"
+    },
+    {
+      "id": "T-DUDECT-N-BITONIC-EQUAL",
+      "value": 100000,
+      "unit": "measurements",
+      "stat": "per class",
+      "note": "exactly this many of each class, randomly interleaved"
+    },
+    {
+      "id": "T-DUDECT-MAXT-BITONIC-SORTED",
+      "value": 2.6965,
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "PASS at threshold 4.5; max at crop 54 (below 0.671499246); Welch t, raw + 100 crops; series ms; r 1"
+    },
+    {
+      "id": "T-DUDECT-N-BITONIC-SORTED",
+      "value": 100000,
+      "unit": "measurements",
+      "stat": "per class",
+      "note": "exactly this many of each class, randomly interleaved"
+    },
+    {
+      "id": "T-DUDECT-MAXT-WRITE-EPOCH",
+      "value": 2.7559,
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "PASS at threshold 4.5; max at crop 25 (below 1.24332617); Welch t, raw + 100 crops; series device_ms; r 1"
+    },
+    {
+      "id": "T-DUDECT-MAXT-WRITE-EPOCH-CALL",
+      "value": 8.2776,
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "FAIL at threshold 4.5; max at crop 64 (below 5.76966254); Welch t, raw + 100 crops; series call_ms; r 1"
+    },
+    {
+      "id": "T-DUDECT-N-WRITE-EPOCH",
+      "value": 100000,
+      "unit": "measurements",
+      "stat": "per class",
+      "note": "exactly this many of each class, randomly interleaved"
+    },
+    {
+      "id": "T-DUDECT-MAXT-AEAD-TAG",
+      "value": 6.2415,
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "FAIL at threshold 4.5; max at crop 8 (below 0.164980775); Welch t, raw + 100 crops; series ms; r 1"
+    },
+    {
+      "id": "T-DUDECT-N-AEAD-TAG",
+      "value": 100000,
+      "unit": "measurements",
+      "stat": "per class",
+      "note": "exactly this many of each class, randomly interleaved"
+    },
+    {
+      "id": "T-DUDECT-MAXT-AEAD-CONV",
+      "value": 11.6369,
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "FAIL at threshold 4.5; max at crop 55 (below 0.192015714); Welch t, raw + 100 crops; series ms; r 1"
+    },
+    {
+      "id": "T-DUDECT-N-AEAD-CONV",
+      "value": 100000,
+      "unit": "measurements",
+      "stat": "per class",
+      "note": "exactly this many of each class, randomly interleaved"
+    }
+  ],
+  "timer": "cupy.cuda.Event",
+  "executed_by": "cupy.RawModule (nvrtc)",
+  "t_threshold": 4.5,
+  "n_per_class": 100000,
+  "quick": false,
+  "caveat": "Free Colab/Kaggle GPUs are shared: a PASS says that no dependence was detected with this many measurements on this device in this session, not that none exists.",
+  "errors": [],
+  "device": {
+    "backend": "cupy",
+    "is_gpu": true,
+    "device": "Tesla T4",
+    "gpu": "Tesla T4",
+    "cc": "7.5",
+    "sm_count": 40,
+    "vram_total_bytes": 15636037632,
+    "vram_free_bytes": 15400239104,
+    "mem_clock_khz": 5001000,
+    "mem_bus_width_bits": 256,
+    "peak_bw_gbs": 320.064,
+    "max_log2n": 24,
+    "cuda": "12090",
+    "cupy": "14.0.1",
+    "os": "Linux-6.18.48+-x86_64-with-glibc2.39",
+    "python": "3.13.15"
+  },
+  "targets": [
+    {
+      "target": "control_null",
+      "title": "null control: fused bitonic sort, the same fixed input in both classes",
+      "class0": "fixed sorted tags",
+      "class1": "the same fixed sorted tags",
+      "params": {
+        "n": 65536,
+        "kernel": "gpu_bitonic_sort (fused launch plan)"
+      },
+      "n_per_class": 100000,
+      "calibration_per_class": 500,
+      "chunk": 1000,
+      "r": 1,
+      "r_note": "",
+      "single_launch_median_ms": 0.5422080159187317,
+      "measure_seconds": 313.17334518,
+      "mismatches": 0,
+      "expected_verdict": "PASS",
+      "warmup": {
+        "calls": 559,
+        "seconds": 1.0253081569999836,
+        "clocks_mhz": [
+          885,
+          840,
+          825
+        ]
+      },
+      "clock": {
+        "before_mhz": 960,
+        "after_mhz": 1035,
+        "max_mhz": 1590,
+        "relative_change": 0.078125,
+        "fraction_of_max": 0.6037735849056604,
+        "status": "LOW"
+      },
+      "timer": "cupy.cuda.Event",
+      "raw": "dudect_control_null_raw.npz",
+      "plots": [
+        "dudect_control_null.png"
+      ],
+      "max_abs_t": 2.078626151351641,
+      "verdict": "PASS",
+      "series": {
+        "ms": {
+          "n_class0": 100000,
+          "n_class1": 100000,
+          "mean_class0": 0.5490185849669573,
+          "mean_class1": 0.5488965846300123,
+          "std_class0": 0.06508110135488801,
+          "std_class1": 0.06610790554152379,
+          "t_raw": 0.41587736284193955,
+          "max_abs_t": 2.078626151351641,
+          "max_at_test": 12,
+          "max_at": "crop 11 (below 0.557061131)",
+          "threshold": 4.5,
+          "verdict": "PASS",
+          "tests": 101,
+          "summary_class0": {
+            "runs": 100000,
+            "median_ms": 0.540448009967804,
+            "p5_ms": 0.4829440116882324,
+            "p95_ms": 0.6331216007471081,
+            "p99_ms": 0.7960003238916395,
+            "min_ms": 0.4556480050086975,
+            "max_ms": 1.4675840139389038,
+            "mean_ms": 0.5490185849669575,
+            "std_ms": 0.065081101354888,
+            "cv": 0.1185407983207069
+          },
+          "summary_class1": {
+            "runs": 100000,
+            "median_ms": 0.5401600003242493,
+            "p5_ms": 0.48284798860549927,
+            "p95_ms": 0.6328639984130859,
+            "p99_ms": 0.8003225886821733,
+            "min_ms": 0.45552000403404236,
+            "max_ms": 1.6949119567871094,
+            "mean_ms": 0.5488965846300126,
+            "std_ms": 0.06610790554152378,
+            "cv": 0.1204378154148732
+          }
+        }
+      }
+    },
+    {
+      "target": "bitonic_equal",
+      "title": "(a) fused bitonic sort: all-equal tags vs random tags",
+      "class0": "every (hi, lo) tag equal (fixed)",
+      "class1": "fresh uniform random (hi, lo) tags",
+      "params": {
+        "n": 65536,
+        "kernel": "gpu_bitonic_sort (fused launch plan)"
+      },
+      "n_per_class": 100000,
+      "calibration_per_class": 500,
+      "chunk": 1000,
+      "r": 1,
+      "r_note": "",
+      "single_launch_median_ms": 0.590751975774765,
+      "measure_seconds": 316.2401361389999,
+      "mismatches": 0,
+      "expected_verdict": "PASS",
+      "warmup": {
+        "calls": 687,
+        "seconds": 1.3062965150000991,
+        "clocks_mhz": [
+          675,
+          690,
+          825,
+          825,
+          825
+        ]
+      },
+      "clock": {
+        "before_mhz": 915,
+        "after_mhz": 1005,
+        "max_mhz": 1590,
+        "relative_change": 0.09836065573770492,
+        "fraction_of_max": 0.5754716981132075,
+        "status": "LOW"
+      },
+      "timer": "cupy.cuda.Event",
+      "raw": "dudect_bitonic_equal_raw.npz",
+      "plots": [
+        "dudect_bitonic_equal.png"
+      ],
+      "max_abs_t": 1.2708357871713756,
+      "verdict": "PASS",
+      "series": {
+        "ms": {
+          "n_class0": 100000,
+          "n_class1": 100000,
+          "mean_class0": 0.5542046191120144,
+          "mean_class1": 0.5540738696730134,
+          "std_class0": 0.06914553326017288,
+          "std_class1": 0.0688995740536552,
+          "t_raw": 0.42357773520699027,
+          "max_abs_t": 1.2708357871713756,
+          "max_at_test": 12,
+          "max_at": "crop 11 (below 0.588947177)",
+          "threshold": 4.5,
+          "verdict": "PASS",
+          "tests": 101,
+          "summary_class0": {
+            "runs": 100000,
+            "median_ms": 0.5451520085334778,
+            "p5_ms": 0.4869439899921417,
+            "p95_ms": 0.6368015915155407,
+            "p99_ms": 0.8217615985870353,
+            "min_ms": 0.4567359983921051,
+            "max_ms": 2.044127941131592,
+            "mean_ms": 0.5542046191120148,
+            "std_ms": 0.06914553326017288,
+            "cv": 0.12476534997301658
+          },
+          "summary_class1": {
+            "runs": 100000,
+            "median_ms": 0.5452479720115662,
+            "p5_ms": 0.4869120121002197,
+            "p95_ms": 0.6369919776916504,
+            "p99_ms": 0.816898900866507,
+            "min_ms": 0.45769599080085754,
+            "max_ms": 2.2491519451141357,
+            "mean_ms": 0.5540738696730136,
+            "std_ms": 0.06889957405365522,
+            "cv": 0.12435088139838875
+          }
+        }
+      }
+    },
+    {
+      "target": "bitonic_sorted",
+      "title": "(b) fused bitonic sort: sorted tags vs random tags",
+      "class0": "tags already in sorted order (fixed)",
+      "class1": "fresh uniform random (hi, lo) tags",
+      "params": {
+        "n": 65536,
+        "kernel": "gpu_bitonic_sort (fused launch plan)"
+      },
+      "n_per_class": 100000,
+      "calibration_per_class": 500,
+      "chunk": 1000,
+      "r": 1,
+      "r_note": "",
+      "single_launch_median_ms": 0.5748479962348938,
+      "measure_seconds": 312.90730805700014,
+      "mismatches": 0,
+      "expected_verdict": "PASS",
+      "warmup": {
+        "calls": 547,
+        "seconds": 1.0267788310000014,
+        "clocks_mhz": [
+          855,
+          855,
+          855
+        ]
+      },
+      "clock": {
+        "before_mhz": 945,
+        "after_mhz": 1065,
+        "max_mhz": 1590,
+        "relative_change": 0.12698412698412698,
+        "fraction_of_max": 0.5943396226415094,
+        "status": "LOW"
+      },
+      "timer": "cupy.cuda.Event",
+      "raw": "dudect_bitonic_sorted_raw.npz",
+      "plots": [
+        "dudect_bitonic_sorted.png"
+      ],
+      "max_abs_t": 2.6965366688136134,
+      "verdict": "PASS",
+      "series": {
+        "ms": {
+          "n_class0": 100000,
+          "n_class1": 100000,
+          "mean_class0": 0.5478499395784735,
+          "mean_class1": 0.5482259569203854,
+          "std_class0": 0.06616889746043682,
+          "std_class1": 0.06599307552639261,
+          "t_raw": -1.2723774837702084,
+          "max_abs_t": 2.6965366688136134,
+          "max_at_test": 55,
+          "max_at": "crop 54 (below 0.671499246)",
+          "threshold": 4.5,
+          "verdict": "PASS",
+          "tests": 101,
+          "summary_class0": {
+            "runs": 100000,
+            "median_ms": 0.5401920080184937,
+            "p5_ms": 0.4827519953250885,
+            "p95_ms": 0.6286720037460327,
+            "p99_ms": 0.7997120022773743,
+            "min_ms": 0.45766401290893555,
+            "max_ms": 2.7552640438079834,
+            "mean_ms": 0.5478499395784736,
+            "std_ms": 0.06616889746043683,
+            "cv": 0.12077923657589242
+          },
+          "summary_class1": {
+            "runs": 100000,
+            "median_ms": 0.5405759811401367,
+            "p5_ms": 0.4830079972743988,
+            "p95_ms": 0.6291536003351208,
+            "p99_ms": 0.7908877038955648,
+            "min_ms": 0.4583680033683777,
+            "max_ms": 1.706976056098938,
+            "mean_ms": 0.5482259569203853,
+            "std_ms": 0.06599307552639261,
+            "cv": 0.12037568577946096
+          }
+        }
+      }
+    },
+    {
+      "target": "write_epoch",
+      "title": "(c) write_epoch: fixed contents vs random contents, n_real fixed",
+      "class0": "the same (conv_id, seq, payload) submissions every time (fixed)",
+      "class1": "fresh random conv_id, seq and payload for every submission",
+      "params": {
+        "slots": 4096,
+        "n_real": 1024,
+        "epoch": 1,
+        "timer": "cupy.cuda.Event",
+        "device_ms": "total minus the engine's host stage; stages: h2d, tags, sort, compact, d2h, seal, bucket, open, host"
+      },
+      "n_per_class": 100000,
+      "calibration_per_class": 500,
+      "chunk": 1000,
+      "r": 1,
+      "r_note": "",
+      "single_launch_median_ms": 1.0287838280200958,
+      "measure_seconds": 1178.718470396,
+      "mismatches": 0,
+      "expected_verdict": "PASS",
+      "warmup": {
+        "calls": 81,
+        "seconds": 2.4626468950000344,
+        "clocks_mhz": [
+          585,
+          585,
+          585
+        ]
+      },
+      "clock": {
+        "before_mhz": 585,
+        "after_mhz": 585,
+        "max_mhz": 1590,
+        "relative_change": 0.0,
+        "fraction_of_max": 0.36792452830188677,
+        "status": "LOW"
+      },
+      "timer": "cupy.cuda.Event",
+      "raw": "dudect_write_epoch_raw.npz",
+      "plots": [
+        "dudect_write_epoch.png",
+        "dudect_write_epoch_call_ms.png"
+      ],
+      "max_abs_t": 2.755899454457219,
+      "verdict": "PASS",
+      "series": {
+        "device_ms": {
+          "n_class0": 100000,
+          "n_class1": 100000,
+          "mean_class0": 1.1545794784426693,
+          "mean_class1": 1.1547838416972767,
+          "std_class0": 0.14879771323234728,
+          "std_class1": 0.14980114846575557,
+          "t_raw": -0.3060745420043851,
+          "max_abs_t": 2.755899454457219,
+          "max_at_test": 26,
+          "max_at": "crop 25 (below 1.24332617)",
+          "threshold": 4.5,
+          "verdict": "PASS",
+          "tests": 101,
+          "summary_class0": {
+            "runs": 100000,
+            "median_ms": 1.1185279786586761,
+            "p5_ms": 0.9965439140796661,
+            "p95_ms": 1.4120641142129897,
+            "p99_ms": 1.6714612418413133,
+            "min_ms": 0.9481599628925323,
+            "max_ms": 3.38486385345459,
+            "mean_ms": 1.1545794784426688,
+            "std_ms": 0.14879771323234728,
+            "cv": 0.12887611118209902
+          },
+          "summary_class1": {
+            "runs": 100000,
+            "median_ms": 1.1176000237464905,
+            "p5_ms": 0.9956799730658531,
+            "p95_ms": 1.4136318892240525,
+            "p99_ms": 1.6711403226852393,
+            "min_ms": 0.9476481080055237,
+            "max_ms": 3.0358720421791077,
+            "mean_ms": 1.1547838416972755,
+            "std_ms": 0.14980114846575562,
+            "cv": 0.12972224156304546
+          }
+        },
+        "call_ms": {
+          "n_class0": 100000,
+          "n_class1": 100000,
+          "mean_class0": 4.193688527185916,
+          "mean_class1": 4.228816694653038,
+          "std_class0": 3.4641719977766257,
+          "std_class1": 3.627356702430765,
+          "t_raw": -2.2147039230721983,
+          "max_abs_t": 8.277551693806005,
+          "max_at_test": 65,
+          "max_at": "crop 64 (below 5.76966254)",
+          "threshold": 4.5,
+          "verdict": "FAIL",
+          "tests": 101,
+          "summary_class0": {
+            "runs": 100000,
+            "median_ms": 3.8137600421905518,
+            "p5_ms": 3.441150486469269,
+            "p95_ms": 4.648454380035399,
+            "p99_ms": 6.943077282905576,
+            "min_ms": 3.3106560707092285,
+            "max_ms": 67.13558197021484,
+            "mean_ms": 4.193688527185917,
+            "std_ms": 3.464171997776626,
+            "cv": 0.8260441793232515
+          },
+          "summary_class1": {
+            "runs": 100000,
+            "median_ms": 3.8223040103912354,
+            "p5_ms": 3.4472639560699463,
+            "p95_ms": 4.686079978942871,
+            "p99_ms": 7.065240063667285,
+            "min_ms": 3.320096015930176,
+            "max_ms": 76.68396759033203,
+            "mean_ms": 4.228816694653034,
+            "std_ms": 3.6273567024307636,
+            "cv": 0.8577710892546457
+          }
+        }
+      }
+    },
+    {
+      "target": "aead_tag",
+      "title": "(d) AEAD open: all tags valid vs all tags invalid",
+      "class0": "every row authentic, one row in 8 of the conversation asked for (fixed)",
+      "class1": "the same rows with fresh random tag words (every tag invalid)",
+      "params": {
+        "rows": 65536,
+        "kernel": "aead_open_seq"
+      },
+      "n_per_class": 100000,
+      "calibration_per_class": 500,
+      "chunk": 1000,
+      "r": 1,
+      "r_note": "",
+      "single_launch_median_ms": 0.16681600362062454,
+      "measure_seconds": 480.071700383,
+      "mismatches": 0,
+      "expected_verdict": "PASS",
+      "warmup": {
+        "calls": 290,
+        "seconds": 1.027902991999781,
+        "clocks_mhz": [
+          585,
+          585,
+          585
+        ]
+      },
+      "clock": {
+        "before_mhz": 585,
+        "after_mhz": 585,
+        "max_mhz": 1590,
+        "relative_change": 0.0,
+        "fraction_of_max": 0.36792452830188677,
+        "status": "LOW"
+      },
+      "timer": "cupy.cuda.Event",
+      "raw": "dudect_aead_tag_raw.npz",
+      "plots": [
+        "dudect_aead_tag.png"
+      ],
+      "max_abs_t": 6.241457415094107,
+      "verdict": "FAIL",
+      "series": {
+        "ms": {
+          "n_class0": 100000,
+          "n_class1": 100000,
+          "mean_class0": 0.17349876927986735,
+          "mean_class1": 0.17372760830938816,
+          "std_class0": 0.021085897107803203,
+          "std_class1": 0.021350246521290746,
+          "t_raw": -2.4115749182445083,
+          "max_abs_t": 6.241457415094107,
+          "max_at_test": 9,
+          "max_at": "crop 8 (below 0.164980775)",
+          "threshold": 4.5,
+          "verdict": "FAIL",
+          "tests": 101,
+          "summary_class0": {
+            "runs": 100000,
+            "median_ms": 0.16547200083732605,
+            "p5_ms": 0.1555519998073578,
+            "p95_ms": 0.2184319943189621,
+            "p99_ms": 0.24454431951045974,
+            "min_ms": 0.15167999267578125,
+            "max_ms": 0.5095360279083252,
+            "mean_ms": 0.1734987692798674,
+            "std_ms": 0.0210858971078032,
+            "cv": 0.1215334102675389
+          },
+          "summary_class1": {
+            "runs": 100000,
+            "median_ms": 0.16550399363040924,
+            "p5_ms": 0.15571199357509613,
+            "p95_ms": 0.2186560034751892,
+            "p99_ms": 0.244864321798086,
+            "min_ms": 0.15110400319099426,
+            "max_ms": 1.059615969657898,
+            "mean_ms": 0.17372760830938816,
+            "std_ms": 0.02135024652129075,
+            "cv": 0.12289495451562601
+          }
+        }
+      }
+    },
+    {
+      "target": "aead_conv",
+      "title": "(e) AEAD open: every row matches q vs no row matches q",
+      "class0": "every row authentic and of conversation q (fixed)",
+      "class1": "every row authentic, random conversations != q (one of a pool of sealed inputs, chosen afresh)",
+      "params": {
+        "rows": 65536,
+        "kernel": "aead_open_seq",
+        "class1_pool": 64
+      },
+      "n_per_class": 100000,
+      "calibration_per_class": 500,
+      "chunk": 1000,
+      "r": 1,
+      "r_note": "",
+      "single_launch_median_ms": 0.15377599745988846,
+      "measure_seconds": 179.584875646,
+      "mismatches": 0,
+      "expected_verdict": "PASS",
+      "warmup": {
+        "calls": 1033,
+        "seconds": 1.029067427999962,
+        "clocks_mhz": [
+          585,
+          585,
+          585
+        ]
+      },
+      "clock": {
+        "before_mhz": 585,
+        "after_mhz": 585,
+        "max_mhz": 1590,
+        "relative_change": 0.0,
+        "fraction_of_max": 0.36792452830188677,
+        "status": "LOW"
+      },
+      "timer": "cupy.cuda.Event",
+      "raw": "dudect_aead_conv_raw.npz",
+      "plots": [
+        "dudect_aead_conv.png"
+      ],
+      "max_abs_t": 11.636851172117048,
+      "verdict": "FAIL",
+      "series": {
+        "ms": {
+          "n_class0": 100000,
+          "n_class1": 100000,
+          "mean_class0": 0.1641096950165928,
+          "mean_class1": 0.1646017760284245,
+          "std_class0": 0.012632643590711156,
+          "std_class1": 0.012709895779711315,
+          "t_raw": -8.683592946902774,
+          "max_abs_t": 11.636851172117048,
+          "max_at_test": 56,
+          "max_at": "crop 55 (below 0.192015714)",
+          "threshold": 4.5,
+          "verdict": "FAIL",
+          "tests": 101,
+          "summary_class0": {
+            "runs": 100000,
+            "median_ms": 0.16070400178432465,
+            "p5_ms": 0.1528320014476776,
+            "p95_ms": 0.185248002409935,
+            "p99_ms": 0.2165440022945404,
+            "min_ms": 0.1480640023946762,
+            "max_ms": 0.7079039812088013,
+            "mean_ms": 0.16410969501659275,
+            "std_ms": 0.01263264359071116,
+            "cv": 0.07697682692929203
+          },
+          "summary_class1": {
+            "runs": 100000,
+            "median_ms": 0.16105599701404572,
+            "p5_ms": 0.1531199961900711,
+            "p95_ms": 0.18624000251293182,
+            "p99_ms": 0.21792000532150269,
+            "min_ms": 0.14854399859905243,
+            "max_ms": 0.5888640284538269,
+            "mean_ms": 0.1646017760284245,
+            "std_ms": 0.01270989577971132,
+            "cv": 0.07721603063089971
+          }
+        }
+      }
+    }
+  ]
+}

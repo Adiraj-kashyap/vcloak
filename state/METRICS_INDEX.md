@@ -234,3 +234,34 @@
 | P-READ-WINDOW-DEVICE-MS-K4096 | 0.6505 | ms | median | M07 | runs/20261011-215653_M07_pipeline | python bench/run_pipeline.py --dev --full --seed 7 --out runs | 20261011 | no | cupy | kaggle |
 | P-READ-WINDOW-DEVICE-P99-K4096 | 0.8604 | ms | p99 | M07 | runs/20261011-215653_M07_pipeline | python bench/run_pipeline.py --dev --full --seed 7 --out runs | 20261011 | no | cupy | kaggle |
 | P-READ-WINDOW-HOST-MS-K4096 | 0.0363 | ms | median | M07 | runs/20261011-215653_M07_pipeline | python bench/run_pipeline.py --dev --full --seed 7 --out runs | 20261011 | no | cupy | kaggle |
+| T-DUDECT-MAXT-CONTROL-LEAK | 376.9125 | - | max abs(t) | M08 | runs/20261012-031245_M08_dudect_selftest_quick | python bench/run_dudect.py --targets controls --seed 8 --quick --name dudect_selftest --out runs | 20261012 | yes | cupy | kaggle |
+| T-DUDECT-N-CONTROL-LEAK | 10000 | measurements | per class | M08 | runs/20261012-031245_M08_dudect_selftest_quick | python bench/run_dudect.py --targets controls --seed 8 --quick --name dudect_selftest --out runs | 20261012 | yes | cupy | kaggle |
+| T-DUDECT-MAXT-CONTROL-NULL | 1.933 | - | max abs(t) | M08 | runs/20261012-031245_M08_dudect_selftest_quick | python bench/run_dudect.py --targets controls --seed 8 --quick --name dudect_selftest --out runs | 20261012 | yes | cupy | kaggle |
+| T-DUDECT-N-CONTROL-NULL | 10000 | measurements | per class | M08 | runs/20261012-031245_M08_dudect_selftest_quick | python bench/run_dudect.py --targets controls --seed 8 --quick --name dudect_selftest --out runs | 20261012 | yes | cupy | kaggle |
+| T-DUDECT-MAXT-CONTROL-NULL | 2.0786 | - | max abs(t) | M08 | runs/20261012-031331_M08_dudect | python bench/run_dudect.py --targets control_null,targets --seed 8 --out runs | 20261012 | no | cupy | kaggle |
+| T-DUDECT-N-CONTROL-NULL | 100000 | measurements | per class | M08 | runs/20261012-031331_M08_dudect | python bench/run_dudect.py --targets control_null,targets --seed 8 --out runs | 20261012 | no | cupy | kaggle |
+| T-DUDECT-MAXT-BITONIC-EQUAL | 1.2708 | - | max abs(t) | M08 | runs/20261012-031331_M08_dudect | python bench/run_dudect.py --targets control_null,targets --seed 8 --out runs | 20261012 | no | cupy | kaggle |
+| T-DUDECT-N-BITONIC-EQUAL | 100000 | measurements | per class | M08 | runs/20261012-031331_M08_dudect | python bench/run_dudect.py --targets control_null,targets --seed 8 --out runs | 20261012 | no | cupy | kaggle |
+| T-DUDECT-MAXT-BITONIC-SORTED | 2.6965 | - | max abs(t) | M08 | runs/20261012-031331_M08_dudect | python bench/run_dudect.py --targets control_null,targets --seed 8 --out runs | 20261012 | no | cupy | kaggle |
+| T-DUDECT-N-BITONIC-SORTED | 100000 | measurements | per class | M08 | runs/20261012-031331_M08_dudect | python bench/run_dudect.py --targets control_null,targets --seed 8 --out runs | 20261012 | no | cupy | kaggle |
+| T-DUDECT-MAXT-WRITE-EPOCH | 2.7559 | - | max abs(t) | M08 | runs/20261012-031331_M08_dudect | python bench/run_dudect.py --targets control_null,targets --seed 8 --out runs | 20261012 | no | cupy | kaggle |
+| T-DUDECT-MAXT-WRITE-EPOCH-CALL | 8.2776 | - | max abs(t) | M08 | runs/20261012-031331_M08_dudect | python bench/run_dudect.py --targets control_null,targets --seed 8 --out runs | 20261012 | no | cupy | kaggle |
+| T-DUDECT-N-WRITE-EPOCH | 100000 | measurements | per class | M08 | runs/20261012-031331_M08_dudect | python bench/run_dudect.py --targets control_null,targets --seed 8 --out runs | 20261012 | no | cupy | kaggle |
+| T-DUDECT-MAXT-AEAD-TAG | 6.2415 | - | max abs(t) | M08 | runs/20261012-031331_M08_dudect | python bench/run_dudect.py --targets control_null,targets --seed 8 --out runs | 20261012 | no | cupy | kaggle |
+| T-DUDECT-N-AEAD-TAG | 100000 | measurements | per class | M08 | runs/20261012-031331_M08_dudect | python bench/run_dudect.py --targets control_null,targets --seed 8 --out runs | 20261012 | no | cupy | kaggle |
+| T-DUDECT-MAXT-AEAD-CONV | 11.6369 | - | max abs(t) | M08 | runs/20261012-031331_M08_dudect | python bench/run_dudect.py --targets control_null,targets --seed 8 --out runs | 20261012 | no | cupy | kaggle |
+| T-DUDECT-N-AEAD-CONV | 100000 | measurements | per class | M08 | runs/20261012-031331_M08_dudect | python bench/run_dudect.py --targets control_null,targets --seed 8 --out runs | 20261012 | no | cupy | kaggle |
+| T-SASS-BRA-BITONIC-SHARED-FULL | 6 | branches | count | M08 | runs/20261012-040020_M08_sass | python scripts/sass_check.py --compile --out runs | 20261012 | no | cupy | kaggle |
+| T-SASS-BRA-BITONIC-SHARED | 4 | branches | count | M08 | runs/20261012-040020_M08_sass | python scripts/sass_check.py --compile --out runs | 20261012 | no | cupy | kaggle |
+| T-SASS-BRA-BITONIC-PAIRS-GLOBAL | 2 | branches | count | M08 | runs/20261012-040020_M08_sass | python scripts/sass_check.py --compile --out runs | 20261012 | no | cupy | kaggle |
+| T-SASS-BRA-AEAD-OPEN-SEQ | 4 | branches | count | M08 | runs/20261012-040020_M08_sass | python scripts/sass_check.py --compile --out runs | 20261012 | no | cupy | kaggle |
+| T-SASS-BRA-CHACHA-TAGS | 3 | branches | count | M08 | runs/20261012-040020_M08_sass | python scripts/sass_check.py --compile --out runs | 20261012 | no | cupy | kaggle |
+| T-SASS-BRA-CHACHA-BLOCKS | 3 | branches | count | M08 | runs/20261012-040020_M08_sass | python scripts/sass_check.py --compile --out runs | 20261012 | no | cupy | kaggle |
+| T-NCU-DIVERGENT-BITONIC-PAIRS-GLOBAL | NOT_MEASURED | branches | sum | M08 | runs/20261012-040027_M08_ncu | python bench/run_ncu.py --seed 8 --out runs | 20261012 | no | cupy | kaggle |
+| T-NCU-BRANCHEFF-BITONIC-PAIRS-GLOBAL | NOT_MEASURED | % | ratio of sums | M08 | runs/20261012-040027_M08_ncu | python bench/run_ncu.py --seed 8 --out runs | 20261012 | no | cupy | kaggle |
+| T-NCU-DIVERGENT-BITONIC-SHARED | NOT_MEASURED | branches | sum | M08 | runs/20261012-040027_M08_ncu | python bench/run_ncu.py --seed 8 --out runs | 20261012 | no | cupy | kaggle |
+| T-NCU-BRANCHEFF-BITONIC-SHARED | NOT_MEASURED | % | ratio of sums | M08 | runs/20261012-040027_M08_ncu | python bench/run_ncu.py --seed 8 --out runs | 20261012 | no | cupy | kaggle |
+| T-NCU-DIVERGENT-BITONIC-SHARED-FULL | NOT_MEASURED | branches | sum | M08 | runs/20261012-040027_M08_ncu | python bench/run_ncu.py --seed 8 --out runs | 20261012 | no | cupy | kaggle |
+| T-NCU-BRANCHEFF-BITONIC-SHARED-FULL | NOT_MEASURED | % | ratio of sums | M08 | runs/20261012-040027_M08_ncu | python bench/run_ncu.py --seed 8 --out runs | 20261012 | no | cupy | kaggle |
+| T-NCU-DIVERGENT-AEAD-OPEN-SEQ | NOT_MEASURED | branches | sum | M08 | runs/20261012-040027_M08_ncu | python bench/run_ncu.py --seed 8 --out runs | 20261012 | no | cupy | kaggle |
+| T-NCU-BRANCHEFF-AEAD-OPEN-SEQ | NOT_MEASURED | % | ratio of sums | M08 | runs/20261012-040027_M08_ncu | python bench/run_ncu.py --seed 8 --out runs | 20261012 | no | cupy | kaggle |

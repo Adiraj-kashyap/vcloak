@@ -1,0 +1,64 @@
+{
+  "provenance": {
+    "session_id": "20261012-031230",
+    "runner": "kaggle",
+    "gpu": "Tesla T4",
+    "driver": "580.178.04",
+    "cuda": "12090",
+    "cupy": "14.0.1",
+    "git_sha": "fe51656455505df756624305b18a55a11825afd4",
+    "job_id": "20261012-041010_M08"
+  },
+  "backend": "cupy",
+  "run_dirs": {
+    "selftest": "runs/20261012-031245_M08_dudect_selftest_quick",
+    "dudect": "runs/20261012-031331_M08_dudect",
+    "sass": "runs/20261012-040020_M08_sass",
+    "ncu": "runs/20261012-040027_M08_ncu"
+  },
+  "controls_ok": true,
+  "fails": [
+    "write_epoch:call_ms",
+    "aead_tag:ms",
+    "aead_conv:ms"
+  ],
+  "sass_conditional_branches": 16,
+  "sass_explained_public": 16,
+  "ncu_reason": "the driver refused the GPU performance counters to this user (ERR_NVGPUCTRPERM)",
+  "issues": {
+    "fail": "ISSUE-17",
+    "ncu": "ISSUE-18",
+    "sass": "ISSUE-19"
+  },
+  "files": [
+    "dudect_aead_conv.json",
+    "dudect_aead_conv.png",
+    "dudect_aead_tag.json",
+    "dudect_aead_tag.png",
+    "dudect_bitonic_equal.json",
+    "dudect_bitonic_equal.png",
+    "dudect_bitonic_sorted.json",
+    "dudect_bitonic_sorted.png",
+    "dudect_control_leak.json",
+    "dudect_control_leak.png",
+    "dudect_control_null.json",
+    "dudect_control_null.png",
+    "dudect_write_epoch.json",
+    "dudect_write_epoch.png",
+    "dudect_write_epoch_call_ms.png",
+    "ncu_divergence.csv",
+    "ncu_profile_raw.txt",
+    "ncu_query_metrics.txt",
+    "sass_aead_open.txt",
+    "sass_aead_open_branches.txt",
+    "sass_bitonic.txt",
+    "sass_bitonic_branches.txt",
+    "sass_branches_explained.csv",
+    "sass_chacha_tags.txt",
+    "sass_chacha_tags_branches.txt",
+    "sass_control_planted_leak.txt",
+    "sass_control_planted_leak_branches.txt",
+    "summary_table.csv"
+  ],
+  "generated_by": "python -m vcloak.bench.report_oblivious"
+}

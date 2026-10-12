@@ -1,0 +1,54 @@
+job 20261012-041010_M08 session 20261012-031230 runner kaggle gpu Tesla T4 driver 580.178.04 cupy 14.0.1 cuda_runtime 12090
+    PASS all commands exit 0 - 8 commands
+    PASS git sha matches pack - fe51656
+    PASS bundle sha matches pack
+    PASS backend cupy
+    PASS parity: planted-leak kernel equals its NumPy twin on the GPU - 9 passed in 6.78s
+    PASS manifest 20261012-031245_M08_dudect_selftest_quick: cupy, this job, this session - status OK
+    PASS manifest 20261012-031331_M08_dudect: cupy, this job, this session - status OK
+    PASS manifest 20261012-040020_M08_sass: cupy, this job, this session - status OK
+    PASS manifest 20261012-040027_M08_ncu: cupy, this job, this session - status NOT_MEASURED
+    PASS S1/A1 planted leak detected (|t| >> 4.5) - max |t| 376.9125 at N 10000 (quick)
+    PASS S1 null control not detected (quick) - max |t| 1.9330
+    PASS S1 null control not detected (full N) - max |t| 2.0786 at N 100000
+    PASS S2/A2 five targets have verdicts at full N
+    PASS S2 timer is CUDA events
+    PASS S2 control_null: 100000 measurements per class, outputs correct - r 1
+    PASS S2 control_null/ms: max |t| recomputed from raw.npz equals the summary - 2.0786 PASS
+    PASS S2 control_null/ms: t-curve saved
+    NOTE control_null: SM clock 960->1035 MHz of 1590 (LOW), 313 s
+    PASS S2 bitonic_equal: 100000 measurements per class, outputs correct - r 1
+    PASS S2 bitonic_equal/ms: max |t| recomputed from raw.npz equals the summary - 1.2708 PASS
+    PASS S2 bitonic_equal/ms: t-curve saved
+    NOTE bitonic_equal: SM clock 915->1005 MHz of 1590 (LOW), 316 s
+    PASS S2 bitonic_sorted: 100000 measurements per class, outputs correct - r 1
+    PASS S2 bitonic_sorted/ms: max |t| recomputed from raw.npz equals the summary - 2.6965 PASS
+    PASS S2 bitonic_sorted/ms: t-curve saved
+    NOTE bitonic_sorted: SM clock 945->1065 MHz of 1590 (LOW), 313 s
+    PASS S2 write_epoch: 100000 measurements per class, outputs correct - r 1
+    PASS S2 write_epoch/device_ms: max |t| recomputed from raw.npz equals the summary - 2.7559 PASS
+    PASS S2 write_epoch/device_ms: t-curve saved
+    PASS S2 write_epoch/call_ms: max |t| recomputed from raw.npz equals the summary - 8.2776 FAIL
+    PASS S2 write_epoch/call_ms: t-curve saved
+    NOTE write_epoch: SM clock 585->585 MHz of 1590 (LOW), 1179 s
+    PASS S2 aead_tag: 100000 measurements per class, outputs correct - r 1
+    PASS S2 aead_tag/ms: max |t| recomputed from raw.npz equals the summary - 6.2415 FAIL
+    PASS S2 aead_tag/ms: t-curve saved
+    NOTE aead_tag: SM clock 585->585 MHz of 1590 (LOW), 480 s
+    PASS S2 aead_conv: 100000 measurements per class, outputs correct - r 1
+    PASS S2 aead_conv/ms: max |t| recomputed from raw.npz equals the summary - 11.6369 FAIL
+    PASS S2 aead_conv/ms: t-curve saved
+    NOTE aead_conv: SM clock 585->585 MHz of 1590 (LOW), 180 s
+    FINDING dudect FAIL write_epoch/call_ms max |t| 8.2776 (mean class0 4.193689 ms, class1 4.228817 ms, t_raw -2.215, crop 64 (below 5.76966254))
+    FINDING dudect FAIL aead_tag/ms max |t| 6.2415 (mean class0 0.173499 ms, class1 0.173728 ms, t_raw -2.412, crop 8 (below 0.164980775))
+    FINDING dudect FAIL aead_conv/ms max |t| 11.6369 (mean class0 0.164110 ms, class1 0.164602 ms, t_raw -8.684, crop 55 (below 0.192015714))
+    A5 3 target series FAIL -> a high-severity issue that BLOCKS M14 must be open
+    PASS S3 nvcc -cubin + cuobjdump -sass for the three kernel files
+    PASS S3 planted-leak control: divergence control found in its listing
+    PASS S3/A3 every conditional branch explained and checked against the listing - 16 branches
+    PASS S3 no BSSY/BSYNC in any kernel
+    NOTE sass_check.py classifies all conditional branches as DATA (flow-insensitive trace); the explanations are a manual reading
+    NOTE nvrtc listing: neither cuobjdump nor nvdisasm produced a listing
+    PASS S4/A4 ncu metrics collected, or NOT_MEASURED with the reason - the driver refused the GPU performance counters to this user (ERR_NVGPUCTRPERM)
+    PASS S4 the refusal is in the saved raw tool output
+gates: 40 PASS, 0 FAIL, 3 dudect findings
