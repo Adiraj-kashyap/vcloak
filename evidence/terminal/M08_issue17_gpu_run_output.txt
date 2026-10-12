@@ -1,0 +1,521 @@
+===== 01_nvidia_smi.txt =====
+Mon Oct 12 06:11:41 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.178.04             Driver Version: 580.178.04     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  Tesla T4                       Off |   00000000:00:04.0 Off |                    0 |
+| N/A   55C    P0             26W /   70W |     105MiB /  15360MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+|   1  Tesla T4                       Off |   00000000:00:05.0 Off |                    0 |
+| N/A   47C    P8              9W /   70W |       3MiB /  15360MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|    0   N/A  N/A              49      C   /usr/bin/python3                        102MiB |
++-----------------------------------------------------------------------------------------+
+===== 02_check_oblivious.txt =====
+check_oblivious: 11 file(s), 0 finding(s) - PASS
+===== 03_pytest_issue17.txt =====
+........................................................................ [ 26%]
+........................................................................ [ 53%]
+........................................................................ [ 79%]
+.......................................................                  [100%]
+=============================== warnings summary ===============================
+tests/unit/test_run_dudect.py::test_the_planted_leak_is_detected_on_the_fake_device
+  /usr/local/lib/python3.13/dist-packages/matplotlib/_fontconfig_pattern.py:64: PyparsingDeprecationWarning: 'oneOf' deprecated - use 'one_of'
+    prop = Group((name + Suppress("=") + comma_separated(value)) | oneOf(_CONSTANTS))
+
+tests/unit/test_run_dudect.py: 31 warnings
+  /usr/local/lib/python3.13/dist-packages/matplotlib/_fontconfig_pattern.py:85: PyparsingDeprecationWarning: 'parseString' deprecated - use 'parse_string'
+    parse = parser.parseString(pattern)
+
+tests/unit/test_run_dudect.py: 31 warnings
+  /usr/local/lib/python3.13/dist-packages/matplotlib/_fontconfig_pattern.py:89: PyparsingDeprecationWarning: 'resetCache' deprecated - use 'reset_cache'
+    parser.resetCache()
+
+tests/unit/test_run_dudect.py::test_the_planted_leak_is_detected_on_the_fake_device
+  /usr/local/lib/python3.13/dist-packages/matplotlib/_mathtext.py:45: PyparsingDeprecationWarning: 'enablePackrat' deprecated - use 'enable_packrat'
+    ParserElement.enablePackrat()
+
+tests/unit/test_run_dudect.py::test_the_planted_leak_is_detected_on_the_fake_device
+  /usr/local/lib/python3.13/dist-packages/matplotlib/_mathtext.py:2010: PyparsingDeprecationWarning: 'oneOf' deprecated - use 'one_of'
+    p.space          = oneOf(self._space_widths)("space")
+
+tests/unit/test_run_dudect.py::test_the_planted_leak_is_detected_on_the_fake_device
+  /usr/local/lib/python3.13/dist-packages/matplotlib/_mathtext.py:2012: PyparsingDeprecationWarning: 'oneOf' deprecated - use 'one_of'
+    p.style_literal  = oneOf(
+
+tests/unit/test_run_dudect.py::test_the_planted_leak_is_detected_on_the_fake_device
+  /usr/local/lib/python3.13/dist-packages/matplotlib/_mathtext.py:2020: PyparsingDeprecationWarning: 'leaveWhitespace' deprecated - use 'leave_whitespace'
+    )("sym").leaveWhitespace()
+
+tests/unit/test_run_dudect.py::test_the_planted_leak_is_detected_on_the_fake_device
+  /usr/local/lib/python3.13/dist-packages/matplotlib/_mathtext.py:2024: PyparsingDeprecationWarning: 'oneOf' deprecated - use 'one_of'
+    p.start_group    = Optional(r"\math" + oneOf(self._fontnames)("font")) + "{"
+
+tests/unit/test_run_dudect.py::test_the_planted_leak_is_detected_on_the_fake_device
+  /usr/local/lib/python3.13/dist-packages/matplotlib/_mathtext.py:2027: PyparsingDeprecationWarning: 'oneOf' deprecated - use 'one_of'
+    p.delim          = oneOf(self._delims)
+
+tests/unit/test_run_dudect.py: 47 warnings
+  /usr/local/lib/python3.13/dist-packages/matplotlib/_mathtext.py:1984: PyparsingDeprecationWarning: 'setName' deprecated - use 'set_name'
+    val.setName(key)
+
+tests/unit/test_run_dudect.py: 44 warnings
+  /usr/local/lib/python3.13/dist-packages/matplotlib/_mathtext.py:1987: PyparsingDeprecationWarning: 'setParseAction' deprecated - use 'set_parse_action'
+    val.setParseAction(getattr(self, key))
+
+tests/unit/test_run_dudect.py: 16 warnings
+  /usr/local/lib/python3.13/dist-packages/matplotlib/_mathtext.py:1748: PyparsingDeprecationWarning: 'setParseAction' deprecated - use 'set_parse_action'
+    return Empty().setParseAction(raise_error)
+
+tests/unit/test_run_dudect.py::test_the_planted_leak_is_detected_on_the_fake_device
+  /usr/local/lib/python3.13/dist-packages/matplotlib/_mathtext.py:2088: PyparsingDeprecationWarning: 'endQuoteChar' argument is deprecated, use 'end_quote_char'
+    p.text = cmd(r"\text", QuotedString('{', '\\', endQuoteChar="}"))
+
+tests/unit/test_run_dudect.py::test_the_planted_leak_is_detected_on_the_fake_device
+  /usr/local/lib/python3.13/dist-packages/matplotlib/_mathtext.py:2097: PyparsingDeprecationWarning: 'oneOf' deprecated - use 'one_of'
+    + OneOrMore(oneOf(["_", "^"]) - p.placeable)("subsuper")
+
+tests/unit/test_run_dudect.py::test_the_planted_leak_is_detected_on_the_fake_device
+  /usr/local/lib/python3.13/dist-packages/matplotlib/_mathtext.py:2146: PyparsingDeprecationWarning: 'unquoteResults' argument is deprecated, use 'unquote_results'
+    p.math_string   = QuotedString('$', '\\', unquoteResults=False)
+
+tests/unit/test_run_dudect.py::test_the_planted_leak_is_detected_on_the_fake_device
+  /usr/local/lib/python3.13/dist-packages/matplotlib/_mathtext.py:2147: PyparsingDeprecationWarning: 'leaveWhitespace' deprecated - use 'leave_whitespace'
+    p.non_math      = Regex(r"(?:(?:\\[$])|[^$])*").leaveWhitespace()
+
+tests/unit/test_run_dudect.py: 164 warnings
+  /usr/local/lib/python3.13/dist-packages/matplotlib/_mathtext.py:2170: PyparsingDeprecationWarning: 'parseString' deprecated - use 'parse_string'
+    result = self._expression.parseString(s)
+
+tests/unit/test_run_dudect.py: 164 warnings
+  /usr/local/lib/python3.13/dist-packages/matplotlib/_mathtext.py:2197: PyparsingDeprecationWarning: 'parseString' deprecated - use 'parse_string'
+    return self._math_expression.parseString(toks[0][1:-1], parseAll=True)
+
+tests/unit/test_run_dudect.py: 164 warnings
+  /usr/local/lib/python3.13/dist-packages/pyparsing/util.py:466: PyparsingDeprecationWarning: 'parseAll' argument is deprecated, use 'parse_all'
+    return fn(self, *args, **kwargs)
+
+tests/unit/test_run_dudect.py: 164 warnings
+  /usr/local/lib/python3.13/dist-packages/matplotlib/_mathtext.py:2178: PyparsingDeprecationWarning: 'resetCache' deprecated - use 'reset_cache'
+    ParserElement.resetCache()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+271 passed, 836 warnings in 112.08s (0:01:52)
+===== 04_dudect_selftest.txt =====
+target control_leak
+  control_leak: 2000/20000  max|t| ms 132.479
+  control_leak: 4000/20000  max|t| ms 179.654
+  control_leak: 6000/20000  max|t| ms 218.371
+  control_leak: 8000/20000  max|t| ms 246.384
+  control_leak: 10000/20000  max|t| ms 275.724
+  control_leak: 12000/20000  max|t| ms 303.617
+  control_leak: 14000/20000  max|t| ms 326.758
+  control_leak: 16000/20000  max|t| ms 353.790
+  control_leak: 18000/20000  max|t| ms 379.558
+  control_leak: 20000/20000  max|t| ms 401.949
+target control_null
+  control_null: 2000/20000  max|t| ms 2.434
+  control_null: 4000/20000  max|t| ms 2.909
+  control_null: 6000/20000  max|t| ms 2.740
+  control_null: 8000/20000  max|t| ms 2.679
+  control_null: 10000/20000  max|t| ms 2.619
+  control_null: 12000/20000  max|t| ms 2.796
+  control_null: 14000/20000  max|t| ms 2.657
+  control_null: 16000/20000  max|t| ms 2.838
+  control_null: 18000/20000  max|t| ms 2.582
+  control_null: 20000/20000  max|t| ms 2.417
+run dir     /kaggle/working/vcloak_job/runs/20261012-061335_M08_dudect_issue17_selftest_quick
+backend     cupy   N per class 10000   quick True
+  control_leak    ms         max|t|    401.949  FAIL  (expected FAIL)  r=2
+  control_null    ms         max|t|      2.417  PASS  (expected PASS)  r=1
+metrics     4
+status      OK
+===== 05_dudect_issue17_s8.txt =====
+target control_null
+  control_null: 20000/200000  max|t| ms 2.003
+  control_null: 40000/200000  max|t| ms 1.391
+  control_null: 60000/200000  max|t| ms 1.840
+  control_null: 80000/200000  max|t| ms 2.507
+  control_null: 100000/200000  max|t| ms 1.511
+  control_null: 120000/200000  max|t| ms 2.029
+  control_null: 140000/200000  max|t| ms 1.611
+  control_null: 160000/200000  max|t| ms 1.518
+  control_null: 180000/200000  max|t| ms 1.278
+  control_null: 200000/200000  max|t| ms 1.613
+target aead_conv
+  aead_conv: 20000/200000  max|t| ms 9.835
+  aead_conv: 40000/200000  max|t| ms 13.186
+  aead_conv: 60000/200000  max|t| ms 19.411
+  aead_conv: 80000/200000  max|t| ms 23.848
+  aead_conv: 100000/200000  max|t| ms 29.287
+  aead_conv: 120000/200000  max|t| ms 27.742
+  aead_conv: 140000/200000  max|t| ms 28.338
+  aead_conv: 160000/200000  max|t| ms 29.579
+  aead_conv: 180000/200000  max|t| ms 31.277
+  aead_conv: 200000/200000  max|t| ms 30.813
+target aead_conv_null
+  aead_conv_null: 20000/200000  max|t| ms 9.885
+  aead_conv_null: 40000/200000  max|t| ms 14.027
+  aead_conv_null: 60000/200000  max|t| ms 16.457
+  aead_conv_null: 80000/200000  max|t| ms 19.565
+  aead_conv_null: 100000/200000  max|t| ms 24.995
+  aead_conv_null: 120000/200000  max|t| ms 27.217
+  aead_conv_null: 140000/200000  max|t| ms 30.645
+  aead_conv_null: 160000/200000  max|t| ms 35.163
+  aead_conv_null: 180000/200000  max|t| ms 39.106
+  aead_conv_null: 200000/200000  max|t| ms 43.174
+target aead_conv_swap
+  aead_conv_swap: 20000/200000  max|t| ms 15.123
+  aead_conv_swap: 40000/200000  max|t| ms 23.461
+  aead_conv_swap: 60000/200000  max|t| ms 27.464
+  aead_conv_swap: 80000/200000  max|t| ms 31.490
+  aead_conv_swap: 100000/200000  max|t| ms 31.915
+  aead_conv_swap: 120000/200000  max|t| ms 32.269
+  aead_conv_swap: 140000/200000  max|t| ms 32.788
+  aead_conv_swap: 160000/200000  max|t| ms 33.639
+  aead_conv_swap: 180000/200000  max|t| ms 34.090
+  aead_conv_swap: 200000/200000  max|t| ms 34.445
+target aead_conv_sym
+  aead_conv_sym: 20000/200000  max|t| ms 1.786
+  aead_conv_sym: 40000/200000  max|t| ms 2.032
+  aead_conv_sym: 60000/200000  max|t| ms 3.402
+  aead_conv_sym: 80000/200000  max|t| ms 3.345
+  aead_conv_sym: 100000/200000  max|t| ms 2.740
+  aead_conv_sym: 120000/200000  max|t| ms 2.921
+  aead_conv_sym: 140000/200000  max|t| ms 1.985
+  aead_conv_sym: 160000/200000  max|t| ms 2.280
+  aead_conv_sym: 180000/200000  max|t| ms 2.519
+  aead_conv_sym: 200000/200000  max|t| ms 2.404
+target aead_conv_kernel
+  aead_conv_kernel: 20000/200000  max|t| ms 2.770
+  aead_conv_kernel: 40000/200000  max|t| ms 2.706
+  aead_conv_kernel: 60000/200000  max|t| ms 2.790
+  aead_conv_kernel: 80000/200000  max|t| ms 2.395
+  aead_conv_kernel: 100000/200000  max|t| ms 2.364
+  aead_conv_kernel: 120000/200000  max|t| ms 1.840
+  aead_conv_kernel: 140000/200000  max|t| ms 2.092
+  aead_conv_kernel: 160000/200000  max|t| ms 2.229
+  aead_conv_kernel: 180000/200000  max|t| ms 3.169
+  aead_conv_kernel: 200000/200000  max|t| ms 2.904
+target aead_tag
+  aead_tag: 20000/200000  max|t| ms 15.816
+  aead_tag: 40000/200000  max|t| ms 20.623
+  aead_tag: 60000/200000  max|t| ms 24.342
+  aead_tag: 80000/200000  max|t| ms 29.453
+  aead_tag: 100000/200000  max|t| ms 33.864
+  aead_tag: 120000/200000  max|t| ms 37.856
+  aead_tag: 140000/200000  max|t| ms 41.713
+  aead_tag: 160000/200000  max|t| ms 45.777
+  aead_tag: 180000/200000  max|t| ms 48.743
+  aead_tag: 200000/200000  max|t| ms 51.494
+target aead_tag_null
+  aead_tag_null: 20000/200000  max|t| ms 20.615
+  aead_tag_null: 40000/200000  max|t| ms 31.101
+  aead_tag_null: 60000/200000  max|t| ms 37.927
+  aead_tag_null: 80000/200000  max|t| ms 41.063
+  aead_tag_null: 100000/200000  max|t| ms 44.699
+  aead_tag_null: 120000/200000  max|t| ms 47.178
+  aead_tag_null: 140000/200000  max|t| ms 50.208
+  aead_tag_null: 160000/200000  max|t| ms 53.450
+  aead_tag_null: 180000/200000  max|t| ms 58.117
+  aead_tag_null: 200000/200000  max|t| ms 63.044
+target aead_tag_swap
+  aead_tag_swap: 20000/200000  max|t| ms 17.926
+  aead_tag_swap: 40000/200000  max|t| ms 25.379
+  aead_tag_swap: 60000/200000  max|t| ms 32.557
+  aead_tag_swap: 80000/200000  max|t| ms 38.913
+  aead_tag_swap: 100000/200000  max|t| ms 42.768
+  aead_tag_swap: 120000/200000  max|t| ms 47.596
+  aead_tag_swap: 140000/200000  max|t| ms 50.786
+  aead_tag_swap: 160000/200000  max|t| ms 54.556
+  aead_tag_swap: 180000/200000  max|t| ms 56.670
+  aead_tag_swap: 200000/200000  max|t| ms 59.618
+target aead_tag_sym
+  aead_tag_sym: 20000/200000  max|t| ms 1.509
+  aead_tag_sym: 40000/200000  max|t| ms 1.118
+  aead_tag_sym: 60000/200000  max|t| ms 1.675
+  aead_tag_sym: 80000/200000  max|t| ms 1.320
+  aead_tag_sym: 100000/200000  max|t| ms 1.797
+  aead_tag_sym: 120000/200000  max|t| ms 1.550
+  aead_tag_sym: 140000/200000  max|t| ms 1.691
+  aead_tag_sym: 160000/200000  max|t| ms 2.148
+  aead_tag_sym: 180000/200000  max|t| ms 1.868
+  aead_tag_sym: 200000/200000  max|t| ms 1.563
+target aead_tag_kernel
+  aead_tag_kernel: 20000/200000  max|t| ms 1.681
+  aead_tag_kernel: 40000/200000  max|t| ms 2.172
+  aead_tag_kernel: 60000/200000  max|t| ms 1.910
+  aead_tag_kernel: 80000/200000  max|t| ms 2.116
+  aead_tag_kernel: 100000/200000  max|t| ms 2.132
+  aead_tag_kernel: 120000/200000  max|t| ms 1.968
+  aead_tag_kernel: 140000/200000  max|t| ms 2.421
+  aead_tag_kernel: 160000/200000  max|t| ms 1.754
+  aead_tag_kernel: 180000/200000  max|t| ms 1.815
+  aead_tag_kernel: 200000/200000  max|t| ms 1.508
+target write_epoch
+  write_epoch: 20000/200000  max|t| device_ms 1.021  call_ms 11.956
+  write_epoch: 40000/200000  max|t| device_ms 1.470  call_ms 16.099
+  write_epoch: 60000/200000  max|t| device_ms 1.719  call_ms 18.095
+  write_epoch: 80000/200000  max|t| device_ms 1.265  call_ms 19.423
+  write_epoch: 100000/200000  max|t| device_ms 1.342  call_ms 22.772
+  write_epoch: 120000/200000  max|t| device_ms 1.285  call_ms 24.619
+  write_epoch: 140000/200000  max|t| device_ms 1.514  call_ms 25.956
+  write_epoch: 160000/200000  max|t| device_ms 1.927  call_ms 28.318
+  write_epoch: 180000/200000  max|t| device_ms 1.814  call_ms 29.710
+  write_epoch: 200000/200000  max|t| device_ms 1.774  call_ms 29.631
+target write_epoch_null
+  write_epoch_null: 20000/200000  max|t| device_ms 1.751  call_ms 7.035
+  write_epoch_null: 40000/200000  max|t| device_ms 2.138  call_ms 8.404
+  write_epoch_null: 60000/200000  max|t| device_ms 2.124  call_ms 9.144
+  write_epoch_null: 80000/200000  max|t| device_ms 2.480  call_ms 9.705
+  write_epoch_null: 100000/200000  max|t| device_ms 1.699  call_ms 10.560
+  write_epoch_null: 120000/200000  max|t| device_ms 2.767  call_ms 10.743
+  write_epoch_null: 140000/200000  max|t| device_ms 2.897  call_ms 11.801
+  write_epoch_null: 160000/200000  max|t| device_ms 2.821  call_ms 11.656
+  write_epoch_null: 180000/200000  max|t| device_ms 2.891  call_ms 12.365
+  write_epoch_null: 200000/200000  max|t| device_ms 2.778  call_ms 12.743
+target write_epoch_age
+  write_epoch_age: 20000/200000  max|t| device_ms 3.090  call_ms 4.422
+  write_epoch_age: 40000/200000  max|t| device_ms 5.137  call_ms 8.402
+  write_epoch_age: 60000/200000  max|t| device_ms 6.306  call_ms 8.046
+  write_epoch_age: 80000/200000  max|t| device_ms 6.211  call_ms 8.838
+  write_epoch_age: 100000/200000  max|t| device_ms 6.220  call_ms 9.480
+  write_epoch_age: 120000/200000  max|t| device_ms 6.400  call_ms 9.688
+  write_epoch_age: 140000/200000  max|t| device_ms 6.425  call_ms 10.281
+  write_epoch_age: 160000/200000  max|t| device_ms 6.287  call_ms 10.962
+  write_epoch_age: 180000/200000  max|t| device_ms 6.122  call_ms 11.448
+  write_epoch_age: 200000/200000  max|t| device_ms 6.303  call_ms 12.180
+target write_epoch_fresh
+  write_epoch_fresh: 20000/200000  max|t| device_ms 1.604  call_ms 1.990
+  write_epoch_fresh: 40000/200000  max|t| device_ms 3.096  call_ms 1.962
+  write_epoch_fresh: 60000/200000  max|t| device_ms 2.733  call_ms 1.958
+  write_epoch_fresh: 80000/200000  max|t| device_ms 3.516  call_ms 2.040
+  write_epoch_fresh: 100000/200000  max|t| device_ms 3.785  call_ms 1.488
+  write_epoch_fresh: 120000/200000  max|t| device_ms 4.057  call_ms 1.345
+  write_epoch_fresh: 140000/200000  max|t| device_ms 4.613  call_ms 1.631
+  write_epoch_fresh: 160000/200000  max|t| device_ms 5.003  call_ms 1.322
+  write_epoch_fresh: 180000/200000  max|t| device_ms 5.544  call_ms 1.360
+  write_epoch_fresh: 200000/200000  max|t| device_ms 6.165  call_ms 1.701
+run dir     /kaggle/working/vcloak_job/runs/20261012-061420_M08_dudect_issue17_s8
+backend     cupy   N per class 100000   quick False
+  control_null    ms         max|t|      1.613  PASS  (expected PASS)  r=1
+  aead_conv       ms         max|t|     30.813  FAIL  (expected PASS)  r=1
+  aead_conv_null  ms         max|t|     43.174  FAIL  (expected PASS)  r=1
+  aead_conv_swap  ms         max|t|     34.445  FAIL  (expected PASS)  r=1
+  aead_conv_sym   ms         max|t|      2.404  PASS  (expected PASS)  r=1
+  aead_conv_kernel ms         max|t|      2.904  PASS  (expected PASS)  r=8
+  aead_tag        ms         max|t|     51.494  FAIL  (expected PASS)  r=1
+  aead_tag_null   ms         max|t|     63.044  FAIL  (expected PASS)  r=1
+  aead_tag_swap   ms         max|t|     59.618  FAIL  (expected PASS)  r=1
+  aead_tag_sym    ms         max|t|      1.563  PASS  (expected PASS)  r=1
+  aead_tag_kernel ms         max|t|      1.508  PASS  (expected PASS)  r=8
+  write_epoch     device_ms  max|t|      1.774  PASS  (expected PASS)  r=1
+  write_epoch     call_ms    max|t|     29.631  FAIL  (expected PASS)  r=1
+  write_epoch_null device_ms  max|t|      2.778  PASS  (expected PASS)  r=1
+  write_epoch_null call_ms    max|t|     12.743  FAIL  (expected PASS)  r=1
+  write_epoch_age device_ms  max|t|      6.303  FAIL  (expected PASS)  r=1
+  write_epoch_age call_ms    max|t|     12.180  FAIL  (expected PASS)  r=1
+  write_epoch_fresh device_ms  max|t|      6.165  FAIL  (expected PASS)  r=1
+  write_epoch_fresh call_ms    max|t|      1.701  PASS  (expected PASS)  r=1
+metrics     34
+status      OK   dudect FAIL: write_epoch, aead_tag, aead_conv, aead_conv_null, aead_conv_swap, aead_tag_null, aead_tag_swap, write_epoch_null, write_epoch_age, write_epoch_fresh
+===== 06_dudect_issue17_s9.txt =====
+target control_null
+  control_null: 20000/200000  max|t| ms 1.755
+  control_null: 40000/200000  max|t| ms 2.447
+  control_null: 60000/200000  max|t| ms 2.288
+  control_null: 80000/200000  max|t| ms 1.611
+  control_null: 100000/200000  max|t| ms 1.409
+  control_null: 120000/200000  max|t| ms 1.528
+  control_null: 140000/200000  max|t| ms 1.401
+  control_null: 160000/200000  max|t| ms 1.249
+  control_null: 180000/200000  max|t| ms 0.950
+  control_null: 200000/200000  max|t| ms 1.253
+target aead_conv
+  aead_conv: 20000/200000  max|t| ms 7.150
+  aead_conv: 40000/200000  max|t| ms 11.172
+  aead_conv: 60000/200000  max|t| ms 13.778
+  aead_conv: 80000/200000  max|t| ms 16.844
+  aead_conv: 100000/200000  max|t| ms 19.157
+  aead_conv: 120000/200000  max|t| ms 21.454
+  aead_conv: 140000/200000  max|t| ms 22.996
+  aead_conv: 160000/200000  max|t| ms 24.512
+  aead_conv: 180000/200000  max|t| ms 26.560
+  aead_conv: 200000/200000  max|t| ms 28.277
+target aead_conv_null
+  aead_conv_null: 20000/200000  max|t| ms 9.364
+  aead_conv_null: 40000/200000  max|t| ms 15.190
+  aead_conv_null: 60000/200000  max|t| ms 17.818
+  aead_conv_null: 80000/200000  max|t| ms 20.214
+  aead_conv_null: 100000/200000  max|t| ms 22.183
+  aead_conv_null: 120000/200000  max|t| ms 24.856
+  aead_conv_null: 140000/200000  max|t| ms 28.479
+  aead_conv_null: 160000/200000  max|t| ms 30.107
+  aead_conv_null: 180000/200000  max|t| ms 30.101
+  aead_conv_null: 200000/200000  max|t| ms 30.170
+target aead_conv_swap
+  aead_conv_swap: 20000/200000  max|t| ms 4.852
+  aead_conv_swap: 40000/200000  max|t| ms 10.401
+  aead_conv_swap: 60000/200000  max|t| ms 14.896
+  aead_conv_swap: 80000/200000  max|t| ms 17.928
+  aead_conv_swap: 100000/200000  max|t| ms 20.453
+  aead_conv_swap: 120000/200000  max|t| ms 23.140
+  aead_conv_swap: 140000/200000  max|t| ms 26.356
+  aead_conv_swap: 160000/200000  max|t| ms 27.395
+  aead_conv_swap: 180000/200000  max|t| ms 27.447
+  aead_conv_swap: 200000/200000  max|t| ms 28.683
+target aead_conv_sym
+  aead_conv_sym: 20000/200000  max|t| ms 1.852
+  aead_conv_sym: 40000/200000  max|t| ms 2.118
+  aead_conv_sym: 60000/200000  max|t| ms 1.845
+  aead_conv_sym: 80000/200000  max|t| ms 1.733
+  aead_conv_sym: 100000/200000  max|t| ms 2.141
+  aead_conv_sym: 120000/200000  max|t| ms 1.560
+  aead_conv_sym: 140000/200000  max|t| ms 1.706
+  aead_conv_sym: 160000/200000  max|t| ms 1.426
+  aead_conv_sym: 180000/200000  max|t| ms 1.717
+  aead_conv_sym: 200000/200000  max|t| ms 1.348
+target aead_conv_kernel
+  aead_conv_kernel: 20000/200000  max|t| ms 1.254
+  aead_conv_kernel: 40000/200000  max|t| ms 2.280
+  aead_conv_kernel: 60000/200000  max|t| ms 1.996
+  aead_conv_kernel: 80000/200000  max|t| ms 1.931
+  aead_conv_kernel: 100000/200000  max|t| ms 1.726
+  aead_conv_kernel: 120000/200000  max|t| ms 1.829
+  aead_conv_kernel: 140000/200000  max|t| ms 1.609
+  aead_conv_kernel: 160000/200000  max|t| ms 1.887
+  aead_conv_kernel: 180000/200000  max|t| ms 1.760
+  aead_conv_kernel: 200000/200000  max|t| ms 1.867
+target aead_tag
+  aead_tag: 20000/200000  max|t| ms 9.936
+  aead_tag: 40000/200000  max|t| ms 13.024
+  aead_tag: 60000/200000  max|t| ms 14.876
+  aead_tag: 80000/200000  max|t| ms 16.748
+  aead_tag: 100000/200000  max|t| ms 19.822
+  aead_tag: 120000/200000  max|t| ms 23.271
+  aead_tag: 140000/200000  max|t| ms 26.088
+  aead_tag: 160000/200000  max|t| ms 29.179
+  aead_tag: 180000/200000  max|t| ms 32.263
+  aead_tag: 200000/200000  max|t| ms 35.672
+target aead_tag_null
+  aead_tag_null: 20000/200000  max|t| ms 18.676
+  aead_tag_null: 40000/200000  max|t| ms 23.353
+  aead_tag_null: 60000/200000  max|t| ms 28.137
+  aead_tag_null: 80000/200000  max|t| ms 34.738
+  aead_tag_null: 100000/200000  max|t| ms 38.998
+  aead_tag_null: 120000/200000  max|t| ms 42.017
+  aead_tag_null: 140000/200000  max|t| ms 45.244
+  aead_tag_null: 160000/200000  max|t| ms 48.091
+  aead_tag_null: 180000/200000  max|t| ms 48.826
+  aead_tag_null: 200000/200000  max|t| ms 50.849
+target aead_tag_swap
+  aead_tag_swap: 20000/200000  max|t| ms 9.867
+  aead_tag_swap: 40000/200000  max|t| ms 16.716
+  aead_tag_swap: 60000/200000  max|t| ms 22.577
+  aead_tag_swap: 80000/200000  max|t| ms 27.741
+  aead_tag_swap: 100000/200000  max|t| ms 30.687
+  aead_tag_swap: 120000/200000  max|t| ms 34.039
+  aead_tag_swap: 140000/200000  max|t| ms 36.738
+  aead_tag_swap: 160000/200000  max|t| ms 40.076
+  aead_tag_swap: 180000/200000  max|t| ms 42.916
+  aead_tag_swap: 200000/200000  max|t| ms 42.690
+target aead_tag_sym
+  aead_tag_sym: 20000/200000  max|t| ms 2.155
+  aead_tag_sym: 40000/200000  max|t| ms 2.403
+  aead_tag_sym: 60000/200000  max|t| ms 2.636
+  aead_tag_sym: 80000/200000  max|t| ms 3.304
+  aead_tag_sym: 100000/200000  max|t| ms 3.108
+  aead_tag_sym: 120000/200000  max|t| ms 3.437
+  aead_tag_sym: 140000/200000  max|t| ms 3.525
+  aead_tag_sym: 160000/200000  max|t| ms 3.525
+  aead_tag_sym: 180000/200000  max|t| ms 3.866
+  aead_tag_sym: 200000/200000  max|t| ms 3.894
+target aead_tag_kernel
+  aead_tag_kernel: 20000/200000  max|t| ms 0.836
+  aead_tag_kernel: 40000/200000  max|t| ms 1.133
+  aead_tag_kernel: 60000/200000  max|t| ms 1.050
+  aead_tag_kernel: 80000/200000  max|t| ms 0.923
+  aead_tag_kernel: 100000/200000  max|t| ms 0.500
+  aead_tag_kernel: 120000/200000  max|t| ms 0.786
+  aead_tag_kernel: 140000/200000  max|t| ms 2.083
+  aead_tag_kernel: 160000/200000  max|t| ms 2.164
+  aead_tag_kernel: 180000/200000  max|t| ms 2.280
+  aead_tag_kernel: 200000/200000  max|t| ms 2.393
+target write_epoch
+  write_epoch: 20000/200000  max|t| device_ms 1.800  call_ms 3.530
+  write_epoch: 40000/200000  max|t| device_ms 2.189  call_ms 5.359
+  write_epoch: 60000/200000  max|t| device_ms 1.960  call_ms 5.453
+  write_epoch: 80000/200000  max|t| device_ms 1.900  call_ms 5.737
+  write_epoch: 100000/200000  max|t| device_ms 2.155  call_ms 6.304
+  write_epoch: 120000/200000  max|t| device_ms 1.990  call_ms 6.897
+  write_epoch: 140000/200000  max|t| device_ms 2.208  call_ms 7.088
+  write_epoch: 160000/200000  max|t| device_ms 2.092  call_ms 7.623
+  write_epoch: 180000/200000  max|t| device_ms 2.364  call_ms 8.483
+  write_epoch: 200000/200000  max|t| device_ms 1.967  call_ms 8.582
+target write_epoch_fresh
+  write_epoch_fresh: 20000/200000  max|t| device_ms 1.725  call_ms 2.275
+  write_epoch_fresh: 40000/200000  max|t| device_ms 1.768  call_ms 2.057
+  write_epoch_fresh: 60000/200000  max|t| device_ms 1.914  call_ms 1.633
+  write_epoch_fresh: 80000/200000  max|t| device_ms 1.934  call_ms 1.367
+  write_epoch_fresh: 100000/200000  max|t| device_ms 1.874  call_ms 2.067
+  write_epoch_fresh: 120000/200000  max|t| device_ms 1.714  call_ms 1.556
+  write_epoch_fresh: 140000/200000  max|t| device_ms 1.779  call_ms 1.315
+  write_epoch_fresh: 160000/200000  max|t| device_ms 1.930  call_ms 1.533
+  write_epoch_fresh: 180000/200000  max|t| device_ms 2.444  call_ms 1.386
+  write_epoch_fresh: 200000/200000  max|t| device_ms 3.094  call_ms 1.387
+run dir     /kaggle/working/vcloak_job/runs/20261012-080629_M08_dudect_issue17_s9
+backend     cupy   N per class 100000   quick False
+  control_null    ms         max|t|      1.253  PASS  (expected PASS)  r=1
+  aead_conv       ms         max|t|     28.277  FAIL  (expected PASS)  r=1
+  aead_conv_null  ms         max|t|     30.170  FAIL  (expected PASS)  r=1
+  aead_conv_swap  ms         max|t|     28.683  FAIL  (expected PASS)  r=1
+  aead_conv_sym   ms         max|t|      1.348  PASS  (expected PASS)  r=1
+  aead_conv_kernel ms         max|t|      1.867  PASS  (expected PASS)  r=8
+  aead_tag        ms         max|t|     35.672  FAIL  (expected PASS)  r=1
+  aead_tag_null   ms         max|t|     50.849  FAIL  (expected PASS)  r=1
+  aead_tag_swap   ms         max|t|     42.690  FAIL  (expected PASS)  r=1
+  aead_tag_sym    ms         max|t|      3.894  PASS  (expected PASS)  r=1
+  aead_tag_kernel ms         max|t|      2.393  PASS  (expected PASS)  r=8
+  write_epoch     device_ms  max|t|      1.967  PASS  (expected PASS)  r=1
+  write_epoch     call_ms    max|t|      8.582  FAIL  (expected PASS)  r=1
+  write_epoch_fresh device_ms  max|t|      3.094  PASS  (expected PASS)  r=1
+  write_epoch_fresh call_ms    max|t|      1.387  PASS  (expected PASS)  r=1
+metrics     28
+status      OK   dudect FAIL: write_epoch, aead_tag, aead_conv, aead_conv_null, aead_conv_swap, aead_tag_null, aead_tag_swap
+===== 07_nvidia_smi_after.txt =====
+Mon Oct 12 09:25:04 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.178.04             Driver Version: 580.178.04     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  Tesla T4                       Off |   00000000:00:04.0 Off |                    0 |
+| N/A   77C    P0             31W /   70W |     105MiB /  15360MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+|   1  Tesla T4                       Off |   00000000:00:05.0 Off |                    0 |
+| N/A   42C    P8             10W /   70W |       3MiB /  15360MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|    0   N/A  N/A              49      C   /usr/bin/python3                        102MiB |
++-----------------------------------------------------------------------------------------+

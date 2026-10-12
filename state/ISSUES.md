@@ -434,6 +434,38 @@ of the 14 (`issue17_rep`). How to read the result in the ingest session (thresho
   FAIL was not reproduced and that is the finding. The full-N control_null of each run must PASS, or the run is void.
 Proposed step 3 was built as r = 8 with preallocated outputs (`gpu_open_and_key(..., out=)`); step 5's re-measure
 after ISSUE-12 and the ADR on whole-call host timing are not part of this job.
+Result, session 21 (job 20261012-113437_M08_issue17, runner session 20261012-061138, Tesla T4, N = 100000 per class,
+threshold 4.5; all values from runs/20261012-061420_M08_dudect_issue17_s8 (seed 8) and runs/20261012-080629_M08_dudect_issue17_s9
+(seed 9), every max abs(t) recomputed from the raw npz in runs/20261012-150500_M08_issue17_ingest/gates.txt, 106 gates PASS):
+- The runs are valid: control_null PASS at full N (1.6126, 1.2530), planted leak detected (401.9489, quick), 0 mismatches.
+- The M08 finding is reproduced in a second runner session: aead_conv FAIL 30.8131 / 28.2772, aead_tag FAIL 51.4940 /
+  35.6716, write_epoch whole call FAIL 29.6309 / 8.5822 (seed 8 / seed 9).
+- aead_conv and aead_tag: the same-contents controls FAIL as strongly as the originals (aead_conv_null 43.1742 / 30.1696,
+  aead_tag_null 63.0436 / 50.8492); with the contents exchanged the raw t keeps its sign (aead_conv_swap -5.446 / -9.828
+  against -6.177 / -7.364; aead_tag_swap -13.015 / -10.323 against -14.983 / -9.918), so the slower class is the staging
+  role (pool, or freshly written array), not the contents; with symmetric staging the content comparison PASSES
+  (aead_conv_sym 2.4044 / 1.3480, aead_conv_kernel 2.9037 / 1.8673, aead_tag_sym 1.5629 / 3.8937, aead_tag_kernel
+  1.5075 / 2.3929). Reading: H1 and H2 are supported, the two AEAD FAILs are made by the harness staging, and no
+  dependence of the AEAD-open time on the contents was detected. H3 is not excluded below the resolution of the
+  test: the raw test of the *_sym and *_kernel series would reach 4.5 at a mean shift of about 0.19 to 0.29
+  microseconds (column raw_shift_at_4.5_ns of gates.txt); the shift between the classes in the failing series is 0.27 to 0.72.
+- write_epoch whole call: the same-contents controls FAIL (write_epoch_null 12.7431, write_epoch_age 12.1795, seed 8
+  only) and the fixed-vs-random comparison without the staging PASSES (write_epoch_fresh call_ms 1.7015 / 1.3865).
+  Reading: H4 is supported, the whole-call FAIL follows the build order and the age of the Python objects.
+- New, not covered by the reading rules: two device-stage series FAIL at seed 8 (ISSUE-25).
+- Limits: the staging and the SM clock change together (every failing series ran at 585 MHz, *_sym at 1425 to 1560 MHz,
+  *_kernel at 1140 to 1245 MHz), so this job does not separate the two; one GPU model, two runner sessions; the
+  readings are the rules written above, not a proof.
+Still open, so the issue is not closed:
+1. results/oblivious/summary_table.csv and docs/REPORT_CH4_NOTES.md 4.O.3 still show only the S2 targets, whose AEAD
+   staging separates identical contents. A unit must make `report_oblivious` show the diagnostics beside them (or make
+   the symmetric staging the S2 staging and measure again). The FAILs are never removed from the table.
+2. The ADR on whole-call host timing (is the host Python of write_epoch inside the threat model?) is a decision of the
+   team. It is needed before M14, not before M11 to M13.
+3. ISSUE-25.
+What M14 may write until then: with symmetric staging no timing difference between the classes was detected for AEAD
+open at N = 100000 per class in two seeds, and the FAILs of the S2 staging are reproduced with identical contents. It
+must not write that AEAD open is constant time, and nothing about the write path beyond the measured series.
 
 ### ISSUE-18 [OPEN] M08 ncu: the runner refuses the GPU performance counters (ERR_NVGPUCTRPERM); divergence is NOT_MEASURED
 BLOCKS: none   SEVERITY: medium   OPENED: 2026-10-12 session 16
@@ -542,7 +574,7 @@ BLOCKS: none   SEVERITY: low   OPENED: 2026-10-12 session 19
    database) is not repaired. The marks and the acknowledgement have never run on a CUDA device.
 Not a human action.
 
-### ISSUE-24 [OPEN] HUMAN ACTION REQUIRED — GPU JOB READY: ISSUE-17 dudect diagnostics (job 20261012-113437_M08_issue17)
+### ISSUE-24 [CLOSED THISCOMMIT] HUMAN ACTION REQUIRED — GPU JOB READY: ISSUE-17 dudect diagnostics (job 20261012-113437_M08_issue17)
 BLOCKS: M14   SEVERITY: high   OPENED: 2026-10-12 session 20
 Why: three dudect series FAILED in the M08 job (ISSUE-17) and the cause is unknown. This job measures them again
 together with controls that separate "the kernel time depends on the data" from "the test harness treats the two
@@ -579,3 +611,30 @@ Runtime note: 28 dudect targets (15 at seed 8, 13 at seed 9) of 100000 measureme
   before it is stopped; what was measured until then is kept.
 Confirm by running: .venv\Scripts\python scripts\gpujob.py verify gpujobs\inbox\results_20261012-113437_M08_issue17.zip
 Then open a new session and type: continue
+Closed 2026-10-12 session 21: the human ran the job on Kaggle (session 20261012-061138, Tesla T4) and the results zip
+was ingested; all 7 commands exit 0, git sha and bundle sha match (runs/20261012-150500_M08_issue17_ingest/gates.txt).
+
+### ISSUE-25 [OPEN] M08 dudect: two device-stage series of the write_epoch diagnostics FAIL at seed 8 (write_epoch_age, write_epoch_fresh)
+BLOCKS: M14   SEVERITY: high   OPENED: 2026-10-12 session 21
+Finding (job 20261012-113437_M08_issue17, seed 8, Tesla T4, N = 100000 per class, threshold 4.5; values from
+runs/20261012-061420_M08_dudect_issue17_s8, recomputed in runs/20261012-150500_M08_issue17_ingest/gates.txt and device_series_detail.txt).
+The device-stage series is the CUDA-event total of the engine minus its `host` stage.
+- write_epoch_age/device_ms (the SAME contents in both classes; long-lived Python ints vs new ones): max abs(t) 6.3027
+  at crop 1, raw t 0.542; 8 of the 101 tests are above 4.5, all positive; 6.2202 in the first half of the run, 4.5639 in the second.
+- write_epoch_fresh/device_ms (fixed vs random contents, both built from new objects): max abs(t) 6.1653 at crop 6, raw
+  t -2.013; 5 of the 101 tests above 4.5, all negative; 3.7850 in the first half, 5.3228 in the second.
+  The same target PASSES at seed 9 (3.0940, runs/20261012-080629_M08_dudect_issue17_s9): not reproduced.
+- The device-stage series of write_epoch itself PASSES in all three runs (2.7559 in M08, 1.7742, 1.9675), and that of
+  write_epoch_null PASSES (2.7782).
+What is established: a device-stage series can FAIL when both classes hold the same contents (write_epoch_age), so
+this series is not free of host effects. What is NOT established: the cause of either FAIL, and whether the
+write_epoch_fresh FAIL is a dependence on the contents; it was seen in one of two seeds. Nothing below is tested.
+- H5: the stages h2d and d2h are inside the device series and copy host memory that the classes prepared differently.
+- H6: a chance exceedance or a drift of the shared runner (the SM clock was 585 MHz, LOW, in all of these runs).
+Proposed fix (one prep session and one runner session):
+1. Record every stage of the engine as its own series (h2d, tags, sort, compact, d2h, seal, bucket, open), so a FAIL
+   is located in a stage.
+2. Repeat write_epoch_age and write_epoch_fresh with three more seeds, and write_epoch_null as the control of each.
+3. A device-only series that leaves out h2d and d2h.
+Until then: M14 must not write that the device stages of the write path are timing-independent of the contents. It
+may quote the series that were measured, with their verdicts.

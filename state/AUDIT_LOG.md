@@ -585,3 +585,30 @@ Notes:
 - runs/20261012-113007_M08_issue17_prep/pytest_all.txt was produced before two lines were re-wrapped for ruff (no logic change); the two files
   touched were tested again afterwards (runs/20261012-113007_M08_issue17_prep/pytest_issue17.txt). ruff: runs/20261012-113007_M08_issue17_prep/ruff.txt clean for src, tests, scripts, bench.
 - The manifests are dirty: true (the tests ran on the tree this session commits).
+
+## Audit M08 (fix ISSUE-17, ingest) — 2026-10-12 — session 21 — result: PASS (ISSUE-17 stays open; ISSUE-25 opened)
+| Item | Result | Evidence |
+|---|---|---|
+| A1 | PASS | runs/20261012-150500_M08_issue17_ingest/gates.txt: planted leak detected in this runner session (max abs(t) 401.9489, quick, runs/20261012-061335_M08_dudect_issue17_selftest_quick); control_null PASS at full N in both seeds (1.6126, 1.2530) |
+| A2 | N/A | the five S2 verdicts of M08 are unchanged (runs/20261012-031331_M08_dudect). The 28 target runs of this job have verdicts at full N, recomputed from the raw npz (runs/20261012-150500_M08_issue17_ingest/gates.txt, 106 PASS, 0 FAIL) |
+| A3, A4 | N/A | SASS and ncu were not part of this job (ISSUE-19, ISSUE-18 unchanged) |
+| A5 | PASS | the three FAILs are reproduced and ISSUE-17 stays OPEN, high, BLOCKS M14 (not softened: the FAIL rows stay in the index and the table). The two new device-stage FAILs opened ISSUE-25, high, BLOCKS M14 |
+| G1 | PASS | runs/20261012-150500_M08_issue17_ingest/pytest_all.txt (1709 passed, 1 skipped, 674 deselected: not gpu), run again after the allow-list entry. On the runner: gpujobs/out/20261012-113437_M08_issue17/logs/03_pytest_issue17.txt (271 passed) |
+| G2 | PASS | runs/20261012-150500_M08_issue17_ingest/check_metrics.txt (329 rows, 0 problems); 66 rows written by gpujob.py ingest from the bundle |
+| G2b | PASS | the 66 rows are backend cupy, runner kaggle; the three manifests carry the gpu_job block of this job and its session (runs/20261012-150500_M08_issue17_ingest/gates.txt). Nothing recorded from the numpy backend |
+| G3 | PASS | runs/20261012-150500_M08_issue17_ingest/check_oblivious.txt (11 files, 0 findings), and on the runner (logs/02_check_oblivious.txt); no kernel source changed this session |
+| G4 | PASS | runs/20261012-150500_M08_issue17_ingest/check_secrets.txt (0 key-like runs) after one allow-list entry: the run directory name 20261012-061335_M08_dudect_issue17_selftest_quick is 49 characters of the base64url alphabet (reason recorded in scripts/secrets_allowlist.json) |
+| G5 | N/A | no new GPU twin; 0 output mismatches in every target of both seeds |
+| G6 | PASS | the three run dirs, gpujobs/done/results_20261012-113437_M08_issue17.zip, evidence/terminal/M08_issue17_*.txt, 27 evidence/figures/M08_issue17_*.png exist |
+| G7 | PASS | checked after the closing commit |
+| G8 | PASS | STATE: status NOT_STARTED (M11 untouched), gpu_job.pending null, last_ingested this job, M08 stays DONE with 4 sessions |
+| G9 | PASS | SESSION_LOG session 21, this entry, ISSUE-17 updated, ISSUE-24 closed, ISSUE-25 opened, M08 Amendments, evidence/INDEX.md |
+| G10 | PASS | manifests of the three ingested runs (git sha, seed, command, env) and runs/20261012-150500_M08_issue17_ingest/manifest.json; the gate script run twice gives the same file (runs/20261012-150500_M08_issue17_ingest/g10_gates_rerun.txt). The GPU commands cannot be re-run on this laptop |
+Notes:
+- The verdict on ISSUE-17 applies the reading rules written in the issue before the job ran. It is a reading, not a proof:
+  the staging and the SM clock state change together in this job (failing series at 585 MHz, symmetric staging at 1425 to 1560 MHz).
+- Not verified: the cause of the two device-stage FAILs (ISSUE-25); write_epoch_null and write_epoch_age at a second seed;
+  anything on another GPU model. results/oblivious and docs/REPORT_CH4_NOTES.md were not regenerated and do not show the diagnostics.
+- runs/20261012-150500_M08_issue17_ingest/gates_issue17.py is outside the ruff scope (runs/) and has 11 long lines and one unused loop variable; runs/20261012-150500_M08_issue17_ingest/ruff.txt is
+  clean for src, tests, scripts, bench. The first pytest and check_secrets runs of this session failed on the run directory
+  name above; the files kept are the runs after the allow-list entry. The manifest of runs/20261012-150500_M08_issue17_ingest is dirty: true.

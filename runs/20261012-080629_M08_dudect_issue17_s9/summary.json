@@ -1,0 +1,1438 @@
+{
+  "metrics": [
+    {
+      "id": "T-DUDECT-MAXT-CONTROL-NULL",
+      "value": 1.253,
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "PASS at threshold 4.5; max at crop 5 (below 0.562899932); Welch t, raw + 100 crops; series ms; r 1"
+    },
+    {
+      "id": "T-DUDECT-N-CONTROL-NULL",
+      "value": 100000,
+      "unit": "measurements",
+      "stat": "per class",
+      "note": "exactly this many of each class, randomly interleaved"
+    },
+    {
+      "id": "T-DUDECT-MAXT-AEAD-CONV",
+      "value": 28.2772,
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "FAIL at threshold 4.5; max at crop 19 (below 0.161104005); Welch t, raw + 100 crops; series ms; r 1"
+    },
+    {
+      "id": "T-DUDECT-N-AEAD-CONV",
+      "value": 100000,
+      "unit": "measurements",
+      "stat": "per class",
+      "note": "exactly this many of each class, randomly interleaved"
+    },
+    {
+      "id": "T-DUDECT-MAXT-AEAD-CONV-NULL",
+      "value": 30.1696,
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "FAIL at threshold 4.5; max at crop 22 (below 0.163140483); Welch t, raw + 100 crops; series ms; r 1"
+    },
+    {
+      "id": "T-DUDECT-N-AEAD-CONV-NULL",
+      "value": 100000,
+      "unit": "measurements",
+      "stat": "per class",
+      "note": "exactly this many of each class, randomly interleaved"
+    },
+    {
+      "id": "T-DUDECT-MAXT-AEAD-CONV-SWAP",
+      "value": 28.6825,
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "FAIL at threshold 4.5; max at crop 15 (below 0.162254495); Welch t, raw + 100 crops; series ms; r 1"
+    },
+    {
+      "id": "T-DUDECT-N-AEAD-CONV-SWAP",
+      "value": 100000,
+      "unit": "measurements",
+      "stat": "per class",
+      "note": "exactly this many of each class, randomly interleaved"
+    },
+    {
+      "id": "T-DUDECT-MAXT-AEAD-CONV-SYM",
+      "value": 1.348,
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "PASS at threshold 4.5; max at crop 23 (below 0.0819199979); Welch t, raw + 100 crops; series ms; r 1"
+    },
+    {
+      "id": "T-DUDECT-N-AEAD-CONV-SYM",
+      "value": 100000,
+      "unit": "measurements",
+      "stat": "per class",
+      "note": "exactly this many of each class, randomly interleaved"
+    },
+    {
+      "id": "T-DUDECT-MAXT-AEAD-CONV-KERNEL",
+      "value": 1.8673,
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "PASS at threshold 4.5; max at crop 4 (below 0.385343999); Welch t, raw + 100 crops; series ms; r 8"
+    },
+    {
+      "id": "T-DUDECT-N-AEAD-CONV-KERNEL",
+      "value": 100000,
+      "unit": "measurements",
+      "stat": "per class",
+      "note": "exactly this many of each class, randomly interleaved"
+    },
+    {
+      "id": "T-DUDECT-MAXT-AEAD-TAG",
+      "value": 35.6716,
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "FAIL at threshold 4.5; max at crop 19 (below 0.158920001); Welch t, raw + 100 crops; series ms; r 1"
+    },
+    {
+      "id": "T-DUDECT-N-AEAD-TAG",
+      "value": 100000,
+      "unit": "measurements",
+      "stat": "per class",
+      "note": "exactly this many of each class, randomly interleaved"
+    },
+    {
+      "id": "T-DUDECT-MAXT-AEAD-TAG-NULL",
+      "value": 50.8492,
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "FAIL at threshold 4.5; max at crop 11 (below 0.159077118); Welch t, raw + 100 crops; series ms; r 1"
+    },
+    {
+      "id": "T-DUDECT-N-AEAD-TAG-NULL",
+      "value": 100000,
+      "unit": "measurements",
+      "stat": "per class",
+      "note": "exactly this many of each class, randomly interleaved"
+    },
+    {
+      "id": "T-DUDECT-MAXT-AEAD-TAG-SWAP",
+      "value": 42.6905,
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "FAIL at threshold 4.5; max at crop 7 (below 0.157920003); Welch t, raw + 100 crops; series ms; r 1"
+    },
+    {
+      "id": "T-DUDECT-N-AEAD-TAG-SWAP",
+      "value": 100000,
+      "unit": "measurements",
+      "stat": "per class",
+      "note": "exactly this many of each class, randomly interleaved"
+    },
+    {
+      "id": "T-DUDECT-MAXT-AEAD-TAG-SYM",
+      "value": 3.8937,
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "PASS at threshold 4.5; max at crop 18 (below 0.0757760033); Welch t, raw + 100 crops; series ms; r 1"
+    },
+    {
+      "id": "T-DUDECT-N-AEAD-TAG-SYM",
+      "value": 100000,
+      "unit": "measurements",
+      "stat": "per class",
+      "note": "exactly this many of each class, randomly interleaved"
+    },
+    {
+      "id": "T-DUDECT-MAXT-AEAD-TAG-KERNEL",
+      "value": 2.3929,
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "PASS at threshold 4.5; max at crop 70 (below 0.432125564); Welch t, raw + 100 crops; series ms; r 8"
+    },
+    {
+      "id": "T-DUDECT-N-AEAD-TAG-KERNEL",
+      "value": 100000,
+      "unit": "measurements",
+      "stat": "per class",
+      "note": "exactly this many of each class, randomly interleaved"
+    },
+    {
+      "id": "T-DUDECT-MAXT-WRITE-EPOCH",
+      "value": 1.9675,
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "PASS at threshold 4.5; max at crop 6 (below 1.08245577); Welch t, raw + 100 crops; series device_ms; r 1"
+    },
+    {
+      "id": "T-DUDECT-MAXT-WRITE-EPOCH-CALL",
+      "value": 8.5822,
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "FAIL at threshold 4.5; max at crop 49 (below 4.28897303); Welch t, raw + 100 crops; series call_ms; r 1"
+    },
+    {
+      "id": "T-DUDECT-N-WRITE-EPOCH",
+      "value": 100000,
+      "unit": "measurements",
+      "stat": "per class",
+      "note": "exactly this many of each class, randomly interleaved"
+    },
+    {
+      "id": "T-DUDECT-MAXT-WRITE-EPOCH-FRESH",
+      "value": 3.094,
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "PASS at threshold 4.5; max at crop 36 (below 1.2425754); Welch t, raw + 100 crops; series device_ms; r 1"
+    },
+    {
+      "id": "T-DUDECT-MAXT-WRITE-EPOCH-FRESH-CALL",
+      "value": 1.3865,
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "PASS at threshold 4.5; max at crop 11 (below 3.94866054); Welch t, raw + 100 crops; series call_ms; r 1"
+    },
+    {
+      "id": "T-DUDECT-N-WRITE-EPOCH-FRESH",
+      "value": 100000,
+      "unit": "measurements",
+      "stat": "per class",
+      "note": "exactly this many of each class, randomly interleaved"
+    }
+  ],
+  "timer": "cupy.cuda.Event",
+  "executed_by": "cupy.RawModule (nvrtc)",
+  "t_threshold": 4.5,
+  "n_per_class": 100000,
+  "quick": false,
+  "caveat": "Free Colab/Kaggle GPUs are shared: a PASS says that no dependence was detected with this many measurements on this device in this session, not that none exists.",
+  "errors": [],
+  "device": {
+    "backend": "cupy",
+    "is_gpu": true,
+    "device": "Tesla T4",
+    "gpu": "Tesla T4",
+    "cc": "7.5",
+    "sm_count": 40,
+    "vram_total_bytes": 15636037632,
+    "vram_free_bytes": 15414919168,
+    "mem_clock_khz": 5001000,
+    "mem_bus_width_bits": 256,
+    "peak_bw_gbs": 320.064,
+    "max_log2n": 24,
+    "cuda": "12090",
+    "cupy": "14.0.1",
+    "os": "Linux-6.18.48+-x86_64-with-glibc2.39",
+    "python": "3.13.15"
+  },
+  "targets": [
+    {
+      "target": "control_null",
+      "title": "null control: fused bitonic sort, the same fixed input in both classes",
+      "class0": "fixed sorted tags",
+      "class1": "the same fixed sorted tags",
+      "params": {
+        "n": 65536,
+        "kernel": "gpu_bitonic_sort (fused launch plan)"
+      },
+      "n_per_class": 100000,
+      "calibration_per_class": 500,
+      "chunk": 1000,
+      "r": 1,
+      "r_note": "",
+      "single_launch_median_ms": 0.5671840012073517,
+      "measure_seconds": 307.1480937740007,
+      "mismatches": 0,
+      "expected_verdict": "PASS",
+      "warmup": {
+        "calls": 548,
+        "seconds": 1.027532715000234,
+        "clocks_mhz": [
+          825,
+          825,
+          825
+        ]
+      },
+      "clock": {
+        "before_mhz": 960,
+        "after_mhz": 990,
+        "max_mhz": 1590,
+        "relative_change": 0.03125,
+        "fraction_of_max": 0.6037735849056604,
+        "status": "LOW"
+      },
+      "timer": "cupy.cuda.Event",
+      "raw": "dudect_control_null_raw.npz",
+      "plots": [
+        "dudect_control_null.png"
+      ],
+      "max_abs_t": 1.2530247848258382,
+      "verdict": "PASS",
+      "series": {
+        "ms": {
+          "n_class0": 100000,
+          "n_class1": 100000,
+          "mean_class0": 0.5586402266478543,
+          "mean_class1": 0.5587863171690703,
+          "std_class0": 0.06445116909636489,
+          "std_class1": 0.06526523418776223,
+          "t_raw": -0.503655505928672,
+          "max_abs_t": 1.2530247848258382,
+          "max_at_test": 6,
+          "max_at": "crop 5 (below 0.562899932)",
+          "threshold": 4.5,
+          "verdict": "PASS",
+          "tests": 101,
+          "summary_class0": {
+            "runs": 100000,
+            "median_ms": 0.5497919917106628,
+            "p5_ms": 0.4942080080509186,
+            "p95_ms": 0.6467840075492859,
+            "p99_ms": 0.788036155104635,
+            "min_ms": 0.4785600006580353,
+            "max_ms": 1.6775360107421875,
+            "mean_ms": 0.5586402266478538,
+            "std_ms": 0.0644511690963649,
+            "cv": 0.11537151465641328
+          },
+          "summary_class1": {
+            "runs": 100000,
+            "median_ms": 0.5500800013542175,
+            "p5_ms": 0.4942399859428406,
+            "p95_ms": 0.6474239826202393,
+            "p99_ms": 0.7877122980356215,
+            "min_ms": 0.48310399055480957,
+            "max_ms": 2.023808002471924,
+            "mean_ms": 0.5587863171690702,
+            "std_ms": 0.06526523418776223,
+            "cv": 0.1167981967031865
+          }
+        }
+      }
+    },
+    {
+      "target": "aead_conv",
+      "title": "(e) AEAD open: every row matches q vs no row matches q",
+      "class0": "every row authentic and of conversation q (fixed)",
+      "class1": "every row authentic, random conversations != q (one of a pool of sealed inputs, chosen afresh)",
+      "params": {
+        "rows": 65536,
+        "kernel": "aead_open_seq",
+        "class1_pool": 64
+      },
+      "n_per_class": 100000,
+      "calibration_per_class": 500,
+      "chunk": 1000,
+      "r": 1,
+      "r_note": "",
+      "single_launch_median_ms": 0.15347200632095337,
+      "measure_seconds": 175.7727069249995,
+      "mismatches": 0,
+      "expected_verdict": "PASS",
+      "warmup": {
+        "calls": 1022,
+        "seconds": 1.025635369000156,
+        "clocks_mhz": [
+          585,
+          585,
+          585
+        ]
+      },
+      "clock": {
+        "before_mhz": 585,
+        "after_mhz": 585,
+        "max_mhz": 1590,
+        "relative_change": 0.0,
+        "fraction_of_max": 0.36792452830188677,
+        "status": "LOW"
+      },
+      "timer": "cupy.cuda.Event",
+      "raw": "dudect_aead_conv_raw.npz",
+      "plots": [
+        "dudect_aead_conv.png"
+      ],
+      "max_abs_t": 28.277201747579838,
+      "verdict": "FAIL",
+      "series": {
+        "ms": {
+          "n_class0": 100000,
+          "n_class1": 100000,
+          "mean_class0": 0.15938788862138975,
+          "mean_class1": 0.1597767919708788,
+          "std_class0": 0.011932847542355867,
+          "std_class1": 0.01168505237751558,
+          "t_raw": -7.363622253037965,
+          "max_abs_t": 28.277201747579838,
+          "max_at_test": 20,
+          "max_at": "crop 19 (below 0.161104005)",
+          "threshold": 4.5,
+          "verdict": "FAIL",
+          "tests": 101,
+          "summary_class0": {
+            "runs": 100000,
+            "median_ms": 0.15596799552440643,
+            "p5_ms": 0.150176003575325,
+            "p95_ms": 0.18134400248527527,
+            "p99_ms": 0.20739232704043373,
+            "min_ms": 0.14259199798107147,
+            "max_ms": 0.6785920262336731,
+            "mean_ms": 0.15938788862138986,
+            "std_ms": 0.011932847542355865,
+            "cv": 0.07486671443839225
+          },
+          "summary_class1": {
+            "runs": 100000,
+            "median_ms": 0.15644800662994385,
+            "p5_ms": 0.15068799257278442,
+            "p95_ms": 0.18163199722766876,
+            "p99_ms": 0.20870399475097656,
+            "min_ms": 0.14345599710941315,
+            "max_ms": 0.45689600706100464,
+            "mean_ms": 0.15977679197087885,
+            "std_ms": 0.011685052377515576,
+            "cv": 0.07313360240481803
+          }
+        }
+      }
+    },
+    {
+      "target": "aead_conv_null",
+      "title": "ISSUE-17 (e) staging only: every row matches q in both classes, fixed array vs pool",
+      "class0": "every row authentic and of conversation q (one fixed host array)",
+      "class1": "every row authentic and of conversation q (one of a pool of sealed inputs, chosen afresh)",
+      "params": {
+        "rows": 65536,
+        "kernel": "aead_open_seq",
+        "class1_pool": 64
+      },
+      "n_per_class": 100000,
+      "calibration_per_class": 500,
+      "chunk": 1000,
+      "r": 1,
+      "r_note": "",
+      "single_launch_median_ms": 0.15489599853754044,
+      "measure_seconds": 176.31650553799955,
+      "mismatches": 0,
+      "expected_verdict": "PASS",
+      "warmup": {
+        "calls": 1036,
+        "seconds": 1.0262542259997645,
+        "clocks_mhz": [
+          585,
+          585,
+          585
+        ]
+      },
+      "clock": {
+        "before_mhz": 585,
+        "after_mhz": 585,
+        "max_mhz": 1590,
+        "relative_change": 0.0,
+        "fraction_of_max": 0.36792452830188677,
+        "status": "LOW"
+      },
+      "timer": "cupy.cuda.Event",
+      "raw": "dudect_aead_conv_null_raw.npz",
+      "plots": [
+        "dudect_aead_conv_null.png"
+      ],
+      "max_abs_t": 30.169582853660334,
+      "verdict": "FAIL",
+      "series": {
+        "ms": {
+          "n_class0": 100000,
+          "n_class1": 100000,
+          "mean_class0": 0.1603778633472324,
+          "mean_class1": 0.16100679903388007,
+          "std_class0": 0.012497597146126489,
+          "std_class1": 0.012837266751889747,
+          "t_raw": -11.101039060749379,
+          "max_abs_t": 30.169582853660334,
+          "max_at_test": 23,
+          "max_at": "crop 22 (below 0.163140483)",
+          "threshold": 4.5,
+          "verdict": "FAIL",
+          "tests": 101,
+          "summary_class0": {
+            "runs": 100000,
+            "median_ms": 0.1568319946527481,
+            "p5_ms": 0.15043200552463531,
+            "p95_ms": 0.18278400599956512,
+            "p99_ms": 0.21059232160449012,
+            "min_ms": 0.14217600226402283,
+            "max_ms": 0.7306879758834839,
+            "mean_ms": 0.16037786334723234,
+            "std_ms": 0.012497597146126483,
+            "cv": 0.07792594866454901
+          },
+          "summary_class1": {
+            "runs": 100000,
+            "median_ms": 0.1574079990386963,
+            "p5_ms": 0.15107199549674988,
+            "p95_ms": 0.18380799889564514,
+            "p99_ms": 0.21404799818992615,
+            "min_ms": 0.1401599943637848,
+            "max_ms": 0.8735679984092712,
+            "mean_ms": 0.16100679903388024,
+            "std_ms": 0.012837266751889738,
+            "cv": 0.07973120904781435
+          }
+        }
+      }
+    },
+    {
+      "target": "aead_conv_swap",
+      "title": "ISSUE-17 (e) roles swapped: no row matches q (fixed array) vs every row matches q (pool)",
+      "class0": "every row authentic, random conversations != q (one fixed host array)",
+      "class1": "every row authentic and of conversation q (one of a pool of sealed inputs, chosen afresh)",
+      "params": {
+        "rows": 65536,
+        "kernel": "aead_open_seq",
+        "class1_pool": 64
+      },
+      "n_per_class": 100000,
+      "calibration_per_class": 500,
+      "chunk": 1000,
+      "r": 1,
+      "r_note": "",
+      "single_launch_median_ms": 0.15348800271749496,
+      "measure_seconds": 176.3951596299994,
+      "mismatches": 0,
+      "expected_verdict": "PASS",
+      "warmup": {
+        "calls": 1027,
+        "seconds": 1.0284723950007901,
+        "clocks_mhz": [
+          585,
+          585,
+          585
+        ]
+      },
+      "clock": {
+        "before_mhz": 585,
+        "after_mhz": 585,
+        "max_mhz": 1590,
+        "relative_change": 0.0,
+        "fraction_of_max": 0.36792452830188677,
+        "status": "LOW"
+      },
+      "timer": "cupy.cuda.Event",
+      "raw": "dudect_aead_conv_swap_raw.npz",
+      "plots": [
+        "dudect_aead_conv_swap.png"
+      ],
+      "max_abs_t": 28.682534370926803,
+      "verdict": "FAIL",
+      "series": {
+        "ms": {
+          "n_class0": 100000,
+          "n_class1": 100000,
+          "mean_class0": 0.16080087295562032,
+          "mean_class1": 0.16134113504707803,
+          "std_class0": 0.012152634765708898,
+          "std_class1": 0.012430921813075568,
+          "t_raw": -9.827588315315223,
+          "max_abs_t": 28.682534370926803,
+          "max_at_test": 16,
+          "max_at": "crop 15 (below 0.162254495)",
+          "threshold": 4.5,
+          "verdict": "FAIL",
+          "tests": 101,
+          "summary_class0": {
+            "runs": 100000,
+            "median_ms": 0.15718400478363037,
+            "p5_ms": 0.15091200172901154,
+            "p95_ms": 0.18307200074195862,
+            "p99_ms": 0.21116800606250763,
+            "min_ms": 0.14112000167369843,
+            "max_ms": 0.47116801142692566,
+            "mean_ms": 0.1608008729556203,
+            "std_ms": 0.012152634765708901,
+            "cv": 0.07557567656403787
+          },
+          "summary_class1": {
+            "runs": 100000,
+            "median_ms": 0.1576640009880066,
+            "p5_ms": 0.15158399939537048,
+            "p95_ms": 0.18432160243391954,
+            "p99_ms": 0.2146563154458998,
+            "min_ms": 0.14326399564743042,
+            "max_ms": 0.6030719876289368,
+            "mean_ms": 0.16134113504707814,
+            "std_ms": 0.01243092181307557,
+            "cv": 0.07704744242346082
+          }
+        }
+      }
+    },
+    {
+      "target": "aead_conv_sym",
+      "title": "ISSUE-17 (e) symmetric staging: every row matches q vs no row matches q, device pools",
+      "class0": "every row authentic and of conversation q (one of a device pool)",
+      "class1": "every row authentic, random conversations != q (one of a device pool of the same size)",
+      "params": {
+        "rows": 65536,
+        "kernel": "aead_open_seq",
+        "pool_per_class": 64,
+        "staging": "device pools, device-to-device copy"
+      },
+      "n_per_class": 100000,
+      "calibration_per_class": 500,
+      "chunk": 1000,
+      "r": 1,
+      "r_note": "",
+      "single_launch_median_ms": 0.08503999933600426,
+      "measure_seconds": 29.876657477999288,
+      "mismatches": 0,
+      "expected_verdict": "PASS",
+      "warmup": {
+        "calls": 11326,
+        "seconds": 2.0439543829998,
+        "clocks_mhz": [
+          600,
+          1050,
+          1110,
+          1185,
+          1245,
+          1425,
+          1425,
+          1425
+        ]
+      },
+      "clock": {
+        "before_mhz": 1425,
+        "after_mhz": 1545,
+        "max_mhz": 1590,
+        "relative_change": 0.08421052631578947,
+        "fraction_of_max": 0.8962264150943396,
+        "status": "OK"
+      },
+      "timer": "cupy.cuda.Event",
+      "raw": "dudect_aead_conv_sym_raw.npz",
+      "plots": [
+        "dudect_aead_conv_sym.png"
+      ],
+      "max_abs_t": 1.3480401989867947,
+      "verdict": "PASS",
+      "series": {
+        "ms": {
+          "n_class0": 100000,
+          "n_class1": 100000,
+          "mean_class0": 0.07842153530862184,
+          "mean_class1": 0.0784088754737377,
+          "std_class0": 0.010632348692011488,
+          "std_class1": 0.010477490219901242,
+          "t_raw": 0.2681923801988237,
+          "max_abs_t": 1.3480401989867947,
+          "max_at_test": 24,
+          "max_at": "crop 23 (below 0.0819199979)",
+          "threshold": 4.5,
+          "verdict": "PASS",
+          "tests": 101,
+          "summary_class0": {
+            "runs": 100000,
+            "median_ms": 0.07574400305747986,
+            "p5_ms": 0.07081600278615952,
+            "p95_ms": 0.09625600278377533,
+            "p99_ms": 0.1246403228491543,
+            "min_ms": 0.061983998864889145,
+            "max_ms": 0.6638720035552979,
+            "mean_ms": 0.07842153530862182,
+            "std_ms": 0.010632348692011488,
+            "cv": 0.13557945085069695
+          },
+          "summary_class1": {
+            "runs": 100000,
+            "median_ms": 0.07574400305747986,
+            "p5_ms": 0.07094399631023407,
+            "p95_ms": 0.09625600278377533,
+            "p99_ms": 0.12416031919419748,
+            "min_ms": 0.0628800019621849,
+            "max_ms": 0.6410239934921265,
+            "mean_ms": 0.07840887547373772,
+            "std_ms": 0.010477490219901247,
+            "cv": 0.13362632937403343
+          }
+        }
+      }
+    },
+    {
+      "target": "aead_conv_kernel",
+      "title": "ISSUE-17 (e) kernel-only window: every row matches q vs none, device pools, preallocated outputs",
+      "class0": "every row authentic and of conversation q (one of a device pool)",
+      "class1": "every row authentic, random conversations != q (one of a device pool of the same size)",
+      "params": {
+        "rows": 65536,
+        "kernel": "aead_open_seq",
+        "pool_per_class": 64,
+        "staging": "device pools, device-to-device copy",
+        "outputs": "preallocated",
+        "min_r": 8
+      },
+      "n_per_class": 100000,
+      "calibration_per_class": 500,
+      "chunk": 1000,
+      "r": 8,
+      "r_note": "8 launches per measurement by design (public), not from the 50 us rule",
+      "single_launch_median_ms": 0.05939200147986412,
+      "measure_seconds": 91.64903589700043,
+      "mismatches": 0,
+      "expected_verdict": "PASS",
+      "warmup": {
+        "calls": 7889,
+        "seconds": 1.0164129110007707,
+        "clocks_mhz": [
+          1500,
+          1500,
+          1470
+        ]
+      },
+      "clock": {
+        "before_mhz": 1185,
+        "after_mhz": 1170,
+        "max_mhz": 1590,
+        "relative_change": -0.012658227848101266,
+        "fraction_of_max": 0.7358490566037735,
+        "status": "LOW"
+      },
+      "timer": "cupy.cuda.Event",
+      "raw": "dudect_aead_conv_kernel_raw.npz",
+      "plots": [
+        "dudect_aead_conv_kernel.png"
+      ],
+      "max_abs_t": 1.86725962261236,
+      "verdict": "PASS",
+      "series": {
+        "ms": {
+          "n_class0": 100000,
+          "n_class1": 100000,
+          "mean_class0": 0.3889014760518074,
+          "mean_class1": 0.38891027283847335,
+          "std_class0": 0.013907811925117947,
+          "std_class1": 0.014238907641487698,
+          "t_raw": -0.13975946397208358,
+          "max_abs_t": 1.86725962261236,
+          "max_at_test": 5,
+          "max_at": "crop 4 (below 0.385343999)",
+          "threshold": 4.5,
+          "verdict": "PASS",
+          "tests": 101,
+          "summary_class0": {
+            "runs": 100000,
+            "median_ms": 0.38707199692726135,
+            "p5_ms": 0.3750079870223999,
+            "p95_ms": 0.40620800852775574,
+            "p99_ms": 0.4423680007457733,
+            "min_ms": 0.33587199449539185,
+            "max_ms": 0.8476160168647766,
+            "mean_ms": 0.3889014760518074,
+            "std_ms": 0.013907811925117952,
+            "cv": 0.03576178744887362
+          },
+          "summary_class1": {
+            "runs": 100000,
+            "median_ms": 0.38707199692726135,
+            "p5_ms": 0.3750079870223999,
+            "p95_ms": 0.40623998641967773,
+            "p99_ms": 0.4437449637055392,
+            "min_ms": 0.33587199449539185,
+            "max_ms": 1.4601600170135498,
+            "mean_ms": 0.38891027283847335,
+            "std_ms": 0.014238907641487707,
+            "cv": 0.03661232072262995
+          }
+        }
+      }
+    },
+    {
+      "target": "aead_tag",
+      "title": "(d) AEAD open: all tags valid vs all tags invalid",
+      "class0": "every row authentic, one row in 8 of the conversation asked for (fixed)",
+      "class1": "the same rows with fresh random tag words (every tag invalid)",
+      "params": {
+        "rows": 65536,
+        "kernel": "aead_open_seq"
+      },
+      "n_per_class": 100000,
+      "calibration_per_class": 500,
+      "chunk": 1000,
+      "r": 1,
+      "r_note": "",
+      "single_launch_median_ms": 0.10406400263309479,
+      "measure_seconds": 433.67786487300145,
+      "mismatches": 0,
+      "expected_verdict": "PASS",
+      "warmup": {
+        "calls": 435,
+        "seconds": 1.0187735409999732,
+        "clocks_mhz": [
+          1590,
+          1590,
+          1590
+        ]
+      },
+      "clock": {
+        "before_mhz": 585,
+        "after_mhz": 585,
+        "max_mhz": 1590,
+        "relative_change": 0.0,
+        "fraction_of_max": 0.36792452830188677,
+        "status": "LOW"
+      },
+      "timer": "cupy.cuda.Event",
+      "raw": "dudect_aead_tag_raw.npz",
+      "plots": [
+        "dudect_aead_tag.png"
+      ],
+      "max_abs_t": 35.67160295528349,
+      "verdict": "FAIL",
+      "series": {
+        "ms": {
+          "n_class0": 100000,
+          "n_class1": 100000,
+          "mean_class0": 0.1613992591999472,
+          "mean_class1": 0.16188916222110403,
+          "std_class0": 0.011018436472924812,
+          "std_class1": 0.011071203100301623,
+          "t_raw": -9.918254470965897,
+          "max_abs_t": 35.67160295528349,
+          "max_at_test": 20,
+          "max_at": "crop 19 (below 0.158920001)",
+          "threshold": 4.5,
+          "verdict": "FAIL",
+          "tests": 101,
+          "summary_class0": {
+            "runs": 100000,
+            "median_ms": 0.1573760062456131,
+            "p5_ms": 0.15382400155067444,
+            "p95_ms": 0.18192000687122345,
+            "p99_ms": 0.20822399854660034,
+            "min_ms": 0.14560000598430634,
+            "max_ms": 0.4397760033607483,
+            "mean_ms": 0.16139925919994713,
+            "std_ms": 0.011018436472924808,
+            "cv": 0.06826819731108417
+          },
+          "summary_class1": {
+            "runs": 100000,
+            "median_ms": 0.15785600244998932,
+            "p5_ms": 0.15427200496196747,
+            "p95_ms": 0.18246400356292725,
+            "p99_ms": 0.20953600108623505,
+            "min_ms": 0.1467200070619583,
+            "max_ms": 0.4455679953098297,
+            "mean_ms": 0.16188916222110392,
+            "std_ms": 0.01107120310030162,
+            "cv": 0.06838754953330888
+          }
+        }
+      }
+    },
+    {
+      "target": "aead_tag_null",
+      "title": "ISSUE-17 (d) staging only: all tags valid in both classes, read-only array vs freshly written array",
+      "class0": "every row authentic: the fixed host array, only ever read",
+      "class1": "the same rows and the same valid tags, in a host array written just before the upload",
+      "params": {
+        "rows": 65536,
+        "kernel": "aead_open_seq"
+      },
+      "n_per_class": 100000,
+      "calibration_per_class": 500,
+      "chunk": 1000,
+      "r": 1,
+      "r_note": "",
+      "single_launch_median_ms": 0.16089600324630737,
+      "measure_seconds": 433.76129566800046,
+      "mismatches": 0,
+      "expected_verdict": "PASS",
+      "warmup": {
+        "calls": 401,
+        "seconds": 1.0316901760015753,
+        "clocks_mhz": [
+          585,
+          585,
+          585
+        ]
+      },
+      "clock": {
+        "before_mhz": 585,
+        "after_mhz": 585,
+        "max_mhz": 1590,
+        "relative_change": 0.0,
+        "fraction_of_max": 0.36792452830188677,
+        "status": "LOW"
+      },
+      "timer": "cupy.cuda.Event",
+      "raw": "dudect_aead_tag_null_raw.npz",
+      "plots": [
+        "dudect_aead_tag_null.png"
+      ],
+      "max_abs_t": 50.84918297014806,
+      "verdict": "FAIL",
+      "series": {
+        "ms": {
+          "n_class0": 100000,
+          "n_class1": 100000,
+          "mean_class0": 0.1611192646037042,
+          "mean_class1": 0.16179421823740014,
+          "std_class0": 0.011059268568852433,
+          "std_class1": 0.011097947673005598,
+          "t_raw": -13.62301013395026,
+          "max_abs_t": 50.84918297014806,
+          "max_at_test": 12,
+          "max_at": "crop 11 (below 0.159077118)",
+          "threshold": 4.5,
+          "verdict": "FAIL",
+          "tests": 101,
+          "summary_class0": {
+            "runs": 100000,
+            "median_ms": 0.15721599757671356,
+            "p5_ms": 0.15360000729560852,
+            "p95_ms": 0.18137599527835846,
+            "p99_ms": 0.20614400506019592,
+            "min_ms": 0.14662399888038635,
+            "max_ms": 0.6857920289039612,
+            "mean_ms": 0.1611192646037042,
+            "std_ms": 0.011059268568852434,
+            "cv": 0.06864026220610106
+          },
+          "summary_class1": {
+            "runs": 100000,
+            "median_ms": 0.15785600244998932,
+            "p5_ms": 0.1542080044746399,
+            "p95_ms": 0.18223999440670013,
+            "p99_ms": 0.20675264224410023,
+            "min_ms": 0.14707200229167938,
+            "max_ms": 0.7991679906845093,
+            "mean_ms": 0.16179421823740006,
+            "std_ms": 0.011097947673005596,
+            "cv": 0.06859298060157884
+          }
+        }
+      }
+    },
+    {
+      "target": "aead_tag_swap",
+      "title": "ISSUE-17 (d) roles swapped: all tags invalid (fixed array) vs all tags valid (freshly written array)",
+      "class0": "every tag invalid: a fixed host array, only ever read",
+      "class1": "the same rows with their valid tags, in a host array written just before the upload",
+      "params": {
+        "rows": 65536,
+        "kernel": "aead_open_seq"
+      },
+      "n_per_class": 100000,
+      "calibration_per_class": 500,
+      "chunk": 1000,
+      "r": 1,
+      "r_note": "",
+      "single_launch_median_ms": 0.15990399569272995,
+      "measure_seconds": 449.2049974600013,
+      "mismatches": 0,
+      "expected_verdict": "PASS",
+      "warmup": {
+        "calls": 415,
+        "seconds": 1.0299455469994427,
+        "clocks_mhz": [
+          585,
+          585,
+          585
+        ]
+      },
+      "clock": {
+        "before_mhz": 585,
+        "after_mhz": 585,
+        "max_mhz": 1590,
+        "relative_change": 0.0,
+        "fraction_of_max": 0.36792452830188677,
+        "status": "LOW"
+      },
+      "timer": "cupy.cuda.Event",
+      "raw": "dudect_aead_tag_swap_raw.npz",
+      "plots": [
+        "dudect_aead_tag_swap.png"
+      ],
+      "max_abs_t": 42.69049529173107,
+      "verdict": "FAIL",
+      "series": {
+        "ms": {
+          "n_class0": 100000,
+          "n_class1": 100000,
+          "mean_class0": 0.1620886876758933,
+          "mean_class1": 0.1626479727686941,
+          "std_class0": 0.012336524993612045,
+          "std_class1": 0.011889387364234541,
+          "t_raw": -10.322719798008878,
+          "max_abs_t": 42.69049529173107,
+          "max_at_test": 8,
+          "max_at": "crop 7 (below 0.157920003)",
+          "threshold": 4.5,
+          "verdict": "FAIL",
+          "tests": 101,
+          "summary_class0": {
+            "runs": 100000,
+            "median_ms": 0.15801599621772766,
+            "p5_ms": 0.1539199948310852,
+            "p95_ms": 0.1831360012292862,
+            "p99_ms": 0.20892800390720367,
+            "min_ms": 0.14617599546909332,
+            "max_ms": 1.297536015510559,
+            "mean_ms": 0.1620886876758933,
+            "std_ms": 0.01233652499361205,
+            "cv": 0.0761097222175043
+          },
+          "summary_class1": {
+            "runs": 100000,
+            "median_ms": 0.15862399339675903,
+            "p5_ms": 0.15452800691127777,
+            "p95_ms": 0.18352000415325165,
+            "p99_ms": 0.2096640020608902,
+            "min_ms": 0.14764800667762756,
+            "max_ms": 0.6410880088806152,
+            "mean_ms": 0.16264797276869417,
+            "std_ms": 0.011889387364234541,
+            "cv": 0.0730988967267532
+          }
+        }
+      }
+    },
+    {
+      "target": "aead_tag_sym",
+      "title": "ISSUE-17 (d) symmetric staging: all tags valid vs all tags invalid, device pools",
+      "class0": "every row authentic, one row in 8 of the conversation asked for (one of a device pool)",
+      "class1": "the same rows with random tag words, every tag invalid (one of a device pool of the same size)",
+      "params": {
+        "rows": 65536,
+        "kernel": "aead_open_seq",
+        "pool_per_class": 64,
+        "staging": "device pools, device-to-device copy"
+      },
+      "n_per_class": 100000,
+      "calibration_per_class": 500,
+      "chunk": 1000,
+      "r": 1,
+      "r_note": "",
+      "single_launch_median_ms": 0.06929599866271019,
+      "measure_seconds": 30.170375272000456,
+      "mismatches": 0,
+      "expected_verdict": "PASS",
+      "warmup": {
+        "calls": 16652,
+        "seconds": 2.7708496730010665,
+        "clocks_mhz": [
+          885,
+          1020,
+          1140,
+          1245,
+          1470,
+          1470,
+          1485,
+          1500,
+          1545,
+          1545,
+          1545
+        ]
+      },
+      "clock": {
+        "before_mhz": 1530,
+        "after_mhz": 1560,
+        "max_mhz": 1590,
+        "relative_change": 0.0196078431372549,
+        "fraction_of_max": 0.9622641509433962,
+        "status": "OK"
+      },
+      "timer": "cupy.cuda.Event",
+      "raw": "dudect_aead_tag_sym_raw.npz",
+      "plots": [
+        "dudect_aead_tag_sym.png"
+      ],
+      "max_abs_t": 3.8937249356872394,
+      "verdict": "PASS",
+      "series": {
+        "ms": {
+          "n_class0": 100000,
+          "n_class1": 100000,
+          "mean_class0": 0.0780417368677631,
+          "mean_class1": 0.07801682358767832,
+          "std_class0": 0.010838171146585234,
+          "std_class1": 0.01087307255386523,
+          "t_raw": 0.5131692739702572,
+          "max_abs_t": 3.8937249356872394,
+          "max_at_test": 19,
+          "max_at": "crop 18 (below 0.0757760033)",
+          "threshold": 4.5,
+          "verdict": "PASS",
+          "tests": 101,
+          "summary_class0": {
+            "runs": 100000,
+            "median_ms": 0.07503999769687653,
+            "p5_ms": 0.07011199742555618,
+            "p95_ms": 0.09804800152778625,
+            "p99_ms": 0.12524831995367988,
+            "min_ms": 0.06224000081419945,
+            "max_ms": 0.43692800402641296,
+            "mean_ms": 0.0780417368677631,
+            "std_ms": 0.010838171146585232,
+            "cv": 0.13887660092637152
+          },
+          "summary_class1": {
+            "runs": 100000,
+            "median_ms": 0.07497599720954895,
+            "p5_ms": 0.07001599669456482,
+            "p95_ms": 0.09824000298976898,
+            "p99_ms": 0.12697599828243256,
+            "min_ms": 0.0623680017888546,
+            "max_ms": 0.3697279989719391,
+            "mean_ms": 0.07801682358767838,
+            "std_ms": 0.010873072553865232,
+            "cv": 0.13936830614034992
+          }
+        }
+      }
+    },
+    {
+      "target": "aead_tag_kernel",
+      "title": "ISSUE-17 (d) kernel-only window: all tags valid vs all invalid, device pools, preallocated outputs",
+      "class0": "every row authentic, one row in 8 of the conversation asked for (one of a device pool)",
+      "class1": "the same rows with random tag words, every tag invalid (one of a device pool of the same size)",
+      "params": {
+        "rows": 65536,
+        "kernel": "aead_open_seq",
+        "pool_per_class": 64,
+        "staging": "device pools, device-to-device copy",
+        "outputs": "preallocated",
+        "min_r": 8
+      },
+      "n_per_class": 100000,
+      "calibration_per_class": 500,
+      "chunk": 1000,
+      "r": 8,
+      "r_note": "8 launches per measurement by design (public), not from the 50 us rule",
+      "single_launch_median_ms": 0.060655999928712845,
+      "measure_seconds": 91.64522236899938,
+      "mismatches": 0,
+      "expected_verdict": "PASS",
+      "warmup": {
+        "calls": 13233,
+        "seconds": 1.7657457679997606,
+        "clocks_mhz": [
+          1530,
+          1500,
+          1515,
+          1500,
+          1530,
+          1515,
+          1485
+        ]
+      },
+      "clock": {
+        "before_mhz": 1170,
+        "after_mhz": 1215,
+        "max_mhz": 1590,
+        "relative_change": 0.038461538461538464,
+        "fraction_of_max": 0.7358490566037735,
+        "status": "LOW"
+      },
+      "timer": "cupy.cuda.Event",
+      "raw": "dudect_aead_tag_kernel_raw.npz",
+      "plots": [
+        "dudect_aead_tag_kernel.png"
+      ],
+      "max_abs_t": 2.3928895995233446,
+      "verdict": "PASS",
+      "series": {
+        "ms": {
+          "n_class0": 100000,
+          "n_class1": 100000,
+          "mean_class0": 0.386889774892032,
+          "mean_class1": 0.3870189093285801,
+          "std_class0": 0.01403217669879392,
+          "std_class1": 0.014553437074335578,
+          "t_raw": -2.0199348165561095,
+          "max_abs_t": 2.3928895995233446,
+          "max_at_test": 71,
+          "max_at": "crop 70 (below 0.432125564)",
+          "threshold": 4.5,
+          "verdict": "PASS",
+          "tests": 101,
+          "summary_class0": {
+            "runs": 100000,
+            "median_ms": 0.3853119909763336,
+            "p5_ms": 0.37382400035858154,
+            "p95_ms": 0.40438398718833923,
+            "p99_ms": 0.4423680007457733,
+            "min_ms": 0.3362559974193573,
+            "max_ms": 0.818560004234314,
+            "mean_ms": 0.38688977489203213,
+            "std_ms": 0.014032176698793895,
+            "cv": 0.036269184686283845
+          },
+          "summary_class1": {
+            "runs": 100000,
+            "median_ms": 0.3853760063648224,
+            "p5_ms": 0.3740159869194031,
+            "p95_ms": 0.4049600064754486,
+            "p99_ms": 0.44281598925590515,
+            "min_ms": 0.33632001280784607,
+            "max_ms": 1.521183967590332,
+            "mean_ms": 0.3870189093285799,
+            "std_ms": 0.014553437074335589,
+            "cv": 0.03760394317575757
+          }
+        }
+      }
+    },
+    {
+      "target": "write_epoch",
+      "title": "(c) write_epoch: fixed contents vs random contents, n_real fixed",
+      "class0": "the same (conv_id, seq, payload) submissions every time (fixed)",
+      "class1": "fresh random conv_id, seq and payload for every submission",
+      "params": {
+        "slots": 4096,
+        "n_real": 1024,
+        "epoch": 1,
+        "timer": "cupy.cuda.Event",
+        "device_ms": "total minus the engine's host stage; stages: h2d, tags, sort, compact, d2h, seal, bucket, open, host"
+      },
+      "n_per_class": 100000,
+      "calibration_per_class": 500,
+      "chunk": 1000,
+      "r": 1,
+      "r_note": "",
+      "single_launch_median_ms": 1.0826561003923416,
+      "measure_seconds": 1148.4607949910005,
+      "mismatches": 0,
+      "expected_verdict": "PASS",
+      "warmup": {
+        "calls": 122,
+        "seconds": 1.0195724940003856,
+        "clocks_mhz": [
+          1590,
+          1590,
+          1590
+        ]
+      },
+      "clock": {
+        "before_mhz": 585,
+        "after_mhz": 585,
+        "max_mhz": 1590,
+        "relative_change": 0.0,
+        "fraction_of_max": 0.36792452830188677,
+        "status": "LOW"
+      },
+      "timer": "cupy.cuda.Event",
+      "raw": "dudect_write_epoch_raw.npz",
+      "plots": [
+        "dudect_write_epoch.png",
+        "dudect_write_epoch_call_ms.png"
+      ],
+      "max_abs_t": 1.9674521992533383,
+      "verdict": "PASS",
+      "series": {
+        "device_ms": {
+          "n_class0": 100000,
+          "n_class1": 100000,
+          "mean_class0": 1.1337285627374052,
+          "mean_class1": 1.1338231966963408,
+          "std_class0": 0.11279393450817293,
+          "std_class1": 0.11327112447849577,
+          "t_raw": -0.18720937652149378,
+          "max_abs_t": 1.9674521992533383,
+          "max_at_test": 7,
+          "max_at": "crop 6 (below 1.08245577)",
+          "threshold": 4.5,
+          "verdict": "PASS",
+          "tests": 101,
+          "summary_class0": {
+            "runs": 100000,
+            "median_ms": 1.1133441478013992,
+            "p5_ms": 1.020127858221531,
+            "p95_ms": 1.2984655156731602,
+            "p99_ms": 1.5633611059188837,
+            "min_ms": 0.9688319265842438,
+            "max_ms": 4.217056155204773,
+            "mean_ms": 1.1337285627374054,
+            "std_ms": 0.1127939345081729,
+            "cv": 0.09948936475220328
+          },
+          "summary_class1": {
+            "runs": 100000,
+            "median_ms": 1.1135680079460144,
+            "p5_ms": 1.0204160511493683,
+            "p95_ms": 1.2964799463748933,
+            "p99_ms": 1.5615749153494798,
+            "min_ms": 0.9687680900096893,
+            "max_ms": 4.761376261711121,
+            "mean_ms": 1.133823196696341,
+            "std_ms": 0.11327112447849574,
+            "cv": 0.0999019289855223
+          }
+        },
+        "call_ms": {
+          "n_class0": 100000,
+          "n_class1": 100000,
+          "mean_class0": 4.155935522420408,
+          "mean_class1": 4.147156894481186,
+          "std_class0": 3.024658323294227,
+          "std_class1": 2.928959678264451,
+          "t_raw": 0.6593326415057206,
+          "max_abs_t": 8.58224300111648,
+          "max_at_test": 50,
+          "max_at": "crop 49 (below 4.28897303)",
+          "threshold": 4.5,
+          "verdict": "FAIL",
+          "tests": 101,
+          "summary_class0": {
+            "runs": 100000,
+            "median_ms": 3.8314878940582275,
+            "p5_ms": 3.565056085586548,
+            "p95_ms": 4.3605777502059935,
+            "p99_ms": 6.946030554771416,
+            "min_ms": 3.4032320976257324,
+            "max_ms": 55.170433044433594,
+            "mean_ms": 4.155935522420406,
+            "std_ms": 3.0246583232942283,
+            "cv": 0.7277924084665961
+          },
+          "summary_class1": {
+            "runs": 100000,
+            "median_ms": 3.8386878967285156,
+            "p5_ms": 3.5719680786132812,
+            "p95_ms": 4.363076710700987,
+            "p99_ms": 6.820150365829456,
+            "min_ms": 3.41759991645813,
+            "max_ms": 57.04646301269531,
+            "mean_ms": 4.147156894481182,
+            "std_ms": 2.928959678264452,
+            "cv": 0.7062572631776138
+          }
+        }
+      }
+    },
+    {
+      "target": "write_epoch_fresh",
+      "title": "ISSUE-17 (c) symmetric staging: fixed contents vs random contents, new objects, one batch built",
+      "class0": "the fixed submissions, rebuilt from new objects before every call",
+      "class1": "fresh random conv_id, seq and payload for every submission",
+      "params": {
+        "slots": 4096,
+        "n_real": 1024,
+        "epoch": 1,
+        "timer": "cupy.cuda.Event",
+        "device_ms": "total minus the engine's host stage; stages: h2d, tags, sort, compact, d2h, seal, bucket, open, host"
+      },
+      "n_per_class": 100000,
+      "calibration_per_class": 500,
+      "chunk": 1000,
+      "r": 1,
+      "r_note": "",
+      "single_launch_median_ms": 1.0850239545106888,
+      "measure_seconds": 1119.4338562600005,
+      "mismatches": 0,
+      "expected_verdict": "PASS",
+      "warmup": {
+        "calls": 173,
+        "seconds": 1.0586137599984795,
+        "clocks_mhz": [
+          585,
+          585,
+          585,
+          585
+        ]
+      },
+      "clock": {
+        "before_mhz": 585,
+        "after_mhz": 585,
+        "max_mhz": 1590,
+        "relative_change": 0.0,
+        "fraction_of_max": 0.36792452830188677,
+        "status": "LOW"
+      },
+      "timer": "cupy.cuda.Event",
+      "raw": "dudect_write_epoch_fresh_raw.npz",
+      "plots": [
+        "dudect_write_epoch_fresh.png",
+        "dudect_write_epoch_fresh_call_ms.png"
+      ],
+      "max_abs_t": 3.0939903191062035,
+      "verdict": "PASS",
+      "series": {
+        "device_ms": {
+          "n_class0": 100000,
+          "n_class1": 100000,
+          "mean_class0": 1.2062419201987984,
+          "mean_class1": 1.2065896587866543,
+          "std_class0": 0.11264049856689366,
+          "std_class1": 0.11184464757704228,
+          "t_raw": -0.6927516120930439,
+          "max_abs_t": 3.0939903191062035,
+          "max_at_test": 37,
+          "max_at": "crop 36 (below 1.2425754)",
+          "threshold": 4.5,
+          "verdict": "PASS",
+          "tests": 101,
+          "summary_class0": {
+            "runs": 100000,
+            "median_ms": 1.1880321651697159,
+            "p5_ms": 1.0920942306518555,
+            "p95_ms": 1.360863733291626,
+            "p99_ms": 1.6348501852154722,
+            "min_ms": 0.9640639126300812,
+            "max_ms": 3.5177921056747437,
+            "mean_ms": 1.2062419201987982,
+            "std_ms": 0.11264049856689369,
+            "cv": 0.09338134969503435
+          },
+          "summary_class1": {
+            "runs": 100000,
+            "median_ms": 1.1887999027967453,
+            "p5_ms": 1.0923840343952178,
+            "p95_ms": 1.358337731659412,
+            "p99_ms": 1.6324803382158275,
+            "min_ms": 0.9674557745456696,
+            "max_ms": 3.261759966611862,
+            "mean_ms": 1.2065896587866545,
+            "std_ms": 0.11184464757704228,
+            "cv": 0.09269485011956191
+          }
+        },
+        "call_ms": {
+          "n_class0": 100000,
+          "n_class1": 100000,
+          "mean_class0": 4.562829521319864,
+          "mean_class1": 4.551559600570197,
+          "std_class0": 3.35352148427263,
+          "std_class1": 3.2819009795871708,
+          "t_raw": 0.7595248442838194,
+          "max_abs_t": 1.3865376455373581,
+          "max_at_test": 12,
+          "max_at": "crop 11 (below 3.94866054)",
+          "threshold": 4.5,
+          "verdict": "PASS",
+          "tests": 101,
+          "summary_class0": {
+            "runs": 100000,
+            "median_ms": 4.2123517990112305,
+            "p5_ms": 3.8771823167800905,
+            "p95_ms": 4.74883382320404,
+            "p99_ms": 7.648339715003957,
+            "min_ms": 3.478303909301758,
+            "max_ms": 76.78838348388672,
+            "mean_ms": 4.562829521319866,
+            "std_ms": 3.353521484272631,
+            "cv": 0.7349653254857033
+          },
+          "summary_class1": {
+            "runs": 100000,
+            "median_ms": 4.212575912475586,
+            "p5_ms": 3.877406430244446,
+            "p95_ms": 4.744772934913634,
+            "p99_ms": 7.477667884826642,
+            "min_ms": 3.4754559993743896,
+            "max_ms": 61.83705520629883,
+            "mean_ms": 4.551559600570202,
+            "std_ms": 3.281900979587173,
+            "cv": 0.7210497648269901
+          }
+        }
+      }
+    }
+  ]
+}

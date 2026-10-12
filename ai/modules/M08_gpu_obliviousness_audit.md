@@ -99,3 +99,11 @@ paper's setup section and the panel will ask to see. Follow `ai/EVIDENCE.md`.
   `bench/jobs/M08_issue17.json`). `gpu_open_and_key` takes optional preallocated outputs (`out=`), used only by the
   kernel-only targets. Their metric ids are `T-DUDECT-MAXT-<TARGET>-NULL|SWAP|SYM|KERNEL|AGE|FRESH`. They do not
   replace any S2 target, and `report_oblivious` does not read them.
+- 2026-10-12 (session 21, fix ISSUE-17 ingest). Job 20261012-113437_M08_issue17 on a Kaggle T4, two seeds:
+  - The three failing series of S2 FAIL again. For `aead_conv` and `aead_tag` the same-contents controls FAIL as
+    strongly as the originals and the targets with symmetric staging PASS: the S2 staging of these two targets
+    (one fixed host array against a pool, or against a freshly written array) separates the classes by itself.
+    The S2 targets and their table are unchanged; a later unit must decide which staging the reported table uses.
+  - `write_epoch`: the whole-call FAIL is reproduced by two same-contents controls and disappears in
+    `write_epoch_fresh`. Two diagnostic device-stage series FAIL at seed 8 (ISSUE-25).
+  - The verdict of every series was recomputed from the raw data by `runs/20261012-150500_M08_issue17_ingest/gates_issue17.py`.

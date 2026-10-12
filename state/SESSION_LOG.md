@@ -487,3 +487,26 @@
 - GPU job: 20261012-113437_M08_issue17 packed from 3671fac (bundle c8b5e6ab81d2...), pending
 - Commit: 0dff9e0 (code and job: 3671fac)
 - Next: ingest 20261012-113437_M08_issue17 (then M11 S1) ; human action: ISSUE-24, run the job on Kaggle and put the results zip in gpujobs/inbox
+
+- GPU-JOB 20261012-113437_M08_issue17 ingested 2026-10-12 15:04: runner kaggle, gpu Tesla T4, session 20261012-061138, overall exit 0, runs 20261012-061335_M08_dudect_issue17_selftest_quick, 20261012-061420_M08_dudect_issue17_s8, 20261012-080629_M08_dudect_issue17_s9, 66 metrics indexed.
+
+## Session 21 — 2026-10-12 15:05 — fix ISSUE-17, ingest (M08 GPU obliviousness audit) — owner:Aditya
+- Steps: none new (M08 stays DONE); the ingest half of `fix ISSUE-17` (status after: NOT_STARTED for M11, no job pending)
+- Did: ingested job 20261012-113437_M08_issue17 (7 commands exit 0, shas match). runs/20261012-150500_M08_issue17_ingest/gates_issue17.py
+  recomputes every verdict from the raw npz and applies the reading rules of ISSUE-17; device_series_detail.txt counts
+  the tests above the threshold. No file under src/, kernels/, bench/, tests/ or results/ changed.
+- Result: the three M08 FAILs are reproduced in both seeds. aead_conv and aead_tag: same-contents controls FAIL,
+  swapped roles keep the sign of t, symmetric staging and kernel-only window PASS (harness staging, H1/H2). write_epoch
+  whole call: same-contents controls FAIL, write_epoch_fresh PASSES (H4). New: write_epoch_age and write_epoch_fresh
+  FAIL in the device-stage series at seed 8 (6.3027, 6.1653); the second PASSES at seed 9.
+- Evidence: runs/20261012-061335_M08_dudect_issue17_selftest_quick, runs/20261012-061420_M08_dudect_issue17_s8,
+  runs/20261012-080629_M08_dudect_issue17_s9 (cupy, Tesla T4); runs/20261012-150500_M08_issue17_ingest (gates.txt 106 PASS / 0 FAIL;
+  pytest_all.txt 1709 passed; check_* PASS); evidence/terminal/M08_issue17_*, evidence/figures/M08_issue17_*
+- Metrics added: 66 rows, T-DUDECT-MAXT-* and T-DUDECT-N-* for the 14 targets and the controls (seed 8, seed 9, self-test).
+  The ids of the S2 targets now have one row per run; the run dir tells them apart
+- Decisions: none. The ADR on whole-call host timing is still open for the team (needed before M14)
+- Issues: closed ISSUE-24; ISSUE-17 updated with the result, stays OPEN; opened ISSUE-25 (device-stage FAILs, high, BLOCKS M14)
+- Deviations from spec: none new (Amendments of ai/modules/M08 record the result)
+- Not verified: the cause of ISSUE-25; staging and clock state are not separated; one GPU model
+- Commit: THISCOMMIT
+- Next: M11 S1 ; human action: none now (team decision on whole-call host timing before M14, see ISSUE-17). Keep Docker Desktop running when you type continue

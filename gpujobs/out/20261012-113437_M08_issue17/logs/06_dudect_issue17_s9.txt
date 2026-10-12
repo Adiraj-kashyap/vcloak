@@ -1,0 +1,162 @@
+target control_null
+  control_null: 20000/200000  max|t| ms 1.755
+  control_null: 40000/200000  max|t| ms 2.447
+  control_null: 60000/200000  max|t| ms 2.288
+  control_null: 80000/200000  max|t| ms 1.611
+  control_null: 100000/200000  max|t| ms 1.409
+  control_null: 120000/200000  max|t| ms 1.528
+  control_null: 140000/200000  max|t| ms 1.401
+  control_null: 160000/200000  max|t| ms 1.249
+  control_null: 180000/200000  max|t| ms 0.950
+  control_null: 200000/200000  max|t| ms 1.253
+target aead_conv
+  aead_conv: 20000/200000  max|t| ms 7.150
+  aead_conv: 40000/200000  max|t| ms 11.172
+  aead_conv: 60000/200000  max|t| ms 13.778
+  aead_conv: 80000/200000  max|t| ms 16.844
+  aead_conv: 100000/200000  max|t| ms 19.157
+  aead_conv: 120000/200000  max|t| ms 21.454
+  aead_conv: 140000/200000  max|t| ms 22.996
+  aead_conv: 160000/200000  max|t| ms 24.512
+  aead_conv: 180000/200000  max|t| ms 26.560
+  aead_conv: 200000/200000  max|t| ms 28.277
+target aead_conv_null
+  aead_conv_null: 20000/200000  max|t| ms 9.364
+  aead_conv_null: 40000/200000  max|t| ms 15.190
+  aead_conv_null: 60000/200000  max|t| ms 17.818
+  aead_conv_null: 80000/200000  max|t| ms 20.214
+  aead_conv_null: 100000/200000  max|t| ms 22.183
+  aead_conv_null: 120000/200000  max|t| ms 24.856
+  aead_conv_null: 140000/200000  max|t| ms 28.479
+  aead_conv_null: 160000/200000  max|t| ms 30.107
+  aead_conv_null: 180000/200000  max|t| ms 30.101
+  aead_conv_null: 200000/200000  max|t| ms 30.170
+target aead_conv_swap
+  aead_conv_swap: 20000/200000  max|t| ms 4.852
+  aead_conv_swap: 40000/200000  max|t| ms 10.401
+  aead_conv_swap: 60000/200000  max|t| ms 14.896
+  aead_conv_swap: 80000/200000  max|t| ms 17.928
+  aead_conv_swap: 100000/200000  max|t| ms 20.453
+  aead_conv_swap: 120000/200000  max|t| ms 23.140
+  aead_conv_swap: 140000/200000  max|t| ms 26.356
+  aead_conv_swap: 160000/200000  max|t| ms 27.395
+  aead_conv_swap: 180000/200000  max|t| ms 27.447
+  aead_conv_swap: 200000/200000  max|t| ms 28.683
+target aead_conv_sym
+  aead_conv_sym: 20000/200000  max|t| ms 1.852
+  aead_conv_sym: 40000/200000  max|t| ms 2.118
+  aead_conv_sym: 60000/200000  max|t| ms 1.845
+  aead_conv_sym: 80000/200000  max|t| ms 1.733
+  aead_conv_sym: 100000/200000  max|t| ms 2.141
+  aead_conv_sym: 120000/200000  max|t| ms 1.560
+  aead_conv_sym: 140000/200000  max|t| ms 1.706
+  aead_conv_sym: 160000/200000  max|t| ms 1.426
+  aead_conv_sym: 180000/200000  max|t| ms 1.717
+  aead_conv_sym: 200000/200000  max|t| ms 1.348
+target aead_conv_kernel
+  aead_conv_kernel: 20000/200000  max|t| ms 1.254
+  aead_conv_kernel: 40000/200000  max|t| ms 2.280
+  aead_conv_kernel: 60000/200000  max|t| ms 1.996
+  aead_conv_kernel: 80000/200000  max|t| ms 1.931
+  aead_conv_kernel: 100000/200000  max|t| ms 1.726
+  aead_conv_kernel: 120000/200000  max|t| ms 1.829
+  aead_conv_kernel: 140000/200000  max|t| ms 1.609
+  aead_conv_kernel: 160000/200000  max|t| ms 1.887
+  aead_conv_kernel: 180000/200000  max|t| ms 1.760
+  aead_conv_kernel: 200000/200000  max|t| ms 1.867
+target aead_tag
+  aead_tag: 20000/200000  max|t| ms 9.936
+  aead_tag: 40000/200000  max|t| ms 13.024
+  aead_tag: 60000/200000  max|t| ms 14.876
+  aead_tag: 80000/200000  max|t| ms 16.748
+  aead_tag: 100000/200000  max|t| ms 19.822
+  aead_tag: 120000/200000  max|t| ms 23.271
+  aead_tag: 140000/200000  max|t| ms 26.088
+  aead_tag: 160000/200000  max|t| ms 29.179
+  aead_tag: 180000/200000  max|t| ms 32.263
+  aead_tag: 200000/200000  max|t| ms 35.672
+target aead_tag_null
+  aead_tag_null: 20000/200000  max|t| ms 18.676
+  aead_tag_null: 40000/200000  max|t| ms 23.353
+  aead_tag_null: 60000/200000  max|t| ms 28.137
+  aead_tag_null: 80000/200000  max|t| ms 34.738
+  aead_tag_null: 100000/200000  max|t| ms 38.998
+  aead_tag_null: 120000/200000  max|t| ms 42.017
+  aead_tag_null: 140000/200000  max|t| ms 45.244
+  aead_tag_null: 160000/200000  max|t| ms 48.091
+  aead_tag_null: 180000/200000  max|t| ms 48.826
+  aead_tag_null: 200000/200000  max|t| ms 50.849
+target aead_tag_swap
+  aead_tag_swap: 20000/200000  max|t| ms 9.867
+  aead_tag_swap: 40000/200000  max|t| ms 16.716
+  aead_tag_swap: 60000/200000  max|t| ms 22.577
+  aead_tag_swap: 80000/200000  max|t| ms 27.741
+  aead_tag_swap: 100000/200000  max|t| ms 30.687
+  aead_tag_swap: 120000/200000  max|t| ms 34.039
+  aead_tag_swap: 140000/200000  max|t| ms 36.738
+  aead_tag_swap: 160000/200000  max|t| ms 40.076
+  aead_tag_swap: 180000/200000  max|t| ms 42.916
+  aead_tag_swap: 200000/200000  max|t| ms 42.690
+target aead_tag_sym
+  aead_tag_sym: 20000/200000  max|t| ms 2.155
+  aead_tag_sym: 40000/200000  max|t| ms 2.403
+  aead_tag_sym: 60000/200000  max|t| ms 2.636
+  aead_tag_sym: 80000/200000  max|t| ms 3.304
+  aead_tag_sym: 100000/200000  max|t| ms 3.108
+  aead_tag_sym: 120000/200000  max|t| ms 3.437
+  aead_tag_sym: 140000/200000  max|t| ms 3.525
+  aead_tag_sym: 160000/200000  max|t| ms 3.525
+  aead_tag_sym: 180000/200000  max|t| ms 3.866
+  aead_tag_sym: 200000/200000  max|t| ms 3.894
+target aead_tag_kernel
+  aead_tag_kernel: 20000/200000  max|t| ms 0.836
+  aead_tag_kernel: 40000/200000  max|t| ms 1.133
+  aead_tag_kernel: 60000/200000  max|t| ms 1.050
+  aead_tag_kernel: 80000/200000  max|t| ms 0.923
+  aead_tag_kernel: 100000/200000  max|t| ms 0.500
+  aead_tag_kernel: 120000/200000  max|t| ms 0.786
+  aead_tag_kernel: 140000/200000  max|t| ms 2.083
+  aead_tag_kernel: 160000/200000  max|t| ms 2.164
+  aead_tag_kernel: 180000/200000  max|t| ms 2.280
+  aead_tag_kernel: 200000/200000  max|t| ms 2.393
+target write_epoch
+  write_epoch: 20000/200000  max|t| device_ms 1.800  call_ms 3.530
+  write_epoch: 40000/200000  max|t| device_ms 2.189  call_ms 5.359
+  write_epoch: 60000/200000  max|t| device_ms 1.960  call_ms 5.453
+  write_epoch: 80000/200000  max|t| device_ms 1.900  call_ms 5.737
+  write_epoch: 100000/200000  max|t| device_ms 2.155  call_ms 6.304
+  write_epoch: 120000/200000  max|t| device_ms 1.990  call_ms 6.897
+  write_epoch: 140000/200000  max|t| device_ms 2.208  call_ms 7.088
+  write_epoch: 160000/200000  max|t| device_ms 2.092  call_ms 7.623
+  write_epoch: 180000/200000  max|t| device_ms 2.364  call_ms 8.483
+  write_epoch: 200000/200000  max|t| device_ms 1.967  call_ms 8.582
+target write_epoch_fresh
+  write_epoch_fresh: 20000/200000  max|t| device_ms 1.725  call_ms 2.275
+  write_epoch_fresh: 40000/200000  max|t| device_ms 1.768  call_ms 2.057
+  write_epoch_fresh: 60000/200000  max|t| device_ms 1.914  call_ms 1.633
+  write_epoch_fresh: 80000/200000  max|t| device_ms 1.934  call_ms 1.367
+  write_epoch_fresh: 100000/200000  max|t| device_ms 1.874  call_ms 2.067
+  write_epoch_fresh: 120000/200000  max|t| device_ms 1.714  call_ms 1.556
+  write_epoch_fresh: 140000/200000  max|t| device_ms 1.779  call_ms 1.315
+  write_epoch_fresh: 160000/200000  max|t| device_ms 1.930  call_ms 1.533
+  write_epoch_fresh: 180000/200000  max|t| device_ms 2.444  call_ms 1.386
+  write_epoch_fresh: 200000/200000  max|t| device_ms 3.094  call_ms 1.387
+run dir     /kaggle/working/vcloak_job/runs/20261012-080629_M08_dudect_issue17_s9
+backend     cupy   N per class 100000   quick False
+  control_null    ms         max|t|      1.253  PASS  (expected PASS)  r=1
+  aead_conv       ms         max|t|     28.277  FAIL  (expected PASS)  r=1
+  aead_conv_null  ms         max|t|     30.170  FAIL  (expected PASS)  r=1
+  aead_conv_swap  ms         max|t|     28.683  FAIL  (expected PASS)  r=1
+  aead_conv_sym   ms         max|t|      1.348  PASS  (expected PASS)  r=1
+  aead_conv_kernel ms         max|t|      1.867  PASS  (expected PASS)  r=8
+  aead_tag        ms         max|t|     35.672  FAIL  (expected PASS)  r=1
+  aead_tag_null   ms         max|t|     50.849  FAIL  (expected PASS)  r=1
+  aead_tag_swap   ms         max|t|     42.690  FAIL  (expected PASS)  r=1
+  aead_tag_sym    ms         max|t|      3.894  PASS  (expected PASS)  r=1
+  aead_tag_kernel ms         max|t|      2.393  PASS  (expected PASS)  r=8
+  write_epoch     device_ms  max|t|      1.967  PASS  (expected PASS)  r=1
+  write_epoch     call_ms    max|t|      8.582  FAIL  (expected PASS)  r=1
+  write_epoch_fresh device_ms  max|t|      3.094  PASS  (expected PASS)  r=1
+  write_epoch_fresh call_ms    max|t|      1.387  PASS  (expected PASS)  r=1
+metrics     28
+status      OK   dudect FAIL: write_epoch, aead_tag, aead_conv, aead_conv_null, aead_conv_swap, aead_tag_null, aead_tag_swap

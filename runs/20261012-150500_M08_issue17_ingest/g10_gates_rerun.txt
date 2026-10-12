@@ -1,0 +1,141 @@
+job 20261012-113437_M08_issue17 session 20261012-061138 runner kaggle gpu Tesla T4 driver 580.178.04 cupy 14.0.1 cuda_runtime 12090
+    PASS all commands exit 0 - 7 commands
+    PASS git sha matches pack - 3671fac
+    PASS bundle sha matches pack
+    PASS backend cupy
+    PASS tests of the diagnostics on the GPU - 271 passed, 836 warnings in 112.08s (0:01:52)
+    PASS manifest 20261012-061335_M08_dudect_issue17_selftest_quick: cupy, this job, this session - status OK
+    PASS manifest 20261012-061420_M08_dudect_issue17_s8: cupy, this job, this session - status OK
+    PASS manifest 20261012-080629_M08_dudect_issue17_s9: cupy, this job, this session - status OK
+    NOTE the M08 job ran in session 20261012-031230 (driver 580.178.04); this job in 20261012-061138 (driver 580.178.04): two runner sessions, values are not pooled
+    PASS planted leak detected in this session (|t| >> 4.5) - max |t| 401.9489 at N 10000 (quick)
+    PASS s8: no target error, full N, CUDA events - 15 targets
+    PASS s9: no target error, full N, CUDA events - 13 targets
+    PASS s8 control_null: 100000 measurements per class, outputs correct - r 1, clock 1095->1080 MHz LOW, 291 s
+    PASS s8 control_null/ms: max |t| recomputed from raw.npz equals the summary - 1.6126 PASS
+    PASS s8 aead_conv: 100000 measurements per class, outputs correct - r 1, clock 585->585 MHz LOW, 174 s
+    PASS s8 aead_conv/ms: max |t| recomputed from raw.npz equals the summary - 30.8131 FAIL
+    PASS s8 aead_conv_null: 100000 measurements per class, outputs correct - r 1, clock 585->585 MHz LOW, 174 s
+    PASS s8 aead_conv_null/ms: max |t| recomputed from raw.npz equals the summary - 43.1742 FAIL
+    PASS s8 aead_conv_swap: 100000 measurements per class, outputs correct - r 1, clock 585->585 MHz LOW, 174 s
+    PASS s8 aead_conv_swap/ms: max |t| recomputed from raw.npz equals the summary - 34.4452 FAIL
+    PASS s8 aead_conv_sym: 100000 measurements per class, outputs correct - r 1, clock 1545->1530 MHz OK, 28 s
+    PASS s8 aead_conv_sym/ms: max |t| recomputed from raw.npz equals the summary - 2.4044 PASS
+    PASS s8 aead_conv_kernel: 100000 measurements per class, outputs correct - r 8, clock 1245->1140 MHz LOW, 91 s
+    PASS s8 aead_conv_kernel/ms: max |t| recomputed from raw.npz equals the summary - 2.9037 PASS
+    PASS s8 aead_tag: 100000 measurements per class, outputs correct - r 1, clock 585->585 MHz LOW, 429 s
+    PASS s8 aead_tag/ms: max |t| recomputed from raw.npz equals the summary - 51.4940 FAIL
+    PASS s8 aead_tag_null: 100000 measurements per class, outputs correct - r 1, clock 585->585 MHz LOW, 437 s
+    PASS s8 aead_tag_null/ms: max |t| recomputed from raw.npz equals the summary - 63.0436 FAIL
+    PASS s8 aead_tag_swap: 100000 measurements per class, outputs correct - r 1, clock 585->585 MHz LOW, 436 s
+    PASS s8 aead_tag_swap/ms: max |t| recomputed from raw.npz equals the summary - 59.6183 FAIL
+    PASS s8 aead_tag_sym: 100000 measurements per class, outputs correct - r 1, clock 1515->1530 MHz OK, 28 s
+    PASS s8 aead_tag_sym/ms: max |t| recomputed from raw.npz equals the summary - 1.5629 PASS
+    PASS s8 aead_tag_kernel: 100000 measurements per class, outputs correct - r 8, clock 1170->1155 MHz LOW, 91 s
+    PASS s8 aead_tag_kernel/ms: max |t| recomputed from raw.npz equals the summary - 1.5075 PASS
+    PASS s8 write_epoch: 100000 measurements per class, outputs correct - r 1, clock 585->585 MHz LOW, 1051 s
+    PASS s8 write_epoch/device_ms: max |t| recomputed from raw.npz equals the summary - 1.7742 PASS
+    PASS s8 write_epoch/call_ms: max |t| recomputed from raw.npz equals the summary - 29.6309 FAIL
+    PASS s8 write_epoch_null: 100000 measurements per class, outputs correct - r 1, clock 585->585 MHz LOW, 1146 s
+    PASS s8 write_epoch_null/device_ms: max |t| recomputed from raw.npz equals the summary - 2.7782 PASS
+    PASS s8 write_epoch_null/call_ms: max |t| recomputed from raw.npz equals the summary - 12.7431 FAIL
+    PASS s8 write_epoch_age: 100000 measurements per class, outputs correct - r 1, clock 585->585 MHz LOW, 1127 s
+    PASS s8 write_epoch_age/device_ms: max |t| recomputed from raw.npz equals the summary - 6.3027 FAIL
+    PASS s8 write_epoch_age/call_ms: max |t| recomputed from raw.npz equals the summary - 12.1795 FAIL
+    PASS s8 write_epoch_fresh: 100000 measurements per class, outputs correct - r 1, clock 585->585 MHz LOW, 986 s
+    PASS s8 write_epoch_fresh/device_ms: max |t| recomputed from raw.npz equals the summary - 6.1653 FAIL
+    PASS s8 write_epoch_fresh/call_ms: max |t| recomputed from raw.npz equals the summary - 1.7015 PASS
+    PASS s9 control_null: 100000 measurements per class, outputs correct - r 1, clock 960->990 MHz LOW, 307 s
+    PASS s9 control_null/ms: max |t| recomputed from raw.npz equals the summary - 1.2530 PASS
+    PASS s9 aead_conv: 100000 measurements per class, outputs correct - r 1, clock 585->585 MHz LOW, 176 s
+    PASS s9 aead_conv/ms: max |t| recomputed from raw.npz equals the summary - 28.2772 FAIL
+    PASS s9 aead_conv_null: 100000 measurements per class, outputs correct - r 1, clock 585->585 MHz LOW, 176 s
+    PASS s9 aead_conv_null/ms: max |t| recomputed from raw.npz equals the summary - 30.1696 FAIL
+    PASS s9 aead_conv_swap: 100000 measurements per class, outputs correct - r 1, clock 585->585 MHz LOW, 176 s
+    PASS s9 aead_conv_swap/ms: max |t| recomputed from raw.npz equals the summary - 28.6825 FAIL
+    PASS s9 aead_conv_sym: 100000 measurements per class, outputs correct - r 1, clock 1425->1545 MHz OK, 30 s
+    PASS s9 aead_conv_sym/ms: max |t| recomputed from raw.npz equals the summary - 1.3480 PASS
+    PASS s9 aead_conv_kernel: 100000 measurements per class, outputs correct - r 8, clock 1185->1170 MHz LOW, 92 s
+    PASS s9 aead_conv_kernel/ms: max |t| recomputed from raw.npz equals the summary - 1.8673 PASS
+    PASS s9 aead_tag: 100000 measurements per class, outputs correct - r 1, clock 585->585 MHz LOW, 434 s
+    PASS s9 aead_tag/ms: max |t| recomputed from raw.npz equals the summary - 35.6716 FAIL
+    PASS s9 aead_tag_null: 100000 measurements per class, outputs correct - r 1, clock 585->585 MHz LOW, 434 s
+    PASS s9 aead_tag_null/ms: max |t| recomputed from raw.npz equals the summary - 50.8492 FAIL
+    PASS s9 aead_tag_swap: 100000 measurements per class, outputs correct - r 1, clock 585->585 MHz LOW, 449 s
+    PASS s9 aead_tag_swap/ms: max |t| recomputed from raw.npz equals the summary - 42.6905 FAIL
+    PASS s9 aead_tag_sym: 100000 measurements per class, outputs correct - r 1, clock 1530->1560 MHz OK, 30 s
+    PASS s9 aead_tag_sym/ms: max |t| recomputed from raw.npz equals the summary - 3.8937 PASS
+    PASS s9 aead_tag_kernel: 100000 measurements per class, outputs correct - r 8, clock 1170->1215 MHz LOW, 92 s
+    PASS s9 aead_tag_kernel/ms: max |t| recomputed from raw.npz equals the summary - 2.3929 PASS
+    PASS s9 write_epoch: 100000 measurements per class, outputs correct - r 1, clock 585->585 MHz LOW, 1148 s
+    PASS s9 write_epoch/device_ms: max |t| recomputed from raw.npz equals the summary - 1.9675 PASS
+    PASS s9 write_epoch/call_ms: max |t| recomputed from raw.npz equals the summary - 8.5822 FAIL
+    PASS s9 write_epoch_fresh: 100000 measurements per class, outputs correct - r 1, clock 585->585 MHz LOW, 1119 s
+    PASS s9 write_epoch_fresh/device_ms: max |t| recomputed from raw.npz equals the summary - 3.0940 PASS
+    PASS s9 write_epoch_fresh/call_ms: max |t| recomputed from raw.npz equals the summary - 1.3865 PASS
+    TABLE seed target/series verdict max|t| t_raw mean0_ms mean1_ms diff_mean_ns diff_median_ns raw_shift_at_4.5_ns max_at
+    ROW s8 control_null/ms PASS 1.6126 -1.146 0.504315 0.504604 289.0 144.0 1135.1 [crop 10 (below 0.519320003)]
+    ROW s8 aead_conv/ms FAIL 30.8131 -6.177 0.158955 0.159314 359.4 448.0 261.9 [crop 6 (below 0.154817389)]
+    ROW s8 aead_conv_null/ms FAIL 43.1742 -12.183 0.159786 0.160414 628.0 608.0 232.0 [crop 0 (below 0.156028798)]
+    ROW s8 aead_conv_swap/ms FAIL 34.4452 -5.446 0.159225 0.159496 270.5 416.0 223.5 [crop 12 (below 0.155400962)]
+    ROW s8 aead_conv_sym/ms PASS 2.4044 -0.774 0.074312 0.074346 33.5 0.0 194.9 [crop 23 (below 0.0774720013)]
+    ROW s8 aead_conv_kernel/ms PASS 2.9037 1.154 0.388472 0.388414 -58.0 -96.0 226.2 [crop 20 (below 0.401823997)]
+    ROW s8 aead_tag/ms FAIL 51.4940 -14.983 0.160332 0.161051 718.3 608.0 215.7 [crop 21 (below 0.159026561)]
+    ROW s8 aead_tag_null/ms FAIL 63.0436 -13.063 0.161001 0.161643 641.4 576.0 220.9 [crop 10 (below 0.1593264)]
+    ROW s8 aead_tag_swap/ms FAIL 59.6183 -13.015 0.160890 0.161489 599.0 576.0 207.1 [crop 13 (below 0.159118394)]
+    ROW s8 aead_tag_sym/ms PASS 1.5629 -0.283 0.073253 0.073265 11.9 32.0 189.2 [crop 24 (below 0.0753152232)]
+    ROW s8 aead_tag_kernel/ms PASS 1.5075 1.371 0.386251 0.386178 -72.9 0.0 239.2 [crop 1 (below 0.370131195)]
+    ROW s8 write_epoch/device_ms PASS 1.7742 -1.104 1.041918 1.042382 464.0 159.8 1890.5 [crop 45 (below 1.18933426)]
+    ROW s8 write_epoch/call_ms FAIL 29.6309 -0.143 3.796154 3.797702 1547.7 10992.1 48639.3 [crop 13 (below 3.5095504)]
+    ROW s8 write_epoch_null/device_ms PASS 2.7782 -2.194 1.057535 1.058496 961.2 608.0 1971.9 [crop 50 (below 1.26375306)]
+    ROW s8 write_epoch_null/call_ms FAIL 12.7431 -0.603 3.877263 3.884379 7116.0 8624.1 53109.7 [crop 8 (below 3.51409902)]
+    ROW s8 write_epoch_age/device_ms FAIL 6.3027 0.542 1.061698 1.061445 -252.6 -351.8 2097.5 [crop 1 (below 0.977350423)]
+    ROW s8 write_epoch_age/call_ms FAIL 12.1795 -1.671 3.900808 3.921623 20814.6 9648.0 56065.0 [crop 11 (below 3.50989819)]
+    ROW s8 write_epoch_fresh/device_ms FAIL 6.1653 -2.013 1.059628 1.060535 906.5 1088.1 2026.2 [crop 6 (below 1.01499959)]
+    ROW s8 write_epoch_fresh/call_ms PASS 1.7015 -0.129 4.002750 4.004477 1726.9 1567.8 60027.6 [crop 37 (below 3.97087366)]
+    ROW s9 control_null/ms PASS 1.2530 -0.504 0.558640 0.558786 146.1 288.0 1305.3 [crop 5 (below 0.562899932)]
+    ROW s9 aead_conv/ms FAIL 28.2772 -7.364 0.159388 0.159777 388.9 480.0 237.7 [crop 19 (below 0.161104005)]
+    ROW s9 aead_conv_null/ms FAIL 30.1696 -11.101 0.160378 0.161007 628.9 576.0 255.0 [crop 22 (below 0.163140483)]
+    ROW s9 aead_conv_swap/ms FAIL 28.6825 -9.828 0.160801 0.161341 540.3 480.0 247.4 [crop 15 (below 0.162254495)]
+    ROW s9 aead_conv_sym/ms PASS 1.3480 0.268 0.078422 0.078409 -12.7 0.0 212.4 [crop 23 (below 0.0819199979)]
+    ROW s9 aead_conv_kernel/ms PASS 1.8673 -0.140 0.388901 0.388910 8.8 0.0 283.2 [crop 4 (below 0.385343999)]
+    ROW s9 aead_tag/ms FAIL 35.6716 -9.918 0.161399 0.161889 489.9 480.0 222.3 [crop 19 (below 0.158920001)]
+    ROW s9 aead_tag_null/ms FAIL 50.8492 -13.623 0.161119 0.161794 675.0 640.0 223.0 [crop 11 (below 0.159077118)]
+    ROW s9 aead_tag_swap/ms FAIL 42.6905 -10.323 0.162089 0.162648 559.3 608.0 243.8 [crop 7 (below 0.157920003)]
+    ROW s9 aead_tag_sym/ms PASS 3.8937 0.513 0.078042 0.078017 -24.9 -64.0 218.5 [crop 18 (below 0.0757760033)]
+    ROW s9 aead_tag_kernel/ms PASS 2.3929 -2.020 0.386890 0.387019 129.1 64.0 287.7 [crop 70 (below 0.432125564)]
+    ROW s9 write_epoch/device_ms PASS 1.9675 -0.187 1.133729 1.133823 94.6 223.9 2274.7 [crop 6 (below 1.08245577)]
+    ROW s9 write_epoch/call_ms FAIL 8.5822 0.659 4.155936 4.147157 -8778.6 7200.0 59914.9 [crop 49 (below 4.28897303)]
+    ROW s9 write_epoch_fresh/device_ms PASS 3.0940 -0.693 1.206242 1.206590 347.7 767.7 2258.9 [crop 36 (below 1.2425754)]
+    ROW s9 write_epoch_fresh/call_ms PASS 1.3865 0.760 4.562830 4.551560 -11269.9 224.1 66771.5 [crop 11 (below 3.94866054)]
+    PASS s8: full-N control_null PASS (else the run is void) - max |t| 1.6126
+    PASS s8: original aead_conv/ms FAILS again (the M08 finding is reproduced) - max |t| 30.8131, t_raw -6.177
+    PASS s8: original aead_tag/ms FAILS again (the M08 finding is reproduced) - max |t| 51.4940, t_raw -14.983
+    PASS s8: original write_epoch/call_ms FAILS again (the M08 finding is reproduced) - max |t| 29.6309, t_raw -0.143
+    NOTE s8: write_epoch/device_ms PASS 1.7742 (PASS in M08: 2.7559)
+    PASS s9: full-N control_null PASS (else the run is void) - max |t| 1.2530
+    PASS s9: original aead_conv/ms FAILS again (the M08 finding is reproduced) - max |t| 28.2772, t_raw -7.364
+    PASS s9: original aead_tag/ms FAILS again (the M08 finding is reproduced) - max |t| 35.6716, t_raw -9.918
+    PASS s9: original write_epoch/call_ms FAILS again (the M08 finding is reproduced) - max |t| 8.5822, t_raw 0.659
+    NOTE s9: write_epoch/device_ms PASS 1.9675 (PASS in M08: 2.7559)
+    READING s8 aead_conv_null FAIL 43.1742: the staging alone separates two classes with the same contents (H1)
+    READING s8 aead_conv_swap t_raw -5.446 vs original -6.177: same sign, the difference follows the staging role
+    READING s8 aead_conv_sym PASS 2.4044, aead_conv_kernel PASS 2.9037: harness staging; no data dependence detected with symmetric staging
+    READING s9 aead_conv_null FAIL 30.1696: the staging alone separates two classes with the same contents (H1)
+    READING s9 aead_conv_swap t_raw -9.828 vs original -7.364: same sign, the difference follows the staging role
+    READING s9 aead_conv_sym PASS 1.3480, aead_conv_kernel PASS 1.8673: harness staging; no data dependence detected with symmetric staging
+    READING s8 aead_tag_null FAIL 63.0436: the staging alone separates two classes with the same contents (H2)
+    READING s8 aead_tag_swap t_raw -13.015 vs original -14.983: same sign, the difference follows the staging role
+    READING s8 aead_tag_sym PASS 1.5629, aead_tag_kernel PASS 1.5075: harness staging; no data dependence detected with symmetric staging
+    READING s9 aead_tag_null FAIL 50.8492: the staging alone separates two classes with the same contents (H2)
+    READING s9 aead_tag_swap t_raw -10.323 vs original -9.918: same sign, the difference follows the staging role
+    READING s9 aead_tag_sym PASS 3.8937, aead_tag_kernel PASS 2.3929: harness staging; no data dependence detected with symmetric staging
+    READING s8 write_epoch_null: call_ms FAIL 12.7431, device_ms PASS 2.7782
+    READING s8 write_epoch_age: call_ms FAIL 12.1795, device_ms FAIL 6.3027
+    READING s8 write_epoch_fresh: call_ms PASS 1.7015, device_ms FAIL 6.1653
+    READING s9 write_epoch_fresh: call_ms PASS 1.3865, device_ms PASS 3.0940
+    FINDING device-stage series FAIL, not covered by the reading rules: s8 write_epoch_age/device_ms 6.3027
+    FINDING device-stage series FAIL, not covered by the reading rules: s8 write_epoch_fresh/device_ms 6.1653
+    NOTE clock: every FAIL series ran at 585 MHz (LOW); *_sym ran at the full clock (OK), *_kernel in between (LOW). The staging and the clock state change together, so their effects are not separated by this job
+    NOTE write_epoch_null and write_epoch_age ran at seed 8 only (not in issue17_rep)
+gates: 106 PASS, 0 FAIL, 2 unexpected device-stage findings

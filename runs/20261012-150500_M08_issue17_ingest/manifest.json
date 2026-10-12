@@ -1,0 +1,47 @@
+{
+  "run_id": "20261012-150500_M08_issue17_ingest",
+  "module": "M08",
+  "step": "S2",
+  "owner": "Aditya",
+  "git_sha": "bb23be88b91fd3a557cac19134564d0f8d390c8b",
+  "dirty": true,
+  "command": "gpujob.py ingest; gates_issue17.py; crop-test count from the raw npz; pytest -m 'not gpu' (numpy); check_oblivious.py kernels/; check_metrics.py; check_secrets.py; ruff",
+  "seed": 0,
+  "quick": false,
+  "params": {
+    "job": "20261012-113437_M08_issue17",
+    "threshold": 4.5
+  },
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261012-150500",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U"
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791798307.3549244
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791798307.3549244
+  },
+  "outputs": [
+    "check_metrics.txt",
+    "check_oblivious.txt",
+    "check_secrets.txt",
+    "device_series_detail.txt",
+    "g10_gates_rerun.txt",
+    "gates.txt",
+    "gates_issue17.py",
+    "pytest_all.txt",
+    "readout.txt",
+    "ruff.txt"
+  ],
+  "status": "OK",
+  "notes": "ISSUE-17 ingest: gates 106 PASS 0 FAIL; reads the ingested bundle, measures nothing (local numpy backend); the GPU numbers are in runs/20261012-061335_M08_dudect_issue17_selftest_quick, runs/20261012-061420_M08_dudect_issue17_s8, runs/20261012-080629_M08_dudect_issue17_s9"
+}
