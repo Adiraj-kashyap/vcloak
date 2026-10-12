@@ -347,16 +347,24 @@ def gpu_seal_seq(kseq_dev: Any, conv_ids_dev: Any, seqs_dev: Any, nonces_dev: An
     return out
 
 
-def gpu_open_and_key(kseq_dev: Any, blobs_dev: Any, q_conv: int) -> tuple[Any, Any, Any]:
+def gpu_open_and_key(kseq_dev: Any, blobs_dev: Any, q_conv: int,
+                     out: tuple[Any, Any, Any] | None = None) -> tuple[Any, Any, Any]:
     """Open every seq_enc row (11 uint32 words each) and return the restore-sort columns (hi, lo, ok):
     hi = 0 for an authentic row of conversation `q_conv` and 1 for a miss, lo = its seq (0 on a miss),
-    ok = 1 where the tag verified. Nothing is copied to the host."""
+    ok = 1 where the tag verified. Nothing is copied to the host. `out` gives the three columns to
+    write into (n rows each, on the device of the input) instead of new ones."""
     _check_buffer("kseq_dev", kseq_dev, np.uint32, KEY_WORDS)
     n = _rows("blobs", blobs_dev, np.uint32, SEQ_WORDS)
     if not 0 <= q_conv < 1 << 64:
         raise ValueError("the conversation id must fit in 64 bits")
     xp = _xp(kseq_dev)
-    d_hi, d_lo, d_ok = xp.empty(n, dtype=np.uint64), xp.empty(n, dtype=np.uint64), xp.empty(n, dtype=np.uint32)
+    if out is None:
+        d_hi, d_lo, d_ok = xp.empty(n, dtype=np.uint64), xp.empty(n, dtype=np.uint64), xp.empty(n, dtype=np.uint32)
+    else:
+        d_hi, d_lo, d_ok = out
+        _check_buffer("out hi", d_hi, np.uint64, n)
+        _check_buffer("out lo", d_lo, np.uint64, n)
+        _check_buffer("out ok", d_ok, np.uint32, n)
     _run_threads("aead_open_seq", n, (kseq_dev, blobs_dev, np.uint32(n), np.uint64(q_conv), d_hi, d_lo, d_ok))
     return d_hi, d_lo, d_ok
 

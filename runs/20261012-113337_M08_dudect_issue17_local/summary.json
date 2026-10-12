@@ -1,0 +1,455 @@
+{
+  "metrics": [
+    {
+      "id": "T-DUDECT-MAXT-CONTROL-NULL",
+      "value": "NOT_MEASURED",
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "T-DUDECT-N-CONTROL-NULL",
+      "value": "NOT_MEASURED",
+      "unit": "measurements",
+      "stat": "per class",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "T-DUDECT-MAXT-AEAD-CONV",
+      "value": "NOT_MEASURED",
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "T-DUDECT-N-AEAD-CONV",
+      "value": "NOT_MEASURED",
+      "unit": "measurements",
+      "stat": "per class",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "T-DUDECT-MAXT-AEAD-CONV-NULL",
+      "value": "NOT_MEASURED",
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "T-DUDECT-N-AEAD-CONV-NULL",
+      "value": "NOT_MEASURED",
+      "unit": "measurements",
+      "stat": "per class",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "T-DUDECT-MAXT-AEAD-CONV-SWAP",
+      "value": "NOT_MEASURED",
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "T-DUDECT-N-AEAD-CONV-SWAP",
+      "value": "NOT_MEASURED",
+      "unit": "measurements",
+      "stat": "per class",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "T-DUDECT-MAXT-AEAD-CONV-SYM",
+      "value": "NOT_MEASURED",
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "T-DUDECT-N-AEAD-CONV-SYM",
+      "value": "NOT_MEASURED",
+      "unit": "measurements",
+      "stat": "per class",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "T-DUDECT-MAXT-AEAD-CONV-KERNEL",
+      "value": "NOT_MEASURED",
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "T-DUDECT-N-AEAD-CONV-KERNEL",
+      "value": "NOT_MEASURED",
+      "unit": "measurements",
+      "stat": "per class",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "T-DUDECT-MAXT-AEAD-TAG",
+      "value": "NOT_MEASURED",
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "T-DUDECT-N-AEAD-TAG",
+      "value": "NOT_MEASURED",
+      "unit": "measurements",
+      "stat": "per class",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "T-DUDECT-MAXT-AEAD-TAG-NULL",
+      "value": "NOT_MEASURED",
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "T-DUDECT-N-AEAD-TAG-NULL",
+      "value": "NOT_MEASURED",
+      "unit": "measurements",
+      "stat": "per class",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "T-DUDECT-MAXT-AEAD-TAG-SWAP",
+      "value": "NOT_MEASURED",
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "T-DUDECT-N-AEAD-TAG-SWAP",
+      "value": "NOT_MEASURED",
+      "unit": "measurements",
+      "stat": "per class",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "T-DUDECT-MAXT-AEAD-TAG-SYM",
+      "value": "NOT_MEASURED",
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "T-DUDECT-N-AEAD-TAG-SYM",
+      "value": "NOT_MEASURED",
+      "unit": "measurements",
+      "stat": "per class",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "T-DUDECT-MAXT-AEAD-TAG-KERNEL",
+      "value": "NOT_MEASURED",
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "T-DUDECT-N-AEAD-TAG-KERNEL",
+      "value": "NOT_MEASURED",
+      "unit": "measurements",
+      "stat": "per class",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "T-DUDECT-MAXT-WRITE-EPOCH",
+      "value": "NOT_MEASURED",
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "T-DUDECT-N-WRITE-EPOCH",
+      "value": "NOT_MEASURED",
+      "unit": "measurements",
+      "stat": "per class",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "T-DUDECT-MAXT-WRITE-EPOCH-NULL",
+      "value": "NOT_MEASURED",
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "T-DUDECT-N-WRITE-EPOCH-NULL",
+      "value": "NOT_MEASURED",
+      "unit": "measurements",
+      "stat": "per class",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "T-DUDECT-MAXT-WRITE-EPOCH-AGE",
+      "value": "NOT_MEASURED",
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "T-DUDECT-N-WRITE-EPOCH-AGE",
+      "value": "NOT_MEASURED",
+      "unit": "measurements",
+      "stat": "per class",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "T-DUDECT-MAXT-WRITE-EPOCH-FRESH",
+      "value": "NOT_MEASURED",
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "T-DUDECT-N-WRITE-EPOCH-FRESH",
+      "value": "NOT_MEASURED",
+      "unit": "measurements",
+      "stat": "per class",
+      "note": "numpy backend: no GPU on this machine"
+    }
+  ],
+  "timer": null,
+  "executed_by": "numpy twins (vcloak.gpu.sim)",
+  "t_threshold": 4.5,
+  "n_per_class": 100000,
+  "quick": false,
+  "caveat": "Free Colab/Kaggle GPUs are shared: a PASS says that no dependence was detected with this many measurements on this device in this session, not that none exists.",
+  "errors": [],
+  "device": {
+    "backend": "numpy",
+    "is_gpu": false,
+    "device": "12th Gen Intel(R) Core(TM) i7-1255U",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U",
+    "cpu_count": 12,
+    "ram_gb": 15.6,
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0"
+  },
+  "targets": [
+    {
+      "target": "control_null",
+      "title": "null control: fused bitonic sort, the same fixed input in both classes",
+      "class0": "fixed sorted tags",
+      "class1": "the same fixed sorted tags",
+      "params": {
+        "n": 256,
+        "kernel": "gpu_bitonic_sort (fused launch plan)"
+      },
+      "mismatches": 0,
+      "verdict": "NOT_MEASURED",
+      "expected_verdict": "PASS"
+    },
+    {
+      "target": "aead_conv",
+      "title": "(e) AEAD open: every row matches q vs no row matches q",
+      "class0": "every row authentic and of conversation q (fixed)",
+      "class1": "every row authentic, random conversations != q (one of a pool of sealed inputs, chosen afresh)",
+      "params": {
+        "rows": 256,
+        "kernel": "aead_open_seq",
+        "class1_pool": 2
+      },
+      "mismatches": 0,
+      "verdict": "NOT_MEASURED",
+      "expected_verdict": "PASS"
+    },
+    {
+      "target": "aead_conv_null",
+      "title": "ISSUE-17 (e) staging only: every row matches q in both classes, fixed array vs pool",
+      "class0": "every row authentic and of conversation q (one fixed host array)",
+      "class1": "every row authentic and of conversation q (one of a pool of sealed inputs, chosen afresh)",
+      "params": {
+        "rows": 256,
+        "kernel": "aead_open_seq",
+        "class1_pool": 2
+      },
+      "mismatches": 0,
+      "verdict": "NOT_MEASURED",
+      "expected_verdict": "PASS"
+    },
+    {
+      "target": "aead_conv_swap",
+      "title": "ISSUE-17 (e) roles swapped: no row matches q (fixed array) vs every row matches q (pool)",
+      "class0": "every row authentic, random conversations != q (one fixed host array)",
+      "class1": "every row authentic and of conversation q (one of a pool of sealed inputs, chosen afresh)",
+      "params": {
+        "rows": 256,
+        "kernel": "aead_open_seq",
+        "class1_pool": 2
+      },
+      "mismatches": 0,
+      "verdict": "NOT_MEASURED",
+      "expected_verdict": "PASS"
+    },
+    {
+      "target": "aead_conv_sym",
+      "title": "ISSUE-17 (e) symmetric staging: every row matches q vs no row matches q, device pools",
+      "class0": "every row authentic and of conversation q (one of a device pool)",
+      "class1": "every row authentic, random conversations != q (one of a device pool of the same size)",
+      "params": {
+        "rows": 256,
+        "kernel": "aead_open_seq",
+        "pool_per_class": 2,
+        "staging": "device pools, device-to-device copy"
+      },
+      "mismatches": 0,
+      "verdict": "NOT_MEASURED",
+      "expected_verdict": "PASS"
+    },
+    {
+      "target": "aead_conv_kernel",
+      "title": "ISSUE-17 (e) kernel-only window: every row matches q vs none, device pools, preallocated outputs",
+      "class0": "every row authentic and of conversation q (one of a device pool)",
+      "class1": "every row authentic, random conversations != q (one of a device pool of the same size)",
+      "params": {
+        "rows": 256,
+        "kernel": "aead_open_seq",
+        "pool_per_class": 2,
+        "staging": "device pools, device-to-device copy",
+        "outputs": "preallocated",
+        "min_r": 8
+      },
+      "mismatches": 0,
+      "verdict": "NOT_MEASURED",
+      "expected_verdict": "PASS"
+    },
+    {
+      "target": "aead_tag",
+      "title": "(d) AEAD open: all tags valid vs all tags invalid",
+      "class0": "every row authentic, one row in 8 of the conversation asked for (fixed)",
+      "class1": "the same rows with fresh random tag words (every tag invalid)",
+      "params": {
+        "rows": 256,
+        "kernel": "aead_open_seq"
+      },
+      "mismatches": 0,
+      "verdict": "NOT_MEASURED",
+      "expected_verdict": "PASS"
+    },
+    {
+      "target": "aead_tag_null",
+      "title": "ISSUE-17 (d) staging only: all tags valid in both classes, read-only array vs freshly written array",
+      "class0": "every row authentic: the fixed host array, only ever read",
+      "class1": "the same rows and the same valid tags, in a host array written just before the upload",
+      "params": {
+        "rows": 256,
+        "kernel": "aead_open_seq"
+      },
+      "mismatches": 0,
+      "verdict": "NOT_MEASURED",
+      "expected_verdict": "PASS"
+    },
+    {
+      "target": "aead_tag_swap",
+      "title": "ISSUE-17 (d) roles swapped: all tags invalid (fixed array) vs all tags valid (freshly written array)",
+      "class0": "every tag invalid: a fixed host array, only ever read",
+      "class1": "the same rows with their valid tags, in a host array written just before the upload",
+      "params": {
+        "rows": 256,
+        "kernel": "aead_open_seq"
+      },
+      "mismatches": 0,
+      "verdict": "NOT_MEASURED",
+      "expected_verdict": "PASS"
+    },
+    {
+      "target": "aead_tag_sym",
+      "title": "ISSUE-17 (d) symmetric staging: all tags valid vs all tags invalid, device pools",
+      "class0": "every row authentic, one row in 8 of the conversation asked for (one of a device pool)",
+      "class1": "the same rows with random tag words, every tag invalid (one of a device pool of the same size)",
+      "params": {
+        "rows": 256,
+        "kernel": "aead_open_seq",
+        "pool_per_class": 2,
+        "staging": "device pools, device-to-device copy"
+      },
+      "mismatches": 0,
+      "verdict": "NOT_MEASURED",
+      "expected_verdict": "PASS"
+    },
+    {
+      "target": "aead_tag_kernel",
+      "title": "ISSUE-17 (d) kernel-only window: all tags valid vs all invalid, device pools, preallocated outputs",
+      "class0": "every row authentic, one row in 8 of the conversation asked for (one of a device pool)",
+      "class1": "the same rows with random tag words, every tag invalid (one of a device pool of the same size)",
+      "params": {
+        "rows": 256,
+        "kernel": "aead_open_seq",
+        "pool_per_class": 2,
+        "staging": "device pools, device-to-device copy",
+        "outputs": "preallocated",
+        "min_r": 8
+      },
+      "mismatches": 0,
+      "verdict": "NOT_MEASURED",
+      "expected_verdict": "PASS"
+    },
+    {
+      "target": "write_epoch",
+      "title": "(c) write_epoch: fixed contents vs random contents, n_real fixed",
+      "class0": "the same (conv_id, seq, payload) submissions every time (fixed)",
+      "class1": "fresh random conv_id, seq and payload for every submission",
+      "params": {
+        "slots": 64,
+        "n_real": 16,
+        "epoch": 1,
+        "timer": "time.perf_counter (numpy simulator: not a performance result)",
+        "device_ms": "total minus the engine's host stage; stages: h2d, tags, sort, compact, d2h, seal, bucket, open, host"
+      },
+      "mismatches": 0,
+      "verdict": "NOT_MEASURED",
+      "expected_verdict": "PASS"
+    },
+    {
+      "target": "write_epoch_null",
+      "title": "ISSUE-17 (c) staging only: the same contents in both classes, new objects, built first vs built second",
+      "class0": "the fixed submissions, rebuilt from new objects; the batch built first",
+      "class1": "the same fixed submissions, rebuilt from new objects; the batch built second",
+      "params": {
+        "slots": 64,
+        "n_real": 16,
+        "epoch": 1,
+        "timer": "time.perf_counter (numpy simulator: not a performance result)",
+        "device_ms": "total minus the engine's host stage; stages: h2d, tags, sort, compact, d2h, seal, bucket, open, host"
+      },
+      "mismatches": 0,
+      "verdict": "NOT_MEASURED",
+      "expected_verdict": "PASS"
+    },
+    {
+      "target": "write_epoch_age",
+      "title": "ISSUE-17 (c) staging only: the same contents in both classes, long-lived objects vs new objects",
+      "class0": "the fixed submissions, built from the long-lived Python ints of the target",
+      "class1": "the same fixed submissions, built from Python ints created just before the call",
+      "params": {
+        "slots": 64,
+        "n_real": 16,
+        "epoch": 1,
+        "timer": "time.perf_counter (numpy simulator: not a performance result)",
+        "device_ms": "total minus the engine's host stage; stages: h2d, tags, sort, compact, d2h, seal, bucket, open, host"
+      },
+      "mismatches": 0,
+      "verdict": "NOT_MEASURED",
+      "expected_verdict": "PASS"
+    },
+    {
+      "target": "write_epoch_fresh",
+      "title": "ISSUE-17 (c) symmetric staging: fixed contents vs random contents, new objects, one batch built",
+      "class0": "the fixed submissions, rebuilt from new objects before every call",
+      "class1": "fresh random conv_id, seq and payload for every submission",
+      "params": {
+        "slots": 64,
+        "n_real": 16,
+        "epoch": 1,
+        "timer": "time.perf_counter (numpy simulator: not a performance result)",
+        "device_ms": "total minus the engine's host stage; stages: h2d, tags, sort, compact, d2h, seal, bucket, open, host"
+      },
+      "mismatches": 0,
+      "verdict": "NOT_MEASURED",
+      "expected_verdict": "PASS"
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+target control_null
+target aead_conv
+target aead_conv_null
+target aead_conv_swap
+target aead_conv_sym
+target aead_conv_kernel
+target aead_tag
+target aead_tag_null
+target aead_tag_swap
+target aead_tag_sym
+target aead_tag_kernel
+target write_epoch
+target write_epoch_null
+target write_epoch_age
+target write_epoch_fresh
+run dir     D:\PJT\vcloak\runs\20261012-113337_M08_dudect_issue17_local
+backend     numpy   N per class 100000   quick False
+  control_null    NOT_MEASURED  mismatches 0
+  aead_conv       NOT_MEASURED  mismatches 0
+  aead_conv_null  NOT_MEASURED  mismatches 0
+  aead_conv_swap  NOT_MEASURED  mismatches 0
+  aead_conv_sym   NOT_MEASURED  mismatches 0
+  aead_conv_kernel NOT_MEASURED  mismatches 0
+  aead_tag        NOT_MEASURED  mismatches 0
+  aead_tag_null   NOT_MEASURED  mismatches 0
+  aead_tag_swap   NOT_MEASURED  mismatches 0
+  aead_tag_sym    NOT_MEASURED  mismatches 0
+  aead_tag_kernel NOT_MEASURED  mismatches 0
+  write_epoch     NOT_MEASURED  mismatches 0
+  write_epoch_null NOT_MEASURED  mismatches 0
+  write_epoch_age NOT_MEASURED  mismatches 0
+  write_epoch_fresh NOT_MEASURED  mismatches 0
+metrics     30
+status      NOT_MEASURED

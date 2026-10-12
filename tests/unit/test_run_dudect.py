@@ -178,3 +178,132 @@ def test_the_static_checker_flags_the_planted_leak_and_it_is_not_in_kernels() ->
     findings, files = check_oblivious.check_paths([rd.LEAK_SRC])
     assert files and any(f.rule == "BRANCH" and "x" in f.message for f in findings)
     assert not (ROOT / "kernels" / rd.LEAK_SRC.name).exists()
+
+
+# --- ISSUE-17: the diagnostic targets -------------------------------------------------------------
+
+def test_issue17_groups() -> None:
+    assert set(rd.DIAG) <= set(rd.ISSUE17) and set(rd.ISSUE17_REP) < set(rd.ISSUE17)
+    assert {"aead_conv", "aead_tag", "write_epoch"} <= set(rd.ISSUE17_REP)  # the three failing targets, again
+    assert rd.parse_targets("control_null,issue17") == ["control_null", *rd.ISSUE17]
+    assert not set(rd.DIAG) & set(rd.ALL)  # `all` and `targets` stay what the M08 job measured
+    ids = [rd.METRIC_OF[n] for n in rd.KNOWN]
+    assert len(set(ids)) == len(ids)
+
+
+def test_issue17_plumbing_on_the_numpy_backend(tmp_path: Path, numpy_backend: None) -> None:
+    assert rd.main(["--targets", "issue17", "--out", str(tmp_path)]) == 0
+    s = summary(only_run(tmp_path))
+    assert [t["target"] for t in s["targets"]] == list(rd.ISSUE17) and not s["errors"]
+    assert all(t["mismatches"] == 0 for t in s["targets"])
+    assert {m["value"] for m in s["metrics"]} == {"NOT_MEASURED"}
+
+
+@pytest.mark.parametrize("name", [n for n in rd.DIAG if n.startswith("aead")])
+def test_issue17_aead_targets_run_through_the_measuring_loop(name: str, tmp_path: Path, fake_gpu: None) -> None:
+    backend = fakecupy.backend()
+    t = rd.build_target(name, backend, 8, True)
+    res = rd.run_target(t, backend, 60, 8, tmp_path, log=lambda s: None)
+    s = res["series"]["ms"]
+    assert res["mismatches"] == 0 and s["n_class0"] == s["n_class1"] == 60
+    assert res["r"] == (rd.KERNEL_WINDOW_R if name.endswith("_kernel") else 1)
+    assert ("by design" in res["r_note"]) == name.endswith("_kernel")
+
+
+@pytest.mark.parametrize("name", rd.DIAG)
+def test_issue17_preparing_either_class_does_the_same_host_work(name: str) -> None:
+    backend = get_backend("numpy")
+    a, b = np.random.default_rng(5), np.random.default_rng(5)
+    rd.build_target(name, backend, 8, True).prepare(0, a)
+    rd.build_target(name, backend, 8, True).prepare(1, b)
+    assert a.integers(0, 2**63) == b.integers(0, 2**63)
+
+
+def staged(name: str, cls: int, seed: int = 3) -> np.ndarray:
+    t = rd.build_target(name, get_backend("numpy"), 8, True)
+    t.prepare(cls, np.random.default_rng(seed))
+    return t.blobs.copy()
+
+
+def test_issue17_the_tag_null_stages_the_same_rows_in_both_classes() -> None:
+    assert np.array_equal(staged("aead_tag_null", 0), staged("aead_tag_null", 1))
+    assert np.array_equal(staged("aead_tag_null", 0), staged("aead_tag", 0))
+
+
+def test_issue17_the_tag_swap_exchanges_the_roles() -> None:
+    t = rd.build_target("aead_tag_swap", get_backend("numpy"), 8, True)
+    assert np.array_equal(staged("aead_tag_swap", 1), t.valid)  # the freshly written array is the valid one
+    assert np.array_equal(staged("aead_tag_swap", 0), t.invalid)
+    assert not np.array_equal(t.tags(t.invalid), t.tags(t.valid))
+    assert (t.is_valid(0), t.is_valid(1)) == (False, True)
+
+
+@pytest.mark.parametrize(("name", "hit"), [
+    ("aead_conv", (0, 1)), ("aead_conv_null", (0, 0)), ("aead_conv_swap", (1, 0)), ("aead_conv_sym", (0, 1)),
+    ("aead_conv_kernel", (0, 1))])
+def test_issue17_conv_classes_open_as_declared(name: str, hit: tuple[int, int]) -> None:
+    """hi is 0 for a row of the conversation asked for: the class contents are what the target says."""
+    t = rd.build_target(name, get_backend("numpy"), 8, True)
+    for cls in (0, 1):
+        t.prepare(cls, np.random.default_rng(2))
+        t.run()
+        assert set(np.unique(t.out[0])) == {hit[cls]} and t.check(cls) == 0
+
+
+def test_issue17_symmetric_pools_have_the_same_size_and_differ_per_class() -> None:
+    for name in ("aead_conv_sym", "aead_tag_sym", "aead_conv_kernel", "aead_tag_kernel"):
+        t = rd.build_target(name, get_backend("numpy"), 8, True)
+        assert len(t.pools[0]) == len(t.pools[1]) == 2
+        assert not np.array_equal(t.pools[0][0], t.pools[1][0])
+        assert t.params()["pool_per_class"] == 2 and "class1_pool" not in t.params()
+
+
+def test_issue17_the_kernel_window_reuses_its_outputs() -> None:
+    t = rd.build_target("aead_tag_kernel", get_backend("numpy"), 8, True)
+    t.prepare(0, np.random.default_rng(1))
+    t.run()
+    first = t.out
+    t.run()
+    assert all(a is b for a, b in zip(first, t.out, strict=True)) and t.min_r == rd.KERNEL_WINDOW_R
+    assert t.params()["outputs"] == "preallocated"
+
+
+def contents_of(batch: list) -> list:
+    return [(s.conv_id, s.seq, s.payload) for s in batch]
+
+
+def test_issue17_write_epoch_variants() -> None:
+    backend = get_backend("numpy")
+    base = rd.build_target("write_epoch", backend, 8, True)
+    fixed = contents_of(base.build(base.fixed))
+    for name in ("write_epoch_null", "write_epoch_age"):  # the same contents whatever the class
+        for cls in (0, 1):
+            t = rd.build_target(name, backend, 8, True)
+            t.prepare(cls, np.random.default_rng(4))
+            assert contents_of(t.batch) == fixed, (name, cls)
+    t = rd.build_target("write_epoch_age", backend, 8, True)
+    t.prepare(0, np.random.default_rng(4))
+    assert t.batch[0].conv_id is t.fixed[0][0]  # class A: the long-lived objects
+    t.prepare(1, np.random.default_rng(4))
+    assert t.batch[0].conv_id is not t.fixed[0][0]  # class B: equal value, new object
+    t = rd.build_target("write_epoch_fresh", backend, 8, True)
+    t.prepare(0, np.random.default_rng(4))
+    assert contents_of(t.batch) == fixed and t.batch[0].conv_id is not t.fixed[0][0]
+    t.prepare(1, np.random.default_rng(4))
+    assert contents_of(t.batch) != fixed
+    t.run()
+    assert t.check(1) == 0 and t.series == ("device_ms", "call_ms")
+
+
+def test_open_and_key_writes_into_given_outputs() -> None:
+    t = rd.build_target("aead_conv", get_backend("numpy"), 8, True)
+    t.prepare(0, np.random.default_rng(1))
+    want = rd.gpu_open_and_key(t.kseq, t.blobs, t.q)
+    out = (np.empty(t.n, dtype=np.uint64), np.empty(t.n, dtype=np.uint64), np.empty(t.n, dtype=np.uint32))
+    got = rd.gpu_open_and_key(t.kseq, t.blobs, t.q, out=out)
+    assert all(g is o for g, o in zip(got, out, strict=True))
+    assert all(np.array_equal(g, w) for g, w in zip(got, want, strict=True))
+    with pytest.raises(ValueError, match="out ok"):
+        rd.gpu_open_and_key(t.kseq, t.blobs, t.q, out=(out[0], out[1], out[2][:-1].copy()))
+    with pytest.raises(TypeError, match="out hi"):
+        rd.gpu_open_and_key(t.kseq, t.blobs, t.q, out=(out[2], out[1], out[2]))

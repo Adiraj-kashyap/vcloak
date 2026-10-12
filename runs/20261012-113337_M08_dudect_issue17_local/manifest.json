@@ -1,0 +1,62 @@
+{
+  "run_id": "20261012-113337_M08_dudect_issue17_local",
+  "module": "M08",
+  "step": "S2",
+  "owner": "Aditya",
+  "git_sha": "159d1cc846800379c350da1e7ef9de25892ec580",
+  "dirty": true,
+  "command": "python bench/run_dudect.py --targets control_null,issue17 --seed 8 --name dudect_issue17_local --out runs",
+  "seed": 8,
+  "quick": false,
+  "params": {
+    "targets": [
+      "control_null",
+      "aead_conv",
+      "aead_conv_null",
+      "aead_conv_swap",
+      "aead_conv_sym",
+      "aead_conv_kernel",
+      "aead_tag",
+      "aead_tag_null",
+      "aead_tag_swap",
+      "aead_tag_sym",
+      "aead_tag_kernel",
+      "write_epoch",
+      "write_epoch_null",
+      "write_epoch_age",
+      "write_epoch_fresh"
+    ],
+    "n_per_class": 100000,
+    "calibration_per_class": 500,
+    "chunk": 1000,
+    "min_measurement_ms": 0.05,
+    "t_threshold": 4.5,
+    "percentile_crops": 100,
+    "log2n": 16,
+    "write_slots": 4096,
+    "leak_spins": 1000
+  },
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261012-113337",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U"
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791785017.878063
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791785018.1620107
+  },
+  "outputs": [
+    "summary.json"
+  ],
+  "status": "NOT_MEASURED",
+  "notes": "numpy backend: plumbing and output checks only, no timing measured"
+}

@@ -1,0 +1,41 @@
+{
+  "run_id": "20261012-113007_M08_issue17_prep",
+  "module": "M08",
+  "step": "S2",
+  "owner": "Aditya",
+  "git_sha": "159d1cc846800379c350da1e7ef9de25892ec580",
+  "dirty": true,
+  "command": "pytest, ruff, check_* (fix ISSUE-17 prep)",
+  "seed": 0,
+  "quick": false,
+  "params": {},
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261012-113007",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U"
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791784807.4474182
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791785076.7413182
+  },
+  "outputs": [
+    "check_metrics.txt",
+    "check_oblivious.txt",
+    "check_secrets.txt",
+    "plumbing_s8.txt",
+    "pytest_all.txt",
+    "pytest_issue17.txt",
+    "ruff.txt"
+  ],
+  "status": "NOT_MEASURED",
+  "notes": "fix ISSUE-17 prep: numpy backend, tests and plumbing only, no timing measured"
+}

@@ -31,6 +31,30 @@ and the t-curve to dudect_<target>.json and .png.
 
 Keys are fixed TEST keys derived from the seed (never production keys).
 
+Diagnostics of ISSUE-17 (group `issue17`; `issue17_rep` is the part repeated with a second seed).
+Three series of the M08 job FAIL: aead_conv, aead_tag and the whole write_epoch call. In each of them
+the two classes differ in their contents AND in how the harness stages them. These targets separate
+the two; none of them replaces a target above.
+  aead_conv_null   staging of aead_conv (one fixed host array vs one of a pool), every row of q in BOTH
+                   classes. A FAIL here is a difference made by the staging alone (H1).
+  aead_conv_swap   aead_conv with the roles swapped: no row of q is the fixed array, every row of q the
+                   pool. The sign of t follows either the contents or the staging.
+  aead_conv_sym    both classes from pools of the same size, staged on the device before the run and
+                   selected by a device-to-device copy. The launch path is that of aead_conv.
+  aead_conv_kernel aead_conv_sym with the outputs preallocated and r = 8 launches per measurement: the
+                   share of host launch code in the timed window is as small as CuPy allows.
+  aead_tag_null    staging of aead_tag (an array the host only read vs one it has just written), every
+                   tag valid in BOTH classes (H2).
+  aead_tag_swap    aead_tag with the roles swapped: all tags invalid is the fixed array, all valid the
+                   freshly written one.
+  aead_tag_sym, aead_tag_kernel   as for aead_conv.
+  write_epoch_null the same contents in both classes, both batches built from new objects; a class is
+                   the batch built first or the one built second, as in write_epoch (H4, build order).
+  write_epoch_age  the same contents in both classes; class A is built from long-lived Python ints,
+                   class B from new ones, as in write_epoch (H4, object age).
+  write_epoch_fresh  fixed vs fresh random contents, both built from new objects, and only the batch
+                   that is used is built: the comparison of write_epoch without its staging.
+
 Under the numpy backend (the laptop) each target prepares and runs both classes once at a small size
 to check the plumbing and the outputs, and every metric is NOT_MEASURED (ai/GPU_RUNNER.md §3).
 """
@@ -84,6 +108,7 @@ LEAK_SPINS = 1000
 LEAK_SRC = ROOT / "bench" / "planted" / "planted_leak.cu"
 SEQ_TAG_WORD = 7  # words 7..10 of a seq_enc row are its tag
 EPOCH = 1
+KERNEL_WINDOW_R = 8  # launches per measurement of the kernel-only targets (ISSUE-17)
 TELEMETRY_HZ = 2.0
 CONTROLS = ("control_leak", "control_null")
 SHARED_GPU_CAVEAT = ("Free Colab/Kaggle GPUs are shared: a PASS says that no dependence was detected with this "
@@ -114,6 +139,7 @@ class Target:
     in_place = False  # the work overwrites its input: r launches cannot be batched in one measurement
     series: tuple[str, ...] = ("ms",)
     expect = dudect.PASS  # controls: the verdict that shows the harness works
+    min_r = 1  # at least this many launches per measurement (public)
 
     def prepare(self, cls: int, rng: np.random.Generator) -> None:
         raise NotImplementedError
@@ -285,16 +311,117 @@ class AeadTag(_AeadOpen):
         self.valid = self.seal(conv, rng)
         self.hits = int(np.count_nonzero(conv == conv[0]))
 
+    def tags(self, rows: np.ndarray) -> np.ndarray:
+        """The tag words of host rows, as a view."""
+        return rows.reshape(self.n, SEQ_WORDS)[:, SEQ_TAG_WORD:]
+
     def prepare(self, cls: int, rng: np.random.Generator) -> None:
         fresh = self.valid.copy()
-        fresh.reshape(self.n, SEQ_WORDS)[:, SEQ_TAG_WORD:] = rng.integers(0, 2**32, (self.n, 4), dtype=np.uint32)
+        self.tags(fresh)[...] = rng.integers(0, 2**32, (self.n, 4), dtype=np.uint32)
         put(self.blobs, fresh if cls else self.valid)
+
+    def is_valid(self, cls: int) -> bool:
+        return not cls
 
     def check(self, cls: int) -> int:
         hi, _lo, ok = (to_host(a) for a in self.out)  # type: ignore[union-attr]
-        if cls:
+        if not self.is_valid(cls):
             return int(np.count_nonzero(ok != 0) + np.count_nonzero(hi != 1))
         return int(np.count_nonzero(ok != 1) + abs(int(np.count_nonzero(hi == 0)) - self.hits))
+
+
+class AeadTagNull(AeadTag):
+    name, metric = "aead_tag_null", "AEAD-TAG-NULL"
+    title = "ISSUE-17 (d) staging only: all tags valid in both classes, read-only array vs freshly written array"
+    class0 = "every row authentic: the fixed host array, only ever read"
+    class1 = "the same rows and the same valid tags, in a host array written just before the upload"
+
+    def prepare(self, cls: int, rng: np.random.Generator) -> None:
+        fresh = self.valid.copy()
+        rng.integers(0, 2**32, (self.n, 4), dtype=np.uint32)  # drawn as in aead_tag, not used
+        self.tags(fresh)[...] = self.tags(self.valid)
+        put(self.blobs, fresh if cls else self.valid)
+
+    def is_valid(self, cls: int) -> bool:  # noqa: ARG002
+        return True
+
+
+class AeadTagSwap(AeadTag):
+    name, metric = "aead_tag_swap", "AEAD-TAG-SWAP"
+    title = "ISSUE-17 (d) roles swapped: all tags invalid (fixed array) vs all tags valid (freshly written array)"
+    class0 = "every tag invalid: a fixed host array, only ever read"
+    class1 = "the same rows with their valid tags, in a host array written just before the upload"
+
+    def __init__(self, backend: Backend, n: int, seed: int) -> None:
+        super().__init__(backend, n, seed)
+        self.invalid = self.valid.copy()
+        self.tags(self.invalid)[...] = np.random.default_rng([seed, n, 201]).integers(0, 2**32, (n, 4),
+                                                                                      dtype=np.uint32)
+
+    def prepare(self, cls: int, rng: np.random.Generator) -> None:
+        fresh = self.invalid.copy()
+        rng.integers(0, 2**32, (self.n, 4), dtype=np.uint32)  # drawn as in aead_tag, not used
+        self.tags(fresh)[...] = self.tags(self.valid)
+        put(self.blobs, fresh if cls else self.invalid)
+
+    def is_valid(self, cls: int) -> bool:
+        return bool(cls)
+
+
+class _DevicePools:
+    """Symmetric staging (ISSUE-17): each class has a pool of the same number of inputs, on the device
+    before the run. Preparing an input is one index drawn for both classes and one device-to-device copy."""
+
+    pools: tuple[list[Any], list[Any]]
+
+    def prepare(self, cls: int, rng: np.random.Generator) -> None:
+        i = int(rng.integers(0, len(self.pools[0])))
+        self.xp.copyto(self.blobs, self.pools[cls][i])  # type: ignore[attr-defined]
+
+    def params(self) -> dict[str, Any]:
+        return {**super().params(), "pool_per_class": len(self.pools[0]),  # type: ignore[misc]
+                "staging": "device pools, device-to-device copy"}
+
+
+class _KernelWindow:
+    """Kernel-only window (ISSUE-17): the outputs exist before the run and one measurement is
+    KERNEL_WINDOW_R launches, so the timed region holds as little host code as the launch path allows."""
+
+    min_r = KERNEL_WINDOW_R
+
+    def run(self) -> None:
+        if self.out is None:  # type: ignore[has-type]
+            xp, n = self.xp, self.n  # type: ignore[attr-defined]
+            self.out = (xp.empty(n, dtype=np.uint64), xp.empty(n, dtype=np.uint64), xp.empty(n, dtype=np.uint32))
+        gpu_open_and_key(self.kseq, self.blobs, self.q, out=self.out)  # type: ignore[attr-defined]
+
+    def params(self) -> dict[str, Any]:
+        return {**super().params(), "outputs": "preallocated", "min_r": self.min_r}  # type: ignore[misc]
+
+
+class AeadTagSym(_DevicePools, AeadTag):
+    name, metric = "aead_tag_sym", "AEAD-TAG-SYM"
+    title = "ISSUE-17 (d) symmetric staging: all tags valid vs all tags invalid, device pools"
+    class0 = "every row authentic, one row in 8 of the conversation asked for (one of a device pool)"
+    class1 = "the same rows with random tag words, every tag invalid (one of a device pool of the same size)"
+
+    def __init__(self, backend: Backend, n: int, seed: int, pool: int = POOL) -> None:
+        super().__init__(backend, n, seed)
+        rng = np.random.default_rng([seed, n, 210])
+        conv = rng.integers(0, 2**64, n, dtype=np.uint64)
+        conv[conv == np.uint64(self.q)] ^= np.uint64(1)  # public test data
+        conv[: self.hits] = np.uint64(self.q)
+        self.pools = ([], [])
+        for _ in range(pool):
+            rows = self.seal(conv, rng)
+            self.pools[0].append(self.xp.asarray(rows.copy()))  # a host array is not copied by asarray
+            self.tags(rows)[...] = rng.integers(0, 2**32, (n, 4), dtype=np.uint32)
+            self.pools[1].append(self.xp.asarray(rows))
+
+
+class AeadTagKernel(_KernelWindow, AeadTagSym):
+    name, metric = "aead_tag_kernel", "AEAD-TAG-KERNEL"
+    title = "ISSUE-17 (d) kernel-only window: all tags valid vs all invalid, device pools, preallocated outputs"
 
 
 class AeadConv(_AeadOpen):
@@ -307,12 +434,17 @@ class AeadConv(_AeadOpen):
         super().__init__(backend, n, seed)
         rng = np.random.default_rng([seed, n, 300])
         self.q = int(rng.integers(1, 2**63, dtype=np.uint64))
-        self.match = self.seal(np.full(n, self.q, dtype=np.uint64), rng)
-        self.pool = []
-        for _ in range(pool):
-            conv = rng.integers(0, 2**64, n, dtype=np.uint64)
-            conv[conv == np.uint64(self.q)] ^= np.uint64(1)  # public test data: never q
-            self.pool.append(self.seal(conv, rng))
+        self.match = self.seal(self.conv(self.hit[0], rng), rng)  # the fixed input of class A
+        self.pool = [self.seal(self.conv(self.hit[1], rng), rng) for _ in range(pool)]
+
+    hit = (True, False)  # per class: does every row belong to conversation q?
+
+    def conv(self, hit: bool, rng: np.random.Generator) -> np.ndarray:
+        if hit:
+            return np.full(self.n, self.q, dtype=np.uint64)
+        conv = rng.integers(0, 2**64, self.n, dtype=np.uint64)
+        conv[conv == np.uint64(self.q)] ^= np.uint64(1)  # public test data: never q
+        return conv
 
     def prepare(self, cls: int, rng: np.random.Generator) -> None:
         other = self.pool[int(rng.integers(0, len(self.pool)))]
@@ -320,10 +452,49 @@ class AeadConv(_AeadOpen):
 
     def check(self, cls: int) -> int:
         hi, _lo, ok = (to_host(a) for a in self.out)  # type: ignore[union-attr]
-        return int(np.count_nonzero(ok != 1) + np.count_nonzero(hi != cls))
+        return int(np.count_nonzero(ok != 1) + np.count_nonzero(hi != (0 if self.hit[cls] else 1)))
 
     def params(self) -> dict[str, Any]:
         return {**super().params(), "class1_pool": len(self.pool)}
+
+
+class AeadConvNull(AeadConv):
+    name, metric = "aead_conv_null", "AEAD-CONV-NULL"
+    title = "ISSUE-17 (e) staging only: every row matches q in both classes, fixed array vs pool"
+    class0 = "every row authentic and of conversation q (one fixed host array)"
+    class1 = "every row authentic and of conversation q (one of a pool of sealed inputs, chosen afresh)"
+    hit = (True, True)
+
+
+class AeadConvSwap(AeadConv):
+    name, metric = "aead_conv_swap", "AEAD-CONV-SWAP"
+    title = "ISSUE-17 (e) roles swapped: no row matches q (fixed array) vs every row matches q (pool)"
+    class0 = "every row authentic, random conversations != q (one fixed host array)"
+    class1 = "every row authentic and of conversation q (one of a pool of sealed inputs, chosen afresh)"
+    hit = (False, True)
+
+
+class AeadConvSym(_DevicePools, AeadConv):
+    name, metric = "aead_conv_sym", "AEAD-CONV-SYM"
+    title = "ISSUE-17 (e) symmetric staging: every row matches q vs no row matches q, device pools"
+    class0 = "every row authentic and of conversation q (one of a device pool)"
+    class1 = "every row authentic, random conversations != q (one of a device pool of the same size)"
+
+    def __init__(self, backend: Backend, n: int, seed: int, pool: int = POOL) -> None:
+        super().__init__(backend, n, seed, pool=0)
+        rng = np.random.default_rng([seed, n, 310])
+        self.pools = ([self.xp.asarray(self.seal(self.conv(True, rng), rng)) for _ in range(pool)],
+                      [self.xp.asarray(self.seal(self.conv(False, rng), rng)) for _ in range(pool)])
+
+    def params(self) -> dict[str, Any]:
+        p = super().params()
+        del p["class1_pool"]
+        return p
+
+
+class AeadConvKernel(_KernelWindow, AeadConvSym):
+    name, metric = "aead_conv_kernel", "AEAD-CONV-KERNEL"
+    title = "ISSUE-17 (e) kernel-only window: every row matches q vs none, device pools, preallocated outputs"
 
 
 class WriteEpoch(Target):
@@ -373,6 +544,55 @@ class WriteEpoch(Target):
                 "device_ms": "total minus the engine's host stage; stages: " + ", ".join(STAGES)}
 
 
+class _WriteEpochDiag(WriteEpoch):
+    def __init__(self, backend: Backend, slots: int, seed: int) -> None:
+        super().__init__(backend, slots, seed)
+        self.fixed_seed = [seed, slots, 400]
+
+    def fixed_again(self) -> tuple[list[int], list[int], bytes]:
+        """The fixed contents of class A, value for value, as new Python objects."""
+        return self.contents(np.random.default_rng(self.fixed_seed))
+
+
+class WriteEpochNull(_WriteEpochDiag):
+    name, metric = "write_epoch_null", "WRITE-EPOCH-NULL"
+    title = "ISSUE-17 (c) staging only: the same contents in both classes, new objects, built first vs built second"
+    class0 = "the fixed submissions, rebuilt from new objects; the batch built first"
+    class1 = "the same fixed submissions, rebuilt from new objects; the batch built second"
+
+    def prepare(self, cls: int, rng: np.random.Generator) -> None:
+        self.contents(rng)  # drawn as in write_epoch, not used
+        both = (self.build(self.fixed_again()), self.build(self.fixed_again()))
+        self.batch = both[cls]
+
+
+class WriteEpochAge(_WriteEpochDiag):
+    name, metric = "write_epoch_age", "WRITE-EPOCH-AGE"
+    title = "ISSUE-17 (c) staging only: the same contents in both classes, long-lived objects vs new objects"
+    class0 = "the fixed submissions, built from the long-lived Python ints of the target"
+    class1 = "the same fixed submissions, built from Python ints created just before the call"
+
+    def prepare(self, cls: int, rng: np.random.Generator) -> None:
+        self.contents(rng)  # drawn as in write_epoch, not used
+        both = (self.build(self.fixed), self.build(self.fixed_again()))
+        self.batch = both[cls]
+
+
+class WriteEpochFresh(_WriteEpochDiag):
+    name, metric = "write_epoch_fresh", "WRITE-EPOCH-FRESH"
+    title = "ISSUE-17 (c) symmetric staging: fixed contents vs random contents, new objects, one batch built"
+    class0 = "the fixed submissions, rebuilt from new objects before every call"
+    class1 = "fresh random conv_id, seq and payload for every submission"
+
+    def prepare(self, cls: int, rng: np.random.Generator) -> None:
+        both = (self.fixed_again(), self.contents(rng))  # both drawn, so the host does the same work
+        self.batch = self.build(both[cls])  # the only batch, built last for either class
+
+
+DIAG_CLASSES = (AeadConvNull, AeadConvSwap, AeadConvSym, AeadConvKernel, AeadTagNull, AeadTagSwap, AeadTagSym,
+                AeadTagKernel, WriteEpochNull, WriteEpochAge, WriteEpochFresh)
+
+
 def build_target(name: str, backend: Backend, seed: int, quick: bool) -> Target:
     lg = LOG2N if backend.is_gpu else LOCAL_LOG2N
     n = 1 << lg
@@ -390,6 +610,15 @@ def build_target(name: str, backend: Backend, seed: int, quick: bool) -> Target:
         return AeadConv(backend, n, seed, pool=(POOL_QUICK if quick else POOL) if backend.is_gpu else 2)
     if name == "write_epoch":
         return WriteEpoch(backend, WRITE_SLOTS if backend.is_gpu else LOCAL_WRITE_SLOTS, seed)
+    pool = (POOL_QUICK if quick else POOL) if backend.is_gpu else 2
+    for cls in DIAG_CLASSES:
+        if cls.name != name:
+            continue
+        if issubclass(cls, WriteEpoch):
+            return cls(backend, WRITE_SLOTS if backend.is_gpu else LOCAL_WRITE_SLOTS, seed)
+        if issubclass(cls, (AeadConv, _DevicePools)):
+            return cls(backend, n, seed, pool=pool)
+        return cls(backend, n, seed)
     raise ValueError(f"unknown target {name!r}")
 
 
@@ -398,6 +627,14 @@ ALL = (*CONTROLS, *TARGETS)
 METRIC_OF = {"bitonic_equal": "BITONIC-EQUAL", "bitonic_sorted": "BITONIC-SORTED", "write_epoch": "WRITE-EPOCH",
              "aead_tag": "AEAD-TAG", "aead_conv": "AEAD-CONV", "control_leak": "CONTROL-LEAK",
              "control_null": "CONTROL-NULL"}
+# ISSUE-17: the failing M08 targets and their diagnostics. Not part of `all` or `targets`.
+DIAG = tuple(c.name for c in DIAG_CLASSES)
+ISSUE17 = ("aead_conv", "aead_conv_null", "aead_conv_swap", "aead_conv_sym", "aead_conv_kernel",
+           "aead_tag", "aead_tag_null", "aead_tag_swap", "aead_tag_sym", "aead_tag_kernel",
+           "write_epoch", "write_epoch_null", "write_epoch_age", "write_epoch_fresh")
+ISSUE17_REP = tuple(n for n in ISSUE17 if n not in ("write_epoch_null", "write_epoch_age"))
+KNOWN = (*ALL, *DIAG)
+METRIC_OF.update({c.name: c.metric for c in DIAG_CLASSES})
 SERIES_SUFFIX = {"ms": "", "device_ms": "", "call_ms": "-CALL"}
 
 
@@ -433,6 +670,8 @@ def run_target(t: Target, backend: Backend, n_per_class: int, seed: int, run_dir
                                     min_seconds=WARM_MIN_S, max_seconds=WARM_MAX_S)
     probe = [one(i % 2, 1)[0] for i in range(R_PROBE)]
     r, r_note = choose_r(probe, t.in_place)
+    if r < t.min_r:
+        r, r_note = t.min_r, f"{t.min_r} launches per measurement by design (public), not from the 50 us rule"
 
     bad = 0
     for cls in (0, 1):  # the output of each class is checked once, outside the measurements
@@ -533,10 +772,12 @@ def parse_targets(text: str) -> list[str]:
     names: list[str] = []
     for part in text.split(","):
         part = part.strip()
-        group = {"all": ALL, "controls": CONTROLS, "targets": TARGETS}.get(part, (part,))
+        group = {"all": ALL, "controls": CONTROLS, "targets": TARGETS, "issue17": ISSUE17,
+                 "issue17_rep": ISSUE17_REP}.get(part, (part,))
         for name in group:
-            if name not in ALL:
-                raise SystemExit(f"unknown target {name!r}; choose from: all, controls, targets, {', '.join(ALL)}")
+            if name not in KNOWN:
+                raise SystemExit(f"unknown target {name!r}; choose from: all, controls, targets, issue17, "
+                                 f"issue17_rep, {', '.join(KNOWN)}")
             if name not in names:
                 names.append(name)
     return names
@@ -544,7 +785,8 @@ def parse_targets(text: str) -> list[str]:
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n", 1)[0])
-    ap.add_argument("--targets", default="all", help="comma list of: all, controls, targets, " + ", ".join(ALL))
+    ap.add_argument("--targets", default="all", help="comma list of: all, controls, targets, issue17, issue17_rep, "
+                    + ", ".join(KNOWN))
     ap.add_argument("--seed", type=int, default=8)
     ap.add_argument("--quick", action="store_true", help=f"N = {N_QUICK} per class instead of {N_FULL}")
     ap.add_argument("--n-per-class", type=int, default=0, help="override N (recorded in the manifest)")
@@ -600,7 +842,7 @@ def main(argv: list[str] | None = None) -> int:
     by_name = {res["target"]: res for res in results}
     unexpected = [n for n in CONTROLS if n in by_name and backend.is_gpu
                   and by_name[n]["verdict"] != by_name[n]["expected_verdict"]]
-    fails = [n for n in TARGETS if n in by_name and backend.is_gpu
+    fails = [n for n in (*TARGETS, *DIAG) if n in by_name and backend.is_gpu
              and any(s["verdict"] == dudect.FAIL for s in by_name[n]["series"].values())]
     notes = []
     if errors or bad or unexpected:
