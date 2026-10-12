@@ -469,3 +469,21 @@
 - Commit: 75a8bb5
 - Next: M11 S1 ; human action: none. Keep Docker Desktop running when you type continue
 
+## Session 20 — 2026-10-12 11:40 — fix ISSUE-17, prep (M08 GPU obliviousness audit) — owner:Aditya
+- Steps: none new (M08 stays DONE); the prep half of `fix ISSUE-17` (status after: BLOCKED_HUMAN, GPU job)
+- Did: bench/run_dudect.py: 11 diagnostic targets for the three failing series. AEAD conv and tag: `_null` (the
+  staging of the original, the same contents in both classes), `_swap` (roles exchanged), `_sym` (pools of the same
+  size on the device, device-to-device copy), `_kernel` (`_sym`, preallocated outputs, r = 8). write_epoch: `_null`
+  (build order), `_age` (long-lived vs new objects), `_fresh` (fixed vs random, one batch built). Groups `issue17`
+  and `issue17_rep`. src/vcloak/gpu/kernels.py: `gpu_open_and_key(..., out=)`. bench/jobs/M08_issue17.json (seed 8,
+  then seed 9, a full-N null control in each). 14 new tests in tests/unit/test_run_dudect.py.
+- Evidence: runs/20261012-113007_M08_issue17_prep (pytest_all.txt 1709 passed; pytest_issue17.txt 163 passed, 108 skipped for
+  CUDA; plumbing_s8.txt; check_* PASS; ruff clean); runs/20261012-113337_M08_dudect_issue17_local (numpy, NOT_MEASURED)
+- Metrics added: none (nothing measured; the backend was numpy)
+- Decisions: none. The ADR on whole-call host timing (ISSUE-17 step 5) is still open for the team
+- Issues: ISSUE-17 updated (prep done, how to read the result); opened ISSUE-24 (GPU JOB READY, 20261012-113437_M08_issue17)
+- Deviations from spec: targets outside M08 S2 and a new optional argument of gpu_open_and_key (Amendments of ai/modules/M08)
+- Not verified: anything on a CUDA device; the runtime of the job; whether the originals FAIL again
+- GPU job: 20261012-113437_M08_issue17 packed from 3671fac (bundle c8b5e6ab81d2...), pending
+- Commit: PENDING
+- Next: ingest 20261012-113437_M08_issue17 (then M11 S1) ; human action: ISSUE-24, run the job on Kaggle and put the results zip in gpujobs/inbox

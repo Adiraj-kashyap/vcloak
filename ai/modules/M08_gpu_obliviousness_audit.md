@@ -94,3 +94,8 @@ paper's setup section and the panel will ask to see. Follow `ai/EVIDENCE.md`.
   - A5: three target series FAIL; ISSUE-17 (high) blocks M14. The module is closed with that issue open, as A5 asks.
   - `scripts/gpujob.py` wrote `max |t|` into the metrics table and broke its columns; cells are now sanitised
     (`abs(t)`) and the nine rows of this ingest were rewritten with the same rule.
+- 2026-10-12 (session 20, fix ISSUE-17 prep): `bench/run_dudect.py` has 11 more targets, outside S2's list and
+  outside `all` / `targets`: the diagnostics of the three failing series (groups `issue17`, `issue17_rep`; job spec
+  `bench/jobs/M08_issue17.json`). `gpu_open_and_key` takes optional preallocated outputs (`out=`), used only by the
+  kernel-only targets. Their metric ids are `T-DUDECT-MAXT-<TARGET>-NULL|SWAP|SYM|KERNEL|AGE|FRESH`. They do not
+  replace any S2 target, and `report_oblivious` does not read them.

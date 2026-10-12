@@ -560,3 +560,28 @@ Notes:
 - Not verified: the same on a CUDA device; a kill during the swap transaction itself on a live server (covered only by the transaction and by the failed-rewrite tests); `ack: stored` under load (nothing was timed); a store written before this session has no marks.
 - ruff: runs/20261012-110434_M10_issue22_restart/ruff.txt clean for src, tests, scripts, bench. The manifest is dirty: true (the tests ran on the tree this session commits).
 
+## Audit M08 (fix ISSUE-17, prep) — 2026-10-12 — session 20 — result: PASS (prep only; nothing measured)
+| Item | Result | Evidence |
+|---|---|---|
+| A1-A5 (M08 checklist) | N/A | the M08 results are unchanged; the diagnostics are measured by job 20261012-113437_M08_issue17 and judged in the ingest session |
+| G1 | PASS | runs/20261012-113007_M08_issue17_prep/pytest_all.txt (1709 passed, 1 skipped, 674 deselected: not gpu); runs/20261012-113007_M08_issue17_prep/pytest_issue17.txt (163 passed, 108 skipped for CUDA), run again after the last edit |
+| G2 | PASS | runs/20261012-113007_M08_issue17_prep/check_metrics.txt (263 rows, 0 problems). No metric added |
+| G2b | N/A | no performance or side-channel metric recorded; the backend was numpy |
+| G3 | PASS | runs/20261012-113007_M08_issue17_prep/check_oblivious.txt (11 files, 0 findings); no kernel source changed. `out=` changes where the launcher allocates, not the kernel; r = 8 and the pool size are public constants |
+| G4 | PASS | runs/20261012-113007_M08_issue17_prep/check_secrets.txt, and again after the pack (0 key-like runs); the new bundle digest is on the allow-list. The targets use the fixed test keys of the seed |
+| G5 | N/A | no new GPU twin; the outputs of every new target are checked against the expected open result (runs/20261012-113007_M08_issue17_prep/plumbing_s8.txt, 0 mismatches) |
+| G6 | PASS | bench/jobs/M08_issue17.json, gpujobs/out/20261012-113437_M08_issue17/job.zip and job.json exist |
+| G7 | PASS | checked after the closing commit |
+| G8 | PASS | STATE: status BLOCKED_HUMAN, gpu_job.pending 20261012-113437_M08_issue17, current_module M11 untouched, M08 stays DONE |
+| G9 | PASS | SESSION_LOG session 20, this entry, ISSUE-17 updated, ISSUE-24 opened, M08 Amendments |
+| G10 | PASS | runs/20261012-113007_M08_issue17_prep/manifest.json; runs/20261012-113337_M08_dudect_issue17_local/manifest.json (the job's seed-8 command on the numpy backend: status NOT_MEASURED, 0 mismatches) |
+Notes:
+- The three M08 targets stage bit-identical inputs before and after the refactoring of AeadTag / AeadConv (same
+  digest of the staged inputs on the tree with and without the change; checked by hand in this session, no file kept).
+- A defect found by the new tests before the pack: on a host array `asarray` does not copy, so the valid pool of
+  aead_tag_sym was overwritten with the invalid tags (288 mismatches in the first plumbing run). Fixed with a copy.
+- Not verified: anything on a CUDA device. `xp.copyto` between device arrays and r = 8 with reused outputs have run
+  only on the numpy twin and the fake device. The 4-hour plan is not a measurement.
+- runs/20261012-113007_M08_issue17_prep/pytest_all.txt was produced before two lines were re-wrapped for ruff (no logic change); the two files
+  touched were tested again afterwards (runs/20261012-113007_M08_issue17_prep/pytest_issue17.txt). ruff: runs/20261012-113007_M08_issue17_prep/ruff.txt clean for src, tests, scripts, bench.
+- The manifests are dirty: true (the tests ran on the tree this session commits).

@@ -1,0 +1,57 @@
+{
+  "job_id": "20261012-113437_M08_issue17",
+  "module": "M08_issue17",
+  "step": "S2",
+  "title": "ISSUE-17 (M08 dudect FAILs): the three failing targets again (aead_conv, aead_tag, write_epoch) with their diagnostics - staging-only null controls, roles swapped, symmetric device-staged pools, kernel-only window, write_epoch object age and build order - at seed 8, then the replication at seed 9; a full-N null control in each run",
+  "quick": false,
+  "params": {},
+  "seed": 8,
+  "git_sha": "3671fac7779a0fcf5e26695f02c68f62bff42bf4",
+  "dirty": false,
+  "packed_at": "2026-10-12T06:04:37+00:00",
+  "bundle_sha256": "c8b5e6ab81d2fc76d131430ed03e6f8fb650b4b64f095b3e7a4191e345fd9272",
+  "n_files": 148,
+  "commands": [
+    {
+      "name": "nvidia_smi",
+      "cmd": "nvidia-smi",
+      "timeout": 120
+    },
+    {
+      "name": "check_oblivious",
+      "cmd": "python scripts/check_oblivious.py kernels/",
+      "timeout": 300,
+      "stop_on_fail": false
+    },
+    {
+      "name": "pytest_issue17",
+      "cmd": "python -m pytest -p no:cacheprovider -rs -q tests/unit/test_run_dudect.py tests/gpu/test_aead.py",
+      "timeout": 1800,
+      "stop_on_fail": false
+    },
+    {
+      "name": "dudect_selftest",
+      "cmd": "python bench/run_dudect.py --targets controls --seed 8 --quick --name dudect_issue17_selftest --out runs",
+      "timeout": 1800,
+      "stop_on_fail": false
+    },
+    {
+      "name": "dudect_issue17_s8",
+      "cmd": "python bench/run_dudect.py --targets control_null,issue17 --seed 8 --name dudect_issue17_s8 --out runs",
+      "timeout": 21600,
+      "stop_on_fail": false
+    },
+    {
+      "name": "dudect_issue17_s9",
+      "cmd": "python bench/run_dudect.py --targets control_null,issue17_rep --seed 9 --name dudect_issue17_s9 --out runs",
+      "timeout": 21600,
+      "stop_on_fail": false
+    },
+    {
+      "name": "nvidia_smi_after",
+      "cmd": "nvidia-smi",
+      "timeout": 120,
+      "stop_on_fail": false
+    }
+  ]
+}

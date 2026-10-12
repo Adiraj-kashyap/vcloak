@@ -420,6 +420,20 @@ Proposed fix (one prep session and one runner session; `fix ISSUE-17`):
    threat model is a decision for the team (an ADR), not something this job can settle.
 Until then: M14 must not claim that AEAD open or the whole write path is timing-independent. The FAILs stay in
 the index, in results/oblivious/summary_table.csv and in docs/REPORT_CH4_NOTES.md section 4.O.3.
+Prep done, session 20 (commit 3671fac; nothing measured, the backend was numpy): job 20261012-113437_M08_issue17 is packed (ISSUE-24).
+`bench/run_dudect.py --targets issue17` runs the three failing targets again plus 11 diagnostics; seed 9 repeats 12
+of the 14 (`issue17_rep`). How to read the result in the ingest session (threshold 4.5; a reading, not a proof):
+- aead_conv_null / aead_tag_null / write_epoch_null / write_epoch_age FAIL: the staging alone separates two classes
+  with the same contents, so the M08 FAIL of that target does not show a data dependence (H1 / H2 / H4).
+- aead_conv_swap, aead_tag_swap: compare the sign of the raw t with the original. Same sign = the difference
+  follows the staging role (fixed array vs pool / fresh array); opposite sign = it follows the contents.
+- *_sym and *_kernel PASS while the original FAILS again: harness staging. *_sym or *_kernel FAIL: H3 stays open
+  (the device time depends on the data without a branch) and the issue stays open with that finding.
+- write_epoch_fresh is the fixed-vs-random comparison without the staging; its call_ms series decides H4.
+- The originals must FAIL again (seed 8 and seed 9) for any of this to explain them; if they PASS now, the M08
+  FAIL was not reproduced and that is the finding. The full-N control_null of each run must PASS, or the run is void.
+Proposed step 3 was built as r = 8 with preallocated outputs (`gpu_open_and_key(..., out=)`); step 5's re-measure
+after ISSUE-12 and the ADR on whole-call host timing are not part of this job.
 
 ### ISSUE-18 [OPEN] M08 ncu: the runner refuses the GPU performance counters (ERR_NVGPUCTRPERM); divergence is NOT_MEASURED
 BLOCKS: none   SEVERITY: medium   OPENED: 2026-10-12 session 16
@@ -528,3 +542,40 @@ BLOCKS: none   SEVERITY: low   OPENED: 2026-10-12 session 19
    database) is not repaired. The marks and the acknowledgement have never run on a CUDA device.
 Not a human action.
 
+### ISSUE-24 [OPEN] HUMAN ACTION REQUIRED — GPU JOB READY: ISSUE-17 dudect diagnostics (job 20261012-113437_M08_issue17)
+BLOCKS: M14   SEVERITY: high   OPENED: 2026-10-12 session 20
+Why: three dudect series FAILED in the M08 job (ISSUE-17) and the cause is unknown. This job measures them again
+together with controls that separate "the kernel time depends on the data" from "the test harness treats the two
+classes differently". It needs the real GPU; the laptop cannot measure it.
+
+GPU JOB READY — 20261012-113437_M08_issue17              (runtime not measured; plan for about 4 hours, see the note below)
+Use Kaggle for this one (the job is long, and Kaggle sessions do not disconnect when the tab is idle).
+File to upload: D:\PJT\vcloak\gpujobs\out\20261012-113437_M08_issue17\job.zip
+Notebook:       D:\PJT\vcloak\colab\VCloak_GPU_Runner.ipynb
+Do this (Kaggle, as for the earlier jobs):
+  1. kaggle.com -> Create -> New Notebook -> File -> Import Notebook -> pick colab\VCloak_GPU_Runner.ipynb.
+  2. Settings -> Accelerator -> GPU T4 x2.   (the step everyone forgets)
+  3. + Add Input -> Upload -> gpujobs\out\20261012-113437_M08_issue17\job.zip as a dataset. Kaggle unpacks it into a
+     folder: that is fine.
+  4. Nothing to type in Cell 2: leave KAGGLE_INPUT = "" . The cell finds the job under /kaggle/input and must
+     print "Bundle verified".
+  5. Run Cell 1. It must print a GPU name (e.g. Tesla T4). If it prints NO GPU, redo step 2.
+  6. Run the remaining cells and keep the tab open until the last one finishes. The long cell prints nothing
+     while a command runs (the output of each command appears when it ends): that is normal. Do not start anything
+     else in that notebook while it runs: the job measures small timing differences.
+  7. Download results_20261012-113437_M08_issue17.zip from the Output panel.
+  8. Move that file into D:\PJT\vcloak\gpujobs\inbox\   (do not unzip or rename it).
+Or use Google Colab: colab.research.google.com -> File -> Upload notebook -> the same .ipynb; Runtime -> Change
+  runtime type -> T4 GPU -> Save; run Cell 1 (GPU name), Cell 2 (upload job.zip), Cell 3 (keep the tab open and
+  active: a free Colab session can disconnect during a job this long), Cell 4 (downloads the results zip).
+Bring back only the results zip, even if a cell reports a failure. Do not commit or edit anything in the repo
+  before the next session: a change to src/, kernels/, tests/, bench/ or scripts/ makes the result stale and it
+  will be rejected.
+No passphrase is needed: the job uses fixed TEST keys.
+A dudect FAIL in the output is not an error of yours: FAIL or PASS of each series is the measurement.
+Runtime note: 27 dudect series of 100000 measurements per class. The plan of 4 hours is the sum of what the same
+  kinds of target took in the M08 job (runs/20261012-031331_M08_dudect/summary.json, measure_seconds); the new
+  targets have never run on a GPU, so it can be longer. Each of the two long commands may take up to 6 hours
+  before it is stopped; what was measured until then is kept.
+Confirm by running: .venv\Scripts\python scripts\gpujob.py verify gpujobs\inbox\results_20261012-113437_M08_issue17.zip
+Then open a new session and type: continue
