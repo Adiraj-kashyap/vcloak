@@ -1,0 +1,14 @@
+PASS  the page is live, in dev mode, with a mode switch
+PASS  chat: V-cloak rows are of closed windows and their revealed order is not monotonic
+PASS  chat: the baseline revealed order is monotonic
+PASS  chat: both panels hold the same ciphertexts
+PASS  chat: reveal was on and the strip showed the mode in both pictures
+PASS  chat: the panes read the conversation in the order sent
+PASS  chat: no pane stopped
+PASS  chat: no message text is in the table
+PASS  dashboard: the view was the one on screen
+PASS  experiments: the view was the one on screen
+PASS  logs: the view was the one on screen
+PASS  arch: the view was the one on screen
+PASS  no exception, console error or blocked request in the page
+12 files, 12 index rows; record: runs/20261012-181114_M13_evidence_capture_s5b/capture_evidence.json

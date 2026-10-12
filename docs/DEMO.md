@@ -107,5 +107,23 @@ What to say, and what not to:
 - The switch compares layouts, not speed. No timing on this page is a result, and with `--compare` every message is
   written twice.
 
+### Taking the pictures
+`python scripts/capture_evidence.py --module M13` starts its own server (`serve --dev --compare`, SQLite, the engine
+this machine has), lets the two panes hold a short conversation and photographs the page in headless Chrome or Edge
+at 1440x900, full page, light and dark: the chat with the panel and "reveal true order" on in V-cloak mode and in
+baseline mode, then the dashboard, the experiments, the logs and the architecture view. The PNGs go to
+`evidence/screens/` and one row per file to `evidence/INDEX.md`, with the run directory, the commit and the data
+state.
+
+- The data state is read from the page. Until M18 the four other views show the bundled sample data, so their rows say
+  `seed`: they show the interface, never a result. The chat rows say `measured` because the conversation and the
+  stored rows are from a real run of the service; nothing in them is a timing.
+- A picture is taken as the page is. The footer of the chat pictures reads "data: seed" (the dashboard's provenance
+  line) and the strip shows no epoch yet; both are stated in the index row, not cropped.
+- A second run on the same day overwrites the files and replaces their rows. On a later day the file names change and
+  the older pictures move to `evidence/superseded/`.
+- If a check fails (the V-cloak order came out monotonic, a pane stopped, the page logged an error) nothing is written
+  to `evidence/` and the script exits 1; what it saw is in `capture_evidence.json` of the run directory.
+
 ### Not shown yet
 The strip at the top shows the window, the queue and the store mode, but not yet the epoch or the compute backend (S6).

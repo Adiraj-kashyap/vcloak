@@ -656,3 +656,32 @@
   with a full queue on a real server; the page in Firefox or Safari; a CUDA engine behind the service
 - Commit: 5348044
 - Next: M13 S5b ; human action: none. Keep Docker Desktop running when you type continue
+
+## Session 28 — 2026-10-12 19:20 — M13 Frontend: chat + server view — owner:Abhishek
+- Steps: S5b→S5b (status after: IN_PROGRESS; checkpoint S6)
+- Did: scripts/capture_evidence.py (new): `--module <Mxx>` starts its own `serve --dev --compare`, has the two panes
+  hold an 8-message conversation and photographs the page in headless Chrome at 1440x900, full page, both themes: the
+  chat with the panel and the revealed order in V-cloak and in baseline mode, then dashboard, experiments, logs and
+  architecture (12 PNGs in evidence/screens/, 12 rows in evidence/INDEX.md with run dir, commit and data state read
+  from the page). Rows are replaced by ID; nothing is written unless every check passed; `--terminal` copies run
+  output to evidence/terminal/. tests/unit/test_capture_evidence.py (8). docs/DEMO.md ("Taking the pictures").
+  ISSUE-31 point 1: the intermittent browser test traced to its own hook and changed (test_web_app.py).
+- Evidence: runs/20261012-181114_M13_evidence_capture_s5b (capture_run1.txt, capture_run2.txt, capture_evidence.json, overwrite_check.txt;
+  pytest_all.txt 1985 passed, 675 skipped; pytest_m13.txt 33 passed, 25 of them the web app in Chrome; flake/,
+  flake_fixed/, withheld_repro.json, withheld_summary.txt; file_demo_check.json; ruff clean; check_* PASS;
+  a5_grep.txt empty); evidence/screens/M13_*_20261012.png; evidence/terminal/M13_S5b_*
+- Metrics added: none (nothing measured: pictures and correctness only, numpy engine)
+- Decisions: none (no ADR; the choices of the script are in the Amendments of ai/modules/M13)
+- Issues: opened ISSUE-32 (what the pictures do not show, what the script does not do; low); ISSUE-31 point 1 traced
+  and the test changed, the issue stays open for points 2-4
+- Deviations from spec: twelve pictures instead of "at least eight"; eight of them are of prototype views that show
+  bundled sample data and are labelled `seed`; figures are not exported by the script yet (Amendments)
+- Found on the way: the old withheld-message test withheld "the first new payload B is handed"; panes fetch the newest
+  window first, so across a window boundary it withheld the last message and no alert could come. Old test: 29 of 30
+  repeats passed; reproduction across a boundary: 4 of 8 trials without alert; changed test: 30 of 30 passed.
+  A SHA-256 list written into the run directory tripped check_secrets (removed; the hashes are in the JSON record).
+- Not verified: S6 (not started); that every earlier failure of that test had this cause; the whole test file
+  repeated; `--views` subsets, the script making its own run directory, the move to evidence/superseded/; the page in
+  Firefox or Safari; a CUDA engine behind the service
+- Commit: (hash follows)
+- Next: M13 S6 ; human action: none. Keep Docker Desktop running when you type continue

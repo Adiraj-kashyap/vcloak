@@ -1,0 +1,3 @@
+old test (hook by position), 30 repeats (the first capture run and the writing of this session went on beside some of them): 29 passed, 1 failed (repeat 21)
+changed test (hook by ciphertext), 30 repeats (nothing else in a browser beside them): 30 passed, 0 failed
+reproduction of the old hook across a window boundary: {'trials': 8, 'sends_in_two_windows': 8, 'of_those_no_alert_and_last_message_withheld': 4, 'of_those_alert': 4, 'same_window_trials_with_alert': 0}

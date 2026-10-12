@@ -1,0 +1,58 @@
+{
+  "run_id": "20261012-181114_M13_evidence_capture_s5b",
+  "module": "M13",
+  "step": "S5b",
+  "owner": "Abhishek",
+  "git_sha": "b02b8c12542b6b1f57615d6ad5822c1880ebda7d",
+  "dirty": true,
+  "command": "capture_evidence.py --module M13 (twice); pytest -q; ruff check; check_*; repeats of the withheld-message browser test",
+  "seed": 0,
+  "quick": false,
+  "params": {},
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261012-181114",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U"
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791808874.8760507
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791809832.98159
+  },
+  "outputs": [
+    "a5_grep.txt",
+    "capture_evidence.json",
+    "capture_run1.txt",
+    "capture_run2.txt",
+    "capture_terminal.json",
+    "capture_terminal.txt",
+    "chat_file_demo.png",
+    "check_metrics.txt",
+    "check_oblivious.txt",
+    "check_secrets.txt",
+    "file_demo_check.json",
+    "file_demo_check.py",
+    "file_demo_check.txt",
+    "flake",
+    "flake_fixed",
+    "overwrite_check.txt",
+    "pytest_all.txt",
+    "pytest_all_tail.txt",
+    "pytest_m13.txt",
+    "ruff.txt",
+    "withheld_repro.json",
+    "withheld_repro.py",
+    "withheld_repro.txt",
+    "withheld_summary.txt"
+  ],
+  "status": "OK",
+  "notes": "M13 S5b: capture_evidence.py --module M13 run twice (12 PNGs, 12 index rows each time, the second overwrote the first; every check true, no page error), then once with --views none for 4 terminal copies; full suite 1985 passed, 675 skipped; 33 M13 tests (25 in headless Chrome, 8 unit); ISSUE-31 point 1: the old withheld-message test 29 of 30 repeats, reproduction of its hook across a window boundary 4 of 8 without alert, the changed test 30 of 30; file:// page re-checked. Pictures and correctness only, numpy engine, SQLite: no metric."
+}

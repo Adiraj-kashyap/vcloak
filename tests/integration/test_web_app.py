@@ -665,15 +665,17 @@ def test_a_withheld_message_is_flagged_in_the_pane(browser: Browser, server: Loc
         # message it ever saw of a session (docs/API.md)
         assert page.evaluate("VC.chat.send('A', 'the first one')") == 0
         page.wait_for("VC.chat.transcript('B').some(m => m.text === 'the first one')", timeout=20)
-        # from here on, a server that withholds from B the next message B has not seen yet
+        # from here on, a server that withholds from B the next message A sends. The message is known by its
+        # ciphertext, not by its place: a pane fetches its windows newest first, so "the first new payload B
+        # is handed" is the LAST message when the two fall into different windows, and a missing last message
+        # cannot be noticed yet (ISSUE-31 point 1)
         page.evaluate("""(() => {
+            const a = VC.chat.panes.A.client, post = a._postStored.bind(a);
+            let withheld = null;
+            a._postStored = payload => { withheld = withheld || payload; return post(payload); };
             const c = VC.chat.panes.B.client, fetch = c._fetch.bind(c);
-            let skip = null;
-            c._fetch = win => fetch(win).then(payloads => {
-                const done = c.conv.consumed[win] || 0;
-                if (!skip && payloads.length > done) skip = {win: win, index: done};
-                return skip && skip.win === win ? payloads.filter((_, i) => i !== skip.index) : payloads;
-            });
+            const same = (x, y) => x.length === y.length && x.every((v, i) => v === y[i]);
+            c._fetch = win => fetch(win).then(payloads => payloads.filter(p => !(withheld && same(p, withheld))));
             return true; })()""")
         assert page.evaluate("VC.chat.send('A', 'the withheld one')") == 1
         assert page.evaluate("VC.chat.send('A', 'the one after it')") == 2

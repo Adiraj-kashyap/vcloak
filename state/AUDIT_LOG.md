@@ -798,3 +798,35 @@ Notes:
 - Not checked: the switch on PostgreSQL (the baseline schema beside `public`), a switch while a second client is
   connected, a full queue on a real server (the refusal path is tested with stub backends only).
 - Browser: Chrome headless only; uvicorn inside the test process on loopback, public development key, SQLite.
+
+## Audit M13 — 2026-10-12 — session 28 — result: PASS for S5b (checkpoint; module not complete: S6 not started)
+| Item | Result | Evidence |
+|---|---|---|
+| A1 nothing in the chat path decrypts on the server | PASS | runs/20261012-181114_M13_evidence_capture_s5b/pytest_m13.txt: test_thirty_messages_two_users_exact_order (unchanged); capture_evidence.json check "no message text is in the table" |
+| A2 the device key cannot be exported | PASS | runs/20261012-181114_M13_evidence_capture_s5b/pytest_m13.txt: test_the_private_keys_cannot_be_exported (unchanged) |
+| A3 /v1/dump and the reveal toggle disabled without --dev | PASS | runs/20261012-181114_M13_evidence_capture_s5b/pytest_m13.txt: test_dump_is_refused_without_dev, test_without_dev_the_page_has_no_rows_and_no_reveal (unchanged) |
+| A4 the app loads from file:// with demo data | PASS | runs/20261012-181114_M13_evidence_capture_s5b/file_demo_check.json and chat_file_demo.png (the S5 check script run again; web/ unchanged this session) |
+| A5 CSP present, no inline script, no CDN | PASS | runs/20261012-181114_M13_evidence_capture_s5b/pytest_m13.txt (the CSP and source tests), runs/20261012-181114_M13_evidence_capture_s5b/a5_grep.txt empty (`://` in web/, without the SVG namespace and the word file://) |
+| A6 capture_evidence.py runs clean, rows carry run dirs and data-state labels | PASS | runs/20261012-181114_M13_evidence_capture_s5b/capture_run1.txt and capture_run2.txt (exit 0, every check true, no page error), capture_evidence.json, overwrite_check.txt (12 files match the recorded SHA-256); evidence/INDEX.md: 12 SCR-M13 rows, each `runs/20261012-181114_M13_evidence_capture_s5b (git b02b8c1, dirty)`, 4 `measured` (chat), 8 `seed`; four pictures opened and read |
+| G1 | PASS | runs/20261012-181114_M13_evidence_capture_s5b/pytest_all.txt (1985 passed, 675 skipped; 674 skips name CUDA/CuPy/GPU, 1 is tests/unit/test_oracle_chacha.py:82; no PostgreSQL skip, no browser skip) |
+| G2 | PASS | runs/20261012-181114_M13_evidence_capture_s5b/check_metrics.txt (331 rows, 0 problems). No metric added. The numbers visible in the dashboard and experiments pictures are the prototype's seed data and their rows say `seed` |
+| G2b | PASS | nothing timed; manifest says backend numpy |
+| G3 | PASS | runs/20261012-181114_M13_evidence_capture_s5b/check_oblivious.txt (11 files, 0 findings); no kernel source changed |
+| G4 | PASS | runs/20261012-181114_M13_evidence_capture_s5b/check_secrets.txt (0 key-like runs), run again after the evidence files were written |
+| G5 | N/A | no GPU twin |
+| G6 | PASS for the deliverables so far | scripts/capture_evidence.py exists; every listed deliverable exists; the strip of S6 is the open part |
+| G7 | PASS | checked after the closing commit |
+| G8 | PASS | STATE: M13 IN_PROGRESS, step S6, sessions 4; next_unit M13 |
+| G9 | PASS | SESSION_LOG session 28, this entry, ISSUE-31 updated, ISSUE-32 opened, M13 Amendments |
+| G10 | PASS | manifest valid; the capture command run twice with the same outcome (all checks true both times; the V-cloak order differs between the runs, as it should) |
+Notes:
+- The S5b check ("at least 8 PNGs and the same number of index rows; re-running overwrites cleanly") holds with 12 and
+  12; after the second run the index had the same 93 lines and evidence/superseded/ was empty.
+- Eight of the twelve pictures show bundled sample data (ISSUE-32 point 1). They are evidence of the interface only.
+  The chat pictures carry the footer "data: seed" and a strip without epoch; stated in their rows (ISSUE-31 point 4).
+- ISSUE-31 point 1: the cause shown is a flaw of the test's hook (withheld_repro.json). It explains the symptom of the
+  one failure seen today; it is not shown that every failure of session 27 had this cause. The whole file was run
+  twice today, not repeated many times: that repeat is still owed before M17.
+- The first capture run and some of the 30 repeats of the old test ran side by side on this laptop; the second
+  capture run and the repeats of the changed test did not overlap.
+- Browser: Chrome headless only; uvicorn inside the process on loopback, public development key, SQLite, numpy engine.

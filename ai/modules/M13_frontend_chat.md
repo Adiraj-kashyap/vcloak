@@ -84,3 +84,14 @@ stores, with a switch between V-cloak and the unprotected baseline. This is the 
   disabled. The S5 check runs on such a server, on closed windows for the V-cloak half (as in S4).
 - `serve` refuses `--dev` on a non-loopback host; the baseline dump carries `ts` and `conv_hex`, shown in the panel
   in place of `bucket` and `seq_enc` (ISSUE-30 points 1-2).
+- 2026-10-12 (session 28, S5b): `capture_evidence.py` photographs twelve pictures, not eight: the two chat pictures
+  (V-cloak and baseline, reveal on) and the four other views, each in both themes. The four other views still show
+  the prototype's bundled sample data, so their index rows say `seed`; M18 re-captures them from generated data.
+- The script writes to `evidence/` only when all its checks passed, starts its own `serve --dev --compare` (never a
+  server that is already running), and records the commit and the state of the tree at the time of the capture.
+  A row is replaced by its ID; the older file of a replaced row moves to `evidence/superseded/`.
+- `--terminal SRC=WHAT` copies a file of a run directory to `evidence/terminal/` and indexes it (ai/EVIDENCE.md §4);
+  figures (`evidence/figures/`, PDF + PNG at 300 dpi) are not handled yet: there is no chart export before M16/M18.
+- `test_a_withheld_message_is_flagged_in_the_pane` now withholds the message by its ciphertext instead of "the first
+  new payload B is handed" (ISSUE-31 point 1: the old hook picked the last message when the two fell into different
+  windows, and a missing last message cannot be noticed).

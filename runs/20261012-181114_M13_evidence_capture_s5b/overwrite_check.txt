@@ -1,0 +1,5 @@
+capture_evidence.py --module M13 run twice on 2026-10-12 into this run directory (capture_run1.txt, capture_run2.txt).
+after run 1: 12 PNGs in evidence/screens, 12 SCR-M13 rows, evidence/INDEX.md 93 lines
+after run 2: 12 PNGs in evidence/screens, 12 SCR-M13 rows, evidence/INDEX.md 93 lines, evidence/superseded empty
+the V-cloak revealed order differed between the runs (run 1: 3 4 2 5 1 8 7 6; run 2: 4 1 5 3 8 7 2 6): a new conversation, a new permutation; the files and rows are those of run 2 (capture_evidence.json)
+12 files match the record; states: {'chat': 'measured', 'dashboard': 'seed', 'experiments': 'seed', 'logs': 'seed', 'arch': 'seed'} ok True errors []

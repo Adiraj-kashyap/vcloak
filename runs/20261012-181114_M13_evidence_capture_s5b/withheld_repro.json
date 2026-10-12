@@ -1,0 +1,234 @@
+{
+ "serve_argv": [
+  "--dev",
+  "--sessions",
+  "--store",
+  "sqlite",
+  "--window-s",
+  "2",
+  "--epoch-ms",
+  "100"
+ ],
+ "trials": [
+  {
+   "windows_apart": 1,
+   "hook_withheld_window": 0,
+   "first_fetches_with_something_new": [
+    {
+     "win": 0,
+     "held": 1,
+     "done": 0
+    },
+    {
+     "win": 1,
+     "held": 1,
+     "done": 0
+    },
+    {
+     "win": 0,
+     "held": 1,
+     "done": 0
+    }
+   ],
+   "B_shows": [
+    "the first one"
+   ],
+   "B_alert_shown": true,
+   "case": "the hook withheld the middle message: alert"
+  },
+  {
+   "windows_apart": 1,
+   "hook_withheld_window": 0,
+   "first_fetches_with_something_new": [
+    {
+     "win": 0,
+     "held": 1,
+     "done": 0
+    },
+    {
+     "win": 1,
+     "held": 1,
+     "done": 0
+    },
+    {
+     "win": 0,
+     "held": 1,
+     "done": 0
+    }
+   ],
+   "B_shows": [
+    "the first one"
+   ],
+   "B_alert_shown": true,
+   "case": "the hook withheld the middle message: alert"
+  },
+  {
+   "windows_apart": 1,
+   "hook_withheld_window": 1,
+   "first_fetches_with_something_new": [
+    {
+     "win": 1,
+     "held": 1,
+     "done": 0
+    },
+    {
+     "win": 0,
+     "held": 2,
+     "done": 1
+    },
+    {
+     "win": 1,
+     "held": 1,
+     "done": 0
+    }
+   ],
+   "B_shows": [
+    "the first one",
+    "the withheld one"
+   ],
+   "B_alert_shown": false,
+   "case": "the hook withheld the last message: B shows 'the withheld one', no alert"
+  },
+  {
+   "windows_apart": 1,
+   "hook_withheld_window": 0,
+   "first_fetches_with_something_new": [
+    {
+     "win": 0,
+     "held": 1,
+     "done": 0
+    },
+    {
+     "win": 1,
+     "held": 1,
+     "done": 0
+    },
+    {
+     "win": 0,
+     "held": 1,
+     "done": 0
+    }
+   ],
+   "B_shows": [
+    "the first one"
+   ],
+   "B_alert_shown": true,
+   "case": "the hook withheld the middle message: alert"
+  },
+  {
+   "windows_apart": 1,
+   "hook_withheld_window": 1,
+   "first_fetches_with_something_new": [
+    {
+     "win": 1,
+     "held": 1,
+     "done": 0
+    },
+    {
+     "win": 0,
+     "held": 1,
+     "done": 0
+    },
+    {
+     "win": 1,
+     "held": 1,
+     "done": 0
+    }
+   ],
+   "B_shows": [
+    "the first one",
+    "the withheld one"
+   ],
+   "B_alert_shown": false,
+   "case": "the hook withheld the last message: B shows 'the withheld one', no alert"
+  },
+  {
+   "windows_apart": 1,
+   "hook_withheld_window": 1,
+   "first_fetches_with_something_new": [
+    {
+     "win": 1,
+     "held": 1,
+     "done": 0
+    },
+    {
+     "win": 0,
+     "held": 2,
+     "done": 1
+    },
+    {
+     "win": 1,
+     "held": 1,
+     "done": 0
+    }
+   ],
+   "B_shows": [
+    "the first one",
+    "the withheld one"
+   ],
+   "B_alert_shown": false,
+   "case": "the hook withheld the last message: B shows 'the withheld one', no alert"
+  },
+  {
+   "windows_apart": 1,
+   "hook_withheld_window": 0,
+   "first_fetches_with_something_new": [
+    {
+     "win": 0,
+     "held": 1,
+     "done": 0
+    },
+    {
+     "win": 1,
+     "held": 1,
+     "done": 0
+    },
+    {
+     "win": 0,
+     "held": 1,
+     "done": 0
+    }
+   ],
+   "B_shows": [
+    "the first one"
+   ],
+   "B_alert_shown": true,
+   "case": "the hook withheld the middle message: alert"
+  },
+  {
+   "windows_apart": 1,
+   "hook_withheld_window": 1,
+   "first_fetches_with_something_new": [
+    {
+     "win": 1,
+     "held": 1,
+     "done": 0
+    },
+    {
+     "win": 0,
+     "held": 1,
+     "done": 0
+    },
+    {
+     "win": 1,
+     "held": 1,
+     "done": 0
+    }
+   ],
+   "B_shows": [
+    "the first one",
+    "the withheld one"
+   ],
+   "B_alert_shown": false,
+   "case": "the hook withheld the last message: B shows 'the withheld one', no alert"
+  }
+ ],
+ "browser": "Chrome/154.0.8037.98",
+ "summary": {
+  "trials": 8,
+  "sends_in_two_windows": 8,
+  "of_those_no_alert_and_last_message_withheld": 4,
+  "of_those_alert": 4,
+  "same_window_trials_with_alert": 0
+ }
+}

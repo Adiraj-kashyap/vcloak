@@ -1,0 +1,21 @@
+{
+ "module": "M13",
+ "run": "runs/20261012-181114_M13_evidence_capture_s5b (git b02b8c1, dirty)",
+ "date": "2026-10-12",
+ "views": {},
+ "checks": {},
+ "ok": true,
+ "superseded": [],
+ "index_rows": [
+  "TERM-M13-S5B-PYTEST-ALL-TAIL",
+  "TERM-M13-S5B-PYTEST-M13",
+  "TERM-M13-S5B-OVERWRITE-CHECK",
+  "TERM-M13-S5B-WITHHELD-SUMMARY"
+ ],
+ "files_written": [
+  "terminal/M13_S5b_pytest_all_tail.txt",
+  "terminal/M13_S5b_pytest_m13.txt",
+  "terminal/M13_S5b_overwrite_check.txt",
+  "terminal/M13_S5b_withheld_summary.txt"
+ ]
+}

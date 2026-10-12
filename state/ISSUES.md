@@ -730,4 +730,33 @@ BLOCKS: none   SEVERITY: medium   OPENED: 2026-10-12 session 27
 4. The footer of the page reads "data: seed" on a live server too (seen in the S5 screenshots); the "dev" mark of
    the reveal switch is clipped at 1440 px. Both are from the prototype.
 Proposed: point 1 in S5b, which builds on the same headless driver; point 4 in S6 or M18; 2-3 stay as stated limits.
+Update 2026-10-12 session 28 (M13 S5b): point 1 traced to the test, not the pane. The hook withheld "the first new
+payload B is handed"; a pane fetches its windows newest first, so when "the withheld one" and "the one after it" fell
+into different windows and B read both in one pass, the hook withheld the LAST message, B showed "the withheld one",
+and no alert could come (a missing last message is not detectable until a later one arrives, ISSUE-28).
+runs/20261012-181114_M13_evidence_capture_s5b: flake/ (old test, 30 repeats alone: 29 passed, 1 failed with this
+symptom), withheld_repro.json (the old hook with the two sends placed across a window boundary, 8 trials: 4 with no
+alert and the last message withheld, 4 with the alert). The test now withholds the message by its ciphertext;
+flake_fixed/ holds the repeats of the changed test (counts in SESSION_LOG session 28). Not established: that every
+earlier failure was this one (the output of the failures of session 27 was not kept, and one of them logged a
+DevTools keep-alive timeout). Points 2-4 unchanged; the issue stays open for them and for a repeat of the whole file
+before M17.
+
+### ISSUE-32 [OPEN] M13 capture_evidence.py: what the pictures do not show, and what the script does not do
+BLOCKS: none   SEVERITY: low   OPENED: 2026-10-12 session 28
+1. Eight of the twelve pictures (dashboard, experiments, logs, architecture) show the prototype's bundled sample data
+   on a live server; their rows say `seed`. They illustrate the interface only. M18 must re-capture them once
+   `web/data/dashboard.json` is generated; the script then files the old ones under `evidence/superseded/` only if
+   the file name changed (another day): on the same day it overwrites, so M18 must not run on a day that already has
+   `seed` pictures it wants to keep, or the script needs a data-state part in the file name.
+2. The chat pictures show the newest messages of each pane (the panes scroll), not all eight; the footer reads
+   "data: seed" and the strip shows no epoch and, in baseline mode, no slot count (ISSUE-31 point 4, S6). The index
+   rows say so. Re-capture after S6.
+3. Figures (`evidence/figures/`, 300 dpi PDF + PNG) are not exported by the script; `--terminal` is unit-tested and
+   used once (session 28), `--views` subsets and a run without `--run` (the script making its own run directory)
+   were not run.
+4. Chrome headless only; one viewport (1440x900); the single-column layout below 900 px is not photographed.
+5. The supersede path (a row whose file name changed) is unit-tested on the index text; the file move itself has not
+   happened yet, because no second day exists.
+Proposed: 1 in M18, 2 in S6 (re-run the script at the end of that session), 3-5 as they come up in M16/M18.
 
