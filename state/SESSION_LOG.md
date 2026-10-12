@@ -551,5 +551,5 @@
 - Found on the way: uvicorn logged every WebSocket with its peer address although the access log was off; fixed (S7)
 - Not verified: sockets under load; behind a TLS proxy; equal time of refused and accepted verifications; a CUDA engine
   behind the session layer
-- Commit: (hash in the next commit)
+- Commit: 3b755c6
 - Next: M12 S1 ; human action: none. Keep Docker Desktop running when you type continue
