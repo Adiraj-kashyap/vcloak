@@ -573,7 +573,7 @@ Bring back only the results zip, even if a cell reports a failure. Do not commit
   will be rejected.
 No passphrase is needed: the job uses fixed TEST keys.
 A dudect FAIL in the output is not an error of yours: FAIL or PASS of each series is the measurement.
-Runtime note: 27 dudect series of 100000 measurements per class. The plan of 4 hours is the sum of what the same
+Runtime note: 28 dudect targets (15 at seed 8, 13 at seed 9) of 100000 measurements per class. The plan of 4 hours is the sum of what the same
   kinds of target took in the M08 job (runs/20261012-031331_M08_dudect/summary.json, measure_seconds); the new
   targets have never run on a GPU, so it can be longer. Each of the two long commands may take up to 6 hours
   before it is stopped; what was measured until then is kept.
