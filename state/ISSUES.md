@@ -451,7 +451,7 @@ BLOCKS: none   SEVERITY: low   OPENED: 2026-10-12 session 16
    could not list it ("neither cuobjdump nor nvdisasm produced a listing"). The two compilers may emit different
    code. Fix in a later GPU job: save the cubin that CuPy caches, or build with the nvcc backend of CuPy for the audit.
 
-### ISSUE-20 [OPEN] M09: the development database is a native PostgreSQL 17rc1 cluster; docker-compose.yml (postgres:16) was never started
+### ISSUE-20 [CLOSED PENDING] M09: the development database is a native PostgreSQL 17rc1 cluster; docker-compose.yml (postgres:16) was never started
 BLOCKS: none   SEVERITY: low   OPENED: 2026-10-12 session 17
 1. The laptop has no Docker and the installed PostgreSQL 17 service asks for a password the agent does not have, so
    M09 runs on a private cluster started by `python scripts/pgdev.py up` (server 17rc1, a release candidate). ADR-008
@@ -466,3 +466,18 @@ Optional human action (not a gate): install Docker Desktop from https://www.dock
 it once so the engine starts, stop the private cluster (`python scripts/pgdev.py down`, it uses the same port), run
 `docker compose up -d db`, then `python -m pytest -q tests/integration/test_repo_pg.py`. Before M14/M15 decide which
 server the evaluation numbers come from and record its version in the run manifests.
+
+Resolution of ISSUE-20 (2026-10-12, session 17, after the human installed Docker Desktop): `docker compose up -d --wait db`
+started postgres:16 (server 16.15) from docker-compose.yml; the storage tests pass on it unchanged (118 passed, the 42
+contract tests among them) and SHOW returns the 14 required settings (runs/20261012-103011_M09_storage_pg16_docker). Point 1 is settled; point 2 stays as a
+note in STATE.md; point 3 moves to ISSUE-21.
+
+### ISSUE-21 [OPEN] M09: rewrite_window is untested under concurrent connections; WAL lifetime of a closed window is not measured
+BLOCKS: none   SEVERITY: low   OPENED: 2026-10-12 session 17
+1. Every rewrite test uses one connection after the other. Nothing shows what a reader or a late writer sees while
+   the swap transaction runs (blocking, an error on the detached partition, a retry). M10 owns the scheduler that
+   calls the re-shuffle: add a test with a second connection reading and inserting during `rewrite_window` there.
+2. The WAL and logging settings are verified by SHOW on both servers, but how long the WAL records of a closed
+   window stay on disk was not measured, and removed segments are not overwritten (docs/ENV.md says so). The
+   requirement "retention < W" is configured, not demonstrated. M14 is the place to test it (copy `pg_wal` after a
+   window has been rewritten and look for its rows).

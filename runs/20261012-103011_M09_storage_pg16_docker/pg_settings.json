@@ -1,0 +1,93 @@
+{
+  "server_version": "16.15 (Debian 16.15-1.pgdg13+2)",
+  "dsn_host": "127.0.0.1",
+  "dsn_port": 54329,
+  "window_s": 60,
+  "settings": [
+    {
+      "setting": "log_statement",
+      "required": "none",
+      "show": "none",
+      "ok": true
+    },
+    {
+      "setting": "log_min_duration_statement",
+      "required": "-1",
+      "show": "-1",
+      "ok": true
+    },
+    {
+      "setting": "log_duration",
+      "required": "off",
+      "show": "off",
+      "ok": true
+    },
+    {
+      "setting": "log_connections",
+      "required": "off",
+      "show": "off",
+      "ok": true
+    },
+    {
+      "setting": "log_disconnections",
+      "required": "off",
+      "show": "off",
+      "ok": true
+    },
+    {
+      "setting": "track_commit_timestamp",
+      "required": "off",
+      "show": "off",
+      "ok": true
+    },
+    {
+      "setting": "wal_level",
+      "required": "minimal",
+      "show": "minimal",
+      "ok": true
+    },
+    {
+      "setting": "max_wal_senders",
+      "required": "0",
+      "show": "0",
+      "ok": true
+    },
+    {
+      "setting": "archive_mode",
+      "required": "off",
+      "show": "off",
+      "ok": true
+    },
+    {
+      "setting": "wal_keep_size",
+      "required": "0",
+      "show": "0",
+      "ok": true
+    },
+    {
+      "setting": "min_wal_size",
+      "required": "32MB",
+      "show": "32MB",
+      "ok": true
+    },
+    {
+      "setting": "max_wal_size",
+      "required": "32MB",
+      "show": "32MB",
+      "ok": true
+    },
+    {
+      "setting": "checkpoint_timeout",
+      "required": "30s",
+      "show": "30s",
+      "ok": true
+    },
+    {
+      "setting": "wal_recycle",
+      "required": "off",
+      "show": "off",
+      "ok": true
+    }
+  ],
+  "all_ok": true
+}

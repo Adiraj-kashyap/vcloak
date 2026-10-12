@@ -416,3 +416,16 @@
   connections; how long WAL of a closed window survives; behaviour at bench sizes (the largest test window is 700 rows)
 - Commit: db7b746
 - Next: M10 S1 ; human action: none required (optional: ISSUE-20). `fix ISSUE-17` is still needed before M14
+
+## Session 17 (addendum) — 2026-10-12 10:35 — M09 Storage on postgres:16 (ISSUE-20) — owner:Divyansh
+- Steps: none new (M09 stays DONE); the human installed Docker Desktop and the compose service was verified
+- Did: `docker compose up -d --wait db` (postgres:16, server 16.15); the storage tests and the SHOW checks re-run on
+  it without a code change; docs/ENV.md storage section regenerated from the new SHOW output.
+- Evidence: runs/20261012-103011_M09_storage_pg16_docker (pytest.txt 118 passed; pytest_pg_contract.txt 42 passed; show.txt 14 of 14; compose_ps.txt)
+- Metrics added: none
+- Decisions: none
+- Issues: closed ISSUE-20; opened ISSUE-21 (concurrent swap untested, WAL lifetime not measured; low)
+- Deviations from spec: none left for S1 (Docker postgres:16 is now the development database)
+- Not verified: the points of ISSUE-21
+- Commit: PENDING
+- Next: M10 S1 ; human action: none. Keep Docker Desktop running when you type continue

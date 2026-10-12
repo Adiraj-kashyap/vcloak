@@ -1,0 +1,42 @@
+{
+  "run_id": "20261012-103011_M09_storage_pg16_docker",
+  "module": "M09",
+  "step": "S1-S5",
+  "owner": "Divyansh",
+  "git_sha": "bf52df1f3f0f490dcb3800210caa80408e74775f",
+  "dirty": false,
+  "command": "docker compose up -d --wait db; pytest -q -rs tests/integration/test_repo_pg.py tests/unit/test_repo_sqlite.py; python scripts/pgdev.py show",
+  "seed": 0,
+  "quick": false,
+  "params": {},
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261012-103010",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U"
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791781211.3129265
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791781259.031835
+  },
+  "outputs": [
+    "check_secrets.txt",
+    "compose_ps.txt",
+    "docker_version.txt",
+    "pg_settings.json",
+    "pytest.txt",
+    "pytest_pg_contract.txt",
+    "s1_select1.txt",
+    "show.txt"
+  ],
+  "status": "OK",
+  "notes": "M09 storage tests and SHOW checks on the docker-compose service (postgres:16, server 16.15); correctness only, nothing timed"
+}

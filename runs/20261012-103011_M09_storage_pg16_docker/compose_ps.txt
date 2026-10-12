@@ -1,0 +1,1 @@
+vcloak-db-1 postgres:16 Up 3 seconds (healthy) 127.0.0.1:54329->5432/tcp

@@ -500,3 +500,14 @@ Notes:
 - Not tested: the swap under concurrent connections; the lifetime of WAL records. docs/ENV.md says so.
 - The manifest of the run is `dirty: true`: the tests ran on the working tree that this session commits.
 - ruff is clean (runs/20261012-101327_M09_storage/ruff.txt); the old line-length finding in scripts/record_env.py was fixed while that file was edited.
+
+## Audit M09 (addendum: postgres:16) — 2026-10-12 — session 17 — result: PASS
+| Item | Result | Evidence |
+|---|---|---|
+| A1-A4 on PostgreSQL 16 | PASS | runs/20261012-103011_M09_storage_pg16_docker/pytest.txt (118 passed, 0 skipped; server 16.15 in the compose service, runs/20261012-103011_M09_storage_pg16_docker/s1_select1.txt, runs/20261012-103011_M09_storage_pg16_docker/compose_ps.txt); runs/20261012-103011_M09_storage_pg16_docker/pytest_pg_contract.txt (42 passed) |
+| S5 settings on the compose service | PASS | runs/20261012-103011_M09_storage_pg16_docker/show.txt and runs/20261012-103011_M09_storage_pg16_docker/pg_settings.json: 14 of 14 by SHOW; docs/ENV.md regenerated from that file |
+| G1, G4, G6, G10 | PASS | runs/20261012-103011_M09_storage_pg16_docker/pytest.txt; runs/20261012-103011_M09_storage_pg16_docker/check_secrets.txt; docker-compose.yml now started for the first time; runs/20261012-103011_M09_storage_pg16_docker/manifest.json valid |
+Notes:
+- Same code and tests as the audit above (commit db7b746); only the server differs. Closes ISSUE-20, opens ISSUE-21
+  for the two things still untested (concurrent swap, WAL lifetime).
+- Docker 29.8.2 with Compose v5.5.1, Linux engine on WSL 2 (runs/20261012-103011_M09_storage_pg16_docker/docker_version.txt). The first pull timed out once.
