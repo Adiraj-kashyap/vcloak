@@ -648,3 +648,13 @@ Also open: behind a reverse proxy all clients share one peer address for the per
 setting), and the per-name login limit lets anyone lock a name out for 5 minutes at a time.
 Proposed fix: a small account table in the store (name, hash string only: nothing about conversations), in its own
 unit after M11; the token state can stay in memory. Decide before M13 whether the demo needs it.
+
+### ISSUE-27 [OPEN] M11 sockets: no bound before the ticket, never run under load, TLS proxy path untested
+BLOCKS: none   SEVERITY: low   OPENED: 2026-10-12 session 23
+`/v1/ws` accepts a connection before it sees a ticket and holds it for up to 5 s (`WS_AUTH_TIMEOUT_S`); the limits
+(4 sockets per login, 1024 per service) count only sockets that presented a valid ticket, so the number of connections
+waiting for their first frame is not bounded by the service (uvicorn's `limit_concurrency` is not set). The push has
+been run with a handful of sockets only (tests, one smoke client); `--public-origin` is tested in-process, never behind
+a real TLS proxy. With `--sessions` on a public address without TLS in front, passwords travel in plain HTTP.
+Proposed fix: set a connection limit in `serve`, and measure the push with many sockets in M15 (name the socket count
+with the latency). Related: ISSUE-26 (session state in memory).

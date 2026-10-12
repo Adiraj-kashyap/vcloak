@@ -1,0 +1,268 @@
+{
+  "experiment": "E5",
+  "run_id": "20261012-160139_M11_session_matrix",
+  "scenarios": 26,
+  "as_expected": 26,
+  "rows": [
+    {
+      "id": 1,
+      "scenario": "Valid token + fresh DPoP proof",
+      "channel": "http",
+      "expected": "200",
+      "observed": "200",
+      "expected_check": null,
+      "failed_check": null,
+      "as_expected": true
+    },
+    {
+      "id": 2,
+      "scenario": "Replayed proof (same jti)",
+      "channel": "http",
+      "expected": "401 (jti)",
+      "observed": "401 (jti)",
+      "expected_check": "jti",
+      "failed_check": "jti",
+      "as_expected": true
+    },
+    {
+      "id": 3,
+      "scenario": "Stolen token, attacker's own key",
+      "channel": "http",
+      "expected": "401 (key_binding)",
+      "observed": "401 (key_binding)",
+      "expected_check": "key_binding",
+      "failed_check": "key_binding",
+      "as_expected": true
+    },
+    {
+      "id": 4,
+      "scenario": "Proof for different URL (htu)",
+      "channel": "http",
+      "expected": "401 (htu)",
+      "observed": "401 (htu)",
+      "expected_check": "htu",
+      "failed_check": "htu",
+      "as_expected": true
+    },
+    {
+      "id": 5,
+      "scenario": "Proof for different method (htm)",
+      "channel": "http",
+      "expected": "401 (htm)",
+      "observed": "401 (htm)",
+      "expected_check": "htm",
+      "failed_check": "htm",
+      "as_expected": true
+    },
+    {
+      "id": 6,
+      "scenario": "Stale proof (iat -5 min)",
+      "channel": "http",
+      "expected": "401 (iat)",
+      "observed": "401 (iat)",
+      "expected_check": "iat",
+      "failed_check": "iat",
+      "as_expected": true
+    },
+    {
+      "id": 7,
+      "scenario": "Tampered access token",
+      "channel": "http",
+      "expected": "401 (token_mac)",
+      "observed": "401 (token_mac)",
+      "expected_check": "token_mac",
+      "failed_check": "token_mac",
+      "as_expected": true
+    },
+    {
+      "id": 8,
+      "scenario": "Proof made for another access token (ath)",
+      "channel": "http",
+      "expected": "401 (ath)",
+      "observed": "401 (ath)",
+      "expected_check": "ath",
+      "failed_check": "ath",
+      "as_expected": true
+    },
+    {
+      "id": 9,
+      "scenario": "Stolen token sent as a bearer token, no proof",
+      "channel": "http",
+      "expected": "401 (proof_format)",
+      "observed": "401 (proof_format)",
+      "expected_check": "proof_format",
+      "failed_check": "proof_format",
+      "as_expected": true
+    },
+    {
+      "id": 10,
+      "scenario": "Proof with the owner's public key, signed by the attacker",
+      "channel": "http",
+      "expected": "401 (signature)",
+      "observed": "401 (signature)",
+      "expected_check": "signature",
+      "failed_check": "signature",
+      "as_expected": true
+    },
+    {
+      "id": 11,
+      "scenario": "Proof that declares another algorithm (HS256)",
+      "channel": "http",
+      "expected": "401 (alg)",
+      "observed": "401 (alg)",
+      "expected_check": "alg",
+      "failed_check": "alg",
+      "as_expected": true
+    },
+    {
+      "id": 12,
+      "scenario": "Valid ticket + proof of the same key",
+      "channel": "websocket",
+      "expected": "open (ready)",
+      "observed": "open (ready)",
+      "expected_check": null,
+      "failed_check": null,
+      "as_expected": true
+    },
+    {
+      "id": 13,
+      "scenario": "Ticket reused",
+      "channel": "websocket",
+      "expected": "close 4401 (ticket_unused)",
+      "observed": "close 4401 (ticket_unused)",
+      "expected_check": "ticket_unused",
+      "failed_check": "ticket_unused",
+      "as_expected": true
+    },
+    {
+      "id": 14,
+      "scenario": "Ticket presented with a different key",
+      "channel": "websocket",
+      "expected": "close 4401 (ticket_key)",
+      "observed": "close 4401 (ticket_key)",
+      "expected_check": "ticket_key",
+      "failed_check": "ticket_key",
+      "as_expected": true
+    },
+    {
+      "id": 15,
+      "scenario": "Ticket presented after 31 s",
+      "channel": "websocket",
+      "expected": "close 4401 (ticket_exp)",
+      "observed": "close 4401 (ticket_exp)",
+      "expected_check": "ticket_exp",
+      "failed_check": "ticket_exp",
+      "as_expected": true
+    },
+    {
+      "id": 16,
+      "scenario": "Expired access token",
+      "channel": "http",
+      "expected": "401 (token_exp)",
+      "observed": "401 (token_exp)",
+      "expected_check": "token_exp",
+      "failed_check": "token_exp",
+      "as_expected": true
+    },
+    {
+      "id": 17,
+      "scenario": "Refresh-token rotation",
+      "channel": "http",
+      "expected": "200",
+      "observed": "200",
+      "expected_check": null,
+      "failed_check": null,
+      "as_expected": true
+    },
+    {
+      "id": 18,
+      "scenario": "Refresh token presented with the attacker's key",
+      "channel": "http",
+      "expected": "401 (key_binding)",
+      "observed": "401 (key_binding)",
+      "expected_check": "key_binding",
+      "failed_check": "key_binding",
+      "as_expected": true
+    },
+    {
+      "id": 19,
+      "scenario": "Old refresh token reused",
+      "channel": "http",
+      "expected": "401 (reuse)",
+      "observed": "401 (reuse)",
+      "expected_check": "reuse",
+      "failed_check": "reuse",
+      "as_expected": true
+    },
+    {
+      "id": 20,
+      "scenario": "Rotated token after reuse detected",
+      "channel": "http",
+      "expected": "401 (family_revoked)",
+      "observed": "401 (family_revoked)",
+      "expected_check": "family_revoked",
+      "failed_check": "family_revoked",
+      "as_expected": true
+    },
+    {
+      "id": 21,
+      "scenario": "Access token of the revoked family",
+      "channel": "http",
+      "expected": "401 (token_revoked)",
+      "observed": "401 (token_revoked)",
+      "expected_check": "token_revoked",
+      "failed_check": "token_revoked",
+      "as_expected": true
+    },
+    {
+      "id": 22,
+      "scenario": "Logout while a socket is open",
+      "channel": "websocket",
+      "expected": "close 4001 (session_ended)",
+      "observed": "close 4001 (session_ended)",
+      "expected_check": "session_ended",
+      "failed_check": "session_ended",
+      "as_expected": true
+    },
+    {
+      "id": 23,
+      "scenario": "Access token after logout",
+      "channel": "http",
+      "expected": "401 (token_revoked)",
+      "observed": "401 (token_revoked)",
+      "expected_check": "token_revoked",
+      "failed_check": "token_revoked",
+      "as_expected": true
+    },
+    {
+      "id": 24,
+      "scenario": "Login brute force: sixth guess on one account",
+      "channel": "http",
+      "expected": "429 (rate_limited)",
+      "observed": "429 (rate_limited)",
+      "expected_check": "rate_limited",
+      "failed_check": "rate_limited",
+      "as_expected": true
+    },
+    {
+      "id": 25,
+      "scenario": "Login brute force: the right password while the limit holds",
+      "channel": "http",
+      "expected": "429 (rate_limited)",
+      "observed": "429 (rate_limited)",
+      "expected_check": "rate_limited",
+      "failed_check": "rate_limited",
+      "as_expected": true
+    },
+    {
+      "id": 26,
+      "scenario": "X25519+HKDF content key agreement",
+      "channel": "client",
+      "expected": "keys equal",
+      "observed": "keys equal",
+      "expected_check": null,
+      "failed_check": null,
+      "as_expected": true
+    }
+  ]
+}

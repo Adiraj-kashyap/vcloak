@@ -96,6 +96,11 @@ class TokenOut(_Body):
     token_type: Literal["DPoP"] = "DPoP"
 
 
+class TicketOut(_Body):
+    ticket: str  # single use, for the first frame of /v1/ws
+    expires_in: int
+
+
 def decode_payload(payload_b64: str, size: int = PAYLOAD_LEN) -> bytes:
     """The ciphertext bytes; every submission has exactly `size` bytes (nonce + BLOCK + tag)."""
     try:

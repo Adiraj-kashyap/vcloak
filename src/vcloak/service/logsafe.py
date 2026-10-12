@@ -1,18 +1,22 @@
-"""Application logging behind an allow-list (ai/CONVENTIONS.md §4). Initial version (M10); M11 finalises it.
+"""Application logging behind an allow-list (ai/CONVENTIONS.md §4). The list is final with M11 S7:
+tests/security/test_log_redaction.py pins it, so a new field is a reviewed change of that test.
 
 A log line is an event name plus `key=value` fields. Only the keys of `ALLOWED` pass, and only with
 values that cannot carry a secret: an int, a bool, or (for the keys of `TEXT_FIELDS`) a short
 identifier. Anything else raises `ForbiddenLogField`, so a leak is a test failure, not a log line.
 
 Never in a log line: conv_id, conv_token, bucket, seq, row_id, epoch numbers and any other timestamp
-finer than 1 s, key material, tokens, DPoP proofs, payload bytes. The line's own timestamp has a
-resolution of one second. Per-epoch events are not logged at all: with the line's timestamp they would
-be an arrival record. The scheduler reports once per closed window.
+finer than 1 s, key material, tokens, tickets, DPoP proofs and their jti, key thumbprints, account names,
+client addresses, payload bytes. The line's own timestamp has a resolution of one second. Per-epoch events
+are not logged at all: with the line's timestamp they would be an arrival record. The scheduler reports
+once per closed window.
 """
 from __future__ import annotations
 
+import copy
 import logging
 import re
+from typing import Any
 
 ROOT_LOGGER = "vcloak"
 
@@ -22,11 +26,12 @@ ALLOWED: frozenset[str] = frozenset({
     "slots", "buckets", "window_s", "epoch_ms", "cand_k", "port",  # public parameters
     "win",                                                          # the coarse visible round (>= 1 s)
     "rows", "epochs", "overflow", "missed", "queued", "windows",    # public counters
-    "status", "error", "dev_key", "ready",
+    "status", "error", "dev_key", "ready", "sessions",
 })
 TEXT_FIELDS: frozenset[str] = frozenset({"mode", "clock", "visible_round", "backend", "store", "status", "error"})
 FORBIDDEN_EXAMPLES: tuple[str, ...] = ("conv_id", "conv_token", "bucket", "seq", "row_id", "epoch", "t_ms",
-                                       "payload", "token", "dpop", "jti", "key", "passphrase")
+                                       "payload", "token", "dpop", "jti", "key", "passphrase", "ticket", "jkt",
+                                       "sub", "username", "password", "family", "client")
 _TEXT_RE = re.compile(r"[A-Za-z_][A-Za-z0-9_.]{0,39}")
 _EVENT_RE = re.compile(r"[a-z][a-z0-9_]{0,39}")
 DATEFMT = "%Y-%m-%dT%H:%M:%S"  # one-second resolution: no milliseconds
@@ -91,3 +96,29 @@ def configure(level: int = logging.INFO) -> None:
         root.addHandler(handler)
     root.setLevel(level)
     root.propagate = False
+
+
+# what the HTTP server itself writes per connection (uvicorn, and the websockets library under its logger)
+_CONNECTION_LINES: tuple[str, ...] = ('"WebSocket ', "connection open", "connection closed", "connection rejected")
+
+
+class ConnectionLineFilter(logging.Filter):
+    """Drops the server's per-connection lines: with the peer address and the line's time they are an
+    arrival record, like the access log `serve` turns off."""
+
+    def filter(self, record: logging.LogRecord) -> bool:
+        try:
+            message = record.getMessage()
+        except (TypeError, ValueError):
+            return False
+        return not any(marker in message for marker in _CONNECTION_LINES)
+
+
+def server_log_config(base: dict[str, Any]) -> dict[str, Any]:
+    """The logging configuration `serve` hands to uvicorn: `base` (uvicorn's own) with the filter above on
+    every handler."""
+    cfg = copy.deepcopy(base)
+    cfg.setdefault("filters", {})["no_connection_lines"] = {"()": f"{__name__}.ConnectionLineFilter"}
+    for handler in cfg.get("handlers", {}).values():
+        handler["filters"] = [*handler.get("filters", []), "no_connection_lines"]
+    return cfg

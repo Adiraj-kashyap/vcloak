@@ -1,0 +1,11 @@
+{
+  "what": "SessionService.verify, accepted request (DPoP proof + access token)",
+  "clock": "time.perf_counter_ns",
+  "n": 2000,
+  "warmup": 200,
+  "median_us": 117.3,
+  "p05_us": 101.8,
+  "p95_us": 185.6,
+  "min_us": 100.4,
+  "max_us": 1416.0
+}

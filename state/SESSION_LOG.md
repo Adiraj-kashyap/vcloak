@@ -529,3 +529,27 @@
 - Not verified: the routes behind `vcloak serve` (not wired yet); timing of `verify`; the default Argon2id cost over HTTP
 - Commit: eff55f1
 - Next: M11 S5 (WS tickets, /v1/ws, CLI switch), then S6, S7 ; human action: none. Keep Docker Desktop running when you type continue
+
+## Session 23 — 2026-10-12 16:10 — M11 Session security (E5) — owner:Divyansh
+- Steps: S5→S7 (status after: DONE; next module M12 NOT_STARTED)
+- Did: S5 session.py: one-time WebSocket tickets (30 s, bound to the key and the login), `open_socket` with 9 proof
+  and 6 ticket checks, all evaluated. app.py: POST /v1/auth/ws-ticket, WS /v1/ws (ticket and proof in the first frame,
+  one identical `tick` frame per epoch boundary for every socket), SocketHub; logout, refresh reuse and expiry close
+  the sockets. scheduler.py / baseline.py: `on_epoch`. cli.py: `--sessions`, `--public-origin`; the loopback rule holds
+  only without sessions. S6 bench/run_session_matrix.py: 26 scenarios and the verify timing. S7 logsafe.py: final
+  allow-list (+`sessions`), `ConnectionLineFilter` for uvicorn's per-connection lines; scripts/smoke_service.py
+  `--sessions` with a search of the server log. docs/API.md; tests: test_session_ws.py (32), test_session_matrix.py (7),
+  test_log_redaction.py (37).
+- Evidence: runs/20261012-160139_M11_session_matrix (e5_matrix.json, verify_timing.json, summary.json); runs/20261012-160146_M11_session_s5_s7 (pytest_all.txt 1880 passed;
+  pytest_security.txt 164 passed; ruff clean; check_* PASS; four smokes PASS; a4_grep.txt empty; g10_rerun.txt);
+  results/session/e5_matrix.json; evidence/terminal/M11_*
+- Metrics added: SEC-E5-PASS 26/26; SEC-DPOP-VERIFY-US 117.3 us (median of 2000, laptop CPU, perf_counter)
+- Decisions: ADR-018 (in-band ticket with a proof, one push for everybody, cadence from the scheduler, CLI switch)
+- Issues: opened ISSUE-27 (sockets: no bound before the ticket, never under load, TLS proxy untested; low); closed none
+- Deviations from spec: ticket in the first frame, not in the handshake; `tests/security/test_logsafe.py` is
+  `test_log_redaction.py`; 26 scenarios instead of 15; `--sessions` is off by default (Amendments of ai/modules/M11)
+- Found on the way: uvicorn logged every WebSocket with its peer address although the access log was off; fixed (S7)
+- Not verified: sockets under load; behind a TLS proxy; equal time of refused and accepted verifications; a CUDA engine
+  behind the session layer
+- Commit: (hash in the next commit)
+- Next: M12 S1 ; human action: none. Keep Docker Desktop running when you type continue

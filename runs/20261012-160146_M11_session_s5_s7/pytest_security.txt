@@ -1,0 +1,11 @@
+........................................................................ [ 43%]
+........................................................................ [ 87%]
+....................                                                     [100%]
+============================== warnings summary ===============================
+tests\security\test_log_redaction.py:17
+  D:\PJT\vcloak\tests\security\test_log_redaction.py:17: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+164 passed, 1 warning in 3.13s
+exit=0

@@ -144,6 +144,7 @@ class EpochScheduler:
         self._last_boundary: int | None = None
         self._stop = False
         self._finishing = False
+        self._epoch_listeners: list[Callable[[], None]] = []
         # public counters
         self.epochs = 0  # epochs written
         self.overflow = 0  # submissions left for a later epoch because the epoch was full, counted per epoch
@@ -223,6 +224,18 @@ class EpochScheduler:
                 self._hot.add(rnd)
             self._repo.insert_rows(rows)
 
+    def on_epoch(self, listener: Callable[[], None]) -> None:
+        """`listener()` runs on the event loop after every epoch boundary handled, whatever the epoch held
+        and whether its write succeeded: the call says that a boundary passed, nothing else."""
+        self._epoch_listeners.append(listener)
+
+    def _notify(self) -> None:
+        for listener in list(self._epoch_listeners):
+            try:
+                listener()
+            except Exception as e:  # noqa: BLE001 - a listener never stops the epochs
+                self._log.failure("epoch_listener_failed", e)
+
     async def tick(self, boundary_ms: int) -> None:
         """Close the epoch that ends at `boundary_ms`."""
         if boundary_ms % self.epoch_ms:
@@ -235,11 +248,13 @@ class EpochScheduler:
             self._queue.extendleft(reversed(batch))
             self.errors += 1
             self._log.failure("epoch_failed", e, queued=len(self._queue))
+            self._notify()
             return
         self.epochs += 1
         for p in batch:  # the epoch is committed: answer the senders that wait for it
             if p.stored is not None and not p.stored.done():
                 p.stored.set_result(None)
+        self._notify()
 
     # ── the loop ─────────────────────────────────────────────────────────────
 

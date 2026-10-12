@@ -1,9 +1,10 @@
 # V-cloak service API (v1)
 
-The backend of `vcloak serve` (M10). Sessions (M11) are described under *Sessions and DPoP* below: the service
-object and the routes exist, `vcloak serve` does not switch them on yet (M11 S5), and the WebSocket is not built.
-Until then the service must only listen on localhost: `vcloak serve` refuses a `--host` that is not a loopback
-address unless `--allow-remote` is given.
+The backend of `vcloak serve` (M10). Sessions (M11) are described under *Sessions and DPoP* below:
+`vcloak serve --sessions` switches them on. Without `--sessions` the API is open, and the service must then only
+listen on localhost: `vcloak serve` refuses a `--host` that is not a loopback address unless `--allow-remote` is
+given. The service speaks plain HTTP: on any other address put TLS in front of it and pass the public URL with
+`--public-origin https://...` (it is what a proof must name in `htu`).
 
 All bodies are JSON. Unknown fields are rejected. The same contract is served in both modes
 (`--mode vcloak` and `--mode baseline`); `tests/service_contract.py` runs one set of tests against both.
@@ -13,7 +14,7 @@ All bodies are JSON. Unknown fields are rejected. The same contract is served in
 ```
 vcloak serve --mode vcloak|baseline --clock wall|sim [--visible-round window|epoch] [--dev]
              [--store pg|sqlite] [--dsn DSN] [--schema NAME] [--key-file PATH]
-             [--host 127.0.0.1] [--allow-remote] [--port 8000]
+             [--host 127.0.0.1] [--allow-remote] [--port 8000] [--sessions] [--public-origin URL]
              [--slots N] [--buckets N] [--window-s N] [--epoch-ms N] [--cand-k N]
 ```
 (`python -m vcloak.cli serve ...` is the same command.)
@@ -102,7 +103,8 @@ Answer `200 {"status": "ok", "mode": "vcloak", "ready": true, "epochs": 0, "over
 
 ## Sessions and DPoP (M11, ADR-017)
 
-An app created with a `SessionService` (`create_app(backend, sessions=...)`) has the routes below, and
+An app created with a `SessionService` (`create_app(backend, sessions=...)`, or `vcloak serve --sessions`) has the
+routes below, and
 `POST /v1/messages` and `POST /v1/read` then need a session. `GET /v1/windows` and `GET /healthz` stay open.
 Session state is in memory: a restart logs every client out and forgets the accounts.
 
@@ -165,6 +167,44 @@ the answer (as for login) carries the next one. 401 `{"error": "invalid_grant", 
 No body; `Authorization` and `DPoP` as for any authenticated request. Answers 204. The access tokens and the
 refresh tokens of that login stop working at once; other logins of the account are not touched.
 
+### `POST /v1/auth/ws-ticket`
+No body; `Authorization` and `DPoP` as for any authenticated request. Answers 200
+`{"ticket": "...", "expires_in": 30}` with `Cache-Control: no-store`. A ticket opens one socket, within 30 s, for
+the key of the request that asked for it. A login holds at most 8 unspent tickets (the oldest goes first).
+
+### `WS /v1/ws` (ADR-018)
+The server pushes one text frame after every epoch boundary: `{"type": "tick", "win": <visible round>}`. **Every
+socket gets the same frame**: it says that a boundary passed, never whose messages arrived, and a client reads
+with `POST /v1/read` when it chooses to. A socket slower than the cadence misses frames; none is queued.
+
+1. Open the socket (no header, nothing in the URL).
+2. Within 5 s send one text frame `{"ticket": "<ticket>", "dpop": "<proof>"}`. The proof is a DPoP proof with
+   `htm` = `GET` and `htu` = the URL of the socket written as `http://` or `https://` (not `ws://`), no `ath`,
+   signed by the key the ticket was issued to.
+3. The server answers `{"type": "ready", "win": N}` and then pushes. The client sends nothing more.
+
+The server evaluates the nine proof checks above and six ticket checks, then decides; the ticket is spent only
+when the socket opens.
+
+| Check | Holds when |
+|---|---|
+| `ticket_format`, `ticket_known` | 43 base64url characters; a ticket this server issued and still remembers |
+| `ticket_unused` | it has not opened a socket yet |
+| `ticket_exp` | it is younger than 30 s |
+| `ticket_session` | the login it belongs to has not been logged out, revoked or expired |
+| `ticket_key` | the proof is signed by the key the ticket was issued to |
+
+| Close code | Reason | When |
+|---|---|---|
+| 4401 | the first failed check | the proof or the ticket did not verify |
+| 4408 | `auth_timeout` | no first frame within 5 s |
+| 1008 | `auth_frame`, `unexpected_frame` | the first frame is not the object above (or exceeds 8192 characters); any later frame from the client |
+| 4429 | `too_many_sockets` | the login already holds 4 sockets, or the service 1024 |
+| 4001 | `session_ended` | logout, a detected refresh reuse (at once), or the login expired (at the next boundary) |
+| 1001 | `shutdown` | the service stops |
+
+A socket lives as long as its login (refreshing keeps it), not as long as one access token.
+
 ## Errors
 
 | Status | Body | When |
@@ -180,5 +220,8 @@ refresh tokens of that login stop working at once; other logins of the account a
 Application code logs through `vcloak.service.logsafe` only: an event name and allow-listed public fields
 (counts, the window, public parameters, an exception class name), with a timestamp of one-second resolution.
 Conversation tokens and ids, buckets, sequence numbers, row ids, epoch numbers, payload bytes and key material are
-never logged; a field outside the allow-list raises. Nothing is logged per epoch: the scheduler reports once per
+never logged, and neither are tokens, tickets, proofs and their `jti`, key thumbprints, account names and client
+addresses; a field outside the allow-list raises. `vcloak serve` runs without an access log and drops the HTTP
+server's per-connection lines (`"WebSocket /v1/ws" [accepted]`, `connection open`): with the peer address and the
+time they are an arrival record. Nothing is logged per epoch: the scheduler reports once per
 closed window.

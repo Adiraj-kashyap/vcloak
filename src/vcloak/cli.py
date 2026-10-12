@@ -1,14 +1,16 @@
 """The `vcloak` command.
 
-    vcloak serve --mode vcloak|baseline --clock wall|sim [--visible-round window|epoch] [--dev]
+    vcloak serve --mode vcloak|baseline --clock wall|sim [--visible-round window|epoch] [--dev] [--sessions]
 
 `serve` starts the backend of docs/API.md. Without `--dev` the master key is unsealed from the key
 file (`--key-file`, or VCLOAK_KEY_FILE, default secrets/k_master.sealed; create it with
 `python scripts/vcloak_keys.py init`) with the passphrase in VCLOAK_PASSPHRASE or typed at a prompt.
 `--dev` uses the fixed public development key: only for a throw-away database.
 
-Until M11 adds authentication the API takes a conversation token from any caller, so `serve` refuses
-a `--host` that is not a loopback address unless `--allow-remote` is given (ISSUE-22).
+`--sessions` turns the session layer on (M11): accounts, DPoP-bound tokens, `/v1/ws`. Without it the API
+takes a conversation token from any caller, so `serve` then refuses a `--host` that is not a loopback
+address unless `--allow-remote` is given (ISSUE-22). The service speaks plain HTTP: on any other address
+put TLS in front of it and name the public URL with `--public-origin`.
 """
 from __future__ import annotations
 
@@ -24,6 +26,7 @@ from vcloak.service import logsafe
 from vcloak.service.app import ServiceBackend, VcloakBackend, create_app, dev_master, sealed_master
 from vcloak.service.baseline import BaselineBackend, PgBaselineStore, SqliteBaselineStore
 from vcloak.service.scheduler import EPOCH_ROUND_ORIGIN_MS, VISIBLE_ROUNDS, Clock, SimClock, WallClock
+from vcloak.service.session import SessionConfig, SessionService, normalise_htu
 
 MODES = ("vcloak", "baseline")
 CLOCKS = ("wall", "sim")
@@ -46,7 +49,11 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--schema", default=None, help="PostgreSQL schema (default: public; baseline in baseline mode)")
     s.add_argument("--host", default="127.0.0.1")
     s.add_argument("--allow-remote", action="store_true",
-                   help="listen on a non-loopback --host although the API has no authentication yet")
+                   help="listen on a non-loopback --host although the API is open (no --sessions)")
+    s.add_argument("--sessions", action="store_true",
+                   help="require a session: accounts, DPoP-bound tokens, WebSocket tickets (state in memory)")
+    s.add_argument("--public-origin", default=None,
+                   help="with --sessions behind a proxy: the origin clients see, e.g. https://chat.example")
     s.add_argument("--port", type=int, default=8000)
     s.add_argument("--slots", type=int, default=config.SLOTS)
     s.add_argument("--buckets", type=int, default=config.BUCKETS)
@@ -81,23 +88,35 @@ def is_loopback(host: str) -> bool:
         return False
 
 
+def build_sessions(a: argparse.Namespace) -> SessionService | None:
+    """The session layer of `--sessions`, or None for the open API."""
+    if not a.sessions:
+        return None
+    return SessionService(SessionConfig(public_origin=a.public_origin))
+
+
 def serve(a: argparse.Namespace) -> int:
     logsafe.configure()
     log = logsafe.get_logger("cli")
-    if not is_loopback(a.host):
+    if a.public_origin is not None and (not a.sessions or normalise_htu(a.public_origin) is None):
+        print("vcloak serve: --public-origin needs --sessions and an http(s) origin", file=sys.stderr)
+        return 2
+    if not a.sessions and not is_loopback(a.host):
         if not a.allow_remote:
             log.event("remote_host_refused", level=logging.ERROR, error="no_authentication")
-            print("vcloak serve: the API has no authentication yet; --host must be a loopback address "
-                  "(or pass --allow-remote)", file=sys.stderr)
+            print("vcloak serve: without --sessions the API has no authentication; --host must be a loopback "
+                  "address (or pass --allow-remote)", file=sys.stderr)
             return 2
         log.warning("remote_host_without_authentication")
     import uvicorn
 
     if a.dev and a.mode == "vcloak":
         log.warning("dev_key_in_use", dev_key=True)
-    log.event("serve", mode=a.mode, clock=a.clock, visible_round=a.visible_round, store=a.store, port=a.port)
-    # no access log: a line per request is an arrival record
-    uvicorn.run(create_app(build_backend(a)), host=a.host, port=a.port, access_log=False)
+    log.event("serve", mode=a.mode, clock=a.clock, visible_round=a.visible_round, store=a.store, port=a.port,
+              sessions=bool(a.sessions))
+    # no access log and no connection lines: a line per request or per socket is an arrival record
+    uvicorn.run(create_app(build_backend(a), sessions=build_sessions(a)), host=a.host, port=a.port,
+                access_log=False, log_config=logsafe.server_log_config(uvicorn.config.LOGGING_CONFIG))
     return 0
 
 

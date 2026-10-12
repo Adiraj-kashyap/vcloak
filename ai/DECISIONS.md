@@ -163,3 +163,29 @@ conversation's token can fetch its ciphertexts, as before M11; the content stays
 Naming the failed check tells an attacker which check stopped a forged request, which the E5 matrix needs and
 RFC 9449 allows. This corrects docs/API.md of M10, which said M11 would bind `conv_token` to the session.
 
+## ADR-018 — WebSocket: an in-band ticket with a proof, and one push for everybody — ACCEPTED — 2026-10-12
+Context: M11 S5 asks for a one-time ticket (30 s, bound to jkt) required for `/v1/ws`, and for a push at epoch
+cadence. It does not say how a browser, which cannot set headers on a WebSocket, presents the ticket and proves the
+key, what the push carries, or where the cadence comes from.
+Decision: (1) `POST /v1/auth/ws-ticket` (token and proof) returns 32 random bytes; the table is keyed by their
+SHA-256 and records the key thumbprint and the login (family). (2) The socket is opened without credentials; the
+first text frame is `{"ticket", "dpop"}`, the proof being a DPoP proof for `GET` on the socket URL written with
+`http(s)`. Nothing secret is in a URL or a header. The nine proof checks and six ticket checks are all evaluated,
+then the request is decided; a ticket is spent only by the request that is accepted, so a ticket presented with
+another key stays usable by its owner (the same rule as for a refresh token, ADR-017). A reused ticket does not
+revoke the login: without the key it opens nothing. (3) The push is one frame per epoch boundary,
+`{"type":"tick","win":N}`, the same text for every socket. A per-conversation notification would need the server to
+know which socket follows which conversation, which is the relation the system exists to hide (ADR-017 (6)).
+(4) The cadence is a listener on the scheduler (`on_epoch`), called after every boundary handled, also when the
+epoch was empty or its write failed; the baseline backend, which has no epochs, runs a ticker on EPOCH_MS only
+while a listener is registered. (5) A socket belongs to a login: logout and refresh reuse close it at once (4001),
+expiry at the next boundary. Limits: 4 sockets per login, 1024 per service, 8 unspent tickets per login, 5 s for
+the first frame. A client frame after the ticket closes the socket. (6) `vcloak serve --sessions` turns the layer
+on and only then may listen beyond the loopback; the default stays the open API on the loopback, which the smoke
+scripts and M14 use. (7) `serve` drops the HTTP server's per-connection log lines.
+Consequences: every connected client learns when the server finished each epoch write, to the precision of the
+network; a sender with `ack: "stored"` learned that already. A client that wants new messages reads after a tick,
+so a reading pattern that follows the ticks is uniform, and one that does not is the client's own leak (M12 must
+read on a fixed schedule, not on a hunch). The tick is sent after the write, so under load it is late by the write
+time. With `--sessions` on a public address the passwords travel in plain HTTP unless TLS is put in front. The
+socket state is in memory like the rest of the session state (ISSUE-26).

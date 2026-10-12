@@ -1,0 +1,8 @@
+2026-10-12T16:01:58 WARNING vcloak.cli event=dev_key_in_use dev_key=True
+2026-10-12T16:01:58 INFO vcloak.cli event=serve clock=wall mode=vcloak port=8041 sessions=True store=sqlite visible_round=window
+INFO:     Started server process [22340]
+INFO:     Waiting for application startup.
+2026-10-12T16:01:58 INFO vcloak.service event=started backend=numpy buckets=64 cand_k=128 epoch_ms=200 mode=vcloak slots=64 visible_round=window window_s=60 windows=0
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8041 (Press CTRL+C to quit)
+2026-10-12T16:02:00 INFO vcloak.scheduler event=window_closed rows=12 win=29863351

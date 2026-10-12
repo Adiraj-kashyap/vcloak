@@ -639,3 +639,33 @@ Notes:
   timing behaviour of `verify` (every check is evaluated, but no timing test exists); Argon2id at the default cost through
   the API (the tests use t=1, m=64 KiB).
 - No evidence capture: web/**, results/** and METRICS_INDEX.md did not change.
+
+## Audit M11 (S5-S7, final) — 2026-10-12 — session 23 — result: PASS (module DONE)
+| Item | Result | Evidence |
+|---|---|---|
+| A1 | PASS | runs/20261012-160139_M11_session_matrix/e5_matrix.json: 26 of 26 scenarios as expected, each refusal names the expected check (stolen token `key_binding`, replay `jti`, ticket reused `ticket_unused`, ticket with another key `ticket_key`, refresh reuse `reuse`, sixth guess `rate_limited`); tests/security/test_session_matrix.py (7 tests) checks the rows, that a mismatch is reported, and that results/session/e5_matrix.json is a full run of the current scenarios |
+| A2 | PASS | tests/security/test_session.py::test_rfc7638_thumbprint_vector (runs/20261012-160146_M11_session_s5_s7/pytest_security.txt, 164 passed) |
+| A3 | PASS | tests/security/test_log_redaction.py: a session run (messages over two windows, refusals, socket, refresh reuse, logout, login limit) and more than 150 handled values searched in the captured log, none found; the allow-list is pinned. Live: runs/20261012-160146_M11_session_s5_s7/smoke_sessions.txt (the server log of a real `vcloak serve --sessions` searched for 55 handled values, none found, no connection line) |
+| A4 | PASS | runs/20261012-160146_M11_session_s5_s7/a4_grep.txt (0 matches for the key names, the keystore and the gpu package in src/vcloak/service/session.py); test_session_module_knows_no_content_or_engine_key |
+| G1 | PASS | runs/20261012-160146_M11_session_s5_s7/pytest_all.txt (1880 passed, 1 skipped, 674 deselected: not gpu; the skip is tests/unit/test_oracle_chacha.py:82, no integration skip, PostgreSQL answered) |
+| G2 | PASS | runs/20261012-160146_M11_session_s5_s7/check_metrics.txt (331 rows, 0 problems); the two new rows are backed by runs/20261012-160139_M11_session_matrix/summary.json; docs carry configured limits only (30 s, 5 s, 4, 8, 1024), no measured value |
+| G2b | PASS | SEC-E5-PASS and SEC-DPOP-VERIFY-US are not GPU metrics: a correctness count and a host CPU time of the session layer (perf_counter, as the module asks), indexed with backend numpy / runner local and described as such. No GPU metric was recorded |
+| G3 | PASS | runs/20261012-160146_M11_session_s5_s7/check_oblivious.txt (11 files, 0 findings); no kernel source changed |
+| G4 | PASS | runs/20261012-160146_M11_session_s5_s7/check_secrets.txt (989 files, 0 key-like runs), run after the evidence files and the server logs were written |
+| G5 | N/A | no GPU twin |
+| G6 | PASS | src/vcloak/service/session.py; routes /v1/auth/register, login, refresh, logout, ws-ticket and WS /v1/ws (src/vcloak/service/app.py); src/vcloak/service/logsafe.py (final list); tests/security/test_session_matrix.py; results/session/e5_matrix.json; docs/API.md. `tests/security/test_logsafe.py` exists as tests/security/test_log_redaction.py (basename clash, Amendment) |
+| G7 | PASS | checked after the closing commit |
+| G8 | PASS | STATE: M11 DONE, step S7, sessions 2; current_module M12, next_unit M12 |
+| G9 | PASS | SESSION_LOG session 23, this entry, ISSUE-27 opened, ADR-018, M11 Amendments |
+| G10 | PASS | both manifests valid; the matrix re-run in quick mode gives the same outcome, 26/26 (runs/20261012-160146_M11_session_s5_s7/g10_rerun.txt) |
+Notes:
+- The matrix runs in-process (Starlette test client), not over a network; the over-the-wire path is the smoke only
+  (one client, loopback). The verify time is one laptop CPU, single thread, accepted requests only; p95 is 185.6 us
+  against a median of 117.3 us, and the quick re-run gave a median of 126.95 us (n=200): quote it as an order of magnitude.
+- A failed first attempt of this session is not kept as evidence: the uvicorn connection lines were found by reading the
+  log of a trial smoke before the run dir existed; the filter and its tests came from that.
+- Not verified: sockets under load or with many clients; behaviour behind a TLS proxy (`--public-origin` is tested
+  in-process only); that refused and accepted verifications take the same time (all checks are evaluated, no timing test);
+  the session layer in front of a CUDA engine (the service has never run on one).
+- Evidence capture: terminal only (scripts/capture_evidence.py does not exist before M13): TERM-M11-E5-MATRIX,
+  TERM-M11-DPOP-VERIFY, TERM-M11-SMOKE-SESSIONS.

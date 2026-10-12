@@ -1,0 +1,20 @@
+server: -m vcloak.cli serve --mode baseline --clock wall --dev --store sqlite --port 8043 --sessions
+healthz: {'status': 'ok', 'mode': 'baseline', 'ready': True}
+register, login: [201, 200]
+sent: 12 messages, accepted
+read: 12 messages, decrypted, in order: True
+wrong payload size: 422 invalid_request
+counters present: ['epochs', 'missed', 'overflow', 'queued']
+read without a session: 401 proof_format
+socket: ready and 3 pushed frames, keys ['type', 'win']
+logout: 204 socket closed with 4001
+read after logout: 401 token_revoked
+server log: 6 lines searched for 53 handled values, found none
+PASS register 201 and login 200
+PASS a request without a proof is refused 401
+PASS the socket opens with a ticket and is pushed to
+PASS logout answers 204 and closes the socket with 4001
+PASS the token is refused after logout
+PASS the server log holds no handled value and no connection line
+SMOKE PASS mode=baseline store=sqlite sessions=True
+exit=0

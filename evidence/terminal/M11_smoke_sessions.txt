@@ -1,0 +1,53 @@
+# scripts/smoke_service.py --sessions (vcloak, sqlite), then the server log it searched
+server: -m vcloak.cli serve --mode vcloak --clock wall --dev --store sqlite --port 8041 --sessions
+healthz: {'status': 'ok', 'mode': 'vcloak', 'ready': True}
+register, login: [201, 200]
+sent: 12 messages, accepted
+read: 12 messages, decrypted, in order: True
+wrong payload size: 422 invalid_request
+counters present: ['epochs', 'missed', 'overflow', 'queued']
+read without a session: 401 proof_format
+socket: ready and 3 pushed frames, keys ['type', 'win']
+logout: 204 socket closed with 4001
+read after logout: 401 token_revoked
+server log: 8 lines searched for 55 handled values, found none
+PASS register 201 and login 200
+PASS a request without a proof is refused 401
+PASS the socket opens with a ticket and is pushed to
+PASS logout answers 204 and closes the socket with 4001
+PASS the token is refused after logout
+PASS the server log holds no handled value and no connection line
+SMOKE PASS mode=vcloak store=sqlite sessions=True
+exit=0
+
+# server log
+2026-10-12T16:01:58 WARNING vcloak.cli event=dev_key_in_use dev_key=True
+2026-10-12T16:01:58 INFO vcloak.cli event=serve clock=wall mode=vcloak port=8041 sessions=True store=sqlite visible_round=window
+INFO:     Started server process [22340]
+INFO:     Waiting for application startup.
+2026-10-12T16:01:58 INFO vcloak.service event=started backend=numpy buckets=64 cand_k=128 epoch_ms=200 mode=vcloak slots=64 visible_round=window window_s=60 windows=0
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8041 (Press CTRL+C to quit)
+2026-10-12T16:02:00 INFO vcloak.scheduler event=window_closed rows=12 win=29863351
+
+# scripts/smoke_service.py --mode baseline --sessions
+server: -m vcloak.cli serve --mode baseline --clock wall --dev --store sqlite --port 8043 --sessions
+healthz: {'status': 'ok', 'mode': 'baseline', 'ready': True}
+register, login: [201, 200]
+sent: 12 messages, accepted
+read: 12 messages, decrypted, in order: True
+wrong payload size: 422 invalid_request
+counters present: ['epochs', 'missed', 'overflow', 'queued']
+read without a session: 401 proof_format
+socket: ready and 3 pushed frames, keys ['type', 'win']
+logout: 204 socket closed with 4001
+read after logout: 401 token_revoked
+server log: 6 lines searched for 53 handled values, found none
+PASS register 201 and login 200
+PASS a request without a proof is refused 401
+PASS the socket opens with a ticket and is pushed to
+PASS logout answers 204 and closes the socket with 4001
+PASS the token is refused after logout
+PASS the server log holds no handled value and no connection line
+SMOKE PASS mode=baseline store=sqlite sessions=True
+exit=0

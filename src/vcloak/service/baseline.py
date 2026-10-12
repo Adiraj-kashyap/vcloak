@@ -15,6 +15,7 @@ import sqlite3
 import threading
 from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
+from contextlib import suppress
 from typing import Any, Protocol, TypeVar
 
 from vcloak import config
@@ -152,10 +153,26 @@ class BaselineBackend:
         self.window_s, self.epoch_ms = window_s, epoch_ms
         self._log = log or get_logger("baseline")
         self._executor: ThreadPoolExecutor | None = None
+        self._epoch_listeners: list[Callable[[], None]] = []
+        self._ticker: asyncio.Task[None] | None = None
 
     @property
     def ready(self) -> bool:
         return self._executor is not None
+
+    def on_epoch(self, listener: Callable[[], None]) -> None:
+        """`listener()` runs on every EPOCH_MS boundary of the clock. The baseline has no epochs of its
+        own: this is the cadence of the socket push only, and nothing ticks while nobody listens."""
+        self._epoch_listeners.append(listener)
+
+    async def _tick(self) -> None:
+        while True:
+            await self._clock.sleep_until((self._clock.now_ms() // self.epoch_ms + 1) * self.epoch_ms)
+            for listener in list(self._epoch_listeners):
+                try:
+                    listener()
+                except Exception as e:  # noqa: BLE001 - a listener never stops the cadence
+                    self._log.failure("epoch_listener_failed", e)
 
     async def _blocking(self, fn: Callable[[], T]) -> T:
         if self._executor is None:
@@ -166,9 +183,16 @@ class BaselineBackend:
         # one thread: inserts reach the table in the order the requests were accepted
         self._executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix="vcloak-baseline")
         await self._blocking(self.store.init_schema)
+        if self._epoch_listeners:
+            self._ticker = asyncio.create_task(self._tick(), name="vcloak-baseline-ticker")
         self._log.event("started", mode=self.mode, window_s=self.window_s)
 
     async def stop(self) -> None:
+        if self._ticker is not None:
+            self._ticker.cancel()
+            with suppress(asyncio.CancelledError):
+                await self._ticker
+            self._ticker = None
         if self._executor is not None:
             self._executor.shutdown(wait=True)
             self._executor = None

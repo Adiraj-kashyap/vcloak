@@ -58,5 +58,20 @@ WS tickets), routes `/v1/auth/register|login|refresh|logout|ws-ticket`, a WebSoc
     `tests/security/test_session.py`, `tests/security/test_session_api.py`, `tests/golden/rfc7638_thumbprint.json`.
   - Required reading: RFC 7638 section 3 and RFC 9449 section 4.3 were read from rfc-editor.org this session; the
     thumbprint vector is copied from the RFC text by a script, not typed.
+- 2026-10-12 (session 23, S5-S7): what was built differs from the text above in these points (ADR-018).
+  - S5: the ticket is not sent in the handshake. The socket opens without credentials and the first frame carries
+    the ticket and a DPoP proof (`GET`, the socket URL as `http(s)`), because a browser cannot set headers on a
+    WebSocket and a URL is logged by proxies. The push is `{"type":"tick","win":N}`, identical for every socket.
+    The CLI switch is `vcloak serve --sessions` (off by default); `--public-origin` names the URL behind a proxy.
+  - S6: 26 scenarios: the 12 of the seed (its twelfth, the clients' key agreement, runs the code of
+    `vcloak.crypto.client`), the three the module adds, and 11 more (ath, bearer downgrade, forged signature,
+    algorithm, ticket expiry, refresh with another key, revoked family, logout). The runner is
+    `bench/run_session_matrix.py`; it also measures `SEC-DPOP-VERIFY-US`. The matrix runs in-process against
+    the real app, with the default Argon2id cost and limits.
+  - S7: the traffic test is `tests/security/test_log_redaction.py`, not `tests/security/test_logsafe.py`: the test
+    directories are not packages and `tests/unit/test_logsafe.py` already has that basename. Beyond the allow-list,
+    `serve` now drops uvicorn's per-connection lines (`logsafe.ConnectionLineFilter`): they carried the peer
+    address of every WebSocket.
+  - Extra files: `tests/security/test_session_ws.py`, `tests/security/test_session_matrix.py`.
 
 ## Next: M12

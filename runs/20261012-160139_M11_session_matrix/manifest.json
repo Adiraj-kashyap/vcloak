@@ -1,0 +1,40 @@
+{
+  "run_id": "20261012-160139_M11_session_matrix",
+  "module": "M11",
+  "step": "S6",
+  "owner": "Divyansh",
+  "git_sha": "363a591cbe6199c25e235e5d5847ac77b873f7a4",
+  "dirty": true,
+  "command": "python bench/run_session_matrix.py",
+  "seed": 0,
+  "quick": false,
+  "params": {
+    "runs": 2000,
+    "warmup": 200
+  },
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261012-160139",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U"
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791801099.549029
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791801100.7556515
+  },
+  "outputs": [
+    "e5_matrix.json",
+    "summary.json",
+    "verify_timing.json"
+  ],
+  "status": "OK",
+  "notes": "E5 matrix in-process (numpy simulator behind the API: correctness only). The verify time is a host CPU measurement of the session layer; no GPU is involved."
+}

@@ -3,13 +3,13 @@
 ```yaml
 project: v-cloak
 kit_version: 1.0
-last_session: 22
+last_session: 23
 last_session_date: 2026-10-12
-current_module: M11
-current_step: S5
-status: IN_PROGRESS          # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
-next_unit: M11
-last_checkpoint: 2026-10-12 M11 S1-S4 done and audited (interim PASS): session.py, auth routes, 88 tests; S5 next
+current_module: M12
+current_step: S1
+status: NOT_STARTED          # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
+next_unit: M12
+last_checkpoint: 2026-10-12 M11 DONE (S5-S7: WS tickets and /v1/ws, E5 matrix 26/26, log redaction; audit PASS); M12 S1 next
 quick_mode_default: false
 local:                      # the laptop (no GPU) — filled by M00 S7
   os: "Windows-11-10.0.26200-SP0"
@@ -52,7 +52,7 @@ gpu_job:                    # set by the gpu-job skill
 | M08 | GPU obliviousness audit (E3) | Aditya | M06 | no | DONE | S5 | 4 |
 | M09 | Storage (PostgreSQL) | Divyansh | M06 | no | DONE | S5 | 1 |
 | M10 | Service & scheduler | Divyansh | M09 | no | DONE | S5 | 2 |
-| M11 | Session security (E5) | Divyansh | M10 | no | IN_PROGRESS | S5 | 1 |
+| M11 | Session security (E5) | Divyansh | M10 | no | DONE | S7 | 2 |
 | M12 | Client SDK & CLI | Abhishek | M11 | no | NOT_STARTED | S1 | 0 |
 | M13 | Frontend: chat + server view | Abhishek | M12 | no | NOT_STARTED | S1 | 0 |
 | M14 | Security evaluation (E0–E2, anon set) | Abhishek | M08, M10 | no | NOT_STARTED | S1 | 0 |
@@ -109,10 +109,11 @@ gpu_job:                    # set by the gpu-job skill
   Repo implementations need `mark_pending` / `pending_windows`. A kill loses the in-memory queue by design: only
   `ack: "stored"` (201) means durable. M12 must use it and drop repeats, M15 must name the ack it measures (ISSUE-23).
   `scripts/smoke_restart.py` is the live kill-and-restart check. The service has never run on a CUDA device.
-- M11 after S1-S4 (ADR-017): `create_app(backend, sessions=SessionService())` turns the session routes and the DPoP
-  check on; `vcloak serve` does not pass one yet. S5 must add the CLI switch, keep `scripts/smoke_service.py` and
-  `scripts/smoke_restart.py` working, lift the loopback rule only when sessions are on, hang the WebSocket close on
-  `SessionService.on_family_revoked`, and put new log fields on the allow-list. Session state is in memory (ISSUE-26).
-- M11 tests: build proofs with `tests/dpop_client.py` (Device, FakeTime), never with the server's own code. The S7
-  deliverable `tests/security/test_logsafe.py` has the basename of `tests/unit/test_logsafe.py`: the test dirs have no
-  `__init__.py`, so pytest refuses two modules of one name. Give it a package or another name and write an Amendment.
+- Sessions (M11 DONE, ADR-017, ADR-018): `vcloak serve --sessions` turns them on (off by default: the open API stays
+  loopback-only; smoke_restart and M14 use it). Client flow for M12/M13: docs/API.md "Sessions and DPoP". Every socket
+  gets the same `tick` per epoch, so a client reads on a fixed schedule. Session state is in memory (ISSUE-26).
+- M11 tests build proofs with `tests/dpop_client.py`, never with the server's code; test M12's SDK against the server
+  the same way. The E5 matrix is regenerated with `python bench/run_session_matrix.py`; never edit it by hand.
+- SEC-DPOP-VERIFY-US is a laptop-CPU time of the session layer, not a GPU or end-to-end number: M15 must say whether
+  its runs had `--sessions` on and how many sockets were open (ISSUE-27).
+- The log allow-list is final and pinned by tests/security/test_log_redaction.py; a new log field is a change there.

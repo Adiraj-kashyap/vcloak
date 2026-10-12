@@ -1,0 +1,16 @@
+{
+  "metrics": [
+    {
+      "id": "SEC-E5-PASS",
+      "value": "26/26",
+      "unit": "scenarios",
+      "stat": "as expected"
+    },
+    {
+      "id": "SEC-DPOP-VERIFY-US",
+      "value": 117.3,
+      "unit": "us",
+      "stat": "median of 2000 calls, CPU perf_counter"
+    }
+  ]
+}

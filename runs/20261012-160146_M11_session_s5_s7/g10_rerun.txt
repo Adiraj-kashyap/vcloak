@@ -1,0 +1,31 @@
+event=family_revoked error=refresh_reuse
+ok    1 Valid token + fresh DPoP proof: 200
+ok    2 Replayed proof (same jti): 401 (jti)
+ok    3 Stolen token, attacker's own key: 401 (key_binding)
+ok    4 Proof for different URL (htu): 401 (htu)
+ok    5 Proof for different method (htm): 401 (htm)
+ok    6 Stale proof (iat -5 min): 401 (iat)
+ok    7 Tampered access token: 401 (token_mac)
+ok    8 Proof made for another access token (ath): 401 (ath)
+ok    9 Stolen token sent as a bearer token, no proof: 401 (proof_format)
+ok   10 Proof with the owner's public key, signed by the attacker: 401 (signature)
+ok   11 Proof that declares another algorithm (HS256): 401 (alg)
+ok   12 Valid ticket + proof of the same key: open (ready)
+ok   13 Ticket reused: close 4401 (ticket_unused)
+ok   14 Ticket presented with a different key: close 4401 (ticket_key)
+ok   15 Ticket presented after 31 s: close 4401 (ticket_exp)
+ok   16 Expired access token: 401 (token_exp)
+ok   17 Refresh-token rotation: 200
+ok   18 Refresh token presented with the attacker's key: 401 (key_binding)
+ok   19 Old refresh token reused: 401 (reuse)
+ok   20 Rotated token after reuse detected: 401 (family_revoked)
+ok   21 Access token of the revoked family: 401 (token_revoked)
+ok   22 Logout while a socket is open: close 4001 (session_ended)
+ok   23 Access token after logout: 401 (token_revoked)
+ok   24 Login brute force: sixth guess on one account: 429 (rate_limited)
+ok   25 Login brute force: the right password while the limit holds: 429 (rate_limited)
+ok   26 X25519+HKDF content key agreement: keys equal
+SEC-E5-PASS 26/26
+SEC-DPOP-VERIFY-US median 126.95 us (p05 118.62, p95 326.97, n=200)
+run dir: (scratch, not kept)
+exit=0

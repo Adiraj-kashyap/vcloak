@@ -331,3 +331,5 @@
 | T-DUDECT-MAXT-WRITE-EPOCH-FRESH | 3.094 | - | max abs(t) | M08 | runs/20261012-080629_M08_dudect_issue17_s9 | python bench/run_dudect.py --targets control_null,issue17_rep --seed 9 --name dudect_issue17_s9 --out runs | 20261012 | no | cupy | kaggle |
 | T-DUDECT-MAXT-WRITE-EPOCH-FRESH-CALL | 1.3865 | - | max abs(t) | M08 | runs/20261012-080629_M08_dudect_issue17_s9 | python bench/run_dudect.py --targets control_null,issue17_rep --seed 9 --name dudect_issue17_s9 --out runs | 20261012 | no | cupy | kaggle |
 | T-DUDECT-N-WRITE-EPOCH-FRESH | 100000 | measurements | per class | M08 | runs/20261012-080629_M08_dudect_issue17_s9 | python bench/run_dudect.py --targets control_null,issue17_rep --seed 9 --name dudect_issue17_s9 --out runs | 20261012 | no | cupy | kaggle |
+| SEC-E5-PASS | 26/26 | scenarios | as expected | M11 | runs/20261012-160139_M11_session_matrix | python bench/run_session_matrix.py | 20261012 | no | numpy | local |
+| SEC-DPOP-VERIFY-US | 117.3 | us | median of 2000 calls, CPU perf_counter | M11 | runs/20261012-160139_M11_session_matrix | python bench/run_session_matrix.py | 20261012 | no | numpy | local |

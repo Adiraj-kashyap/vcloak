@@ -4,7 +4,8 @@
     POST /v1/read       the payloads of one conversation in one visible round, in order
     GET  /v1/windows    the visible round being written now
     GET  /healthz       liveness and the scheduler's public counters
-    POST /v1/auth/register | login | refresh | logout   (only with `sessions`, M11)
+    POST /v1/auth/register | login | refresh | logout | ws-ticket   (only with `sessions`, M11)
+    WS   /v1/ws         one frame per epoch boundary, the same for every socket (only with `sessions`)
 
 With a `SessionService` the two message routes take a DPoP-bound access token and a proof per request
 (session.py); without one the API is open, which `vcloak serve` allows on a loopback address only.
@@ -25,6 +26,7 @@ from __future__ import annotations
 
 import asyncio
 import getpass
+import json
 import os
 from collections.abc import AsyncIterator, Callable
 from concurrent.futures import ThreadPoolExecutor
@@ -33,7 +35,7 @@ from pathlib import Path
 from typing import Any, Protocol, TypeVar
 
 import numpy as np
-from fastapi import Depends, FastAPI, Request
+from fastapi import Depends, FastAPI, Request, WebSocket, WebSocketDisconnect
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse, Response
 
@@ -55,6 +57,7 @@ from vcloak.service.models import (
     RefreshIn,
     Registered,
     RegisterIn,
+    TicketOut,
     TokenOut,
     WindowsOut,
     conv_id_of,
@@ -72,6 +75,18 @@ KEY_FILE_ENV = "VCLOAK_KEY_FILE"
 DEFAULT_KEY_FILE = Path("secrets") / "k_master.sealed"
 STOP_TIMEOUT_S = 10.0
 ACK_TIMEOUT_MIN_S = 5.0
+WS_AUTH_TIMEOUT_S = 5.0  # a socket that has not sent its ticket by then is closed
+WS_SEND_TIMEOUT_S = 5.0
+WS_AUTH_MAX_LEN = 8192
+WS_MAX_SOCKETS = 1024
+WS_MAX_PER_SESSION = 4
+# close codes of /v1/ws (docs/API.md)
+WS_SESSION_ENDED = 4001
+WS_REFUSED = 4401
+WS_AUTH_TIMEOUT = 4408
+WS_TOO_MANY = 4429
+WS_POLICY = 1008
+WS_GOING_AWAY = 1001
 
 KeyProvider = Callable[[], bytearray]  # a fresh 32-byte master the caller hands to the key store
 
@@ -102,6 +117,8 @@ class ServiceBackend(Protocol):
     async def stop(self) -> None: ...
 
     def current_window(self) -> int: ...
+
+    def on_epoch(self, listener: Callable[[], None]) -> None: ...
 
     async def submit(self, conv_token: str, payload: bytes, *, stored: bool = False) -> None: ...
 
@@ -153,6 +170,7 @@ class VcloakBackend:
         self.ack_timeout_s = (max(ACK_TIMEOUT_MIN_S, (queue_epochs + 2) * epoch_ms / 1000)
                               if ack_timeout_s is None else ack_timeout_s)
         self._pending: list[int] = []
+        self._epoch_listeners: list[Callable[[], None]] = []
         self._engine_factory = engine_factory or (
             lambda keys: GpuEngine(keys, slots=slots, buckets=buckets, window_s=window_s, epoch_ms=epoch_ms))
         self._log = log or get_logger("service")
@@ -195,6 +213,8 @@ class VcloakBackend:
         self.scheduler = EpochScheduler(self.engine, self.repo, self._clock, visible_round=self.visible_round,
                                         epoch_origin=self._origin, max_queue=self._max_queue,
                                         executor=self._executor, pending=self._pending)
+        for listener in self._epoch_listeners:
+            self.scheduler.on_epoch(listener)
         if self._autorun:
             self._task = asyncio.create_task(self.scheduler.run(), name="vcloak-scheduler")
         self._log.event("started", mode=self.mode, visible_round=self.visible_round, slots=self.slots,
@@ -243,6 +263,12 @@ class VcloakBackend:
             raise RuntimeError("the backend is not started")
         return self.scheduler.current_round()
 
+    def on_epoch(self, listener: Callable[[], None]) -> None:
+        """`listener()` runs on the event loop after every epoch boundary the scheduler handles."""
+        self._epoch_listeners.append(listener)
+        if self.scheduler is not None:
+            self.scheduler.on_epoch(listener)
+
     async def submit(self, conv_token: str, payload: bytes, *, stored: bool = False) -> None:
         """Queue one message; with `stored`, return only when its epoch is in the store."""
         if self.scheduler is None:
@@ -269,6 +295,69 @@ class VcloakBackend:
         return self.scheduler.stats()
 
 
+# ── the sockets (M11 S5, ADR-018) ────────────────────────────────────────────
+
+class _Socket:
+    def __init__(self, family: str) -> None:
+        self.family = family
+        self.wake = asyncio.Event()
+        self.close: tuple[int, str] | None = None  # set: close with this code instead of sending
+
+
+class SocketHub:
+    """The open sockets of `/v1/ws`. Every socket gets the same frame at every epoch boundary: the push
+    says that a boundary passed and names the visible round, never whose messages arrived. A socket that
+    is slower than the cadence misses frames (only the newest matters); it is never queued for."""
+
+    def __init__(self, backend: ServiceBackend, sessions: SessionService) -> None:
+        self._backend, self._sessions = backend, sessions
+        self._sockets: set[_Socket] = set()
+        self.frame = ""
+
+    def __len__(self) -> int:
+        return len(self._sockets)
+
+    def tick_frame(self, kind: str = "tick") -> str:
+        return json.dumps({"type": kind, "win": self._backend.current_window()}, separators=(",", ":"))
+
+    def add(self, family: str) -> _Socket | None:
+        """A place for one more socket of this login, or None when the service or the login has too many."""
+        if len(self._sockets) >= WS_MAX_SOCKETS:
+            return None
+        if sum(1 for s in self._sockets if s.family == family) >= WS_MAX_PER_SESSION:
+            return None
+        sock = _Socket(family)
+        self._sockets.add(sock)
+        return sock
+
+    def remove(self, sock: _Socket) -> None:
+        self._sockets.discard(sock)
+
+    def _end(self, sock: _Socket, code: int, reason: str) -> None:
+        if sock.close is None:
+            sock.close = (code, reason)
+        sock.wake.set()
+
+    def on_epoch(self) -> None:
+        """An epoch boundary passed: the same frame for every socket, and the end of those whose login is
+        over (logged out, revoked or expired)."""
+        self.frame = self.tick_frame()
+        for sock in self._sockets:
+            if self._sessions.family_live(sock.family):
+                sock.wake.set()
+            else:
+                self._end(sock, WS_SESSION_ENDED, "session_ended")
+
+    def revoke(self, family: str) -> None:
+        for sock in self._sockets:
+            if sock.family == family:
+                self._end(sock, WS_SESSION_ENDED, "session_ended")
+
+    def close_all(self) -> None:
+        for sock in self._sockets:
+            self._end(sock, WS_GOING_AWAY, "shutdown")
+
+
 # ── the API ──────────────────────────────────────────────────────────────────
 
 NO_STORE = {"Cache-Control": "no-store"}
@@ -277,6 +366,10 @@ NO_STORE = {"Cache-Control": "no-store"}
 def create_app(backend: ServiceBackend, *, payload_len: int = PAYLOAD_LEN,
                sessions: SessionService | None = None) -> FastAPI:
     log = get_logger("api")
+    hub = SocketHub(backend, sessions) if sessions is not None else None
+    if hub is not None and sessions is not None:
+        backend.on_epoch(hub.on_epoch)
+        sessions.on_family_revoked(hub.revoke)
 
     @asynccontextmanager
     async def lifespan(_: FastAPI) -> AsyncIterator[None]:
@@ -284,6 +377,8 @@ def create_app(backend: ServiceBackend, *, payload_len: int = PAYLOAD_LEN,
         try:
             yield
         finally:
+            if hub is not None:
+                hub.close_all()
             try:
                 await backend.stop()
             finally:
@@ -293,6 +388,7 @@ def create_app(backend: ServiceBackend, *, payload_len: int = PAYLOAD_LEN,
     app = FastAPI(title="V-cloak", version="1", lifespan=lifespan, docs_url=None, redoc_url=None)
     app.state.backend = backend
     app.state.sessions = sessions
+    app.state.sockets = hub
 
     def error(status: int, code: str, **headers: str) -> JSONResponse:
         return JSONResponse({"error": code}, status_code=status, headers=headers or None)
@@ -366,8 +462,9 @@ def create_app(backend: ServiceBackend, *, payload_len: int = PAYLOAD_LEN,
     async def healthz() -> Any:
         return Health(mode=backend.mode, ready=backend.ready, **backend.stats())
 
-    if sessions is not None:
+    if sessions is not None and hub is not None:
         _add_session_routes(app, sessions, verify)
+        _add_socket_routes(app, sessions, hub, verify)
     return app
 
 
@@ -425,3 +522,77 @@ def _add_session_routes(app: FastAPI, sessions: SessionService, verify: Callable
             raise AuthRefused(verdict)
         sessions.revoke_family(verdict.family)
         return Response(status_code=204)
+
+
+def _add_socket_routes(app: FastAPI, sessions: SessionService, hub: SocketHub,
+                       verify: Callable[..., Verdict]) -> None:
+    @app.post("/v1/auth/ws-ticket", response_model=TicketOut)
+    async def ws_ticket(request: Request) -> Any:
+        verdict = verify(request, sessions)
+        if not verdict.ok:
+            raise AuthRefused(verdict)
+        t = sessions.issue_ws_ticket(verdict)
+        return JSONResponse(TicketOut(ticket=t.ticket, expires_in=t.expires_in).model_dump(), headers=NO_STORE)
+
+    async def first_frame(ws: WebSocket) -> tuple[object, object] | None:
+        """The (ticket, proof) of the frame a client sends first; None when it is not such a frame."""
+        text = await ws.receive_text()
+        if len(text) > WS_AUTH_MAX_LEN:
+            return None
+        try:
+            body = json.loads(text)
+        except ValueError:
+            return None
+        if not isinstance(body, dict) or set(body) != {"ticket", "dpop"}:
+            return None
+        return body["ticket"], body["dpop"]
+
+    async def watch(ws: WebSocket, sock: _Socket) -> None:
+        """A client has nothing to say after its ticket: a frame ends the socket, and so does its leaving."""
+        try:
+            await ws.receive_text()
+        except (WebSocketDisconnect, RuntimeError, KeyError):
+            sock.close = sock.close or (0, "")  # gone: nothing to close
+        else:
+            sock.close = sock.close or (WS_POLICY, "unexpected_frame")
+        sock.wake.set()
+
+    @app.websocket("/v1/ws")
+    async def ws_push(ws: WebSocket) -> None:
+        await ws.accept()
+        try:
+            first = await asyncio.wait_for(first_frame(ws), WS_AUTH_TIMEOUT_S)
+        except asyncio.TimeoutError:
+            await ws.close(WS_AUTH_TIMEOUT, "auth_timeout")
+            return
+        except (WebSocketDisconnect, RuntimeError, KeyError):
+            return  # left, or sent bytes, before the ticket
+        if first is None:
+            await ws.close(WS_POLICY, "auth_frame")
+            return
+        grant = sessions.open_socket(sessions.socket_url(str(ws.url), ws.url.path), *first)
+        if not grant.ok:
+            await ws.close(WS_REFUSED, grant.failed_check or "refused")
+            return
+        sock = hub.add(grant.family)
+        if sock is None:
+            await ws.close(WS_TOO_MANY, "too_many_sockets")
+            return
+        watcher = asyncio.create_task(watch(ws, sock))
+        try:
+            await ws.send_text(hub.tick_frame("ready"))
+            while True:
+                await sock.wake.wait()
+                sock.wake.clear()
+                if sock.close is not None:
+                    if sock.close[0]:
+                        await ws.close(*sock.close)
+                    return
+                await asyncio.wait_for(ws.send_text(hub.frame), WS_SEND_TIMEOUT_S)
+        except (WebSocketDisconnect, RuntimeError, asyncio.TimeoutError):
+            return  # the client left, or does not read
+        finally:
+            hub.remove(sock)
+            watcher.cancel()
+            with suppress(asyncio.CancelledError):
+                await watcher

@@ -1,10 +1,13 @@
-"""Session security (M11, ADR-017): accounts, sender-constrained tokens, DPoP verification, refresh rotation.
+"""Session security (M11, ADR-017, ADR-018): accounts, sender-constrained tokens, DPoP verification, refresh
+rotation, WebSocket tickets.
 
     register / login     an account is a name and an Argon2id hash (per-user salt, parameters in the hash string)
     access token         JWS HS256 over a secret that lives in this process only, 10 minutes, bound to the
                          client's key by `cnf.jkt` (the RFC 7638 thumbprint of its ES256 public JWK)
     DPoP proof           every request is signed by that key (RFC 9449): a stolen token is useless without it
     refresh token        opaque, single use, one family per login; a spent token that comes back revokes the family
+    WebSocket ticket     opaque, single use, 30 seconds, bound to the key of the request that asked for it; the
+                         socket is opened with the ticket and a proof of that key (`open_socket`)
 
 `SessionService.verify` evaluates every check and decides afterwards, so a refused request takes one path
 whatever failed, and the signature is always computed. The verdict names the checks that failed, in a fixed
@@ -55,11 +58,19 @@ PROOF_CHECKS: tuple[str, ...] = ("proof_format", "typ", "alg", "jwk", "signature
 TOKEN_CHECKS: tuple[str, ...] = ("authorization", "token_format", "token_mac", "token_exp", "token_revoked",
                                  "key_binding", "ath")
 _TOKEN_ERRORS = frozenset(TOKEN_CHECKS) - {"ath"}  # `ath` is a claim of the proof
+# opening a socket: the proof again, then the ticket it redeems
+TICKET_CHECKS: tuple[str, ...] = ("ticket_format", "ticket_known", "ticket_unused", "ticket_exp", "ticket_session",
+                                  "ticket_key")
+TICKET_PATTERN = r"^[A-Za-z0-9_-]{43}$"  # 32 random bytes, base64url
+WS_METHOD = "GET"  # the method of the handshake a socket proof names
+TICKETS_PER_FAMILY = 8  # unspent tickets one login may hold; the oldest goes first
 
 _B64U_RE = re.compile(r"[A-Za-z0-9_-]*")
 _JTI_RE = re.compile(r"[\x21-\x7e]{16,128}")  # at least 96 bits when random
 _USERNAME_RE = re.compile(USERNAME_PATTERN)
 _REFRESH_RE = re.compile(REFRESH_PATTERN)
+_TICKET_RE = re.compile(TICKET_PATTERN)
+_WS_SCHEMES = {"ws": "http", "wss": "https"}
 _DEFAULT_PORTS = {"http": 80, "https": 443}
 # RFC 7638 §3.2: the required members of each key type, in lexicographic order
 _THUMBPRINT_MEMBERS: dict[str, tuple[str, ...]] = {
@@ -225,6 +236,29 @@ class TokenSet:
     token_type: str = "DPoP"
 
 
+@dataclass(frozen=True)
+class Ticket:
+    ticket: str
+    expires_in: int
+
+
+@dataclass(frozen=True)
+class SocketGrant:
+    """What `open_socket` decided. `failed` lists every check that did not hold, in the order of PROOF_CHECKS +
+    TICKET_CHECKS; `sub` and `family` are set only when nothing failed."""
+    failed: tuple[str, ...] = ()
+    sub: str = ""
+    family: str = ""
+
+    @property
+    def ok(self) -> bool:
+        return not self.failed
+
+    @property
+    def failed_check(self) -> str | None:
+        return self.failed[0] if self.failed else None
+
+
 RefreshReason = Literal["rotated", "unknown", "family_revoked", "reuse", "expired", "key_binding"]
 LoginStatus = Literal["ok", "rate_limited", "invalid_proof", "invalid_credentials"]
 RegisterStatus = Literal["ok", "rate_limited", "invalid", "taken"]
@@ -266,6 +300,7 @@ class SessionConfig:
     login_account_window_s: int = 300
     register_ip_max: int = 5
     register_ip_window_s: int = 3600
+    ws_ticket_ttl_s: int = 30
     password: PasswordParams = field(default_factory=PasswordParams)
     public_origin: str | None = None  # e.g. "https://chat.example" behind a proxy; None: the URL as received
 
@@ -378,9 +413,21 @@ class _Refresh:
 
 
 @dataclass
+class _Ticket:
+    user: str
+    jkt: str
+    family: str
+    exp: float
+    used: bool = False
+
+
+@dataclass
 class _Family:
     exp: float  # the expiry of its newest refresh token
     revoked: bool = False
+
+
+_NO_TICKET = _Ticket("", "", "", 0.0, used=True)  # read in place of a ticket the table does not hold
 
 
 class SessionService:
@@ -399,6 +446,7 @@ class SessionService:
         self._jti: OrderedDict[bytes, float] = OrderedDict()  # SHA-256(jti) -> when it may be forgotten
         self._refresh: dict[bytes, _Refresh] = {}  # SHA-256(token) -> record: the table holds no usable token
         self._families: dict[str, _Family] = {}
+        self._tickets: OrderedDict[bytes, _Ticket] = OrderedDict()  # SHA-256(ticket) -> record, oldest first
         self._revocation_listeners: list[Callable[[str], None]] = []
         c = self.config
         self.login_ip = RateLimiter(c.login_ip_max, c.login_ip_window_s, now)
@@ -498,6 +546,8 @@ class SessionService:
             del self._refresh[key]
         for fam in [f for f, rec in self._families.items() if rec.exp <= now]:
             del self._families[fam]
+        while self._tickets and next(iter(self._tickets.values())).exp <= now:
+            self._tickets.popitem(last=False)
 
     def family_live(self, family: object) -> bool:
         rec = self._families.get(family) if isinstance(family, str) else None
@@ -603,3 +653,53 @@ class SessionService:
         for listener in list(self._revocation_listeners):
             listener(family)
         return True
+
+    # -- WebSocket tickets (S5) --
+
+    def issue_ws_ticket(self, session: Verdict) -> Ticket:
+        """A ticket for one socket, for the session of a verified request. It is bound to the key of that
+        request and to its login: a logout ends it."""
+        if not session.ok or not session.family:
+            raise ValueError("a ticket is issued to a verified session only")
+        now = self._now()
+        self._expire(now)
+        held = [k for k, t in self._tickets.items() if t.family == session.family and not t.used]
+        for key in held[:max(0, len(held) - TICKETS_PER_FAMILY + 1)]:
+            del self._tickets[key]
+        ticket = b64u(os.urandom(32))
+        self._tickets[hashlib.sha256(ticket.encode("ascii")).digest()] = _Ticket(
+            session.sub, session.jkt, session.family, now + self.config.ws_ticket_ttl_s)
+        return Ticket(ticket, self.config.ws_ticket_ttl_s)
+
+    def socket_url(self, url: str, path: str) -> str:
+        """The URL a socket proof must name: that of the handshake, as `http` or `https` (a DPoP `htu` has no
+        `ws` form), under the configured public origin when there is one."""
+        scheme, sep, rest = url.partition("://")
+        mapped = _WS_SCHEMES.get(scheme.lower())
+        return self.request_url(f"{mapped}{sep}{rest}" if mapped else url, path)
+
+    def open_socket(self, url: str, ticket: object, proof: object) -> SocketGrant:
+        """Redeem a ticket for one socket. `proof` is a DPoP proof for `GET` on `url` (see `socket_url`), signed
+        by the key the ticket was issued to. Every check is evaluated, then the request is decided; a ticket
+        is spent only by the request that is accepted."""
+        proofs = [proof] if isinstance(proof, str) else []
+        verdict = self.verify(WS_METHOD, url, proofs, token_required=False)
+        now = self._now()
+        text = ticket if isinstance(ticket, str) else ""
+        rec = self._tickets.get(hashlib.sha256(text.encode("utf-8", "replace")).digest())
+        known = rec is not None
+        rec = rec or _NO_TICKET
+        checks: dict[str, bool] = {
+            "ticket_format": _TICKET_RE.fullmatch(text) is not None,
+            "ticket_known": known,
+            "ticket_unused": known and not rec.used,
+            "ticket_exp": known and rec.exp > now,
+            "ticket_session": known and self.family_live(rec.family),
+            "ticket_key": known and bool(verdict.jkt) and hmac.compare_digest(
+                rec.jkt.encode("ascii"), verdict.jkt.encode("utf-8", "replace")),
+        }
+        failed = verdict.failed + tuple(name for name, held in checks.items() if not held)
+        if failed:
+            return SocketGrant(failed)
+        rec.used = True
+        return SocketGrant((), sub=rec.user, family=rec.family)
