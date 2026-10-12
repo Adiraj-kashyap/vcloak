@@ -92,8 +92,34 @@ def baseline_harness(store: Any) -> Harness:
     return Harness(BaselineBackend(store, clock, window_s=WINDOW_S, epoch_ms=EPOCH_MS), clock, store)
 
 
+def spy_rewrites(store: Any) -> list[int]:
+    """Record the windows `store.rewrite_window` is called for (A2)."""
+    calls: list[int] = []
+    rewrite = store.rewrite_window
+
+    def spy(win: int, rows: list[Any]) -> None:
+        calls.append(win)
+        rewrite(win, rows)
+
+    store.rewrite_window = spy
+    return calls
+
+
 async def post(client: httpx.AsyncClient, conv: str, p: bytes) -> httpx.Response:
     return await client.post("/v1/messages", json={"conv_token": conv, "payload_b64": encode_payload(p)})
+
+
+async def post_stored(h: Harness, client: httpx.AsyncClient, conv: str, p: bytes) -> httpx.Response:
+    """Post with `ack: stored` and let epochs pass until the answer is there."""
+    body = {"conv_token": conv, "payload_b64": encode_payload(p), "ack": "stored"}
+    answer = asyncio.create_task(client.post("/v1/messages", json=body))
+    for _ in range(20):
+        if answer.done():
+            break
+        await asyncio.sleep(0.01)  # the request reaches the queue, or the baseline stores it
+        if h.vcloak and h.backend.scheduler.queued:
+            await h.step()
+    return await asyncio.wait_for(answer, 5)
 
 
 async def read(client: httpx.AsyncClient, conv: str, win: int) -> list[bytes]:
@@ -217,6 +243,27 @@ class ServiceContract:
 
         harness.serve(scenario)
 
+    # -- ISSUE-22: the acknowledgement of a write --------------------------------------------------
+    def test_ack_stored_answers_201_once_the_message_can_be_read(self, harness: Harness) -> None:
+        async def scenario(client: httpx.AsyncClient) -> None:
+            a = token("a")
+            r = await post_stored(harness, client, a, payload(0))
+            assert r.status_code == 201 and r.json() == {"accepted": True, "stored": True}
+            assert await read(client, a, 0) == [payload(0)]  # no further epoch is needed
+            r = await post(client, a, payload(1))
+            assert r.status_code == 202 and r.json() == {"accepted": True, "stored": False}
+
+        harness.serve(scenario)
+
+    @pytest.mark.parametrize("ack", ["written", "", True, 1, None])
+    def test_an_unknown_ack_is_rejected(self, harness: Harness, ack: Any) -> None:
+        async def scenario(client: httpx.AsyncClient) -> None:
+            r = await client.post("/v1/messages", json={"conv_token": token("a"), "ack": ack,
+                                                        "payload_b64": encode_payload(payload(0))})
+            assert r.status_code == 422 and r.json()["fields"][0]["field"] == "ack"
+
+        harness.serve(scenario)
+
     def test_no_interactive_docs_and_unknown_routes(self, harness: Harness) -> None:
         async def scenario(client: httpx.AsyncClient) -> None:
             for path in ("/docs", "/redoc", "/v1/dump", "/v1/messages/1"):
@@ -248,14 +295,7 @@ class VcloakService(ServiceContract):
         harness.serve(scenario)
 
     def test_a2_each_closed_window_is_rewritten_exactly_once(self, harness: Harness) -> None:
-        calls: list[int] = []
-        rewrite = harness.store.rewrite_window
-
-        def spy(win: int, rows: list[Any]) -> None:
-            calls.append(win)
-            rewrite(win, rows)
-
-        harness.store.rewrite_window = spy
+        calls = spy_rewrites(harness.store)
 
         async def scenario(client: httpx.AsyncClient) -> None:
             sent = await send_across_windows(harness, client)
@@ -270,6 +310,113 @@ class VcloakService(ServiceContract):
                 assert [p for w in range(3) for p in await read(client, conv, w)] == expected
 
         harness.serve(scenario)
+
+    # -- ISSUE-22: restarts ------------------------------------------------------------------------
+    @pytest.mark.parametrize(("down_windows", "more"), [(0, False), (0, True), (3, False)])
+    def test_a_window_left_open_at_shutdown_is_re_shuffled_once_after_the_restart(
+            self, harness: Harness, down_windows: int, more: bool) -> None:
+        """The service stops in the middle of window 1 and comes back in the same window (0), with or
+        without more messages for it, or three windows later (3). Window 1 must end up re-shuffled,
+        exactly once, whichever process closes it."""
+        calls = spy_rewrites(harness.store)
+        convs = [token(f"restart-{i}") for i in range(3)]
+        sent: dict[str, list[bytes]] = {c: [] for c in convs}
+
+        async def send(client: httpx.AsyncClient, epochs: int) -> None:
+            for _ in range(epochs):
+                for _ in range(12):
+                    i = sum(map(len, sent.values()))
+                    assert (await post(client, convs[i % 3], payload(i))).status_code == 202
+                    sent[convs[i % 3]].append(payload(i))
+                await harness.step()
+
+        async def first_run(client: httpx.AsyncClient) -> None:
+            await send(client, EPOCHS_PER_WINDOW + 2)  # window 0 and two epochs of window 1
+            assert calls == [0]
+
+        async def second_run(client: httpx.AsyncClient) -> None:
+            assert calls == [0]
+            if more:
+                await send(client, 2)  # the same window goes on: still open, still not rewritten
+                assert calls == [0]
+            if not down_windows:
+                await harness.step(EPOCHS_PER_WINDOW)
+            else:
+                await harness.step()  # the first epoch after the restart closes what was left open
+            assert calls == [0, 1]
+            await harness.step(2 * EPOCHS_PER_WINDOW)
+            assert calls == [0, 1]
+            for conv, expected in sent.items():
+                assert [p for w in range(2) for p in await read(client, conv, w)] == expected
+
+        harness.serve(first_run)
+        def epochs_of_window_1() -> list[int]:
+            """The epoch each stored row of window 1 arrived in (12 messages per epoch), in physical order."""
+            return [index_of(r.payload) // 12 for r in harness.store.window_rows(1)]
+
+        as_written = epochs_of_window_1()  # one epoch after the other: the layout a restart must not keep
+        assert as_written == sorted(as_written) and len(as_written) == 24
+        harness.clock.advance(down_windows * EPOCHS_PER_WINDOW * EPOCH_MS)
+        harness.serve(second_run)
+        order = epochs_of_window_1()
+        assert len(order) == (48 if more else 24) and order != sorted(order)
+
+    def test_ack_stored_is_not_answered_before_the_epoch_is_in_the_store(self, harness: Harness) -> None:
+        async def scenario(client: httpx.AsyncClient) -> None:
+            a = token("a")
+            body = {"conv_token": a, "payload_b64": encode_payload(payload(0)), "ack": "stored"}
+            answer = asyncio.create_task(client.post("/v1/messages", json=body))
+            while not harness.backend.scheduler.queued:
+                await asyncio.sleep(0.01)
+            await asyncio.sleep(0.05)
+            assert not answer.done() and harness.store.dump() == []  # queued: no answer yet
+            await harness.step()
+            r = await asyncio.wait_for(answer, 5)
+            assert r.status_code == 201 and len(harness.store.dump()) == 1
+
+        harness.serve(scenario)
+
+    def test_ack_stored_times_out_with_504_and_the_message_stays_queued(self, harness: Harness) -> None:
+        harness.backend.ack_timeout_s = 0.05
+
+        async def scenario(client: httpx.AsyncClient) -> None:
+            a = token("a")
+            r = await client.post("/v1/messages", json={"conv_token": a, "ack": "stored",
+                                                        "payload_b64": encode_payload(payload(0))})
+            assert r.status_code == 504 and r.json() == {"error": "ack_timeout"}
+            assert harness.backend.scheduler.queued == 1  # not withdrawn: a later epoch stores it
+            await harness.step()
+            assert await read(client, a, 0) == [payload(0)]
+
+        harness.serve(scenario)
+
+    def test_ack_stored_answers_503_when_the_service_stops_before_the_write(self, harness: Harness) -> None:
+        answers: list[httpx.Response] = []
+
+        async def main() -> None:
+            app = create_app(harness.backend)
+            transport = httpx.ASGITransport(app=app)
+            async with httpx.AsyncClient(transport=transport, base_url="http://vcloak.test") as client:
+                async with app.router.lifespan_context(app):
+                    def refuse(rows: list[Any]) -> None:
+                        raise OSError("the store is gone")
+
+                    harness.store.insert_rows = refuse
+                    body = {"conv_token": token("a"), "payload_b64": encode_payload(payload(0)), "ack": "stored"}
+                    answer = asyncio.create_task(client.post("/v1/messages", json=body))
+                    while not harness.backend.scheduler.queued:
+                        await asyncio.sleep(0.01)
+                answers.append(await asyncio.wait_for(answer, 5))
+
+        asyncio.run(main())
+        assert answers[0].status_code == 503 and answers[0].json() == {"error": "not_stored"}
+        assert harness.store.dump() == []
+
+    def test_ack_timeout_covers_the_epochs_the_queue_can_hold(self, harness: Harness) -> None:
+        b = harness.backend
+        assert b.ack_timeout_s == max(5.0, (16 + 2) * EPOCH_MS / 1000)
+        long_epochs = vcloak_harness(harness.store, epoch_ms=1000, max_queue=40 * SLOTS + 1).backend
+        assert long_epochs.ack_timeout_s == 43.0  # 41 epochs of queue, and two
 
     def test_stored_order_is_not_arrival_order(self, harness: Harness) -> None:
         async def scenario(client: httpx.AsyncClient) -> None:

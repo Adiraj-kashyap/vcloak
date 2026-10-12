@@ -1,6 +1,6 @@
 """The HTTP service (docs/API.md): four routes over one of two backends.
 
-    POST /v1/messages   queue one client ciphertext for the open epoch
+    POST /v1/messages   queue one client ciphertext for the open epoch (`ack: stored` waits for the write)
     POST /v1/read       the payloads of one conversation in one visible round, in order
     GET  /v1/windows    the visible round being written now
     GET  /healthz       liveness and the scheduler's public counters
@@ -13,6 +13,9 @@ and order them (R1-R4). `BaselineBackend` (baseline.py) is the unprotected compa
 Key lifecycle (ADR-007): at startup the master key goes from the key provider straight into the device
 key store, which zeroizes the host copy; at shutdown the device subkeys are zeroized. The engine and the
 key store are used from one thread only.
+
+Restart (ADR-016): at startup the backend reads the windows the store still lists as pending and hands
+them to the scheduler, which re-shuffles those that have closed with its first epoch.
 """
 from __future__ import annotations
 
@@ -49,7 +52,7 @@ from vcloak.service.models import (
     decode_payload,
     encode_payload,
 )
-from vcloak.service.scheduler import Clock, EpochScheduler, QueueFull
+from vcloak.service.scheduler import QUEUE_EPOCHS, Clock, EpochScheduler, NotStored, QueueFull
 from vcloak.storage.repo import CandidateOverflow, Repo
 
 T = TypeVar("T")
@@ -58,8 +61,13 @@ PASSPHRASE_ENV = "VCLOAK_PASSPHRASE"
 KEY_FILE_ENV = "VCLOAK_KEY_FILE"
 DEFAULT_KEY_FILE = Path("secrets") / "k_master.sealed"
 STOP_TIMEOUT_S = 10.0
+ACK_TIMEOUT_MIN_S = 5.0
 
 KeyProvider = Callable[[], bytearray]  # a fresh 32-byte master the caller hands to the key store
+
+
+class AckTimeout(RuntimeError):
+    """A submission that waits for its write is still queued after every epoch it could have gone into."""
 
 
 class ServiceBackend(Protocol):
@@ -77,7 +85,7 @@ class ServiceBackend(Protocol):
 
     def current_window(self) -> int: ...
 
-    async def submit(self, conv_token: str, payload: bytes) -> None: ...
+    async def submit(self, conv_token: str, payload: bytes, *, stored: bool = False) -> None: ...
 
     async def read(self, conv_token: str, win: int) -> list[bytes]: ...
 
@@ -115,12 +123,18 @@ class VcloakBackend:
                  slots: int = config.SLOTS, buckets: int = config.BUCKETS, window_s: int = config.WINDOW_S,
                  epoch_ms: int = config.EPOCH_MS, cand_k: int = config.CAND_K, visible_round: str = "window",
                  epoch_origin: int = 0, max_queue: int | None = None, autorun: bool = True,
+                 ack_timeout_s: float | None = None,
                  engine_factory: Callable[[DeviceKeyStore], Any] | None = None,
                  log: SafeLogger | None = None) -> None:
         self.repo, self._clock, self._key_provider, self._gpu = repo, clock, key_provider, gpu
         self.slots, self.buckets, self.window_s, self.epoch_ms = slots, buckets, window_s, epoch_ms
         self.cand_k, self.visible_round = cand_k, visible_round
         self._origin, self._max_queue, self._autorun = epoch_origin, max_queue, autorun
+        # a queued submission is written within the epochs the queue can hold, unless epochs fail
+        queue_epochs = QUEUE_EPOCHS if max_queue is None else -(-max_queue // slots)
+        self.ack_timeout_s = (max(ACK_TIMEOUT_MIN_S, (queue_epochs + 2) * epoch_ms / 1000)
+                              if ack_timeout_s is None else ack_timeout_s)
+        self._pending: list[int] = []
         self._engine_factory = engine_factory or (
             lambda keys: GpuEngine(keys, slots=slots, buckets=buckets, window_s=window_s, epoch_ms=epoch_ms))
         self._log = log or get_logger("service")
@@ -150,6 +164,8 @@ class VcloakBackend:
                 keyfile.zeroize(master)
         self.engine = self._engine_factory(self.keys)
         self.repo.init_schema()
+        # what a stopped or killed service left in its arrival-time layout (ISSUE-22)
+        self._pending = self.repo.pending_windows() if self.visible_round == "window" else []
 
     async def start(self) -> None:
         self._executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix="vcloak-engine")
@@ -160,12 +176,12 @@ class VcloakBackend:
             raise
         self.scheduler = EpochScheduler(self.engine, self.repo, self._clock, visible_round=self.visible_round,
                                         epoch_origin=self._origin, max_queue=self._max_queue,
-                                        executor=self._executor)
+                                        executor=self._executor, pending=self._pending)
         if self._autorun:
             self._task = asyncio.create_task(self.scheduler.run(), name="vcloak-scheduler")
         self._log.event("started", mode=self.mode, visible_round=self.visible_round, slots=self.slots,
                         buckets=self.buckets, window_s=self.window_s, epoch_ms=self.epoch_ms, cand_k=self.cand_k,
-                        backend=self.keys.backend.name if self.keys else "none")
+                        windows=len(self._pending), backend=self.keys.backend.name if self.keys else "none")
 
     async def _shutdown_keys(self) -> None:
         keys, executor = self.keys, self._executor
@@ -194,6 +210,8 @@ class VcloakBackend:
                 if sched.queued:
                     self._log.warning("stopped_with_queue", queued=sched.queued)
         finally:
+            if sched is not None:
+                sched.drop_waiters()
             if self._task is not None and not self._task.done():
                 self._task.cancel()
                 with suppress(asyncio.CancelledError, Exception):
@@ -207,10 +225,16 @@ class VcloakBackend:
             raise RuntimeError("the backend is not started")
         return self.scheduler.current_round()
 
-    async def submit(self, conv_token: str, payload: bytes) -> None:
+    async def submit(self, conv_token: str, payload: bytes, *, stored: bool = False) -> None:
+        """Queue one message; with `stored`, return only when its epoch is in the store."""
         if self.scheduler is None:
             raise QueueFull("the backend is not started")
-        self.scheduler.submit(conv_id_of(conv_token), payload)
+        written = self.scheduler.submit(conv_id_of(conv_token), payload, wait=stored)
+        if written is not None:
+            try:
+                await asyncio.wait_for(written, self.ack_timeout_s)
+            except asyncio.TimeoutError:
+                raise AckTimeout("the submission is still queued") from None
 
     def _read(self, conv_id: int, win: int) -> list[bytes]:
         bucket = int(self.engine.bucket_of(np.array([conv_id], dtype=np.uint64))[0])
@@ -260,10 +284,18 @@ def create_app(backend: ServiceBackend, *, payload_len: int = PAYLOAD_LEN) -> Fa
         except PayloadError:
             return JSONResponse({"error": "invalid_request",
                                  "fields": [{"field": "payload_b64", "reason": "payload_size"}]}, status_code=422)
+        stored = body.ack == "stored"
         try:
-            await backend.submit(body.conv_token, payload)
+            await backend.submit(body.conv_token, payload, stored=stored)
         except QueueFull:
             return error(503, "queue_full", **{"Retry-After": "1"})
+        except NotStored:
+            return error(503, "not_stored", **{"Retry-After": "1"})
+        except AckTimeout:
+            # still queued: it may be written later, so the sender cannot tell (docs/API.md)
+            return error(504, "ack_timeout")
+        if stored:
+            return JSONResponse(MessageAccepted(stored=True).model_dump(), status_code=201)
         return MessageAccepted()
 
     @app.post("/v1/read", response_model=ReadOut)

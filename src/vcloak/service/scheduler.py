@@ -13,7 +13,14 @@ A window is closed when an epoch of a later window is written; it is then re-shu
 (`storage.reshuffle`, ADR-004). With `visible_round="epoch"` the stored round is the epoch itself and
 nothing is re-shuffled: that is the Review-1 design, kept only as the comparison layout of M14.
 
-Arrival times live in the queue (host memory) only. They are never stored and never logged.
+Which windows still wait for their re-shuffle is kept in the store (`Repo.mark_pending`, ADR-016): a
+window is marked before its first rows are stored and the mark goes with the swap. A scheduler started
+with `pending` (the marks a stopped or killed service left) closes those windows like its own.
+
+Arrival times live in the queue (host memory) only. They are never stored and never logged. The queue
+is not durable, because a journal of it would be an arrival record: a submission made with `wait=True`
+gets a future that completes when its epoch is in the store, which is the only acknowledgement of
+durability a client has.
 The sequence number of a submission is its arrival position, `epoch << SEQ_SHIFT | index` (ADR-015).
 """
 from __future__ import annotations
@@ -23,7 +30,7 @@ import dataclasses
 import threading
 import time
 from collections import Counter, deque
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 from concurrent.futures import Executor
 from dataclasses import dataclass
 from typing import Protocol, TypeVar
@@ -46,6 +53,10 @@ VISIBLE_ROUNDS = ("window", "epoch")
 
 class QueueFull(RuntimeError):
     """The submission queue is at its bound (or the scheduler is shutting down): try again later."""
+
+
+class NotStored(RuntimeError):
+    """The service stopped before it could write a submission whose sender waits for it."""
 
 
 class Clock(Protocol):
@@ -107,6 +118,7 @@ class _Pending:
     conv_id: int
     payload: bytes
     t_ms: int  # arrival on the scheduler's clock; host memory only
+    stored: asyncio.Future[None] | None = None  # set when the sender waits for the write
 
 
 class EpochScheduler:
@@ -116,7 +128,7 @@ class EpochScheduler:
 
     def __init__(self, engine: EpochEngine, repo: Repo, clock: Clock, *, visible_round: str = "window",
                  epoch_origin: int = 0, max_queue: int | None = None, executor: Executor | None = None,
-                 log: SafeLogger | None = None) -> None:
+                 pending: Iterable[int] = (), log: SafeLogger | None = None) -> None:
         if visible_round not in VISIBLE_ROUNDS:
             raise ValueError(f"visible_round must be one of {VISIBLE_ROUNDS}")
         self._engine, self._repo, self._clock = engine, repo, clock
@@ -127,7 +139,8 @@ class EpochScheduler:
         self._executor = executor
         self._log = log or get_logger("scheduler")
         self._queue: deque[_Pending] = deque()
-        self._hot: set[int] = set()  # windows that hold rows and have not been re-shuffled
+        # windows that hold rows and have not been re-shuffled: the marks of the store plus our own
+        self._hot: set[int] = set(pending) if visible_round == "window" else set()
         self._last_boundary: int | None = None
         self._stop = False
         self._finishing = False
@@ -159,11 +172,14 @@ class EpochScheduler:
 
     # ── submissions ──────────────────────────────────────────────────────────
 
-    def submit(self, conv_id: int, payload: bytes) -> None:
-        """Queue one submission for the epoch that is open now (S4)."""
+    def submit(self, conv_id: int, payload: bytes, *, wait: bool = False) -> asyncio.Future[None] | None:
+        """Queue one submission for the epoch that is open now (S4). With `wait`, return a future that
+        completes when the submission is in the store, or fails with `NotStored`."""
         if self._finishing or self._stop or len(self._queue) >= self.max_queue:
             raise QueueFull("the submission queue is full")
-        self._queue.append(_Pending(conv_id, payload, self._clock.now_ms()))
+        stored = asyncio.get_running_loop().create_future() if wait else None
+        self._queue.append(_Pending(conv_id, payload, self._clock.now_ms(), stored))
+        return stored
 
     # ── one epoch ────────────────────────────────────────────────────────────
 
@@ -202,9 +218,10 @@ class EpochScheduler:
         if self.visible_round == "epoch":
             rows = [dataclasses.replace(r, win=rnd) for r in rows]
         if rows:
-            self._repo.insert_rows(rows)
-            if self.visible_round == "window":
+            if self.visible_round == "window" and rnd not in self._hot:
+                self._repo.mark_pending(rnd)  # before the rows: a kill in between leaves a mark, never a lost window
                 self._hot.add(rnd)
+            self._repo.insert_rows(rows)
 
     async def tick(self, boundary_ms: int) -> None:
         """Close the epoch that ends at `boundary_ms`."""
@@ -220,6 +237,9 @@ class EpochScheduler:
             self._log.failure("epoch_failed", e, queued=len(self._queue))
             return
         self.epochs += 1
+        for p in batch:  # the epoch is committed: answer the senders that wait for it
+            if p.stored is not None and not p.stored.done():
+                p.stored.set_result(None)
 
     # ── the loop ─────────────────────────────────────────────────────────────
 
@@ -255,6 +275,15 @@ class EpochScheduler:
         self._finishing = True
         return len(self._queue) // self.slots + 2 if self._queue else 0
 
+    def drop_waiters(self) -> int:
+        """After the last epoch of a shutdown: fail the senders whose submissions are still queued."""
+        n = 0
+        for p in self._queue:
+            if p.stored is not None and not p.stored.done():
+                p.stored.set_exception(NotStored("the service stopped before the submission was written"))
+                n += 1
+        return n
+
     def hot_windows(self) -> list[int]:
-        """Windows written by this process that are still in their arrival-time layout."""
+        """Windows that are still in their arrival-time layout: ours, and those a restart found marked."""
         return sorted(self._hot)

@@ -5,6 +5,10 @@ Everything the store holds is public at the database level: bucket, window, the 
 add is arrival information, so there is no serial, sequence or timestamp, a closed window is
 replaced by a new partition written in the order it is given, and a read always returns exactly K rows.
 
+`pending_windows` is the durable list of windows that still hold the layout they were written in
+(ADR-016): the service lists a window before it stores its first rows, `rewrite_window` takes it off
+the list in the transaction of the swap, and a restarted service re-shuffles what is left on it.
+
 `dump()` is the view of an attacker who copies the database files: rows in physical order, one
 window (partition) after the other.
 """
@@ -48,6 +52,10 @@ class Repo(Protocol):
     def dump(self) -> list[StoredRow]: ...
 
     def window_rows(self, win: int) -> list[StoredRow]: ...  # physical order; input of the re-shuffle (ADR-014)
+
+    def mark_pending(self, win: int) -> None: ...  # before the first rows of a window that will be re-shuffled
+
+    def pending_windows(self) -> list[int]: ...  # marked and not yet rewritten, ascending (ADR-016)
 
 
 def _check_win(win: int) -> int:
@@ -208,10 +216,21 @@ class PgRepo:
                     self._conn.execute(s.SQL("ALTER TABLE messages ATTACH PARTITION {} FOR VALUES FROM ({}) TO ({})")
                                        .format(old, lo, hi))
                     self._conn.execute(s.SQL("ALTER TABLE {} DROP CONSTRAINT win_bound").format(old))
+                    # with the swap or not at all: a window is re-shuffled once, whatever is interrupted
+                    self._conn.execute("DELETE FROM pending_windows WHERE win = %s", (win,))
             except BaseException:
                 self._conn.execute(s.SQL("DROP TABLE IF EXISTS {}").format(new))
                 raise
             self._parts.add(win)
+
+    def mark_pending(self, win: int) -> None:
+        _check_win(win)
+        with self._lock:
+            self._conn.execute("INSERT INTO pending_windows (win) VALUES (%s) ON CONFLICT DO NOTHING", (win,))
+
+    def pending_windows(self) -> list[int]:
+        with self._lock:
+            return [w for (w,) in self._conn.execute("SELECT win FROM pending_windows ORDER BY win").fetchall()]
 
     def dump(self) -> list[StoredRow]:
         with self._lock:
@@ -245,6 +264,7 @@ class SqliteRepo:
                 "CREATE TABLE IF NOT EXISTS messages (row_id BLOB NOT NULL, bucket INTEGER NOT NULL, "
                 "win INTEGER NOT NULL, seq_enc BLOB NOT NULL, payload BLOB NOT NULL, PRIMARY KEY (row_id, win))")
             self._conn.execute("CREATE INDEX IF NOT EXISTS messages_bucket_win_idx ON messages (bucket, win)")
+            self._conn.execute("CREATE TABLE IF NOT EXISTS pending_windows (win INTEGER PRIMARY KEY)")
 
     def create_partition(self, win: int) -> None:
         _check_win(win)  # one table: nothing to create
@@ -297,8 +317,18 @@ class SqliteRepo:
                 raise RewriteMismatch(f"window {win} holds {have} rows, {len(rows)} were given")
             self._conn.execute("DELETE FROM messages WHERE win = ?", (win,))
             self._insert(rows)
+            self._conn.execute("DELETE FROM pending_windows WHERE win = ?", (win,))
 
         self._tx(body)
+
+    def mark_pending(self, win: int) -> None:
+        _check_win(win)
+        with self._lock:
+            self._conn.execute("INSERT OR IGNORE INTO pending_windows (win) VALUES (?)", (win,))
+
+    def pending_windows(self) -> list[int]:
+        with self._lock:
+            return [w for (w,) in self._conn.execute("SELECT win FROM pending_windows ORDER BY win").fetchall()]
 
     def dump(self) -> list[StoredRow]:
         with self._lock:

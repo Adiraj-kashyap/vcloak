@@ -203,6 +203,47 @@ class RepoContract:
             got = repo.fetch_candidates(b, 5, 64)
             assert len(got) == 64 and all(r in got for r in real)
 
+    # -- pending windows (ISSUE-22, ADR-016) ------------------------------------------------------
+    def test_pending_windows_lists_the_marked_windows_in_order(self, repo: Any) -> None:
+        assert repo.pending_windows() == []
+        for win in (7, 2, 7, 5, 2):  # marking twice is one mark
+            repo.mark_pending(win)
+        assert repo.pending_windows() == [2, 5, 7]
+        assert repo.dump() == [], "a mark stores no row"
+
+    def test_a_rewrite_takes_its_window_off_the_pending_list(self, repo: Any) -> None:
+        rows5, rows6 = make_rows(20, 5, 1), make_rows(20, 6, 1)
+        for win, rows in ((5, rows5), (6, rows6)):
+            repo.mark_pending(win)
+            repo.insert_rows(rows)
+        assert repo.pending_windows() == [5, 6], "storing rows does not clear a mark"
+        repo.rewrite_window(5, rows5[::-1])
+        assert repo.pending_windows() == [6]
+        repo.rewrite_window(5, rows5)  # a window that is not listed can still be rewritten
+        assert repo.pending_windows() == [6]
+
+    def test_a_refused_rewrite_keeps_the_pending_mark(self, repo: Any) -> None:
+        rows = make_rows(10, 5, 1)
+        repo.mark_pending(5)
+        repo.insert_rows(rows)
+        with pytest.raises(RewriteMismatch):
+            repo.rewrite_window(5, rows[:-1])
+        assert repo.pending_windows() == [5] and repo.dump() == rows
+
+    def test_a_mark_without_rows_is_cleared_by_the_re_shuffle(self, repo: Any) -> None:
+        """The service was killed between the mark and the first rows of the window."""
+        repo.mark_pending(9)
+        assert reshuffle_window(repo, SeededEngine(1), 9) == 0
+        assert repo.pending_windows() == [] and repo.dump() == []
+        repo.insert_rows(make_rows(3, 9, 1))
+        assert repo.dump() == make_rows(3, 9, 1)
+
+    @pytest.mark.parametrize("win", [-1, 2**31 - 1, True, 1.5, "3"])
+    def test_mark_pending_rejects_a_bad_window(self, repo: Any, win: Any) -> None:
+        with pytest.raises(ValueError):
+            repo.mark_pending(win)
+        assert repo.pending_windows() == []
+
     # -- reshuffle.py -----------------------------------------------------------------------------
     def test_reshuffle_window_writes_the_order_of_the_engine(self, repo: Any) -> None:
         rows, other = make_rows(100, 5, 1), make_rows(10, 6, 1)

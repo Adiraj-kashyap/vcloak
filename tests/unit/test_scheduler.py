@@ -15,6 +15,7 @@ from vcloak.service.scheduler import (
     EPOCH_MAX,
     SEQ_SHIFT,
     EpochScheduler,
+    NotStored,
     QueueFull,
     SimClock,
     WallClock,
@@ -249,3 +250,169 @@ def test_queue_bound_and_finish() -> None:
 def test_default_queue_bound_is_public_and_proportional_to_slots() -> None:
     sched, _, _, _ = make()
     assert sched.max_queue == 16 * SLOTS
+
+
+# ── ISSUE-22: restarts and the acknowledgement of a write ────────────────────
+
+def restarted(repo: SqliteRepo, clock: SimClock, **kw: Any) -> tuple[EpochScheduler, SpyEngine]:
+    """A new scheduler and engine on the store of an earlier one, as the backend builds them at startup."""
+    engine = SpyEngine()
+    return EpochScheduler(engine, repo, clock, pending=repo.pending_windows(), **kw), engine
+
+
+def test_the_store_lists_a_window_from_its_first_rows_until_its_re_shuffle() -> None:
+    sched, _, repo, _ = make()
+    asyncio.run(sched.run(2))
+    assert repo.pending_windows() == []  # empty epochs mark nothing
+    sched.submit(1, payload(0))
+    asyncio.run(sched.run(1))
+    assert repo.pending_windows() == [0] == sched.hot_windows()
+    asyncio.run(sched.run(3))  # epoch 5 is the first of window 1
+    assert repo.pending_windows() == [] == sched.hot_windows() and dict(sched.rewrites) == {0: 1}
+
+
+def test_a_new_scheduler_closes_the_windows_an_earlier_one_left_pending() -> None:
+    sched, _, repo, clock = make()
+    for e in range(8):  # windows 0 and 1; the process dies in window 1 without a shutdown
+        for i in range(4):
+            sched.submit(i, payload(4 * e + i))
+        asyncio.run(sched.run(1))
+    assert repo.pending_windows() == [1] and dict(sched.rewrites) == {0: 1}
+    before = [index_of(r.payload) // 4 for r in repo.window_rows(1)]
+    assert before == sorted(before)  # one epoch after the other
+    clock.advance(40 * E)  # windows pass while nothing runs
+    again, engine = restarted(repo, clock)
+    assert again.hot_windows() == [1]
+    asyncio.run(again.run(1))
+    assert engine.reshuffles == [1] and dict(again.rewrites) == {1: 1} and repo.pending_windows() == []
+    after = [index_of(r.payload) // 4 for r in repo.window_rows(1)]
+    assert sorted(after) == before and after != before
+    asyncio.run(again.run(10))
+    assert engine.reshuffles == [1]  # once
+
+
+def test_a_window_that_is_still_open_after_the_restart_is_not_closed_early() -> None:
+    sched, _, repo, clock = make()
+    sched.submit(1, payload(0))
+    asyncio.run(sched.run(2))
+    again, engine = restarted(repo, clock)
+    asyncio.run(again.run(2))  # epochs 2 and 3: still window 0
+    assert engine.reshuffles == [] and repo.pending_windows() == [0]
+    asyncio.run(again.run(2))  # epoch 5
+    assert engine.reshuffles == [0] and repo.pending_windows() == []
+
+
+def test_a_kill_between_the_mark_and_the_rows_leaves_a_mark_that_the_restart_clears(
+        monkeypatch: pytest.MonkeyPatch) -> None:
+    sched, _, repo, clock = make()
+    sched.submit(1, payload(0))
+
+    def killed(rows: list[StoredRow]) -> None:
+        raise OSError("the process is gone")
+
+    monkeypatch.setattr(repo, "insert_rows", killed)
+    asyncio.run(sched.run(1))
+    assert repo.pending_windows() == [0] and repo.dump() == []  # the mark is written first
+    monkeypatch.undo()
+    clock.advance(10 * E)
+    again, engine = restarted(repo, clock)
+    asyncio.run(again.run(1))
+    assert again.errors == 0 and repo.pending_windows() == [] and engine.reshuffles == [0]
+
+
+def test_a_failed_re_shuffle_keeps_the_mark_and_is_tried_again(monkeypatch: pytest.MonkeyPatch) -> None:
+    sched, engine, repo, _ = make()
+    sched.submit(1, payload(0))
+    sched.submit(1, payload(1))
+    asyncio.run(sched.run(5))
+    rewrite, calls = repo.rewrite_window, []
+
+    def flaky(win: int, rows: list[StoredRow]) -> None:
+        calls.append(win)
+        if len(calls) == 1:
+            raise OSError("connection reset")
+        rewrite(win, rows)
+
+    monkeypatch.setattr(repo, "rewrite_window", flaky)
+    asyncio.run(sched.run(1))
+    assert sched.errors == 1 and repo.pending_windows() == [0] and not sched.rewrites
+    asyncio.run(sched.run(1))
+    assert calls == [0, 0] and repo.pending_windows() == [] and dict(sched.rewrites) == {0: 1}
+
+
+def test_the_epoch_layout_marks_nothing_and_ignores_old_marks() -> None:
+    repo = SqliteRepo()
+    repo.init_schema()
+    repo.mark_pending(0)
+    engine = SpyEngine()
+    sched = EpochScheduler(engine, repo, SimClock(), visible_round="epoch", pending=repo.pending_windows())
+    sched.submit(1, payload(0))
+    asyncio.run(sched.run(8))
+    assert sched.hot_windows() == [] and engine.reshuffles == [] and repo.pending_windows() == [0]
+
+
+def test_a_waiting_submission_is_answered_when_its_epoch_is_stored_and_not_before() -> None:
+    sched, engine, repo, _ = make()
+    seen: list[tuple[bool, int]] = []
+
+    async def scenario() -> None:
+        assert sched.submit(1, payload(0)) is None  # nothing to wait on unless asked
+        done = sched.submit(1, payload(1), wait=True)
+        assert done is not None and not done.done()
+        engine.on_write = lambda epoch: seen.append((done.done(), len(repo.dump())))
+        await sched.run(1)
+        assert done.done() and done.result() is None and stored(repo) == [0, 1]
+
+    asyncio.run(scenario())
+    assert seen == [(False, 0)]
+
+
+def test_a_waiting_submission_of_a_failed_epoch_is_answered_by_the_epoch_that_stores_it() -> None:
+    sched, engine, repo, _ = make()
+    fail = [True]
+
+    def fail_once(epoch: int) -> None:
+        if fail and fail.pop():
+            raise RuntimeError("device lost")
+
+    async def scenario() -> None:
+        done = sched.submit(1, payload(0), wait=True)
+        assert done is not None
+        engine.on_write = fail_once
+        await sched.run(1)
+        assert sched.errors == 1 and not done.done() and repo.dump() == []
+        await sched.run(1)
+        assert done.done() and done.exception() is None and stored(repo) == [0]
+
+    asyncio.run(scenario())
+
+
+def test_overflowing_waiters_are_answered_epoch_by_epoch() -> None:
+    sched, _, repo, _ = make(slots=4)
+
+    async def scenario() -> None:
+        waits = [sched.submit(1, payload(i), wait=True) for i in range(10)]
+        for written in (4, 8, 10):
+            await sched.run(1)
+            assert [w.done() for w in waits] == [i < written for i in range(10)] and len(repo.dump()) == written
+
+    asyncio.run(scenario())
+
+
+def test_waiters_left_in_the_queue_at_the_stop_are_told_so() -> None:
+    sched, _, repo, _ = make(slots=4)
+
+    async def scenario() -> None:
+        waits = [sched.submit(1, payload(i), wait=True) for i in range(6)]
+        gone = sched.submit(1, payload(6), wait=True)
+        gone.cancel()  # a sender that gave up: its message stays queued, nobody is told
+        await sched.run(1)
+        sched.stop()
+        assert sched.drop_waiters() == 2 and sched.drop_waiters() == 0
+        assert [w.done() and w.exception() is None for w in waits[:4]] == [True] * 4
+        for w in waits[4:]:
+            with pytest.raises(NotStored):
+                w.result()
+        assert stored(repo) == [0, 1, 2, 3]
+
+    asyncio.run(scenario())

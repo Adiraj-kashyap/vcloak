@@ -490,7 +490,7 @@ locks `messages` first; the reader never fails and always sees the whole window
 connection serialise epochs, re-shuffles and reads. Still open: a writer on a second connection during the swap (the
 scheduler never inserts into a closed window, so this is untested by design), and point 2 (WAL lifetime, for M14).
 
-### ISSUE-22 [OPEN] M10: a restart leaves windows un-shuffled, and a crash loses messages that were accepted but not yet written
+### ISSUE-22 [CLOSED PENDING_HASH] M10: a restart leaves windows un-shuffled, and a crash loses messages that were accepted but not yet written
 BLOCKS: none   SEVERITY: medium   OPENED: 2026-10-12 session 18
 1. The scheduler keeps the set of windows it wrote and has not yet re-shuffled in memory only. After a restart the
    window that was open at shutdown, and any window that closed while the service was down, stays in its
@@ -504,3 +504,27 @@ BLOCKS: none   SEVERITY: medium   OPENED: 2026-10-12 session 18
 3. Until M11 the API has no authentication and takes the conversation token in the clear from any caller: listen on
    127.0.0.1 only (the default of `vcloak serve`).
 Not a human action. Must be closed, or stated as a limitation, before the security evaluation of M14 is written up.
+
+Closing note of ISSUE-22 (2026-10-12, session 19, ADR-016):
+1. Fixed. The store lists the windows still to be re-shuffled (`pending_windows`); the mark is written before the
+   first rows of a window and removed in the swap transaction; a restarted service re-shuffles the listed windows
+   that have closed. Before the fix the restart test failed in 4 of 6 cases (runs/20261012-110434_M10_issue22_restart/issue22_before_fix.txt), after it
+   6 of 6 pass on SQLite and PostgreSQL 16 (runs/20261012-110434_M10_issue22_restart/issue22_after_fix.txt). A live `vcloak serve` on PostgreSQL was
+   killed in the middle of a window and restarted: the window went from three writing transactions to one, in a new
+   file, with every row (runs/20261012-110434_M10_issue22_restart/smoke_restart.txt).
+2. Fixed by an acknowledgement, not by a durable queue (a journal of the queue would store the arrival order):
+   `ack: "stored"` answers 201 after the epoch is committed. In the same live run the 30 messages answered 201
+   survived the kill and the 5 answered 202 were lost. The default is still 202; what is left is ISSUE-23.
+3. `vcloak serve` now refuses a non-loopback `--host` unless `--allow-remote` is given. Authentication is M11.
+
+### ISSUE-23 [OPEN] The default acknowledgement is still `queued`: M12 must ask for `stored` and drop repeats, M15 must name what it measures
+BLOCKS: none   SEVERITY: low   OPENED: 2026-10-12 session 19
+1. M12 (client SDK): send with `ack: "stored"`, retry on 503 `not_stored`, and on 504 `ack_timeout` or a broken
+   connection treat the outcome as unknown. The server keeps no message identity, so a retry can store a message
+   twice: carry a message number inside the plaintext and drop repeats on read.
+2. M15: say for every latency number whether the submission used `ack: queued` or `ack: stored` (with `stored` the
+   answer waits for the epoch boundary, up to EPOCH_MS, by design).
+3. Windows written before session 19 carry no pending mark; a store older than that (only the development
+   database) is not repaired. The marks and the acknowledgement have never run on a CUDA device.
+Not a human action.
+

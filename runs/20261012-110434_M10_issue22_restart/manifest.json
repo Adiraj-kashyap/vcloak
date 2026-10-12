@@ -1,0 +1,49 @@
+{
+  "run_id": "20261012-110434_M10_issue22_restart",
+  "module": "M10",
+  "step": "S2-S3",
+  "owner": "Divyansh",
+  "git_sha": "5a0a8daca06e99e89c4e8c5adee8296987a17454",
+  "dirty": true,
+  "command": "pytest -q -rs tests/unit/test_scheduler.py tests/unit/test_service_sqlite.py tests/unit/test_repo_sqlite.py tests/integration/test_service.py tests/integration/test_repo_pg.py; pytest -q -rs; python scripts/smoke_restart.py --store pg",
+  "seed": 0,
+  "quick": false,
+  "params": {},
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261012-110434",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U"
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791783275.1040444
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791784208.8424206
+  },
+  "outputs": [
+    "check_metrics.txt",
+    "check_oblivious.txt",
+    "check_secrets.txt",
+    "cli_help.txt",
+    "issue22_after_fix.txt",
+    "issue22_before_fix.txt",
+    "pytest.txt",
+    "pytest_all.txt",
+    "pytest_checks_verbose.txt",
+    "ruff.txt",
+    "serve_a.log",
+    "serve_b.log",
+    "smoke_baseline.txt",
+    "smoke_restart.txt",
+    "smoke_vcloak.txt"
+  ],
+  "status": "OK",
+  "notes": "fix ISSUE-22: durable pending-window list (a restart re-shuffles windows left open or closed while down), ack=stored on POST /v1/messages, loopback guard. Restart test before and after the fix on SQLite and docker postgres:16; module tests; full suite; live kill-and-restart of vcloak serve on PostgreSQL (smoke_restart.txt, serve_a.log, serve_b.log). Backend numpy: correctness only, nothing timed"
+}

@@ -15,3 +15,11 @@ CREATE TABLE IF NOT EXISTS messages (
 ) PARTITION BY RANGE (win);
 
 CREATE INDEX IF NOT EXISTS messages_bucket_win_idx ON messages (bucket, win);
+
+-- The windows that hold rows in the layout they were written in and are still to be re-shuffled
+-- (ISSUE-22, ADR-016). A window is listed before its first rows are stored, and taken off the list by
+-- the transaction that swaps in its re-shuffled partition. The list is public: the same fact shows in
+-- the physical layout of the partition. It carries a window id and nothing else.
+CREATE TABLE IF NOT EXISTS pending_windows (
+    win int PRIMARY KEY
+);

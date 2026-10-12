@@ -19,6 +19,7 @@ TOKEN_PATTERN = r"^[A-Za-z0-9_-]{16,128}$"  # base64url or hex text; at least 96
 _CONV_DOMAIN = b"vcloak-conv-id-v1\x00"
 
 Mode = Literal["vcloak", "baseline"]
+Ack = Literal["queued", "stored"]
 VisibleRound = Literal["window", "epoch"]
 
 
@@ -33,10 +34,12 @@ class _Body(BaseModel):
 class MessageIn(_Body):
     payload_b64: str = Field(max_length=4 * ((PAYLOAD_LEN + 2) // 3) + 8)
     conv_token: str = Field(pattern=TOKEN_PATTERN)
+    ack: Ack = "queued"  # "stored": answer only when the message is in the store (ADR-016)
 
 
 class MessageAccepted(_Body):
     accepted: bool = True
+    stored: bool = False  # true only in the answer to `ack: "stored"`
 
 
 class ReadIn(_Body):

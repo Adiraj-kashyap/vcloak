@@ -1,0 +1,33 @@
+usage: vcloak serve [-h] [--mode {vcloak,baseline}] [--clock {wall,sim}]
+                    [--visible-round {window,epoch}] [--dev]
+                    [--key-file KEY_FILE] [--store {pg,sqlite}] [--dsn DSN]
+                    [--schema SCHEMA] [--host HOST] [--allow-remote]
+                    [--port PORT] [--slots SLOTS] [--buckets BUCKETS]
+                    [--window-s WINDOW_S] [--epoch-ms EPOCH_MS]
+                    [--cand-k CAND_K]
+
+options:
+  -h, --help            show this help message and exit
+  --mode {vcloak,baseline}
+                        vcloak, or the unprotected baseline (M15)
+  --clock {wall,sim}    wall: epochs on wall-clock boundaries; sim: a virtual
+                        clock that runs as fast as possible
+  --visible-round {window,epoch}
+                        epoch reproduces the Review-1 layout, for the M14
+                        comparison only
+  --dev                 use the fixed public development key (no passphrase)
+  --key-file KEY_FILE   the sealed master key file
+  --store {pg,sqlite}   sqlite is an in-memory store for demos and tests
+  --dsn DSN             PostgreSQL DSN (default: VCLOAK_PG_DSN or the
+                        development database)
+  --schema SCHEMA       PostgreSQL schema (default: public; baseline in
+                        baseline mode)
+  --host HOST
+  --allow-remote        listen on a non-loopback --host although the API has
+                        no authentication yet
+  --port PORT
+  --slots SLOTS
+  --buckets BUCKETS
+  --window-s WINDOW_S
+  --epoch-ms EPOCH_MS
+  --cand-k CAND_K

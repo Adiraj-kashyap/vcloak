@@ -1,7 +1,8 @@
 # V-cloak service API (v1)
 
 The backend of `vcloak serve` (M10). Authentication (DPoP, sessions, the WebSocket) is added by M11 and will
-get its own section here; until then the service must only listen on localhost.
+get its own section here; until then the service must only listen on localhost: `vcloak serve` refuses a
+`--host` that is not a loopback address unless `--allow-remote` is given.
 
 All bodies are JSON. Unknown fields are rejected. The same contract is served in both modes
 (`--mode vcloak` and `--mode baseline`); `tests/service_contract.py` runs one set of tests against both.
@@ -10,7 +11,8 @@ All bodies are JSON. Unknown fields are rejected. The same contract is served in
 
 ```
 vcloak serve --mode vcloak|baseline --clock wall|sim [--visible-round window|epoch] [--dev]
-             [--store pg|sqlite] [--dsn DSN] [--key-file PATH] [--host 127.0.0.1] [--port 8000]
+             [--store pg|sqlite] [--dsn DSN] [--schema NAME] [--key-file PATH]
+             [--host 127.0.0.1] [--allow-remote] [--port 8000]
              [--slots N] [--buckets N] [--window-s N] [--epoch-ms N] [--cand-k N]
 ```
 (`python -m vcloak.cli serve ...` is the same command.)
@@ -29,6 +31,20 @@ vcloak serve --mode vcloak|baseline --clock wall|sim [--visible-round window|epo
 On shutdown the service stops accepting submissions, writes what is queued on the next epoch boundaries, and
 zeroizes the device keys. The request log is off: a line per request would be an arrival record.
 
+### Restart and crash (ADR-016)
+
+The store keeps a list of the windows that still hold the layout they were written in (`pending_windows`: a
+window id per row, nothing else). A window is listed before its first rows are stored and comes off the list in
+the transaction that swaps in its re-shuffled partition. At startup the service reads the list; the first epoch
+it writes re-shuffles every listed window that has closed, including windows that closed while the service was
+down. A window is therefore re-shuffled once, whether the service was stopped, killed or interrupted during the
+re-shuffle itself. `scripts/smoke_restart.py` kills a live server in the middle of a window and checks this on
+PostgreSQL.
+
+The queue of accepted messages is in memory only, on purpose: a journal of it on disk would be a record of the
+arrival order, which is what the store must not hold. A shutdown writes the queue; a kill loses it (up to one
+epoch of messages, more while epochs overflow). A client that needs to know sends `"ack": "stored"` (below).
+
 ## Values
 
 | Name | Form |
@@ -40,7 +56,17 @@ zeroizes the device keys. The request log is off: a line per request would be an
 ## Routes
 
 ### `POST /v1/messages`
-Request `{"conv_token": "...", "payload_b64": "..."}`. Answer `202 {"accepted": true}`.
+Request `{"conv_token": "...", "payload_b64": "...", "ack": "queued"}`; `ack` is optional.
+
+| `ack` | Answer | Meaning |
+|---|---|---|
+| `"queued"` (default) | `202 {"accepted": true, "stored": false}` | The message is in the queue of the open epoch. It is lost if the service is killed before that epoch is written. |
+| `"stored"` | `201 {"accepted": true, "stored": true}` | Sent after the epoch that carries the message is committed to the store: the message survives a kill. The answer comes at an epoch boundary, so it takes up to `EPOCH_MS`, longer while epochs overflow. |
+
+With `"stored"`, a `503 not_stored` says the service stopped before the write (the message is not stored: send
+it again). A `504 ack_timeout` or a broken connection leaves the outcome unknown: the message may still be
+written. The service keeps no message identity, so a repeated message is stored twice; a client that retries
+must carry its own message number inside the plaintext and drop repeats when it reads (M12).
 
 In V-cloak mode the message is queued for the epoch that is open now and written when that epoch closes. If more
 than `SLOTS` messages arrive in one epoch, the first `SLOTS` are written and the rest go into the next epoch, in
@@ -79,6 +105,8 @@ Answer `200 {"status": "ok", "mode": "vcloak", "ready": true, "epochs": 0, "over
 |---|---|---|
 | 422 | `{"error": "invalid_request", "fields": [{"field": "payload_b64", "reason": "payload_size"}]}` | A missing, unknown or malformed field, or a payload of the wrong size. The answer names the field and the reason, never the rejected value. |
 | 503 | `{"error": "queue_full"}` with `Retry-After: 1` | The submission queue is at its bound (16 epochs of `SLOTS` by default), or the service is shutting down. |
+| 503 | `{"error": "not_stored"}` with `Retry-After: 1` | `ack: stored` only: the service stopped before the message was written. |
+| 504 | `{"error": "ack_timeout"}` | `ack: stored` only: the message is still queued after every epoch the queue could hold had time to close (at least 5 s). It is not withdrawn. |
 | 503 | `{"error": "candidate_overflow"}` | A bucket-round holds more than `CAND_K` rows. `CAND_K` is a capacity limit: the read fails instead of returning a truncated conversation (ADR-014). |
 
 ## Logging

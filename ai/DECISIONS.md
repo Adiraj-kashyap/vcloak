@@ -114,3 +114,26 @@ at once (no epoch), with the hashed conversation id in the clear.
 Consequences: a client cannot choose the order of its messages (M12 may carry its own sequence inside the plaintext).
 Two tokens that collide in 64 bits would share a conversation. A read waits behind the epoch being written. Windows
 left open, or closed while the service was down, are not re-shuffled after a restart (ISSUE-22).
+
+## ADR-016 — Restart: a durable list of pending windows, and an acknowledgement of the write instead of a durable queue — ACCEPTED — 2026-10-12
+Context: ISSUE-22. The scheduler knew in memory only which windows it had written and not yet re-shuffled, so a
+window that was open at a stop or a kill, or that closed while the service was down, kept its arrival-time layout
+(P1 did not hold for it). `POST /v1/messages` answered 202 from the queue, so a kill lost accepted messages and the
+client could not tell.
+Decision: (1) The store has a table `pending_windows(win)`. The scheduler calls `Repo.mark_pending(win)` before it
+stores the first rows of a window (window layout only); `rewrite_window` deletes the mark in the transaction of the
+swap. At startup the backend reads `Repo.pending_windows()` and the scheduler treats those windows as its own: the
+first epoch it writes re-shuffles every one that has closed. A mark without rows (kill between the mark and the
+insert) is cleared by an empty re-shuffle. (2) The queue stays in memory. A journal of it would put the arrival
+order on disk, which is what the store must never hold. Instead a submission may ask for `ack: "stored"`: the
+answer (201) is sent after the epoch that carries the message is committed. 503 `not_stored` means the service
+stopped before the write; 504 `ack_timeout` means the message is still queued after the time in which the queue
+could have been written (at least 5 s). The default stays `ack: "queued"` (202). (3) Until M11 `vcloak serve`
+refuses a `--host` that is not a loopback address unless `--allow-remote` is given.
+Consequences: the mark is public (a window id; the same fact shows in the layout of the partition) and adds one
+table to the schema. A window that receives rows again after its re-shuffle (a clock set back, `--clock sim`
+restarted on an old store) is marked and re-shuffled again. Windows written before this change carry no mark and
+are not found. With `ack: "stored"` a submission takes up to EPOCH_MS; M15 must say which acknowledgement it
+measures. A retry after 504 or a broken connection can store a message twice: the client de-duplicates (M12).
+Supersedes the last sentence of the consequences of ADR-015.
+

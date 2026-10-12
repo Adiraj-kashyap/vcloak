@@ -71,7 +71,9 @@ def test_schema_has_the_five_columns_and_nothing_that_records_arrival(repo: PgRe
     cols = repo.execute(
         "SELECT table_name, column_name, data_type, is_nullable, column_default, is_identity, is_generated "
         "FROM information_schema.columns WHERE table_schema = %s ORDER BY table_name, ordinal_position", (s,))
-    assert {c[0] for c in cols} == {"messages", "messages_w3"}
+    assert {c[0] for c in cols} == {"messages", "messages_w3", "pending_windows"}
+    # the list of windows still to be re-shuffled (ADR-016): a window id and nothing else
+    assert [c[:4] for c in cols if c[0] == "pending_windows"] == [("pending_windows", "win", "integer", "NO")]
     for table in ("messages", "messages_w3"):
         mine = [c[1:] for c in cols if c[0] == table]
         assert [(c[0], c[1], c[2]) for c in mine] == [
@@ -101,7 +103,7 @@ def test_create_partition_makes_one_partition_per_window(repo: PgRepo) -> None:
     for win in (0, 5, 5, 6):
         repo.create_partition(win)
     PgRepo(pgconf.default_dsn(), schema=schema_of(repo)).create_partition(5)  # a second connection: still idempotent
-    assert tables(repo) == ["messages", "messages_w0", "messages_w5", "messages_w6"]
+    assert tables(repo) == ["messages", "messages_w0", "messages_w5", "messages_w6", "pending_windows"]
     bounds = repo.execute(
         "SELECT c.relname, pg_get_expr(c.relpartbound, c.oid) FROM pg_inherits i "
         "JOIN pg_class c ON c.oid = i.inhrelid JOIN pg_class p ON p.oid = i.inhparent "
@@ -113,13 +115,14 @@ def test_create_partition_makes_one_partition_per_window(repo: PgRepo) -> None:
 
 def test_insert_rows_creates_the_partition_and_rolls_it_back_with_the_epoch(repo: PgRepo) -> None:
     repo.insert_rows(make_rows(4, 11, 1))
-    assert tables(repo) == ["messages", "messages_w11"]
+    assert tables(repo) == ["messages", "messages_w11", "pending_windows"]
     bad = make_rows(4, 12, 1)
     with pytest.raises(psycopg.errors.UniqueViolation):
         repo.insert_rows(bad + bad[:1])
-    assert tables(repo) == ["messages", "messages_w11"], "the partition of a failed epoch is rolled back"
+    assert tables(repo) == ["messages", "messages_w11", "pending_windows"], (
+        "the partition of a failed epoch is rolled back")
     repo.insert_rows(bad)
-    assert tables(repo) == ["messages", "messages_w11", "messages_w12"] and len(repo.dump()) == 8
+    assert tables(repo) == ["messages", "messages_w11", "messages_w12", "pending_windows"] and len(repo.dump()) == 8
 
 
 # -- S4 / A3: the physical order -----------------------------------------------------------------------
@@ -151,7 +154,8 @@ def test_after_a_rewrite_the_physical_order_is_the_new_permutation(repo: PgRepo,
     assert len({p[2] for p in phys}) == 1, "one transaction wrote the whole window: xmin no longer separates epochs"
     assert repo.dump() == new == repo.window_rows(5)
     assert repo.execute("SELECT pg_relation_filenode(%s::regclass)", ("messages_w5",)) != old_file
-    assert tables(repo) == ["messages", "messages_w5"], "the old partition and the _new table are gone"
+    assert tables(repo) == ["messages", "messages_w5", "pending_windows"], (
+        "the old partition and the _new table are gone")
 
 
 def test_a_rewritten_partition_is_attached_with_its_bound_and_indexes(repo: PgRepo) -> None:
@@ -179,14 +183,14 @@ def test_a_failed_or_interrupted_rewrite_leaves_the_window_as_it_was(repo: PgRep
     file_before = repo.execute("SELECT pg_relation_filenode(%s::regclass)", ("messages_w5",))
     with pytest.raises(RewriteMismatch):
         repo.rewrite_window(5, rows[:-1])
-    assert tables(repo) == ["messages", "messages_w5"] and repo.dump() == rows
+    assert tables(repo) == ["messages", "messages_w5", "pending_windows"] and repo.dump() == rows
     assert repo.execute("SELECT pg_relation_filenode(%s::regclass)", ("messages_w5",)) == file_before
     # a crash between the load and the swap leaves messages_w5_new behind: the next rewrite replaces it
     repo.execute("CREATE TABLE messages_w5_new (LIKE messages)")
     repo.execute("INSERT INTO messages_w5_new SELECT * FROM messages_w5 LIMIT 3")
     assert repo.dump() == rows, "a stray _new table is not part of the store"
     repo.rewrite_window(5, rows[::-1])
-    assert tables(repo) == ["messages", "messages_w5"] and repo.dump() == rows[::-1]
+    assert tables(repo) == ["messages", "messages_w5", "pending_windows"] and repo.dump() == rows[::-1]
 
 
 def test_another_connection_reads_the_complete_new_window_after_the_swap(repo: PgRepo, dsn: str) -> None:
@@ -210,3 +214,24 @@ def test_wal_and_logging_settings(repo: PgRepo, setting: str) -> None:
 def test_no_replication_slot_or_archive_keeps_wal(repo: PgRepo) -> None:
     assert repo.execute("SELECT count(*) FROM pg_replication_slots") == [(0,)]
     assert repo.execute("SHOW archive_command") in ([("(disabled)",)], [("",)])
+
+
+# -- ISSUE-22: the pending mark and the swap are one transaction ----------------------------------------
+
+def test_the_pending_mark_goes_with_the_swap_and_survives_a_new_connection(repo: PgRepo, dsn: str) -> None:
+    rows = make_rows(30, 5, 1)
+    repo.mark_pending(5)
+    repo.insert_rows(rows)
+    other = PgRepo(dsn, schema=schema_of(repo), dummy_payload_len=PAYLOAD)  # what a restarted service sees
+    try:
+        other.init_schema()
+        assert other.pending_windows() == [5]
+        with pytest.raises(RewriteMismatch):
+            other.rewrite_window(5, rows[:-1])
+        assert other.pending_windows() == [5], "a refused rewrite keeps the mark"
+        other.rewrite_window(5, rows[::-1])
+        assert other.pending_windows() == [] == repo.pending_windows()
+        assert repo.dump() == rows[::-1]
+    finally:
+        other.close()
+    assert physical(repo, 5) and len({x[2] for x in physical(repo, 5)}) == 1  # one transaction wrote the window

@@ -449,3 +449,23 @@
   behaviour (ISSUE-22); the passphrase prompt on a terminal; --clock sim and --store pg as a live process
 - Commit: 3e7b118
 - Next: M11 S1 ; human action: none. Keep Docker Desktop running when you type continue
+
+## Session 19 — 2026-10-12 11:20 — fix ISSUE-22 (M10 Service & scheduler) — owner:Divyansh
+- Steps: none new (M10 stays DONE); the restart and durability defects of ISSUE-22
+- Did: storage: table `pending_windows`, `Repo.mark_pending` / `pending_windows`, the mark removed in the swap
+  transaction of `rewrite_window` (PgRepo and SqliteRepo). Scheduler: marks a window before its first rows, starts
+  from the marks of the store, answers waiting submissions after the epoch is committed. Backend and API: the marks
+  are read at startup; `ack: "stored"` (201), 503 `not_stored`, 504 `ack_timeout`. CLI: loopback guard,
+  `--allow-remote`, `--schema`. scripts/smoke_restart.py; docs/API.md.
+- Evidence: runs/20261012-110434_M10_issue22_restart (issue22_before_fix.txt 4 failed / 2 passed; issue22_after_fix.txt 6 passed; pytest.txt 343 passed;
+  pytest_all.txt 1677 passed, 675 skipped for CUDA; smoke_restart.txt PASS on postgres:16; smoke_vcloak.txt,
+  smoke_baseline.txt PASS; check_* PASS; ruff clean)
+- Metrics added: none (nothing measured; the backend was numpy)
+- Decisions: ADR-016 (pending-window list; acknowledgement of the write instead of a durable queue; loopback guard)
+- Issues: closed ISSUE-22; opened ISSUE-23 (M12 must use ack stored and drop repeats, M15 must name the ack; low)
+- Deviations from spec: one more table in the schema; one more request field and two more error answers
+  (Amendments of ai/modules/M10)
+- Not verified: anything on a CUDA device; a kill inside the swap transaction on a live server; ack stored under load
+- Commit: PENDING_HASH
+- Next: M11 S1 ; human action: none. Keep Docker Desktop running when you type continue
+

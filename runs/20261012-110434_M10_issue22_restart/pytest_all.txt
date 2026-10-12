@@ -1,0 +1,81 @@
+.s.............................................sssssssssssssssssssssssss [  3%]
+ssssssssssssssssssss.s.s.....................sssssssssssssssssssss...... [  6%]
+...sssssssss.....sssss.........sssssssss...sss.s............ssssssssssss [  9%]
+........................................................................ [ 12%]
+........................................................................ [ 15%]
+.....sssssssssssssssssssss........................ssssssssssssssssssssss [ 18%]
+ss.......sssssss...sss.s..ssssssssssssssssssssssssssss.................. [ 21%]
+....................s.s...............sssssssssssssss................... [ 24%]
+.................ssssssssssssssssssssssssssssssssssss..................s [ 27%]
+sssssssssssssssss.s.s......ssssss....................................... [ 30%]
+.......sssssssssssssssssssssssssssssssssssssssssssss.........sssssssss.. [ 33%]
+.............s.......ssssssssssss....................................... [ 36%]
+...........................s.s.s.......................s.s....sssssssss. [ 39%]
+..................................................ssssssssssssssssssssss [ 42%]
+ssssssssssssssssssssssssssss............................................ [ 45%]
+........................................................................ [ 48%]
+....ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss [ 52%]
+ssssssssssssssssssssssssssssssssssssssssssssssssssss.s.................. [ 55%]
+....................................ssssssssssssssssssssssssssssssssssss [ 58%]
+ssssssssssssssssss..................ssssssssssssssssss.sssssssssssssss.. [ 61%]
+.......sssssssss.....sssss......ssssss.....sssss.s.s............ssssssss [ 64%]
+ssss.........sssssssss.s.s.sssssssssssss................................ [ 67%]
+........................................................................ [ 70%]
+........................................................................ [ 73%]
+........................................................................ [ 76%]
+........................................................................ [ 79%]
+........................................................................ [ 82%]
+........................................................................ [ 85%]
+.......................................s................................ [ 88%]
+........................................................................ [ 91%]
+.........................................................s.............. [ 94%]
+........................................................................ [ 97%]
+................................................                         [100%]
+=========================== short test summary info ===========================
+SKIPPED [4] tests\gpu\test_aead.py: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [45] tests\gpu\test_aead.py:123: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [21] tests\gpu\test_aead.py:172: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [9] tests\gpu\test_aead.py:186: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [5] tests\gpu\test_aead.py:197: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [9] tests\gpu\test_aead.py:205: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [3] tests\gpu\test_aead.py:218: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [9] tests\gpu\test_aead.py:337: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [3] tests\gpu\test_aead.py:364: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [21] tests\gpu\test_bitonic.py:140: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [24] tests\gpu\test_bitonic.py:149: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [7] tests\gpu\test_bitonic.py:158: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [3] tests\gpu\test_bitonic.py:168: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [1] tests\gpu\test_bitonic.py: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [21] tests\gpu\test_bitonic.py:213: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [7] tests\gpu\test_bitonic.py:225: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [5] tests\gpu\test_chacha.py: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [15] tests\gpu\test_chacha.py:119: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [36] tests\gpu\test_chacha.py:131: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [18] tests\gpu\test_chacha.py:142: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [6] tests\gpu\test_chacha.py:175: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [45] tests\gpu\test_chacha.py:193: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [9] tests\gpu\test_chacha.py:204: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [9] tests\gpu\test_chacha.py:316: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [3] tests\gpu\test_chacha.py:335: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [5] tests\gpu\test_engine.py: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [9] tests\gpu\test_planted_leak.py:28: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [50] tests\gpu\test_restore.py:143: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [120] tests\gpu\test_restore.py:153: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [1] tests\gpu\test_restore.py: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [54] tests\gpu\test_restore.py:177: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [18] tests\gpu\test_restore.py:191: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [9] tests\gpu\test_restore.py:227: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [3] tests\gpu\test_restore.py:247: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [3] tests\gpu\test_timing.py: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [9] tests\integration\test_engine_vs_oracle.py:106: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [5] tests\integration\test_engine_vs_oracle.py:114: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [6] tests\integration\test_engine_vs_oracle.py:119: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [5] tests\integration\test_engine_vs_oracle.py:124: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [5] tests\integration\test_engine_vs_oracle.py: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [12] tests\integration\test_engine_vs_oracle.py:161: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [9] tests\integration\test_engine_vs_oracle.py:169: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [9] tests\integration\test_engine_vs_oracle.py:234: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [3] tests\integration\test_engine_vs_oracle.py:254: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [1] tests\unit\test_oracle_chacha.py:82: M02 references are wired in
+SKIPPED [1] tests\unit\test_runtime_backend.py:94: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+1677 passed, 675 skipped in 182.89s (0:03:02)

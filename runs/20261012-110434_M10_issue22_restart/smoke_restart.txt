@@ -1,0 +1,16 @@
+server: -m vcloak.cli serve --dev --store pg --schema smoke_<random> --port 8012 --window-s 2 --epoch-ms 100 --slots 64
+server A killed in window +0 after 30 stored and 5 queued messages
+store after the kill: pending windows 1, rows 30, transactions that wrote the window 3
+messages answered 202 and lost with the queue: 5 of 5
+store after the restart: pending windows 0, rows 30, transactions that wrote the window 1, new file True
+PASS every ack=stored message was answered 201
+PASS the messages without ack were answered 202
+PASS the window is on the pending list
+PASS every message answered 201 is in the store
+PASS the window is in its arrival-time layout (one transaction per epoch)
+PASS the window is off the pending list
+PASS the window was rewritten by one transaction into a new file
+PASS the rewrite kept every row
+PASS a client reads and decrypts every stored message after the restart
+PASS nothing is rewritten a second time
+SMOKE PASS restart store=pg

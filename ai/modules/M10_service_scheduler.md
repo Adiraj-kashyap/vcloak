@@ -61,3 +61,12 @@ the engine permutes, and the repo persists. Windows are re-shuffled on close. It
     `tests/unit/test_service_sqlite.py`, `tests/unit/test_scheduler.py`, `tests/unit/test_logsafe.py`,
     `scripts/smoke_service.py`. Extra options of `vcloak serve`: `--store`, `--dsn`, `--key-file`, `--host`, `--port`
     and the public parameters.
+- 2026-10-12 (session 19, fix ISSUE-22): restart and durability (ADR-016).
+  - S2: the windows still to be re-shuffled are listed in the store (`pending_windows`, `Repo.mark_pending`,
+    `Repo.pending_windows`); a restarted service re-shuffles the listed windows that have closed. A2 now holds
+    across restarts.
+  - S1: `POST /v1/messages` takes an optional `ack` (`queued`, the default, answers 202; `stored` answers 201 after
+    the epoch is committed; 503 `not_stored`, 504 `ack_timeout`). The 202 body is `{"accepted": true, "stored": false}`.
+  - `vcloak serve` refuses a non-loopback `--host` without `--allow-remote`; new option `--schema`.
+  - Extra file: `scripts/smoke_restart.py` (kills a live server in the middle of a window, PostgreSQL).
+

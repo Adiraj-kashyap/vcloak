@@ -1,0 +1,7 @@
+server: -m vcloak.cli serve --mode vcloak --clock wall --dev --store sqlite --port 8011
+healthz: {'status': 'ok', 'mode': 'vcloak', 'ready': True}
+sent: 12 messages, accepted
+read: 12 messages, decrypted, in order: True
+wrong payload size: 422 invalid_request
+counters present: ['epochs', 'missed', 'overflow', 'queued']
+SMOKE PASS mode=vcloak store=sqlite

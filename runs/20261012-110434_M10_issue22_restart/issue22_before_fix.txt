@@ -1,0 +1,355 @@
+F.FF.F                                                                   [100%]
+================================== FAILURES ===================================
+_ TestVcloakSqlite.test_a_window_left_open_at_shutdown_is_re_shuffled_once_after_the_restart[0-False] _
+
+self = <test_service_sqlite.TestVcloakSqlite object at 0x0000020DE97D1F30>
+harness = Harness(backend=<vcloak.service.app.VcloakBackend object at 0x0000020DE9C29A90>, clock=<vcloak.service.scheduler.SimClock object at 0x0000020DE9C29940>, store=<vcloak.storage.repo.SqliteRepo object at 0x0000020DD15BA7B0>)
+down_windows = 0, more = False
+
+    @pytest.mark.parametrize(("down_windows", "more"), [(0, False), (0, True), (3, False)])
+    def test_a_window_left_open_at_shutdown_is_re_shuffled_once_after_the_restart(
+            self, harness: Harness, down_windows: int, more: bool) -> None:
+        """The service stops in the middle of window 1 and comes back in the same window (0), with or
+        without more messages for it, or three windows later (3). Window 1 must end up re-shuffled,
+        exactly once, whichever process closes it."""
+        calls = spy_rewrites(harness.store)
+        convs = [token(f"restart-{i}") for i in range(3)]
+        sent: dict[str, list[bytes]] = {c: [] for c in convs}
+    
+        async def send(client: httpx.AsyncClient, epochs: int) -> None:
+            for _ in range(epochs):
+                for _ in range(12):
+                    i = sum(map(len, sent.values()))
+                    assert (await post(client, convs[i % 3], payload(i))).status_code == 202
+                    sent[convs[i % 3]].append(payload(i))
+                await harness.step()
+    
+        async def first_run(client: httpx.AsyncClient) -> None:
+            await send(client, EPOCHS_PER_WINDOW + 2)  # window 0 and two epochs of window 1
+            assert calls == [0]
+    
+        async def second_run(client: httpx.AsyncClient) -> None:
+            assert calls == [0]
+            if more:
+                await send(client, 2)  # the same window goes on: still open, still not rewritten
+                assert calls == [0]
+            if not down_windows:
+                await harness.step(EPOCHS_PER_WINDOW)
+            else:
+                await harness.step()  # the first epoch after the restart closes what was left open
+            assert calls == [0, 1]
+            await harness.step(2 * EPOCHS_PER_WINDOW)
+            assert calls == [0, 1]
+            for conv, expected in sent.items():
+                assert [p for w in range(2) for p in await read(client, conv, w)] == expected
+    
+        harness.serve(first_run)
+        def epochs_of_window_1() -> list[int]:
+            """The epoch each stored row of window 1 arrived in (12 messages per epoch), in physical order."""
+            return [index_of(r.payload) // 12 for r in harness.store.window_rows(1)]
+    
+        as_written = epochs_of_window_1()  # one epoch after the other: the layout a restart must not keep
+        assert as_written == sorted(as_written) and len(as_written) == 24
+        harness.clock.advance(down_windows * EPOCHS_PER_WINDOW * EPOCH_MS)
+>       harness.serve(second_run)
+
+tests\service_contract.py:326: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\service_contract.py:79: in serve
+    return asyncio.run(main())
+           ^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\asyncio\runners.py:204: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Python314\Lib\asyncio\runners.py:127: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\asyncio\base_events.py:719: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\service_contract.py:78: in main
+    return await scenario(client)
+           ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <httpx.AsyncClient object at 0x0000020DE9E68410>
+
+    async def second_run(client: httpx.AsyncClient) -> None:
+        assert calls == [0]
+        if more:
+            await send(client, 2)  # the same window goes on: still open, still not rewritten
+            assert calls == [0]
+        if not down_windows:
+            await harness.step(EPOCHS_PER_WINDOW)
+        else:
+            await harness.step()  # the first epoch after the restart closes what was left open
+>       assert calls == [0, 1]
+               ^^^^^^^^^^^^^^^
+E       AssertionError
+
+tests\service_contract.py:312: AssertionError
+_ TestVcloakSqlite.test_a_window_left_open_at_shutdown_is_re_shuffled_once_after_the_restart[3-False] _
+
+self = <test_service_sqlite.TestVcloakSqlite object at 0x0000020DE97E17F0>
+harness = Harness(backend=<vcloak.service.app.VcloakBackend object at 0x0000020DE9F887D0>, clock=<vcloak.service.scheduler.SimClock object at 0x0000020DE9F88910>, store=<vcloak.storage.repo.SqliteRepo object at 0x0000020DE9E6AE90>)
+down_windows = 3, more = False
+
+    @pytest.mark.parametrize(("down_windows", "more"), [(0, False), (0, True), (3, False)])
+    def test_a_window_left_open_at_shutdown_is_re_shuffled_once_after_the_restart(
+            self, harness: Harness, down_windows: int, more: bool) -> None:
+        """The service stops in the middle of window 1 and comes back in the same window (0), with or
+        without more messages for it, or three windows later (3). Window 1 must end up re-shuffled,
+        exactly once, whichever process closes it."""
+        calls = spy_rewrites(harness.store)
+        convs = [token(f"restart-{i}") for i in range(3)]
+        sent: dict[str, list[bytes]] = {c: [] for c in convs}
+    
+        async def send(client: httpx.AsyncClient, epochs: int) -> None:
+            for _ in range(epochs):
+                for _ in range(12):
+                    i = sum(map(len, sent.values()))
+                    assert (await post(client, convs[i % 3], payload(i))).status_code == 202
+                    sent[convs[i % 3]].append(payload(i))
+                await harness.step()
+    
+        async def first_run(client: httpx.AsyncClient) -> None:
+            await send(client, EPOCHS_PER_WINDOW + 2)  # window 0 and two epochs of window 1
+            assert calls == [0]
+    
+        async def second_run(client: httpx.AsyncClient) -> None:
+            assert calls == [0]
+            if more:
+                await send(client, 2)  # the same window goes on: still open, still not rewritten
+                assert calls == [0]
+            if not down_windows:
+                await harness.step(EPOCHS_PER_WINDOW)
+            else:
+                await harness.step()  # the first epoch after the restart closes what was left open
+            assert calls == [0, 1]
+            await harness.step(2 * EPOCHS_PER_WINDOW)
+            assert calls == [0, 1]
+            for conv, expected in sent.items():
+                assert [p for w in range(2) for p in await read(client, conv, w)] == expected
+    
+        harness.serve(first_run)
+        def epochs_of_window_1() -> list[int]:
+            """The epoch each stored row of window 1 arrived in (12 messages per epoch), in physical order."""
+            return [index_of(r.payload) // 12 for r in harness.store.window_rows(1)]
+    
+        as_written = epochs_of_window_1()  # one epoch after the other: the layout a restart must not keep
+        assert as_written == sorted(as_written) and len(as_written) == 24
+        harness.clock.advance(down_windows * EPOCHS_PER_WINDOW * EPOCH_MS)
+>       harness.serve(second_run)
+
+tests\service_contract.py:326: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\service_contract.py:79: in serve
+    return asyncio.run(main())
+           ^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\asyncio\runners.py:204: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Python314\Lib\asyncio\runners.py:127: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\asyncio\base_events.py:719: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\service_contract.py:78: in main
+    return await scenario(client)
+           ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <httpx.AsyncClient object at 0x0000020DE9F41130>
+
+    async def second_run(client: httpx.AsyncClient) -> None:
+        assert calls == [0]
+        if more:
+            await send(client, 2)  # the same window goes on: still open, still not rewritten
+            assert calls == [0]
+        if not down_windows:
+            await harness.step(EPOCHS_PER_WINDOW)
+        else:
+            await harness.step()  # the first epoch after the restart closes what was left open
+>       assert calls == [0, 1]
+               ^^^^^^^^^^^^^^^
+E       AssertionError
+
+tests\service_contract.py:312: AssertionError
+_ TestVcloakPg.test_a_window_left_open_at_shutdown_is_re_shuffled_once_after_the_restart[0-False] _
+
+self = <test_service.TestVcloakPg object at 0x0000020DE9BB6780>
+harness = Harness(backend=<vcloak.service.app.VcloakBackend object at 0x0000020DE9E703E0>, clock=<vcloak.service.scheduler.SimClock object at 0x0000020DE9E72FD0>, store=<vcloak.storage.repo.PgRepo object at 0x0000020DE9D7BE00>)
+down_windows = 0, more = False
+
+    @pytest.mark.parametrize(("down_windows", "more"), [(0, False), (0, True), (3, False)])
+    def test_a_window_left_open_at_shutdown_is_re_shuffled_once_after_the_restart(
+            self, harness: Harness, down_windows: int, more: bool) -> None:
+        """The service stops in the middle of window 1 and comes back in the same window (0), with or
+        without more messages for it, or three windows later (3). Window 1 must end up re-shuffled,
+        exactly once, whichever process closes it."""
+        calls = spy_rewrites(harness.store)
+        convs = [token(f"restart-{i}") for i in range(3)]
+        sent: dict[str, list[bytes]] = {c: [] for c in convs}
+    
+        async def send(client: httpx.AsyncClient, epochs: int) -> None:
+            for _ in range(epochs):
+                for _ in range(12):
+                    i = sum(map(len, sent.values()))
+                    assert (await post(client, convs[i % 3], payload(i))).status_code == 202
+                    sent[convs[i % 3]].append(payload(i))
+                await harness.step()
+    
+        async def first_run(client: httpx.AsyncClient) -> None:
+            await send(client, EPOCHS_PER_WINDOW + 2)  # window 0 and two epochs of window 1
+            assert calls == [0]
+    
+        async def second_run(client: httpx.AsyncClient) -> None:
+            assert calls == [0]
+            if more:
+                await send(client, 2)  # the same window goes on: still open, still not rewritten
+                assert calls == [0]
+            if not down_windows:
+                await harness.step(EPOCHS_PER_WINDOW)
+            else:
+                await harness.step()  # the first epoch after the restart closes what was left open
+            assert calls == [0, 1]
+            await harness.step(2 * EPOCHS_PER_WINDOW)
+            assert calls == [0, 1]
+            for conv, expected in sent.items():
+                assert [p for w in range(2) for p in await read(client, conv, w)] == expected
+    
+        harness.serve(first_run)
+        def epochs_of_window_1() -> list[int]:
+            """The epoch each stored row of window 1 arrived in (12 messages per epoch), in physical order."""
+            return [index_of(r.payload) // 12 for r in harness.store.window_rows(1)]
+    
+        as_written = epochs_of_window_1()  # one epoch after the other: the layout a restart must not keep
+        assert as_written == sorted(as_written) and len(as_written) == 24
+        harness.clock.advance(down_windows * EPOCHS_PER_WINDOW * EPOCH_MS)
+>       harness.serve(second_run)
+
+tests\service_contract.py:326: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\service_contract.py:79: in serve
+    return asyncio.run(main())
+           ^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\asyncio\runners.py:204: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Python314\Lib\asyncio\runners.py:127: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\asyncio\base_events.py:719: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\service_contract.py:78: in main
+    return await scenario(client)
+           ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <httpx.AsyncClient object at 0x0000020DEA29A140>
+
+    async def second_run(client: httpx.AsyncClient) -> None:
+        assert calls == [0]
+        if more:
+            await send(client, 2)  # the same window goes on: still open, still not rewritten
+            assert calls == [0]
+        if not down_windows:
+            await harness.step(EPOCHS_PER_WINDOW)
+        else:
+            await harness.step()  # the first epoch after the restart closes what was left open
+>       assert calls == [0, 1]
+               ^^^^^^^^^^^^^^^
+E       AssertionError
+
+tests\service_contract.py:312: AssertionError
+_ TestVcloakPg.test_a_window_left_open_at_shutdown_is_re_shuffled_once_after_the_restart[3-False] _
+
+self = <test_service.TestVcloakPg object at 0x0000020DE9B26F10>
+harness = Harness(backend=<vcloak.service.app.VcloakBackend object at 0x0000020DE9F42330>, clock=<vcloak.service.scheduler.SimClock object at 0x0000020DE9F420F0>, store=<vcloak.storage.repo.PgRepo object at 0x0000020DE9F8BED0>)
+down_windows = 3, more = False
+
+    @pytest.mark.parametrize(("down_windows", "more"), [(0, False), (0, True), (3, False)])
+    def test_a_window_left_open_at_shutdown_is_re_shuffled_once_after_the_restart(
+            self, harness: Harness, down_windows: int, more: bool) -> None:
+        """The service stops in the middle of window 1 and comes back in the same window (0), with or
+        without more messages for it, or three windows later (3). Window 1 must end up re-shuffled,
+        exactly once, whichever process closes it."""
+        calls = spy_rewrites(harness.store)
+        convs = [token(f"restart-{i}") for i in range(3)]
+        sent: dict[str, list[bytes]] = {c: [] for c in convs}
+    
+        async def send(client: httpx.AsyncClient, epochs: int) -> None:
+            for _ in range(epochs):
+                for _ in range(12):
+                    i = sum(map(len, sent.values()))
+                    assert (await post(client, convs[i % 3], payload(i))).status_code == 202
+                    sent[convs[i % 3]].append(payload(i))
+                await harness.step()
+    
+        async def first_run(client: httpx.AsyncClient) -> None:
+            await send(client, EPOCHS_PER_WINDOW + 2)  # window 0 and two epochs of window 1
+            assert calls == [0]
+    
+        async def second_run(client: httpx.AsyncClient) -> None:
+            assert calls == [0]
+            if more:
+                await send(client, 2)  # the same window goes on: still open, still not rewritten
+                assert calls == [0]
+            if not down_windows:
+                await harness.step(EPOCHS_PER_WINDOW)
+            else:
+                await harness.step()  # the first epoch after the restart closes what was left open
+            assert calls == [0, 1]
+            await harness.step(2 * EPOCHS_PER_WINDOW)
+            assert calls == [0, 1]
+            for conv, expected in sent.items():
+                assert [p for w in range(2) for p in await read(client, conv, w)] == expected
+    
+        harness.serve(first_run)
+        def epochs_of_window_1() -> list[int]:
+            """The epoch each stored row of window 1 arrived in (12 messages per epoch), in physical order."""
+            return [index_of(r.payload) // 12 for r in harness.store.window_rows(1)]
+    
+        as_written = epochs_of_window_1()  # one epoch after the other: the layout a restart must not keep
+        assert as_written == sorted(as_written) and len(as_written) == 24
+        harness.clock.advance(down_windows * EPOCHS_PER_WINDOW * EPOCH_MS)
+>       harness.serve(second_run)
+
+tests\service_contract.py:326: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\service_contract.py:79: in serve
+    return asyncio.run(main())
+           ^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\asyncio\runners.py:204: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Python314\Lib\asyncio\runners.py:127: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\asyncio\base_events.py:719: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\service_contract.py:78: in main
+    return await scenario(client)
+           ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <httpx.AsyncClient object at 0x0000020DE9F6A030>
+
+    async def second_run(client: httpx.AsyncClient) -> None:
+        assert calls == [0]
+        if more:
+            await send(client, 2)  # the same window goes on: still open, still not rewritten
+            assert calls == [0]
+        if not down_windows:
+            await harness.step(EPOCHS_PER_WINDOW)
+        else:
+            await harness.step()  # the first epoch after the restart closes what was left open
+>       assert calls == [0, 1]
+               ^^^^^^^^^^^^^^^
+E       AssertionError
+
+tests\service_contract.py:312: AssertionError
+4 failed, 2 passed, 133 deselected in 2.48s

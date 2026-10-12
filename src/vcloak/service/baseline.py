@@ -177,7 +177,8 @@ class BaselineBackend:
     def current_window(self) -> int:
         return self._clock.now_ms() // (1000 * self.window_s)
 
-    async def submit(self, conv_token: str, payload: bytes) -> None:
+    async def submit(self, conv_token: str, payload: bytes, *, stored: bool = False) -> None:
+        # stored before it returns in either case: there is no epoch to wait for
         conv_id, win = conv_id_of(conv_token), self.current_window()
         await self._blocking(lambda: self.store.insert(conv_id, win, payload))
 

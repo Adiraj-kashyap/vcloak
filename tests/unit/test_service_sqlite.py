@@ -167,3 +167,34 @@ def test_cli_builds_the_baseline_backend() -> None:
 def test_cli_without_dev_uses_the_sealed_key_file(tmp_path: Path) -> None:
     b = cli.build_backend(_args("--key-file", str(tmp_path / "missing.sealed")))
     assert b._key_provider is not service_app.dev_master
+
+
+# ── ISSUE-22: no authentication yet, so loopback only ────────────────────────
+
+@pytest.mark.parametrize("host", ["127.0.0.1", "localhost", "::1", "127.0.0.9"])
+def test_loopback_hosts(host: str) -> None:
+    assert cli.is_loopback(host)
+
+
+@pytest.mark.parametrize("host", ["0.0.0.0", "::", "192.168.1.20", "example.org", ""])
+def test_serve_refuses_a_host_that_is_not_loopback(host: str, monkeypatch: pytest.MonkeyPatch,
+                                                   capsys: pytest.CaptureFixture[str]) -> None:
+    import uvicorn
+
+    def never(*a: object, **kw: object) -> None:
+        raise AssertionError("the server must not start")
+
+    monkeypatch.setattr(uvicorn, "run", never)
+    assert not cli.is_loopback(host)
+    assert cli.main(["serve", "--dev", "--store", "sqlite", "--host", host]) == 2
+    assert "--allow-remote" in capsys.readouterr().err
+
+
+def test_serve_listens_remotely_only_when_told_to(monkeypatch: pytest.MonkeyPatch) -> None:
+    import uvicorn
+
+    started: list[str] = []
+    monkeypatch.setattr(uvicorn, "run", lambda app, host, **kw: started.append(host))
+    assert cli.main(["serve", "--dev", "--store", "sqlite", "--host", "0.0.0.0", "--allow-remote"]) == 0
+    assert cli.main(["serve", "--dev", "--store", "sqlite"]) == 0
+    assert started == ["0.0.0.0", "127.0.0.1"]

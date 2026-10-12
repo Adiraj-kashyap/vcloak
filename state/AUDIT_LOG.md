@@ -536,3 +536,27 @@ Notes:
 - Defect found and fixed outside the deliverables: PgRepo.rewrite_window (M09) took the partition lock before the parent lock and deadlocked against a reader on a second connection (runs/20261012-104809_M10_service/issue21_before_fix.txt: 25 DeadlockDetected in the reader; runs/20261012-104809_M10_service/issue21_after_fix.txt: passes; runs/20261012-104809_M10_service/pytest_m09_storage_after_lock_fix.txt: 118 passed).
 - Not verified: the service on a CUDA device (engine and key store in a worker thread under CuPy); whether an epoch finishes inside EPOCH_MS on any store (nothing was timed; ISSUE-12 still applies at 65536 slots); restart behaviour (ISSUE-22); the passphrase prompt on a real terminal; --clock sim and --store pg as a live process.
 - The manifest is dirty: true: the tests ran on the working tree that this session commits. The smoke outputs predate the lock fix, which does not touch the SQLite path they use.
+
+## Audit M10 (fix ISSUE-22) — 2026-10-12 — session 19 — result: PASS
+| Item | Result | Evidence |
+|---|---|---|
+| A1 Epoch boundaries are wall-clock aligned and never extended | PASS | runs/20261012-110434_M10_issue22_restart/pytest_checks_verbose.txt: the a1 test still passes; the cut rule of the scheduler is unchanged |
+| A2 Window rewrite happens exactly once per closed window | PASS | runs/20261012-110434_M10_issue22_restart/pytest_checks_verbose.txt: test_a2_each_closed_window_is_rewritten_exactly_once, and now across a restart: test_a_window_left_open_at_shutdown_is_re_shuffled_once_after_the_restart (3 cases, SQLite and PostgreSQL), test_a_new_scheduler_closes_the_windows_an_earlier_one_left_pending, test_a_failed_re_shuffle_keeps_the_mark_and_is_tried_again. Before the fix: runs/20261012-110434_M10_issue22_restart/issue22_before_fix.txt (4 failed, 2 passed) |
+| A3 Baseline and V-cloak share the API contract | PASS | runs/20261012-110434_M10_issue22_restart/pytest.txt (343 passed): the two `ack` tests are in class ServiceContract and run in both modes on both stores |
+| A4 No forbidden fields in logs | PASS | runs/20261012-110434_M10_issue22_restart/pytest_checks_verbose.txt (a4 test, logsafe tests); the new log fields are `windows` and `error`, both already on the allow-list; runs/20261012-110434_M10_issue22_restart/serve_a.log, runs/20261012-110434_M10_issue22_restart/serve_b.log |
+| G1 | PASS | runs/20261012-110434_M10_issue22_restart/pytest.txt (343 passed, 0 skipped, PostgreSQL 16 answered); runs/20261012-110434_M10_issue22_restart/pytest_all.txt (1677 passed, 675 skipped: 674 need a CUDA device, 1 old oracle skip) |
+| G2 | PASS | runs/20261012-110434_M10_issue22_restart/check_metrics.txt (263 rows, 0 problems). No metric added: nothing was measured |
+| G2b | N/A | no performance or side-channel metric; the backend was numpy |
+| G3 | PASS | runs/20261012-110434_M10_issue22_restart/check_oblivious.txt (11 files, 0 findings); no kernel changed. The pending mark depends on the window id only, which is public |
+| G4 | PASS | runs/20261012-110434_M10_issue22_restart/check_secrets.txt (0 key-like runs); smoke_restart.py draws its content key at run time and prints none |
+| G5 | N/A | no GPU twin |
+| G6 | PASS | the M10 deliverables are unchanged in place; docs/API.md updated (restart, ack, errors); runs/20261012-110434_M10_issue22_restart/cli_help.txt |
+| G7 | PASS | checked after the closing commit |
+| G8 | PASS | STATE: M10 stays DONE (sessions 2), next_unit M11, gpu_job.pending null |
+| G9 | PASS | SESSION_LOG session 19, this entry, ISSUE-22 closed, ISSUE-23 opened, ADR-016 |
+| G10 | PASS | runs/20261012-110434_M10_issue22_restart/manifest.json; the module tests were run twice in this session with the same result (343 passed), the restart smoke twice (PASS both times) |
+Notes:
+- Live process: runs/20261012-110434_M10_issue22_restart/smoke_restart.txt. `vcloak serve --dev --store pg` killed (no shutdown) in the middle of a window after 30 messages answered 201 and 5 answered 202; the store then listed 1 pending window written by 3 transactions; after the restart the list was empty and the window was one transaction in a new file with the same 30 rows, read back and decrypted. The 5 messages answered 202 were lost with the queue, as documented.
+- Not verified: the same on a CUDA device; a kill during the swap transaction itself on a live server (covered only by the transaction and by the failed-rewrite tests); `ack: stored` under load (nothing was timed); a store written before this session has no marks.
+- ruff: runs/20261012-110434_M10_issue22_restart/ruff.txt clean for src, tests, scripts, bench. The manifest is dirty: true (the tests ran on the tree this session commits).
+

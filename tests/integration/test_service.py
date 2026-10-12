@@ -59,7 +59,8 @@ class TestVcloakPg(VcloakService):
         schema = repo.execute("SELECT current_schema()")[0][0]
         tables = sorted(t for (t,) in repo.execute(
             "SELECT table_name FROM information_schema.tables WHERE table_schema = %s", (schema,)))
-        assert tables == ["messages", "messages_w0", "messages_w1", "messages_w2"]
+        assert tables == ["messages", "messages_w0", "messages_w1", "messages_w2", "pending_windows"]
+        assert repo.pending_windows() == []  # every window that holds rows has been re-shuffled
         columns = {c for (c,) in repo.execute(
             "SELECT column_name FROM information_schema.columns WHERE table_schema = %s", (schema,))}
         assert columns == {"row_id", "bucket", "win", "seq_enc", "payload"}
