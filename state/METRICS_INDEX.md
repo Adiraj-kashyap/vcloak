@@ -1,5 +1,27 @@
 # METRICS INDEX — every reported number must appear here (format: ai/LOGGING_AND_AUDIT.md §5)
 
+## Annotations (notes on rows of the table below; a note never changes or replaces a value)
+
+ANN-1 (2026-10-13, session 33; decision of the human, ISSUE-25 and ISSUE-35). It covers 120 rows: every
+`T-DUDECT-MAXT-WRITE-EPOCH-NULL-ST*`, `T-DUDECT-MAXT-WRITE-EPOCH-AGE-ST*` and `T-DUDECT-MAXT-WRITE-EPOCH-FRESH-ST*`
+row of the run dirs runs/20261012-135427_M08_dudect_i25_s8, runs/20261012-145303_M08_dudect_i25_s10,
+runs/20261012-155223_M08_dudect_i25_s11 and runs/20261012-165055_M08_dudect_i25_s12 (job 20261012-191630_M08_issue25, session 31).
+- Every value stays as measured: 56 of the 120 series FAIL and 64 PASS. None is replaced, removed or
+  labelled UNSTABLE; removing failing values beside passing ones from the same conditions would misstate the record.
+- Condition of all 120: measured at a steady SM clock of 585 MHz (status LOW). The `T-DUDECT-MAXT-CONTROL-NULL` row of
+  each of these runs was measured at another clock (1050 to 1110 MHz), so the control is not at the clock of what
+  it controls. The clock does not explain the split: the failing and the passing series share it
+  (runs/20261013-005353_M08_i25k_prep/clock_facts.txt).
+- What limits the rows ending in `-TAGS` and `-COMPACT` (24 rows; the same holds for the 12 ending in `-SORT`): in
+  `write_epoch` these stages never receive the submissions, so their device inputs were byte-identical in both
+  classes of all three targets (pinned by `test_issue25_tags_and_compact_get_the_same_device_input_in_both_classes`).
+  These series could not have shown a dependence on the contents: a FAIL among them is not a dependence of the
+  kernel on its data, and a PASS among them is not evidence of independence. The tags and compaction kernels were
+  therefore never tested against their own secrets (the key, the permutation) by this job. That test is job
+  20261013-005946_M08_issue25k (ISSUE-35), not yet ingested.
+- The other series of these rows (device, CALL, CORE, H2D, D2H, SEAL, BUCKET) do handle the submissions; for them
+  only the clock condition above applies, and the readings are those recorded in ISSUE-25.
+
 | Metric ID | Value | Unit | Stat | Module | Run dir | Command | Date | Quick | Backend | Runner |
 |---|---|---|---|---|---|---|---|---|---|---|
 | ENV-PEAK-BW | 320.064 | GB/s | theoretical | M00 | runs/20261011-110031_M00_gpu_probe | python bench/probe_gpu.py --seed 7 --out runs | 20261011 | no | cupy | kaggle |

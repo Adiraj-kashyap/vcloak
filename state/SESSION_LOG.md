@@ -797,3 +797,30 @@
 - Commit: c510682 (prep, the commit of the job), 57af640 (records)
 - Next: ingest 20261013-005946_M08_issue25k, close ISSUE-25 by the rules, then M14 S1 ; human action: ISSUE-35 (run the job on Kaggle,
   put the results zip into gpujobs/inbox/, and say what to do with the session-31 rows). Do not change the repo before that
+
+## Session 33 — 2026-10-13 01:11 — fix ISSUE-25 (M08 GPU obliviousness audit), the decision on the session-31 rows — owner:Aditya
+- Steps: none new (M08 stays DONE). The ingest did NOT run: gpujobs/inbox/ was empty (status after: BLOCKED_HUMAN,
+  job 20261013-005946_M08_issue25k still pending)
+- Did: applied the human's decision. ANN-1 at the top of state/METRICS_INDEX.md annotates the 120 write_epoch
+  series of job 20261012-191630_M08_issue25: every value kept, the 56 FAILs not replaced; the condition (585 MHz, the control
+  at another clock) and, for tags and compact (and sort), the real limit: device inputs byte-identical in both
+  classes, so these series could not show a dependence on the contents and the kernels were never tested against
+  their own secrets, which is what the pending job does.
+- Recorded for the ingest: reading rule l (ISSUE-25: prefer a steady unlocked clock to a locked one with more
+  off-clock flags) with what the packed job can and cannot give for it; the ISSUE-18 question (ISSUE-18 update).
+- Evidence: runs/20261013-010926_M08_i25_annotate (annotation_check.txt: 120 rows covered, 12 each of TAGS, COMPACT, SORT, 0 table lines
+  changed, no bundled path changed since c510682; check_metrics.txt 475 rows, 0 problems; pytest_index.txt 17 passed;
+  check_secrets.txt); evidence/terminal/M08_issue25_annotation_check.txt
+- Metrics added: none (nothing measured)
+- Decisions: none new (the human's decision is recorded in ISSUE-25; no ADR)
+- Issues: ISSUE-25 updated, stays OPEN; ISSUE-35 updated, stays OPEN (the zip is still wanted); ISSUE-18 updated
+- Deviations from spec: the index has no note column, so the annotation is a section above the table and not a
+  mark on each row. The note is not yet in the generated section 4.O of docs/REPORT_CH4_NOTES.md: its generator is
+  under src/ and bench/ data, frozen until the ingest so that the packed job stays valid.
+- Found on the way: both seeds of the packed job ask for the clock lock. If Kaggle accepts it, the job holds no
+  unlocked kernel-window run, so rule l cannot be applied inside this job (ISSUE-25).
+- Not verified: anything on a CUDA device. Whether the human has already started the job on Kaggle. The full test
+  suite was not run (no code changed); only the tests of the index and of gpujob.
+- Commit: see git log (records)
+- Next: ingest 20261013-005946_M08_issue25k, close ISSUE-25 by rules f to l, add ANN-1 to report_oblivious, then M14 S1 ;
+  human action: ISSUE-35 (run the job on Kaggle, put the results zip into gpujobs/inbox/). Do not change the repo before that

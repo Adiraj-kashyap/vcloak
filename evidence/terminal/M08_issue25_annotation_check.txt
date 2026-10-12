@@ -1,0 +1,15 @@
+# rows covered by ANN-1 (MAXT rows of the three *_st targets in the four session-31 run dirs)
+120
+# of these: -TAGS / -COMPACT / -SORT
+12
+12
+12
+# CONTROL-NULL MAXT rows in the same run dirs
+4
+# table lines removed or changed against HEAD (must be 0), table lines added (must be 0)
+0
+0
+# lines removed at all (must be 0)
+22	0	state/METRICS_INDEX.md
+# bundled paths changed against the packed commit c510682 (empty = the pending job is not stale)
+# end

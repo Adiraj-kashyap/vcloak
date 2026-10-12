@@ -1,0 +1,40 @@
+{
+  "run_id": "20261013-010926_M08_i25_annotate",
+  "module": "M08",
+  "step": "S2",
+  "owner": "Aditya",
+  "git_sha": "43dd4db883793513743fe33c173492d6ed428bb1",
+  "dirty": true,
+  "command": "annotation_check (grep counts and git diff of state/METRICS_INDEX.md); check_metrics.py; check_secrets.py; pytest tests/unit/test_check_metrics.py tests/unit/test_gpujob.py",
+  "seed": 8,
+  "quick": false,
+  "params": {
+    "reads": [
+      "state/METRICS_INDEX.md"
+    ]
+  },
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261013-010926",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U"
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)"
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)"
+  },
+  "outputs": [
+    "annotation_check.txt",
+    "check_metrics.txt",
+    "check_secrets.txt",
+    "pytest_index.txt"
+  ],
+  "status": "OK",
+  "notes": "ISSUE-25: annotation ANN-1 of the 120 session-31 rows (values kept); records only, measures nothing"
+}

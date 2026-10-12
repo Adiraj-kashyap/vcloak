@@ -487,6 +487,15 @@ the machine that owns the GPU, and a Kaggle container cannot change it. They cou
 These steps are the ones NVIDIA documents (https://developer.nvidia.com/ERR_NVGPUCTRPERM) and have not been tried
 in this project. If no such machine exists, the rows stay NOT_MEASURED and the static SASS reading (16 of 16
 conditional branches public, no BSSY/BSYNC) is the only divergence evidence; say so in the report.
+Update 2026-10-13 session 33 (the human asked whether this is cheap, so that the ISSUE-25 fallback has a second
+independent leg beside the SASS reading and E3; nothing tried, nothing measured):
+- Not cheap from this repository alone. Kaggle refused the counters and the container cannot change that setting.
+- The one cheap attempt is Colab: a job of a few minutes that runs `ncu --query-metrics` and one profiled launch.
+  Whether Colab permits the counters is unknown (never tried here). It needs a new job spec under bench/, so it
+  can only be packed AFTER job 20261013-005946_M08_issue25k is ingested (a change there makes that result stale).
+- Otherwise it needs a machine with an NVIDIA GPU and administrator rights (the steps above).
+- Proposed order: ingest the ISSUE-25 job first; if its result is unusable (rule f or h), try the Colab ncu job
+  before M14; if it is usable, this stays optional. The human decides at that handoff.
 
 ### ISSUE-19 [OPEN] M08 SASS: sass_check.py labels every conditional branch DATA; no listing of the nvrtc code that runs
 BLOCKS: none   SEVERITY: low   OPENED: 2026-10-12 session 16
@@ -765,6 +774,29 @@ Update 2026-10-13 session 32 (prep of the LAST job; nothing measured, the issue 
   isolate the kernel), the obliviousness claim rests on the SASS reading, the Nsight branch efficiency and the E3
   trace invariance, and M14 is unblocked. Note for that session: Nsight is NOT_MEASURED today (ISSUE-18), so that
   sentence may only name what was measured. Rule i is a result, not "unusable": it is reported, not timeboxed away.
+Update 2026-10-13 session 33 (the human's decision on the session-31 rows; nothing measured, the issue stays open):
+- Decided: all 120 write_epoch series are annotated, every value is kept, the 56 are not replaced. Done as ANN-1 at
+  the top of state/METRICS_INDEX.md (a note beside the table: the index has no note column, and the table lines are
+  unchanged: runs/20261013-010926_M08_i25_annotate/annotation_check.txt, 120 rows covered, 0 table lines changed).
+- The annotation gives the reason the human asked for, not the clock: for tags and compact (and sort) the device
+  inputs were byte-identical in both classes, so those 36 series could not have shown a dependence on the contents,
+  and the kernels were never tested against their own secrets; job 20261013-005946_M08_issue25k is that test. The clock
+  (585 MHz, the control at another clock) is recorded as the condition of all 120, not as the cause.
+- Still to do at the ingest, because it needs bench/ and the job must not go stale: the same note in the
+  generator of section 4.O (`vcloak.bench.report_oblivious`), so the report table carries it.
+- Reading rule added by the human before the results exist:
+  l. If the lock is accepted (1590 MHz) but the locked runs carry MORE off-clock flagged measurements than a steady
+     unlocked 585 MHz run, the unlocked steady clock is preferred: a stable slow clock is better for a t-test than
+     a fast one that wobbles.
+  What the job can and cannot give for rule l: both seeds ask for the lock, so if Kaggle accepts it the job holds no
+  unlocked kernel-window series to prefer, and the session-31 runs have no per-measurement clock (their telemetry
+  rows are the only comparison, and not like for like). If Kaggle refuses the lock, both seeds ARE the unlocked
+  steady case and rule l is met by construction. In the accepted-and-wobbling case the ingest reports the flag
+  counts, applies rule f (5%) and names rule l as not satisfiable without a run that the timebox excludes: that
+  choice goes back to the human, it is not made by the agent.
+- Fallback (the human, session 33): with ISSUE-18 NOT_MEASURED an unusable result leaves two legs, the SASS reading
+  and E3. If ISSUE-18 is cheap, it is to be considered before M14 so the fallback has a second independent
+  measurement. See the note of the same date in ISSUE-18: it is not cheap from this repository alone.
 
 ### ISSUE-26 [OPEN] M11: accounts and sessions live in memory; a restart forgets every account and logs every client out
 BLOCKS: none   SEVERITY: medium   OPENED: 2026-10-12 session 22
@@ -983,5 +1015,9 @@ Note on the runtime: two measuring runs (seeds 8 and 10), each control_null and 
   blocker is fitted on the runner, so the earlier jobs give no figure for it. 2 to 3 hours is a plan, not a measurement.
 Also wanted from you, in the same reply (see ISSUE-25, update of session 32): whether the session-31 rows are to be
   re-labelled, and how. They are unchanged for now.
+Update 2026-10-13 session 33: the decision on the session-31 rows was given and applied (ANN-1 in
+  state/METRICS_INDEX.md, ISSUE-25 update of session 33). The results zip was NOT in gpujobs/inbox/ in that session,
+  so this issue stays OPEN for steps 1 to 8 above. The session changed only state/, runs/ and evidence/: the packed
+  job is still valid, do not re-pack it.
 Confirm by running: ls gpujobs/inbox/      (it must list results_20261013-005946_M08_issue25k.zip)
 Then type: continue

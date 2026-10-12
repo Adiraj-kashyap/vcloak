@@ -966,3 +966,32 @@ Notes:
 - The full suite ran before two late edits (a line split in a test, one template line in report_oblivious.py);
   the tests of the changed files were run again. The suite was not repeated in full.
 - capture-evidence: not run. web/, results/ and state/METRICS_INDEX.md are unchanged.
+
+## Audit M08 (fix ISSUE-25, annotation of the session-31 rows) — 2026-10-13 — session 33 — result: PASS for the annotation (records only; the ingest did not run, ISSUE-25 stays open, nothing measured)
+| Item | Result | Evidence |
+|---|---|---|
+| A1 planted leak detected | N/A | not measured here |
+| A2 verdicts at full N | N/A | no verdict changed; the 120 values are as ingested in session 31 |
+| A3 SASS | N/A | no kernel changed; ISSUE-19 as before |
+| A4 ncu | N/A | NOT_MEASURED as before (ISSUE-18, updated) |
+| A5 a FAIL blocks M14, never softened | PASS | ISSUE-17 and ISSUE-25 stay OPEN and high; runs/20261013-010926_M08_i25_annotate/annotation_check.txt: 0 table lines changed, the 56 FAIL values are in the index beside the 64 PASS values |
+| G1 | PASS | runs/20261013-010926_M08_i25_annotate/pytest_index.txt (17 passed: tests of check_metrics and gpujob); no code changed, the full suite was not run |
+| G2 | PASS | runs/20261013-010926_M08_i25_annotate/check_metrics.txt (475 rows, 0 problems); no metric added |
+| G3 | N/A | no kernel changed |
+| G4 | PASS | runs/20261013-010926_M08_i25_annotate/check_secrets.txt |
+| G5 | N/A | no kernel or twin added |
+| G6 | PASS | state/METRICS_INDEX.md (ANN-1), evidence/terminal/M08_issue25_annotation_check.txt exist |
+| G7 | PASS | checked after the closing commit |
+| G8 | PASS | STATE: status BLOCKED_HUMAN, gpu_job.pending unchanged, M08 sessions 8, next_unit M14 |
+| G9 | PASS | SESSION_LOG session 33, this entry, ISSUE-25, ISSUE-35 and ISSUE-18 updates |
+| G10 | PASS | manifest of runs/20261013-010926_M08_i25_annotate valid (local, measures nothing) |
+Notes:
+- The session was opened with "continue" while status was BLOCKED_HUMAN and the inbox was empty. The human gave
+  the pending decision in the same message, so that part of the human action was carried out; the ingest was not
+  started, and no file under src/, kernels/, tests/, bench/ or scripts/ was touched (the packed job stays valid).
+- The annotation states the limit of the tags, compact and sort series in both directions: a FAIL there is not a
+  dependence of the kernel on its data, and a PASS there is not evidence of independence.
+- Rule l was written into ISSUE-25 before any result exists. It cannot be applied inside the packed job if the
+  lock is accepted; that case goes back to the human and is not decided by the agent.
+- capture-evidence: terminal proof only (the check of the annotation). No value changed, so the dashboard data
+  and the figures are the same; no screenshot was taken.
