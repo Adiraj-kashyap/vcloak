@@ -763,6 +763,6 @@
   at 585 MHz; bucket_ms is below the 50 us rule (about 33 us)
 - Not verified: the cause of any stage FAIL (H7 host launch time inside a stage interval, H8 contents: both untested);
   a write_epoch series at another clock; a second GPU model; write_epoch itself per stage
-- Commit: HASH_PENDING
+- Commit: a9178f8
 - Next: fix ISSUE-25, prep of the kernel-window target for tags and compact (then a GPU job), M14 S1 after it ;
   human action: none now. The team decision on whole-call host timing (ISSUE-17 point 2) is needed before M14

@@ -863,7 +863,7 @@ BLOCKS: none   SEVERITY: low   OPENED: 2026-10-12 session 29
 Proposed: 1 with the first service run on a runner (M15 or later); 4 and 6 stay as stated limits in docs/DEMO.md;
 7 in M18.
 
-### ISSUE-34 [CLOSED HASH_PENDING] HUMAN ACTION REQUIRED — GPU JOB READY: ISSUE-25 per-stage dudect of the write_epoch diagnostics (job 20261012-191630_M08_issue25)
+### ISSUE-34 [CLOSED a9178f8] HUMAN ACTION REQUIRED — GPU JOB READY: ISSUE-25 per-stage dudect of the write_epoch diagnostics (job 20261012-191630_M08_issue25)
 BLOCKS: M14   SEVERITY: high   OPENED: 2026-10-12 session 30
 Why: ISSUE-25 can only be settled by a measurement on the GPU, and this laptop has none.
 GPU JOB READY — 20261012-191630_M08_issue25              (runtime not measured; plan for about 4.5 hours, see the note below)
