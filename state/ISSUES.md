@@ -643,6 +643,26 @@ Proposed fix (one prep session and one runner session):
 3. A device-only series that leaves out h2d and d2h.
 Until then: M14 must not write that the device stages of the write path are timing-independent of the contents. It
 may quote the series that were measured, with their verdicts.
+Update 2026-10-12 session 30 (prep; nothing measured, the issue stays open):
+- Points 1 and 3 are built: `bench/run_dudect.py --targets issue25` runs write_epoch_null_st, write_epoch_age_st and
+  write_epoch_fresh_st, the same calls and staging as the three diagnostics, with the series device_ms, call_ms, core_ms
+  (device_ms without h2d and d2h) and one series per engine stage (h2d, tags, sort, compact, d2h, seal, bucket; `open`
+  is a read stage and has no series). Point 2 is job 20261012-191630_M08_issue25 (ISSUE-34): seed 8 again and seeds 10, 11, 12,
+  with write_epoch_null_st and a full-N control_null in each run. Local evidence: runs/20261012-191159_M08_i25_prep (numpy,
+  NOT_MEASURED: plumbing and outputs only).
+- Reading rules, written before the results exist:
+  a. H5 (transfers) is supported if a FAIL of device_ms comes with a FAIL of h2d_ms or d2h_ms and core_ms PASSES in
+     the same run; it is not supported if core_ms FAILS.
+  b. H6 (chance or runner drift) is the reading if no series of write_epoch_age_st and write_epoch_fresh_st FAILS in
+     more seeds than the same series of write_epoch_null_st. It is a reading, not a proof of independence.
+  c. A dependence on the contents is the reading only if a series of write_epoch_fresh_st FAILS in at least two seeds
+     with the same sign of t while that series of write_epoch_null_st and write_epoch_age_st PASSES there.
+  d. One call gives 10 series of 101 tests each, so more exceedances than in the earlier job are expected by chance;
+     the control of the same run is the gauge, never the count alone.
+  e. A stage is one unbatched interval; a stage whose median is below 50 us (ai/GPU_GUIDE.md §7) is quoted with
+     its median and a FAIL or PASS of it is marked as below the rule.
+- Not covered by this job: the clock (every failing series so far ran at 585 MHz; the job cannot set it), a second
+  GPU model, write_epoch itself per stage (its device series PASSED three times).
 
 ### ISSUE-26 [OPEN] M11: accounts and sessions live in memory; a restart forgets every account and logs every client out
 BLOCKS: none   SEVERITY: medium   OPENED: 2026-10-12 session 22
@@ -793,3 +813,37 @@ BLOCKS: none   SEVERITY: low   OPENED: 2026-10-12 session 29
 Proposed: 1 with the first service run on a runner (M15 or later); 4 and 6 stay as stated limits in docs/DEMO.md;
 7 in M18.
 
+### ISSUE-34 [OPEN] HUMAN ACTION REQUIRED — GPU JOB READY: ISSUE-25 per-stage dudect of the write_epoch diagnostics (job 20261012-191630_M08_issue25)
+BLOCKS: M14   SEVERITY: high   OPENED: 2026-10-12 session 30
+Why: ISSUE-25 can only be settled by a measurement on the GPU, and this laptop has none.
+GPU JOB READY — 20261012-191630_M08_issue25              (runtime not measured; plan for about 4.5 hours, see the note below)
+Use Kaggle for this one (the job is long, and Kaggle sessions do not disconnect when the tab is idle).
+File to upload: D:\PJT\vcloak\gpujobs\out\20261012-191630_M08_issue25\job.zip
+Notebook:       D:\PJT\vcloak\colab\VCloak_GPU_Runner.ipynb
+Do this (Kaggle, as for the earlier jobs):
+  1. kaggle.com -> Create -> New Notebook -> File -> Import Notebook -> pick colab\VCloak_GPU_Runner.ipynb.
+  2. Settings -> Accelerator -> GPU T4 x2.   (the step everyone forgets)
+  3. + Add Input -> Upload -> gpujobs\out\20261012-191630_M08_issue25\job.zip as a dataset. Kaggle unpacks it into a
+     folder: that is fine.
+  4. Nothing to type in Cell 2: leave KAGGLE_INPUT = "" . The cell finds the job under /kaggle/input and must
+     print "Bundle verified".
+  5. Run Cell 1. It must print a GPU name (e.g. Tesla T4). If it prints NO GPU, redo step 2.
+  6. Run the remaining cells and keep the tab open until the last one finishes. The long cell prints nothing
+     while a command runs (the output of each command appears when it ends): that is normal. Do not start anything
+     else in that notebook while it runs: the job measures small timing differences.
+  7. Download results_20261012-191630_M08_issue25.zip from the Output panel.
+  8. Move that file into D:\PJT\vcloak\gpujobs\inbox\   (do not unzip or rename it).
+Or use Google Colab: colab.research.google.com -> File -> Upload notebook -> the same .ipynb; Runtime -> Change
+  runtime type -> T4 GPU -> Save; run Cell 1 (GPU name), Cell 2 (upload job.zip), Cell 3 (keep the tab open and
+  active: a free Colab session can disconnect during a job this long), Cell 4 (downloads the results zip).
+Bring back only the results zip, even if a cell reports a failure. Do not commit or edit anything in the repo
+  before the next session: a change to src/, kernels/, tests/, bench/ or scripts/ makes the result stale and it
+  will be rejected.
+No passphrase is needed: the job uses fixed TEST keys.
+A dudect FAIL in the output is not an error of yours: FAIL or PASS of each series is the measurement.
+Note on the runtime: the job has four measuring runs (seeds 8, 10, 11, 12), each one control_null and three
+  write_epoch targets at N = 100000 per class. In job 20261012-113437_M08_issue17 the measuring loop of control_null
+  took 291 and 307 s and that of a write_epoch diagnostic 986 to 1148 s (summary.json of the two runs), which gives
+  about one hour per run before warm-up and calibration. The new series add no calls. This is a plan, not a measurement.
+Confirm by running: ls gpujobs/inbox/      (it must list results_20261012-191630_M08_issue25.zip)
+Then type: continue

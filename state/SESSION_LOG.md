@@ -713,3 +713,27 @@
 - Commit: f62c403
 - Next: M14 S1 ; human action: none yet. ISSUE-17 and ISSUE-25 (open, high) block M14: the next session starts with
   them. Keep Docker Desktop running when you type continue
+
+## Session 30 — 2026-10-12 19:25 — fix ISSUE-25 (M08 GPU obliviousness audit), prep — owner:Aditya
+- Steps: S2→S2 of M08 for the issue only (module stays DONE; status after: BLOCKED_HUMAN at the GPU JOB READY gate)
+- Did: bench/run_dudect.py: `_StageSeries` and the targets write_epoch_null_st, write_epoch_age_st, write_epoch_fresh_st
+  (the calls and staging of the three ISSUE-17 diagnostics; series device_ms, call_ms, core_ms and one per engine
+  stage h2d, tags, sort, compact, d2h, seal, bucket), group `issue25`, metric ids with the stage as suffix.
+  bench/jobs/M08_issue25.json: unit tests, quick self-test, then control_null + issue25 at seeds 8, 10, 11, 12.
+  tests/unit/test_run_dudect.py: 9 new tests. Packed job 20261012-191630_M08_issue25 from commit 3838502.
+- Evidence: runs/20261012-191159_M08_i25_prep (summary.json: 4 targets, 0 mismatches, NOT_MEASURED; pytest_run_dudect.txt 65 passed;
+  pytest_all.txt 2003 passed, 1 skipped, 674 deselected; ruff.txt, check_oblivious.txt, check_metrics.txt,
+  check_secrets.txt PASS); gpujobs/out/20261012-191630_M08_issue25/job.json
+- Metrics added: none (numpy backend: nothing measured)
+- Decisions: none (no ADR). The reading rules a-e for the results are written into ISSUE-25 before the job runs
+- Issues: ISSUE-25 updated, stays open; opened ISSUE-34 (HUMAN ACTION REQUIRED, GPU JOB READY)
+- Deviations from spec: the per-stage series are new targets (`*_st`) instead of new series of the old targets, so
+  the earlier jobs stay comparable; seed 8 is run again beside the three new seeds; `open` has no series (Amendments)
+- Found on the way: a run directory name of 43 or more characters fails check_secrets (the first local run did);
+  run names in the job spec are short for that reason
+- Not verified: the new targets on a CUDA device; whether a stage is long enough to be timed alone (medians come
+  with the results); the runtime of the job; ISSUE-17 points 1 and 2 (untouched, still block M14)
+- Commit: 3838502 (prep, the commit of the job) and the closing commit of this entry
+- Next: ingest 20261012-191630_M08_issue25, then M14 S1 ; human action: ISSUE-34 (run the job on Kaggle, put the
+  results zip into gpujobs/inbox/). Do not change the repo before that
+

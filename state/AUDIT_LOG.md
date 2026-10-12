@@ -868,3 +868,35 @@ Notes:
 - Still open on M13 and not blocking: ISSUE-29 (CSP relaxation until M18), ISSUE-30 points 3-5, ISSUE-31 points 2-3
   and the repeat of the browser test file before M17, ISSUE-32 points 1 and 3-5, ISSUE-33.
 - Browser: Chrome headless only; uvicorn inside the process on loopback, public development key, SQLite, numpy engine.
+
+## Audit M08 (fix ISSUE-25, prep) — 2026-10-12 — session 30 — result: PASS for the prep (checkpoint at the GPU JOB READY gate; ISSUE-25 stays open, nothing measured)
+| Item | Result | Evidence |
+|---|---|---|
+| ISSUE-25 fix 1: every engine stage is its own series | PASS (local) | runs/20261012-191159_M08_i25_prep/pytest_run_dudect.txt (65 passed): test_issue25_series_add_up_and_the_staging_is_that_of_the_parent, test_issue25_a_target_runs_through_the_measuring_loop |
+| ISSUE-25 fix 2: three more seeds, write_epoch_null as the control of each | PENDING | bench/jobs/M08_issue25.json, gpujobs/out/20261012-191630_M08_issue25/job.json (seeds 8, 10, 11, 12); not run |
+| ISSUE-25 fix 3: a device-only series without h2d and d2h | PASS (local) | the same tests: core_ms = device_ms - h2d - d2h |
+| M08 audit items (dudect verdicts, controls) | PENDING | they are read from the ingested bundle in the next session |
+| G1 | PASS | runs/20261012-191159_M08_i25_prep/pytest_all.txt (`-m "not gpu"`: 2003 passed, 1 skipped (tests/unit/test_oracle_chacha.py:82), 674 deselected). The first full run of the session had 1 failure, see the notes |
+| G2 | PASS | runs/20261012-191159_M08_i25_prep/check_metrics.txt (331 rows, 0 problems). No metric added |
+| G2b | PASS | nothing timed; manifest backend numpy, status NOT_MEASURED, 8 metrics all NOT_MEASURED |
+| G3 | PASS | runs/20261012-191159_M08_i25_prep/check_oblivious.txt (11 files, 0 findings); no kernel changed |
+| G4 | PASS | runs/20261012-191159_M08_i25_prep/check_secrets.txt; the bundle sha256 of the job was allow-listed by `gpujob.py pack` |
+| G5 | N/A | no kernel or twin changed; the stage clock of the engine is unchanged |
+| G6 | PASS | bench/run_dudect.py, bench/jobs/M08_issue25.json, tests/unit/test_run_dudect.py exist; the module docstring describes the new targets |
+| G7 | PASS | checked after the closing commit |
+| G8 | PASS | STATE: status BLOCKED_HUMAN, gpu_job.pending 20261012-191630_M08_issue25, M08 sessions 5, next_unit M14 |
+| G9 | PASS | SESSION_LOG session 30, this entry, ISSUE-25 updated, ISSUE-34 opened, M08 Amendments |
+| G10 | PASS | manifest valid; the plumbing run was made twice with the same outcome (the first run directory was removed, see the notes) |
+Notes:
+- G1 failed once and the cause was this session's work: the first local run was named dudect_issue25_prep with --quick,
+  and its directory name (45 characters of the base64url alphabet) tripped check_secrets. That directory was removed
+  and the run repeated as i25_prep; the run names of the job spec were shortened for the same reason. Nothing was
+  allow-listed for it.
+- No write_epoch target runs through the measuring loop on the stand-in device locally (tests/fakecupy.py cannot hold
+  the key store): the loop test uses the simulator engine behind the stand-in events. The CUDA path of the new
+  targets runs for the first time on the runner; the job starts with the unit tests and a quick self-test.
+- The local manifest carries git_sha 9aedc94 (the commit before the prep commit 3838502): the run was made on the
+  working tree that became 3838502.
+- The runtime in ISSUE-34 is a plan from the measuring times of the earlier job, not a measurement.
+- capture-evidence was not run: web/, results/ and METRICS_INDEX.md are unchanged.
+

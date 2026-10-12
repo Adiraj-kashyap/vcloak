@@ -107,3 +107,7 @@ paper's setup section and the panel will ask to see. Follow `ai/EVIDENCE.md`.
   - `write_epoch`: the whole-call FAIL is reproduced by two same-contents controls and disappears in
     `write_epoch_fresh`. Two diagnostic device-stage series FAIL at seed 8 (ISSUE-25).
   - The verdict of every series was recomputed from the raw data by `runs/20261012-150500_M08_issue17_ingest/gates_issue17.py`.
+- 2026-10-12 (session 30, fix ISSUE-25, prep). `bench/run_dudect.py` gains the group `issue25`: the three write_epoch
+  diagnostics with one series per engine stage and `core_ms` (device stages without h2d and d2h), as targets of their
+  own (`*_st`), so the targets of the M08 and ISSUE-17 jobs stay what they measured. Job spec `bench/jobs/M08_issue25.json`.
+  Run names in that spec are short because a run directory name of 43 or more characters trips `check_secrets.py`.
