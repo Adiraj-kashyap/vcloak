@@ -131,6 +131,17 @@ def update_state(state_path: Path, local: dict, runner: dict, job_id: str) -> No
     state_path.write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
 
 
+_KEPT = re.compile(r"<!-- BEGIN ([A-Z0-9 ]+) -->.*?<!-- END \1 -->", re.S)
+
+
+def keep_sections(path: Path, text: str) -> str:
+    """`text` followed by the marked sections other tools wrote into the file (scripts/pgdev.py doc)."""
+    if not path.is_file():
+        return text
+    kept = [m.group(0) for m in _KEPT.finditer(path.read_text(encoding="utf-8"))]
+    return text if not kept else text.rstrip("\n") + "\n\n" + "\n\n".join(kept) + "\n"
+
+
 def write_env_md(path: Path, local: dict, runner: dict, detail: dict, job_id: str) -> None:
     d2d, tel = detail["summary"]["d2d_copy"], detail["manifest"]["telemetry_start"]
     metrics = {m["id"]: m for m in detail["summary"]["metrics"]}
@@ -158,7 +169,8 @@ def write_env_md(path: Path, local: dict, runner: dict, detail: dict, job_id: st
         f"| mem_clock_khz | {detail['device']['mem_clock_khz']} |",
         f"| mem_bus_width_bits | {detail['device']['mem_bus_width_bits']} |",
         f"| runner os / python | {detail['device']['os']} / {detail['device']['python']} |",
-        f"| runner cpu | {detail['result']['env'].get('cpu', 'unknown')} x{detail['result']['env'].get('cpu_count', '?')} |",
+        f"| runner cpu | {detail['result']['env'].get('cpu', 'unknown')} "
+        f"x{detail['result']['env'].get('cpu_count', '?')} |",
         f"| clocks | {tel.get('clocks', 'unknown')} (power limit {tel.get('power_limit_w')} W) |",
         "",
         "The free runner may hand out a different GPU next session; `gpu` and `session_id` are in every manifest.",
@@ -183,7 +195,7 @@ def write_env_md(path: Path, local: dict, runner: dict, detail: dict, job_id: st
         "",
     ]
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text("\n".join(out), encoding="utf-8", newline="\n")
+    path.write_text(keep_sections(path, "\n".join(out)), encoding="utf-8", newline="\n")
 
 
 def main(argv: list[str] | None = None) -> int:

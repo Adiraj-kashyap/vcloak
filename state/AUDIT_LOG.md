@@ -474,3 +474,29 @@ Notes:
   The writer now sanitises cells and the 9 rows were rewritten by the same rule (`max abs(t)`); values untouched.
 - The dudect PNGs are the runner's own plots (no PDF / 300 dpi export); a paper-ready export is left to M16.
 - ruff: the old line-length finding in scripts/record_env.py:161 is unchanged (runs/20261012-093714_M08_ingest_audit/ruff.txt).
+
+## Audit M09 — 2026-10-12 — session 17 — result: PASS
+| Item | Result | Evidence |
+|---|---|---|
+| A1 the schema has no serial/timestamp columns (test) | PASS | runs/20261012-101327_M09_storage/pytest_verbose.txt: test_schema_has_the_five_columns_and_nothing_that_records_arrival (information_schema.columns of the parent and a partition, no identity or generated column, no sequence, no trigger), test_schema_sql_declares_no_arrival_column, test_sqlite_schema_has_the_five_columns_and_no_arrival_column |
+| A2 fetch_candidates always returns exactly K rows | PASS | runs/20261012-101327_M09_storage/pytest_verbose.txt: the fetch tests of the contract on both repositories (K 1, 5, 16, 128 with 0, 1, 5 real rows; exactly K real rows; an empty bucket-window; after a rewrite). Above K the read raises CandidateOverflow instead of returning K rows (ADR-014) |
+| A3 after a rewrite, physical order = the new permutation (ctid) | PASS | runs/20261012-101327_M09_storage/pytest_verbose.txt: test_after_a_rewrite_the_physical_order_is_the_new_permutation at three sizes, one of them with out-of-line (TOAST) payloads: row ids in ctid order equal the given order, one xmin, a new relfilenode, no table left over |
+| A4 SQLite and Pg pass the same repo tests | PASS | runs/20261012-101327_M09_storage/pytest_sqlite_contract.txt and runs/20261012-101327_M09_storage/pytest_pg_contract.txt: the same class tests/repo_contract.py::RepoContract, 42 passed on each |
+| G1 | PASS | runs/20261012-101327_M09_storage/pytest.txt (118 passed, 0 skipped: 50 unit, 68 on PostgreSQL); runs/20261012-101327_M09_storage/pytest_all.txt (1410 passed, 1 skipped, 674 gpu-deselected); runs/20261012-101327_M09_storage/pytest_tasks_test.txt (1342 passed without the integration tests) |
+| G2 | PASS | runs/20261012-101327_M09_storage/check_metrics.txt (263 rows, 0 problems). No metric was added: nothing was measured. The table in docs/ENV.md is generated from runs/20261012-101327_M09_storage/pg_settings.json |
+| G3 | PASS | runs/20261012-101327_M09_storage/check_oblivious.txt (kernels/: 11 files, 0 findings); M09 adds no kernel. The store holds only values that are public at the database level |
+| G4 | PASS | runs/20261012-101327_M09_storage/check_secrets.txt (0 key-like runs). The repository takes no key; the round-trip test uses the fixed TEST master of tests/testkeys.py; the development database has no password (trust on 127.0.0.1) |
+| G5 | N/A | no GPU twin in this module |
+| G6 | PASS | runs/20261012-101327_M09_storage/deliverables_ls.txt: docker-compose.yml, schema.sql, repo.py (PgRepo, SqliteRepo), reshuffle.py, test_repo_pg.py, test_repo_sqlite.py, docs/ENV.md (storage section) |
+| G7 | PASS | checked after the closing commit |
+| G8 | PASS | STATE: M09 DONE at S5, sessions 1, next_unit M10, gpu_job.pending null |
+| G9 | PASS | SESSION_LOG session 17, this entry, ISSUE-20 opened |
+| G10 | PASS | runs/20261012-101327_M09_storage/manifest.json (git sha, seed, command, env); runs/20261012-101327_M09_storage/g10_rerun.txt: the module tests re-run to the same result (118 passed) |
+Notes:
+- S1 check: runs/20261012-101327_M09_storage/s1_select1.txt (SELECT 1 through psycopg). S5 check: runs/20261012-101327_M09_storage/show.txt and runs/20261012-101327_M09_storage/pg_settings.json, 14 of 14
+  settings equal to the required value by SHOW, and the same 14 as tests.
+- Everything ran on a private PostgreSQL 17rc1 cluster, not on postgres:16; docker-compose.yml was never started
+  (ISSUE-20). The module header lists Docker or a native install as a human gate; the installed binaries were enough.
+- Not tested: the swap under concurrent connections; the lifetime of WAL records. docs/ENV.md says so.
+- The manifest of the run is `dirty: true`: the tests ran on the working tree that this session commits.
+- ruff is clean (runs/20261012-101327_M09_storage/ruff.txt); the old line-length finding in scripts/record_env.py was fixed while that file was edited.

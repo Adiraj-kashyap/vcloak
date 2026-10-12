@@ -396,3 +396,23 @@
   seed or GPU; the machine code CuPy actually runs (nvrtc); divergence counters; the ncu parser on real output.
 - Commit: 7c31c24
 - Next: M09 S1 ; human action: none required (optional: ISSUE-18; `fix ISSUE-17` is needed before M14)
+
+## Session 17 — 2026-10-12 10:25 — M09 Storage (PostgreSQL) — owner:Divyansh
+- Steps: S1-S5 (status after: DONE)
+- Did: scripts/pgdev.py (private cluster from the installed PostgreSQL binaries; show / doc commands) and
+  storage/pgconf.py (endpoint, 14 WAL and logging settings); storage/schema.sql (messages partitioned by win, primary
+  key (row_id, win), index (bucket, win)); storage/repo.py (PgRepo, SqliteRepo: COPY per epoch, exactly-K candidates
+  with random dummies in random order, dump by ctid, rewrite_window as load + one-transaction partition swap);
+  storage/reshuffle.py; docker-compose.yml (postgres:16, same settings); storage section of docs/ENV.md, kept by
+  record_env.py; tests/repo_contract.py run by tests/unit/test_repo_sqlite.py and tests/integration/test_repo_pg.py.
+- Evidence: runs/20261012-101327_M09_storage (pytest.txt 118 passed; pytest_pg_contract.txt and pytest_sqlite_contract.txt 42 passed each;
+  pytest_all.txt 1410 passed, 1 skipped; show.txt 14 of 14 settings; s1_select1.txt; check_* PASS; ruff clean)
+- Metrics added: none (nothing measured; no performance number exists for the store)
+- Decisions: ADR-014 (primary key (row_id, win); Repo.window_rows; CandidateOverflow; RewriteMismatch; pgdev cluster)
+- Issues: opened ISSUE-20 (PostgreSQL 17rc1 instead of 16, compose file never started; low, optional human action)
+- Deviations from spec: native 17rc1 cluster instead of Docker postgres:16; composite primary key; extra settings
+  and files (Amendments of ai/modules/M09)
+- Not verified: docker-compose.yml on a Docker engine; anything on PostgreSQL 16; the swap under concurrent
+  connections; how long WAL of a closed window survives; behaviour at bench sizes (the largest test window is 700 rows)
+- Commit: PENDING
+- Next: M10 S1 ; human action: none required (optional: ISSUE-20). `fix ISSUE-17` is still needed before M14

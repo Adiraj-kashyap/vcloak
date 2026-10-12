@@ -1,0 +1,57 @@
+# V-cloak development database (M09). `docker compose up -d db`, then the tests and the service reach it
+# at 127.0.0.1:54329 (src/vcloak/storage/pgconf.py). Without Docker: `python scripts/pgdev.py up`.
+#
+# The settings below are the WAL / logging hygiene of M09 S5 (pgconf.HYGIENE; tests/unit/test_repo_sqlite.py
+# checks that this file passes the same values). The reason for each is in docs/ENV.md.
+#
+# `trust` authentication with the port published on the loopback only: this database holds development
+# and test data, never a key. Do not publish the port on another interface.
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: vcloak
+      POSTGRES_DB: vcloak
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "127.0.0.1:54329:5432"
+    volumes:
+      - vcloak_pgdata:/var/lib/postgresql/data
+    command:
+      - "postgres"
+      - "-c"
+      - "log_statement=none"
+      - "-c"
+      - "log_min_duration_statement=-1"
+      - "-c"
+      - "log_duration=off"
+      - "-c"
+      - "log_connections=off"
+      - "-c"
+      - "log_disconnections=off"
+      - "-c"
+      - "track_commit_timestamp=off"
+      - "-c"
+      - "wal_level=minimal"
+      - "-c"
+      - "max_wal_senders=0"
+      - "-c"
+      - "archive_mode=off"
+      - "-c"
+      - "wal_keep_size=0"
+      - "-c"
+      - "min_wal_size=32MB"
+      - "-c"
+      - "max_wal_size=32MB"
+      - "-c"
+      - "checkpoint_timeout=30s"
+      - "-c"
+      - "wal_recycle=off"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vcloak -d vcloak"]
+      interval: 2s
+      timeout: 2s
+      retries: 30
+
+volumes:
+  vcloak_pgdata:

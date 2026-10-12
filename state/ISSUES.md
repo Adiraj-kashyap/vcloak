@@ -450,3 +450,19 @@ BLOCKS: none   SEVERITY: low   OPENED: 2026-10-12 session 16
 2. The listing is the nvcc build (nvcc 12.8, -arch=sm_75). CuPy runs an nvrtc build of the same source, and the job
    could not list it ("neither cuobjdump nor nvdisasm produced a listing"). The two compilers may emit different
    code. Fix in a later GPU job: save the cubin that CuPy caches, or build with the nvcc backend of CuPy for the audit.
+
+### ISSUE-20 [OPEN] M09: the development database is a native PostgreSQL 17rc1 cluster; docker-compose.yml (postgres:16) was never started
+BLOCKS: none   SEVERITY: low   OPENED: 2026-10-12 session 17
+1. The laptop has no Docker and the installed PostgreSQL 17 service asks for a password the agent does not have, so
+   M09 runs on a private cluster started by `python scripts/pgdev.py up` (server 17rc1, a release candidate). ADR-008
+   names PostgreSQL 16. Every M09 test passed on 17rc1 only. `docker-compose.yml` is checked for content by a unit
+   test and has never been run.
+2. The integration tests SKIP when no database answers. After a reboot run `python scripts/pgdev.py up` first, and
+   read the skip count of a pytest run before using it as G1 evidence for a module that needs PostgreSQL.
+3. Not tested in M09: the swap of `rewrite_window` under concurrent readers and writers (only one connection after
+   the other), and how long WAL records of a closed window survive on disk (the settings are verified, the retention
+   is not measured).
+Optional human action (not a gate): install Docker Desktop from https://www.docker.com/products/docker-desktop/, open
+it once so the engine starts, stop the private cluster (`python scripts/pgdev.py down`, it uses the same port), run
+`docker compose up -d db`, then `python -m pytest -q tests/integration/test_repo_pg.py`. Before M14/M15 decide which
+server the evaluation numbers come from and record its version in the run manifests.

@@ -1,0 +1,49 @@
+{
+  "run_id": "20261012-101327_M09_storage",
+  "module": "M09",
+  "step": "S1-S5",
+  "owner": "Divyansh",
+  "git_sha": "dc10125f8800df851e0b0fcf277ef7b0e0f69c88",
+  "dirty": true,
+  "command": "pytest -q tests/unit/test_repo_sqlite.py tests/integration/test_repo_pg.py; python scripts/pgdev.py show",
+  "seed": 0,
+  "quick": false,
+  "params": {},
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261012-101327",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U"
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791780207.3088481
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791780700.5674665
+  },
+  "outputs": [
+    "check_metrics.txt",
+    "check_oblivious.txt",
+    "check_secrets.txt",
+    "deliverables_ls.txt",
+    "g10_rerun.txt",
+    "pg_settings.json",
+    "pytest.txt",
+    "pytest_all.txt",
+    "pytest_pg_contract.txt",
+    "pytest_sqlite_contract.txt",
+    "pytest_tasks_test.txt",
+    "pytest_verbose.txt",
+    "ruff.txt",
+    "s1_select1.txt",
+    "show.txt"
+  ],
+  "status": "OK",
+  "notes": "M09 S1-S5 on a private PostgreSQL 17rc1 cluster (scripts/pgdev.py), not postgres:16; correctness tests and SHOW checks only, nothing timed; working tree uncommitted at run time"
+}

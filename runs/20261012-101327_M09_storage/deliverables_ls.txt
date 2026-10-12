@@ -1,0 +1,7 @@
+-rw-r--r-- 1 HP 197121  1628 Oct 12 10:12 docker-compose.yml
+-rw-r--r-- 1 HP 197121  4726 Oct 12 10:13 docs/ENV.md
+-rw-r--r-- 1 HP 197121 14345 Oct 12 10:07 src/vcloak/storage/repo.py
+-rw-r--r-- 1 HP 197121  1353 Oct 12 10:07 src/vcloak/storage/reshuffle.py
+-rw-r--r-- 1 HP 197121   797 Oct 12 10:07 src/vcloak/storage/schema.sql
+-rw-r--r-- 1 HP 197121 10806 Oct 12 10:13 tests/integration/test_repo_pg.py
+-rw-r--r-- 1 HP 197121  5059 Oct 12 10:13 tests/unit/test_repo_sqlite.py

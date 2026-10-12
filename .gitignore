@@ -15,3 +15,4 @@ gpujobs/out/**/*.zip
 gpujobs/inbox/*.zip
 gpujobs/done/*.zip
 runs/**/*.npz
+.pgdev/
