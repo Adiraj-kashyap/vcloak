@@ -221,6 +221,10 @@ table.rows tbody tr:hover { background: var(--plane); }
 .reveal-col { display: none; }
 body.reveal .reveal-col { display: table-cell; }
 td.sent-badge { font-weight: 700; color: var(--s2); }
+/* the baseline table has an arrival time and a conversation id, and no bucket or seq_enc */
+.clear-col { display: none; }
+table.clear .clear-col { display: table-cell; }
+table.clear .cloak-col { display: none; }
 .winstate { margin-left: 8px; padding: 1px 6px; border: 1px solid var(--grid); border-radius: 999px;
             font: 600 10.5px var(--sans); color: var(--muted); }
 tr.win-open .winstate, tr.win-closing .winstate { color: var(--ink-2); border-style: dashed; }

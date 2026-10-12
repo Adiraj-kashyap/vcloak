@@ -252,7 +252,7 @@
     if (!VC.state.live) {
       return (d.rows || []).map(function (r, i) {
         return { pos: i, row_id: r.row_id, bucket: r.bucket, win: r.win, state: "", seq_enc: r.seq_enc,
-                 payload: r.payload, sent: r.sent !== undefined ? { n: r.sent } : null };
+                 payload: r.payload, ts: null, conv: null, sent: r.sent !== undefined ? { n: r.sent } : null };
       });
     }
     var states = {}, known = truth();
@@ -260,7 +260,8 @@
     return (d.rows || []).map(function (r) {
       return { pos: r.pos, row_id: r.row_id, bucket: r.bucket === null ? "—" : r.bucket, win: r.win,
                state: states[r.win] || "", seq_enc: shortHex(r.seq_enc_b64), payload: shortHex(r.payload_b64),
-               payload_b64: r.payload_b64, sent: known[unpad(r.payload_b64)] || null };
+               payload_b64: r.payload_b64, ts: r.ts || null, conv: r.conv_hex || null,
+               sent: known[unpad(r.payload_b64)] || null };
     });
   }
 
@@ -281,7 +282,10 @@
       return;
     }
     var mode = d.mode || VC.state.mode;
-    if (mode === "baseline") {
+    if (mode === "baseline" && VC.state.live) {
+      say("Unprotected baseline.", " Each row carries a serial id, its arrival time (ts) and its conversation id (conv) in the clear, and the rows lie in arrival order. " +
+          "Without any key the table tells who is in a conversation with whom, when each message came and in which order. Only the text is encrypted.");
+    } else if (mode === "baseline") {
       say("Unprotected baseline.", " Rows carry a sequential id and sit in arrival order, so the row order is the conversation order — no key needed to read it.");
     } else if (!VC.state.live) {
       say("V‑cloak.", " Random UUIDs, a shared bucket, a coarse window id, and no timestamp. The physical order of these rows is the engine's permutation, not the order anyone typed.");
@@ -291,8 +295,11 @@
       say("V‑cloak.", " Random row ids, a bucket, a coarse window id, no timestamp. A closed window has been re-shuffled as a whole: its physical order is the engine's permutation, not the order anyone typed. The open window is still filling: each epoch is permuted, but its epochs lie in arrival order until the window closes.");
     }
     if (VC.state.live) {
-      say("", " Showing " + rows.length + " of " + d.total + " stored row(s) in the last " + (d.windows || []).length +
-          " window(s). What still shows: the window of a row, the number of rows per window, and the bucket.");
+      say("", " Showing " + rows.length + " of " + d.total + " stored row(s) in the last " + (d.windows || []).length + " window(s)." +
+          (mode === "baseline" ? "" : " What still shows: the window of a row, the number of rows per window, and the bucket."));
+      if (VC.state.switchable) {
+        say("", " This server was started with --compare: it stores every message in both layouts, so the switch shows the same messages either way. A real V‑cloak server keeps no arrival-order table.");
+      }
       if (VC.state.reveal) {
         say("", " The revealed number is the position of the message in the conversation as the panes read and verified it; " +
             "the server did not supply it and cannot. “—” is a row no pane has read since this page opened.");
@@ -310,8 +317,16 @@
     view.rows = rows;
     view.windows = d.windows || [];
     view.mode = d.mode || VC.state.mode;
+    if (VC.state.live && d.mode && !switching) {
+      // the server says which store answered: the switch and the strip follow it, never the other way round
+      VC.state.mode = d.mode;
+      var sw = document.getElementById("modeSwitch");
+      if (sw) sw.checked = d.mode === "baseline";
+    }
     if (sig === view.sig) return;       // nothing moved: leave the table alone
     view.sig = sig;
+    var table = document.getElementById("dumpTable");
+    if (table) table.classList.toggle("clear", rows.some(function (r) { return r.ts !== null || r.conv !== null; }));
     body.textContent = "";
     rows.forEach(function (r, i) {
       var tr = VC.el("tr", r.state ? "win-" + r.state : "");
@@ -319,11 +334,13 @@
       var id = VC.el("td", "", shortId(r.row_id));
       id.title = String(r.row_id);
       tr.appendChild(id);
-      tr.appendChild(VC.el("td", "", String(r.bucket)));
+      tr.appendChild(VC.el("td", "clear-col", r.ts === null ? "—" : String(r.ts)));
+      tr.appendChild(VC.el("td", "clear-col", r.conv === null ? "—" : String(r.conv)));
+      tr.appendChild(VC.el("td", "cloak-col", String(r.bucket)));
       var win = VC.el("td", "", String(r.win));
       if (STATE_LABEL[r.state]) win.appendChild(VC.el("span", "winstate", STATE_LABEL[r.state]));
       tr.appendChild(win);
-      tr.appendChild(VC.el("td", "", String(r.seq_enc)));
+      tr.appendChild(VC.el("td", "cloak-col", String(r.seq_enc)));
       tr.appendChild(VC.el("td", "", String(r.payload)));
       var sent = VC.el("td", "reveal-col sent-badge", r.sent ? "#" + r.sent.n + (r.sent.who ? " " + r.sent.who : "") : "—");
       if (r.sent && r.sent.who) sent.title = "Message " + r.sent.number + " of user " + r.sent.who + ", as the panes verified it";
@@ -339,6 +356,38 @@
     // without --dev the route answers 403: the page does not ask
     if (VC.state.live && !VC.state.dev) return Promise.resolve(paintDump({ rows: [], unavailable: true }));
     return VC.api.dump(DUMP_ROWS, windows).then(paintDump);
+  }
+
+  /* The mode switch. Live, the server exchanges the store that answers (serve --dev --compare). The
+   * panes are held while it does, so no read is half from one store and half from the other, and then
+   * read their windows again: the two stores can file a message under neighbouring windows. */
+  var switching = null;
+
+  function setMode(mode) {
+    if (!VC.state.live) return VC.api.setMode(mode).then(refreshDump);
+    if (switching) return switching;
+    var clients = USERS.map(function (u) { return panes[u] && panes[u].client; }).filter(Boolean);
+    function held(i) {
+      if (i < clients.length) return clients[i].exclusive(function () { return held(i + 1); });
+      return VC.api.setMode(mode).then(function (answer) {
+        clients.forEach(function (c) { c.reread(); });
+        return answer;
+      });
+    }
+    function done() {
+      switching = null;
+      var sw = document.getElementById("modeSwitch"), ls = document.getElementById("ls-mode");
+      if (sw) sw.checked = VC.state.mode === "baseline";
+      if (ls) ls.textContent = VC.state.mode;
+      return readAll().then(refreshDump);
+    }
+    switching = held(0).then(done, function (e) {
+      var note = document.getElementById("serverNote");
+      return done().then(function () {
+        if (note) note.appendChild(VC.el("b", "", " The store mode was not changed: " + (e.message || e) + "."));
+      });
+    });
+    return switching;
   }
 
   function init() {
@@ -365,9 +414,10 @@
     if (modeSwitch) {
       modeSwitch.checked = VC.state.mode === "baseline";
       modeSwitch.addEventListener("change", function () {
-        VC.api.setMode(this.checked ? "baseline" : "vcloak").then(refreshDump);
+        var mode = this.checked ? "baseline" : "vcloak";
+        setMode(mode);
         var ls = document.getElementById("ls-mode");
-        if (ls) ls.textContent = this.checked ? "baseline" : "vcloak";
+        if (ls && !live) ls.textContent = mode;
       });
     }
     if (revealSwitch) revealSwitch.addEventListener("change", function () {
@@ -377,9 +427,12 @@
     });
 
     if (live) {
-      // the store mode is the server's to change (its dev route, S5). The true order needs the stored
-      // rows, which the server hands out with --dev only.
-      if (modeSwitch) modeSwitch.disabled = true;
+      // the store mode is the server's to change, and only `serve --dev --compare` can. The true order
+      // needs the stored rows, which the server hands out with --dev only.
+      if (modeSwitch) {
+        modeSwitch.disabled = !VC.state.switchable;
+        modeSwitch.title = VC.state.switchable ? "" : "Start the server with: vcloak serve --dev --compare --sessions";
+      }
       if (revealSwitch) revealSwitch.disabled = !VC.state.dev;
       ready = startLive();
       refreshDump();
@@ -402,6 +455,7 @@
   VC.chat = {
     init: init,
     refreshDump: refreshDump,
+    setMode: setMode,
     /* the live panes, for the page's own tests (tests/integration/test_web_app.py) */
     ready: function () { return ready || Promise.resolve(false); },
     panes: panes,
@@ -411,6 +465,7 @@
     serverView: function () {
       return { mode: view.mode, windows: view.windows, rows: view.rows.map(function (r) {
         return { pos: r.pos, row_id: r.row_id, win: r.win, state: r.state, payload_b64: r.payload_b64,
+                 ts: r.ts, conv: r.conv,
                  n: r.sent ? r.sent.n : null, who: r.sent ? r.sent.who || null : null,
                  number: r.sent && r.sent.number !== undefined ? r.sent.number : null };
       }) };

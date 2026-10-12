@@ -1,0 +1,277 @@
+{
+ "browser": "Chrome/154.0.8037.98",
+ "serve_argv": [
+  "--dev",
+  "--compare",
+  "--sessions",
+  "--store",
+  "sqlite",
+  "--window-s",
+  "5",
+  "--epoch-ms",
+  "200"
+ ],
+ "live_ready": true,
+ "switch_enabled": true,
+ "vcloak": {
+  "mode": "vcloak",
+  "revealed_order": [
+   6,
+   4,
+   1,
+   3,
+   7,
+   2,
+   5,
+   8
+  ],
+  "rows_physical_order": [
+   {
+    "pos": 0,
+    "win": 0,
+    "state": "reshuffled",
+    "row_id": "e1a8da5c",
+    "ts": null,
+    "conv": null,
+    "revealed": "#6 B"
+   },
+   {
+    "pos": 1,
+    "win": 0,
+    "state": "reshuffled",
+    "row_id": "abfb37f6",
+    "ts": null,
+    "conv": null,
+    "revealed": "#4 B"
+   },
+   {
+    "pos": 2,
+    "win": 0,
+    "state": "reshuffled",
+    "row_id": "e78505d6",
+    "ts": null,
+    "conv": null,
+    "revealed": "#1 A"
+   },
+   {
+    "pos": 3,
+    "win": 0,
+    "state": "reshuffled",
+    "row_id": "341e3f01",
+    "ts": null,
+    "conv": null,
+    "revealed": "#3 A"
+   },
+   {
+    "pos": 4,
+    "win": 0,
+    "state": "reshuffled",
+    "row_id": "a72e188b",
+    "ts": null,
+    "conv": null,
+    "revealed": "#7 A"
+   },
+   {
+    "pos": 5,
+    "win": 0,
+    "state": "reshuffled",
+    "row_id": "4c488197",
+    "ts": null,
+    "conv": null,
+    "revealed": "#2 B"
+   },
+   {
+    "pos": 6,
+    "win": 0,
+    "state": "reshuffled",
+    "row_id": "9a86d937",
+    "ts": null,
+    "conv": null,
+    "revealed": "#5 A"
+   },
+   {
+    "pos": 7,
+    "win": 0,
+    "state": "reshuffled",
+    "row_id": "eda46eab",
+    "ts": null,
+    "conv": null,
+    "revealed": "#8 B"
+   }
+  ],
+  "payloads": [
+   "5CXBAvEMnewVNXs+",
+   "O15JTmvKFwXJq5rE",
+   "QvtKhWEEvxtDJyH9",
+   "ZdE2cW2IsKPihL/e",
+   "oHylGtbZUxF/ll8E",
+   "oPe6l8VIkmp52DQV",
+   "rfLxssSHXGfEJybm",
+   "ynGSA0p7JkKrnRTk"
+  ],
+  "columns_shown": [
+   "#",
+   "row_id",
+   "bucket",
+   "win",
+   "seq_enc",
+   "payload",
+   "sent"
+  ],
+  "table": [
+   "1 | e1a8da5c… | 35 | 358361686re-shuffled | 341e76d2…19c7 (44 B) | 3b5e494e…94c1 (4124 B) | #6 B",
+   "2 | abfb37f6… | 35 | 358361686re-shuffled | 3feb0b9f…ef42 (44 B) | 65d13671…87e4 (4124 B) | #4 B",
+   "3 | e78505d6… | 35 | 358361686re-shuffled | 3b697c83…b2cd (44 B) | a07ca51a…b736 (4124 B) | #1 A",
+   "4 | 341e3f01… | 35 | 358361686re-shuffled | d1a663af…427a (44 B) | a0f7ba97…96b1 (4124 B) | #3 A",
+   "5 | a72e188b… | 35 | 358361686re-shuffled | 5920620f…4df4 (44 B) | e425c102…8faa (4124 B) | #7 A",
+   "6 | 4c488197… | 35 | 358361686re-shuffled | af773627…9310 (44 B) | ca719203…aaa5 (4124 B) | #2 B",
+   "7 | 9a86d937… | 35 | 358361686re-shuffled | fb01fbab…8c9c (44 B) | 42fb4a85…e5f8 (4124 B) | #5 A",
+   "8 | eda46eab… | 35 | 358361686re-shuffled | a4deb424…a5d0 (44 B) | adf2f1b2…3266 (4124 B) | #8 B"
+  ],
+  "note": "V‑cloak. Random row ids, a bucket, a coarse window id, no timestamp. A closed window has been re-shuffled as a whole: its physical order is the engine's permutation, not the order anyone typed. The open window is still filling: each epoch is permuted, but its epochs lie in arrival order until the window closes. Showing 8 of 8 stored row(s) in the last 48 window(s). What still shows: the window of a row, the number of rows per window, and the bucket. This server was started with --compare: it stores every message in both layouts, so the switch shows the same messages either way. A real V‑cloak server keeps no arrival-order table. The revealed number is the position of the message in the conversation as the panes read and verified it; the server did not supply it and cannot. “—” is a row no pane has read since this page opened.",
+  "strip_mode": "vcloak"
+ },
+ "baseline": {
+  "mode": "baseline",
+  "revealed_order": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8
+  ],
+  "rows_physical_order": [
+   {
+    "pos": 0,
+    "win": 0,
+    "state": "arrival",
+    "row_id": "1",
+    "ts": "2026-10-12 12:33:50",
+    "conv": "45881eab5168c821",
+    "revealed": "#1 A"
+   },
+   {
+    "pos": 1,
+    "win": 0,
+    "state": "arrival",
+    "row_id": "2",
+    "ts": "2026-10-12 12:33:50",
+    "conv": "45881eab5168c821",
+    "revealed": "#2 B"
+   },
+   {
+    "pos": 2,
+    "win": 0,
+    "state": "arrival",
+    "row_id": "3",
+    "ts": "2026-10-12 12:33:50",
+    "conv": "45881eab5168c821",
+    "revealed": "#3 A"
+   },
+   {
+    "pos": 3,
+    "win": 0,
+    "state": "arrival",
+    "row_id": "4",
+    "ts": "2026-10-12 12:33:50",
+    "conv": "45881eab5168c821",
+    "revealed": "#4 B"
+   },
+   {
+    "pos": 4,
+    "win": 0,
+    "state": "arrival",
+    "row_id": "5",
+    "ts": "2026-10-12 12:33:50",
+    "conv": "45881eab5168c821",
+    "revealed": "#5 A"
+   },
+   {
+    "pos": 5,
+    "win": 0,
+    "state": "arrival",
+    "row_id": "6",
+    "ts": "2026-10-12 12:33:51",
+    "conv": "45881eab5168c821",
+    "revealed": "#6 B"
+   },
+   {
+    "pos": 6,
+    "win": 0,
+    "state": "arrival",
+    "row_id": "7",
+    "ts": "2026-10-12 12:33:51",
+    "conv": "45881eab5168c821",
+    "revealed": "#7 A"
+   },
+   {
+    "pos": 7,
+    "win": 0,
+    "state": "arrival",
+    "row_id": "8",
+    "ts": "2026-10-12 12:33:51",
+    "conv": "45881eab5168c821",
+    "revealed": "#8 B"
+   }
+  ],
+  "payloads": [
+   "5CXBAvEMnewVNXs+",
+   "O15JTmvKFwXJq5rE",
+   "QvtKhWEEvxtDJyH9",
+   "ZdE2cW2IsKPihL/e",
+   "oHylGtbZUxF/ll8E",
+   "oPe6l8VIkmp52DQV",
+   "rfLxssSHXGfEJybm",
+   "ynGSA0p7JkKrnRTk"
+  ],
+  "columns_shown": [
+   "#",
+   "row_id",
+   "ts",
+   "conv",
+   "win",
+   "payload",
+   "sent"
+  ],
+  "table": [
+   "1 | 1 | 2026-10-12 12:33:50 | 45881eab5168c821 | 358361686 | a07ca51a…b736 (4124 B) | #1 A",
+   "2 | 2 | 2026-10-12 12:33:50 | 45881eab5168c821 | 358361686 | ca719203…aaa5 (4124 B) | #2 B",
+   "3 | 3 | 2026-10-12 12:33:50 | 45881eab5168c821 | 358361686 | a0f7ba97…96b1 (4124 B) | #3 A",
+   "4 | 4 | 2026-10-12 12:33:50 | 45881eab5168c821 | 358361686 | 65d13671…87e4 (4124 B) | #4 B",
+   "5 | 5 | 2026-10-12 12:33:50 | 45881eab5168c821 | 358361686 | 42fb4a85…e5f8 (4124 B) | #5 A",
+   "6 | 6 | 2026-10-12 12:33:51 | 45881eab5168c821 | 358361686 | 3b5e494e…94c1 (4124 B) | #6 B",
+   "7 | 7 | 2026-10-12 12:33:51 | 45881eab5168c821 | 358361686 | e425c102…8faa (4124 B) | #7 A",
+   "8 | 8 | 2026-10-12 12:33:51 | 45881eab5168c821 | 358361686 | adf2f1b2…3266 (4124 B) | #8 B"
+  ],
+  "note": "Unprotected baseline. Each row carries a serial id, its arrival time (ts) and its conversation id (conv) in the clear, and the rows lie in arrival order. Without any key the table tells who is in a conversation with whom, when each message came and in which order. Only the text is encrypted. Showing 8 of 8 stored row(s) in the last 48 window(s). This server was started with --compare: it stores every message in both layouts, so the switch shows the same messages either way. A real V‑cloak server keeps no arrival-order table. The revealed number is the position of the message in the conversation as the panes read and verified it; the server did not supply it and cannot. “—” is a row no pane has read since this page opened.",
+  "strip_mode": "baseline"
+ },
+ "mode_route_in_baseline": {
+  "mode": "baseline",
+  "switchable": true
+ },
+ "stores": {
+  "vcloak_rows": 8,
+  "baseline_rows": 8
+ },
+ "checks": {
+  "the switch is enabled on a --compare server": true,
+  "V-cloak: the revealed order is not monotonic": true,
+  "baseline: the revealed order is monotonic": true,
+  "both panels hold the same ciphertexts": true,
+  "baseline rows carry ts and conv, V-cloak rows do not": true,
+  "the caption changes with the mode": true,
+  "the caption says the server stores both layouts": true,
+  "the strip follows the server": true,
+  "switching back gives the V-cloak order again": true,
+  "the panes read the conversation once, in the order sent": true,
+  "no pane stopped": true,
+  "no message text is in the table": true,
+  "both stores hold every message": true
+ },
+ "errors": [],
+ "ok": true
+}

@@ -62,6 +62,7 @@
         VC.state.live = true;
         VC.state.dev = !!s.dev;
         VC.state.sessions = !!s.sessions;
+        VC.state.switchable = !!s.dev && !!s.switchable;
         VC.state.payloadLen = s.payload_len;
         VC.state.windowS = s.window_s;
         if (s.mode) VC.state.mode = s.mode;
@@ -110,9 +111,20 @@
       });
     },
 
+    /* Live: the server changes its store mode, or refuses (the promise then rejects and nothing changed).
+     * Demo: the mode is a state of the page. */
     setMode: function (mode) {
-      VC.state.mode = mode;
-      return post("/v1/mode", { mode: mode }).catch(function () { return { mode: mode, demo: true }; });
+      if (!VC.state.live) {
+        VC.state.mode = mode;
+        return Promise.resolve({ mode: mode, demo: true });
+      }
+      return raw("POST", "/v1/mode", { mode: mode }).then(function (r) {
+        if (r.status !== 200 || !r.body || !r.body.mode) {
+          throw new Error("POST /v1/mode -> " + r.status + ((r.body && r.body.error) ? " " + r.body.error : ""));
+        }
+        VC.state.mode = r.body.mode;
+        return r.body;
+      });
     },
 
     attack: function (layout) {

@@ -12,7 +12,7 @@ All bodies are JSON. Unknown fields are rejected. The same contract is served in
 ## Run
 
 ```
-vcloak serve --mode vcloak|baseline --clock wall|sim [--visible-round window|epoch] [--dev]
+vcloak serve --mode vcloak|baseline --clock wall|sim [--visible-round window|epoch] [--dev [--compare]]
              [--store pg|sqlite] [--dsn DSN] [--schema NAME] [--key-file PATH]
              [--host 127.0.0.1] [--allow-remote] [--port 8000] [--sessions] [--public-origin URL]
              [--slots N] [--buckets N] [--window-s N] [--epoch-ms N] [--cand-k N]
@@ -27,7 +27,8 @@ vcloak serve --mode vcloak|baseline --clock wall|sim [--visible-round window|epo
 | `--clock sim` | A virtual clock that jumps from boundary to boundary as fast as the engine and the store allow (M14). |
 | `--visible-round window` | Default. The stored round is the window; a closed window is re-shuffled once (ADR-004). |
 | `--visible-round epoch` | The Review-1 layout: the stored round is the epoch, nothing is re-shuffled. For the M14 comparison only. On the wall clock the rounds are counted from 2026-01-01T00:00:00Z. |
-| `--dev` | Use the fixed public development key. Without it the master key is unsealed from `--key-file` (or `VCLOAK_KEY_FILE`, default `secrets/k_master.sealed`) with the passphrase in `VCLOAK_PASSPHRASE`, or typed at a prompt. The variable is removed from the process environment once read. |
+| `--dev` | Use the fixed public development key. Without it the master key is unsealed from `--key-file` (or `VCLOAK_KEY_FILE`, default `secrets/k_master.sealed`) with the passphrase in `VCLOAK_PASSPHRASE`, or typed at a prompt. The variable is removed from the process environment once read. `--dev` also turns the dev routes on (`GET /v1/dump`), so `serve` refuses it on a `--host` that is not a loopback address, with or without `--sessions` and `--allow-remote`. |
+| `--compare` | With `--dev` only (refused otherwise, and with `--visible-round epoch`): run the baseline beside V-cloak, store every message in both, and let `POST /v1/mode` choose which one answers. `--mode` is the one that answers first. For the demonstration of M13 (ADR-022); never for a measurement: the second write is on the path of every message. `--schema` is ignored: each store keeps its default schema. |
 | `--store sqlite` | An in-memory store for demos and tests. Evaluation numbers come from PostgreSQL only (ADR-008). |
 
 On shutdown the service stops accepting submissions, writes what is queued on the next epoch boundaries, and
@@ -103,10 +104,11 @@ Answer `200 {"status": "ok", "mode": "vcloak", "ready": true, "epochs": 0, "over
 
 ### `GET /v1/stats/live` (M13)
 Open, like `/v1/windows`. Answer `200 {"mode": "vcloak", "dev": true, "sessions": true, "win": 29363120,
-"window_s": 60, "epoch_ms": 200, "slots": 64, "queued": 0, "epochs": 12, "payload_len": 4124, "gpu": null}`:
+"window_s": 60, "epoch_ms": 200, "slots": 64, "queued": 0, "epochs": 12, "payload_len": 4124, "switchable": false,
+"gpu": null}`:
 public parameters, the public counters of `/healthz`, and what the web page needs to decide how to run. `dev` and
 `sessions` say how the service was started; `payload_len` is the size every `payload_b64` must decode to; `slots` is
-null in baseline mode. `gpu` is null for now (the provenance of the compute backend is added with the live strip).
+null in baseline mode. `switchable` says that `POST /v1/mode` works (`--dev --compare`). `gpu` is null for now (the provenance of the compute backend is added with the live strip).
 
 ### `GET /v1/dump` (M13, `--dev` only)
 The stored rows as the store holds them: what someone with a copy of the database sees. Without `--dev` the answer is
@@ -118,15 +120,31 @@ default 4). Answer `200`:
 {"mode": "vcloak", "visible_round": "window", "win": 29363120,
  "windows": [{"win": 29363119, "state": "reshuffled", "rows": 8}, {"win": 29363120, "state": "open", "rows": 1}],
  "total": 9, "truncated": false,
- "rows": [{"pos": 0, "win": 29363119, "row_id": "3d5709fe-…", "bucket": 18, "seq_enc_b64": "…", "payload_b64": "…"}]}
+ "rows": [{"pos": 0, "win": 29363119, "row_id": "3d5709fe-…", "bucket": 18, "seq_enc_b64": "…", "payload_b64": "…",
+           "ts": null, "conv_hex": null}]}
 ```
 
 `rows` are in physical order, one window after the other (oldest first); `pos` is the position in this answer. When
 more than `limit` rows are in the windows asked for, the newest windows are kept and `truncated` is true. `state` of
 a window: `open` (still filling: each epoch is permuted, the epochs lie in arrival order), `closing` (closed, its
 re-shuffle has not been written yet), `reshuffled`, `epoch` (`--visible-round epoch`: never re-shuffled), `arrival`
-(baseline: `row_id` is the serial id, `bucket` and `seq_enc_b64` are null). No key is used to build the answer, so
+(baseline: `row_id` is the serial id, `bucket` and `seq_enc_b64` are null, and `ts` and `conv_hex` are the arrival
+time and the conversation id that table holds in the clear; both are null for a V-cloak row, which has no such
+columns). No key is used to build the answer, so
 it does not say which row is which message; the page works that out from what its own clients read (docs/DEMO.md).
+
+### `GET /v1/mode` and `POST /v1/mode` (M13)
+`GET` is open: `200 {"mode": "vcloak", "switchable": false}`. `POST {"mode": "vcloak" | "baseline"}` changes the store
+that answers every route (`/v1/messages` acknowledgements, `/v1/read`, `/v1/dump`, `/v1/windows`, `/healthz`,
+`/v1/stats/live`) and answers `200 {"mode": "baseline", "switchable": true}`. It works only on `serve --dev --compare`:
+`403 {"error": "dev_only"}` without `--dev`, `409 {"error": "not_switchable"}` with `--dev` alone, 422 for any other
+body. It needs no session, like `/v1/dump`.
+
+With `--compare` every accepted message is written to both stores whatever the mode: the scheduler first (only it can
+refuse, and a refused message reaches neither), then the baseline table, in the order of arrival. The two stores can
+file a message under neighbouring windows (the baseline at arrival, V-cloak when its epoch closes), so a client that
+counts the payloads of a window must read its open windows again after a switch; the web page does
+(`Client.reread`), the Python SDK does not: switch the mode with one page open and no other client.
 
 ### `GET /app/` (M13)
 The web app: the files of `web/` as they are on disk (`/app` redirects to `/app/`). Every answer under `/app` carries

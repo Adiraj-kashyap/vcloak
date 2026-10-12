@@ -1,0 +1,54 @@
+{
+  "run_id": "20261012-175413_M13_web_mode_switch_s5",
+  "module": "M13",
+  "step": "S5",
+  "owner": "Abhishek",
+  "git_sha": "93ab806d96bc6907c9a2f015dd0fc998b2456566",
+  "dirty": true,
+  "command": "pytest -q; ruff check; check_*; headless page check of the mode switch",
+  "seed": 0,
+  "quick": false,
+  "params": {},
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261012-175413",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U"
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791807853.8557076
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791808472.12145
+  },
+  "outputs": [
+    "a5_grep.txt",
+    "chat_file_demo.png",
+    "check_metrics.txt",
+    "check_oblivious.txt",
+    "check_secrets.txt",
+    "file_demo_check.json",
+    "file_demo_check.py",
+    "file_demo_check.txt",
+    "g10_rerun.txt",
+    "page_checks.json",
+    "page_checks.py",
+    "pytest_all.txt",
+    "pytest_all_first.txt",
+    "pytest_m13.txt",
+    "pytest_skips.txt",
+    "ruff.txt",
+    "server_view_baseline_reveal_dark.png",
+    "server_view_baseline_reveal_light.png",
+    "server_view_vcloak_reveal_dark.png",
+    "server_view_vcloak_reveal_light.png"
+  ],
+  "status": "OK",
+  "notes": "M13 S5: full suite 1977 passed, 675 skipped (first run of the session: 1 failed, an M11 CLI test that started --dev on 0.0.0.0, changed with ISSUE-30 point 1; kept as pytest_all_first.txt); 25 web app tests in headless Chrome (none skipped); /v1/mode and the comparison backend checked on the API and in the page; the file:// demo path re-checked; screenshots of the panel in both modes and both themes. Correctness only, numpy engine, SQLite: no metric."
+}

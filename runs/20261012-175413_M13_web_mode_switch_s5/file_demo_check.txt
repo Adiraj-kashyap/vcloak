@@ -1,0 +1,33 @@
+{
+ "protocol": "file:",
+ "conn": "demo data",
+ "live": false,
+ "bubblesA": 4,
+ "rows": 8,
+ "reveal_disabled": false,
+ "mode_disabled": false,
+ "note": "V\u2011cloak. Random UUIDs, a shared bucket, a coarse window id, and no timestamp. The physical order of these rows is the engine's permutation, not the order anyone typed.",
+ "revealed_vcloak": [
+  "#4",
+  "#1",
+  "#6",
+  "#3",
+  "#5",
+  "#2",
+  "#7",
+  "#8"
+ ],
+ "reveal_visible": "table-cell",
+ "revealed_baseline": [
+  "#1",
+  "#2",
+  "#3",
+  "#4",
+  "#5",
+  "#6",
+  "#7",
+  "#8"
+ ],
+ "errors": [],
+ "ok": true
+}

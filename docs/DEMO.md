@@ -1,18 +1,20 @@
 # Demo guide
 
-How to show V-cloak running. This file grows with the frontend: the chat section is M13 (steps S1-S4 so far);
-the mode switch and the live strip are added by S5-S6, the dashboard by M18.
+How to show V-cloak running. This file grows with the frontend: the chat section is M13 (steps S1-S5 so far);
+the live strip is completed by S6, the dashboard by M18.
 
 ## 1. The chat
 
 ### Start
 ```
-python -m vcloak.cli serve --dev --sessions --store sqlite
+python -m vcloak.cli serve --dev --compare --sessions --store sqlite --window-s 5
 ```
 then open `http://127.0.0.1:8000/app/` in Chrome or Edge. `--store sqlite` needs no database; leave it out to use
 PostgreSQL (`docker compose up -d --wait db` first). `--dev` uses the public development key: a demo database only.
 Use `127.0.0.1` or `localhost`: WebCrypto exists only in a secure context, and plain http counts as one on loopback
-only. The chip at the top right must read **live · dev**.
+only. The chip at the top right must read **live · dev**. `--compare` is what makes the "Unprotected baseline" switch
+work (see "The same conversation both ways"); `--window-s 5` closes a window every five seconds, so the shuffle shows
+quickly. Both are for the demonstration only.
 
 If the backend is down, open `web/index.html` from the file manager instead: the chip reads **demo data**, the
 conversation is local to the page and the rows under it are bundled sample rows, not a result.
@@ -77,6 +79,33 @@ What to say, and what not to:
 - With few rows a permutation can leave some rows where they were; the order is a pseudo-random permutation keyed by
   the window, not a guarantee that every row moves.
 
+### The same conversation both ways (presenter note 1)
+With `--dev --compare` the server keeps an ordinary message table beside the V-cloak store and writes every message
+to both. "Unprotected baseline" (`POST /v1/mode`) chooses which of the two the panel, and the panes, are served from.
+Nothing else changes: the same ciphertexts, the same clients.
+
+How to show it: send eight or so messages, wait until their window is marked `re-shuffled`, switch "Reveal true order"
+on, then flip "Unprotected baseline" back and forth.
+
+| | V-cloak | Baseline |
+|---|---|---|
+| Row id | random UUID, new after the re-shuffle | serial number: 1, 2, 3 … |
+| `ts` | no such column | arrival time of each message, in the clear |
+| `conv` | no such column (a `bucket` shared with other conversations) | the conversation id, in the clear |
+| Order of the rows | the engine's permutation of the closed window | the order of arrival |
+| Revealed numbers | not in order | 1, 2, 3 … top to bottom |
+
+What to say, and what not to:
+- In the baseline the message text is still encrypted. What the table gives away without any key is everything
+  around it: who is in a conversation with whom, when each message came, and the order.
+- The baseline table exists on this server because of `--compare`, and the panel's note says so. A V-cloak server
+  does not keep one. Never present the switch as something a deployment has.
+- The switch needs `--compare`; on a server started without it the switch is disabled and the route answers 409.
+- Flip the mode with one page open. The panes read their open windows again after a switch, because the two stores
+  can file a message under neighbouring windows; another client connected at that moment (the Python SDK, a second
+  tab) is not told and can stop with an order error.
+- The switch compares layouts, not speed. No timing on this page is a result, and with `--compare` every message is
+  written twice.
+
 ### Not shown yet
-The baseline switch needs the dev route of S5 and stays disabled on a live server; the strip at the top shows the
-window and the queue but not yet the epoch or the compute backend (S6).
+The strip at the top shows the window, the queue and the store mode, but not yet the epoch or the compute backend (S6).

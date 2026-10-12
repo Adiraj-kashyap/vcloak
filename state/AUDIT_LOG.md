@@ -765,3 +765,36 @@ Notes:
   requires a window of at least 6 rows among 24 messages.
 - Browser: Chrome headless only; uvicorn inside the test process on loopback, public development key, SQLite.
 - Not verified: listed in SESSION_LOG session 26 and ISSUE-30 point 5.
+
+## Audit M13 — 2026-10-12 — session 27 — result: PASS for S5 (checkpoint; module not complete: A6 open, S5b and S6 not started)
+| Item | Result | Evidence |
+|---|---|---|
+| A1 nothing in the chat path decrypts on the server | PASS | runs/20261012-175413_M13_web_mode_switch_s5/pytest_m13.txt: test_thirty_messages_two_users_exact_order (unchanged); `/v1/mode` and the comparison backend use no key: the baseline copy is the client's ciphertext (test_mode_switch_dumps_the_same_messages_both_ways: the same `payload_b64` set in both dumps); runs/20261012-175413_M13_web_mode_switch_s5/page_checks.json: no message text in the table in either mode |
+| A2 the device key cannot be exported | PASS | runs/20261012-175413_M13_web_mode_switch_s5/pytest_m13.txt: test_the_private_keys_cannot_be_exported (unchanged) |
+| A3 /v1/dump and the reveal toggle disabled without --dev | PASS | runs/20261012-175413_M13_web_mode_switch_s5/pytest_m13.txt: test_dump_is_refused_without_dev, test_without_dev_the_page_has_no_rows_and_no_reveal; the same for the new route: test_mode_cannot_be_changed_without_dev_or_without_compare (403 `dev_only`, also when the backend is the comparison one) |
+| A4 the app loads from file:// with demo data | PASS | runs/20261012-175413_M13_web_mode_switch_s5/file_demo_check.json and chat_file_demo.png (protocol file:, chip "demo data", 8 sample rows, the reveal and baseline switches work on the sample rows, no page error). The script is the S4 one with the column index changed (the table gained two columns) |
+| A5 CSP present, no inline script, no CDN | PASS | runs/20261012-175413_M13_web_mode_switch_s5/pytest_m13.txt (the CSP and source tests), runs/20261012-175413_M13_web_mode_switch_s5/a5_grep.txt empty |
+| A6 capture_evidence.py | NOT DONE | step S5b |
+| G1 | PASS | runs/20261012-175413_M13_web_mode_switch_s5/pytest_all.txt (1977 passed, 675 skipped); runs/20261012-175413_M13_web_mode_switch_s5/pytest_skips.txt: 674 skips name CUDA/CuPy/GPU, 1 is tests/unit/test_oracle_chacha.py:82; no PostgreSQL skip, no browser skip. The first run of the session had 1 failure (runs/20261012-175413_M13_web_mode_switch_s5/pytest_all_first.txt: tests/security/test_session_ws.py::test_cli_sessions_switch started `--dev --sessions` on 0.0.0.0, which `serve` now refuses; the test was changed). See the note on the intermittent browser test |
+| G2 | PASS | runs/20261012-175413_M13_web_mode_switch_s5/check_metrics.txt (331 rows, 0 problems). No metric added; what the panel shows are row fields from /v1/dump |
+| G2b | PASS | nothing timed; manifest says backend numpy |
+| G3 | PASS | runs/20261012-175413_M13_web_mode_switch_s5/check_oblivious.txt (11 files, 0 findings); no kernel source changed |
+| G4 | PASS | runs/20261012-175413_M13_web_mode_switch_s5/check_secrets.txt (0 key-like runs), run again after the evidence files were written |
+| G5 | N/A | no GPU twin |
+| G6 | PARTIAL | added: /v1/mode, src/vcloak/service/switch.py, the mode switch of the page. Missing until S5b: scripts/capture_evidence.py |
+| G7 | PASS | checked after the closing commit |
+| G8 | PASS | STATE: M13 IN_PROGRESS, step S5b, sessions 3; next_unit M13 |
+| G9 | PASS | SESSION_LOG session 27, this entry, ISSUE-30 updated, ISSUE-31 opened, ADR-022, M13 Amendments |
+| G10 | PASS | manifest valid; runs/20261012-175413_M13_web_mode_switch_s5/page_checks.py run twice with the same outcome (page_checks.json, g10_rerun.txt: thirteen checks true, no page error; the V-cloak order differs between the two runs, as it should: new row ids, new permutation) |
+Notes:
+- The S5 check ("in baseline the revealed order is monotonic; in V-cloak it is not") holds on a server started with
+  `--dev --compare`, which writes every message to both stores (ADR-022). With `--dev` alone the route answers 409 and
+  the switch is disabled: there is no second store to show. The V-cloak half is checked on closed windows, as in S4.
+- Intermittent browser tests (ISSUE-31). tests/integration/test_web_app.py was repeated 27 times on the tree of this
+  session: 25 clean, 1 failure in test_a_withheld_message_is_flagged_in_the_pane (an S3 test), 1 failure not
+  identified (output not kept). On the last commit (93ab806, a scratch worktree) 4 repeats gave 2 failures: the same
+  S3 test, and `open_app` asking `VC.chat.ready()` before the page had initialised. The second is fixed in the test
+  helper; the first is open. Neither is in the mode switch, but G1 passing once is not proof that the file is stable.
+- Not checked: the switch on PostgreSQL (the baseline schema beside `public`), a switch while a second client is
+  connected, a full queue on a real server (the refusal path is tested with stub backends only).
+- Browser: Chrome headless only; uvicorn inside the test process on loopback, public development key, SQLite.

@@ -709,3 +709,25 @@ BLOCKS: none   SEVERITY: low   OPENED: 2026-10-12 session 26
    review), the `closing` state (it lasts a few epochs; no test waits for it), more than 200 rows, PostgreSQL behind
    the page (the browser tests use SQLite), a window in which the permutation happens to keep the order.
 Proposed: points 1 and 2 in S5 (it touches the same routes); 3-5 stay as stated limits in docs/DEMO.md.
+Update 2026-10-12 session 27 (M13 S5, ADR-022): point 1 done (`serve` refuses `--dev` on a host that is not loopback,
+whatever else is given; tests/unit/test_service_sqlite.py). Point 2 done (`BaselineStore.dump_clear`, `ts` and
+`conv_hex` in `/v1/dump`, shown in the panel). Points 3-5 remain as stated limits; the issue stays open for them.
+
+### ISSUE-31 [OPEN] M13: a browser test fails intermittently; what the mode switch leaves open
+BLOCKS: none   SEVERITY: medium   OPENED: 2026-10-12 session 27
+1. `tests/integration/test_web_app.py::test_a_withheld_message_is_flagged_in_the_pane` (S3) fails now and then:
+   pane B shows no alert within 20 s. Seen once in 27 repeats of the file on the tree of session 27 and once in 4
+   repeats on commit 93ab806, so it is older than the mode switch. One failing run also logged a keep-alive timeout
+   on the DevTools socket, which points at the browser or the machine stalling, but the cause is not established.
+   A second failure in those 27 repeats was not identified (its output was not kept). Until this is understood, a
+   single green run of the file is weak evidence: repeat it before the Review-3 close-out (M17).
+2. The mode switch is tested on SQLite only. On PostgreSQL the comparison uses the schemas `public` and `baseline`
+   in one database; not run.
+3. A client that is not the page (the Python SDK, a second tab) is not told about a switch and can stop with an
+   order error, because the two stores can file a message under neighbouring windows. Stated in docs/DEMO.md and
+   docs/API.md; not tested. The refusal path of the comparison backend (a full queue reaches neither store) is
+   tested with stub backends, not on a running server.
+4. The footer of the page reads "data: seed" on a live server too (seen in the S5 screenshots); the "dev" mark of
+   the reveal switch is clipped at 1440 px. Both are from the prototype.
+Proposed: point 1 in S5b, which builds on the same headless driver; point 4 in S6 or M18; 2-3 stay as stated limits.
+

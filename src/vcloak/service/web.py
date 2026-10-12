@@ -18,15 +18,19 @@ plus what the page needs to decide how to run (`dev`, `sessions`, the payload si
 holds them, in physical order. It exists with `--dev` only and answers 403 otherwise. It hands out what
 a copy of the database holds and nothing else: no key is used to build it, so it cannot say which row is
 which message. The page finds that out from its own clients.
+
+`GET /v1/mode` says which backend answers and whether it can be changed; `POST /v1/mode` changes it. Only
+`serve --dev --compare` can (service/switch.py, ADR-022): 403 without `--dev`, 409 with `--dev` alone.
 """
 from __future__ import annotations
 
 import base64
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 from fastapi import FastAPI, Query
 from fastapi.responses import JSONResponse
+from pydantic import BaseModel, ConfigDict
 from starlette.staticfiles import StaticFiles
 from starlette.types import ASGIApp, Message, Receive, Scope, Send
 
@@ -47,6 +51,11 @@ CSP = "; ".join((
     "frame-ancestors 'none'",
     "form-action 'none'",
 ))
+
+
+class ModeIn(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    mode: Literal["vcloak", "baseline"]
 
 
 def page_headers(dev: bool) -> dict[str, str]:
@@ -95,6 +104,23 @@ def mount_web(app: FastAPI, web_dir: Path | None = None, *, dev: bool = False) -
 
 
 def add_live_routes(app: FastAPI, backend: Any, *, dev: bool, sessions: bool, payload_len: int) -> None:
+    # the mode can change only on the comparison backend, and that one is offered in dev only
+    switchable = dev and bool(getattr(backend, "switchable", False))
+    no_store = {"Cache-Control": "no-store"}
+
+    @app.get("/v1/mode")
+    async def get_mode() -> JSONResponse:
+        return JSONResponse({"mode": backend.mode, "switchable": switchable}, headers=no_store)
+
+    @app.post("/v1/mode")
+    async def post_mode(body: ModeIn) -> JSONResponse:
+        if not dev:
+            return JSONResponse({"error": "dev_only"}, status_code=403, headers=no_store)
+        if not switchable:
+            return JSONResponse({"error": "not_switchable"}, status_code=409, headers=no_store)
+        backend.set_mode(body.mode)
+        return JSONResponse({"mode": backend.mode, "switchable": True}, headers=no_store)
+
     @app.get("/v1/stats/live")
     async def stats_live() -> dict[str, Any]:
         stats = backend.stats()
@@ -109,6 +135,7 @@ def add_live_routes(app: FastAPI, backend: Any, *, dev: bool, sessions: bool, pa
             "queued": stats["queued"],
             "epochs": stats["epochs"],
             "payload_len": payload_len,
+            "switchable": switchable,
             "gpu": None,  # provenance of the compute backend: S6
         }
 
@@ -132,8 +159,10 @@ def add_live_routes(app: FastAPI, backend: Any, *, dev: bool, sessions: bool, pa
             kept.append({**w, "rows": w["rows"][:room]})
             room -= len(kept[-1]["rows"])
         kept.reverse()
+        # `ts` and `conv_hex` are columns of the baseline table only: V-cloak rows have neither
         rows = [{"pos": pos, "win": w["win"], "row_id": r["row_id"], "bucket": r["bucket"],
-                 "seq_enc_b64": b64(r["seq_enc"]), "payload_b64": b64(r["payload"])}
+                 "seq_enc_b64": b64(r["seq_enc"]), "payload_b64": b64(r["payload"]),
+                 "ts": r.get("ts"), "conv_hex": r["conv"].hex() if r.get("conv") is not None else None}
                 for pos, (w, r) in enumerate((w, r) for w in kept for r in w["rows"])]
         total = sum(len(w["rows"]) for w in stored)
         body = {"mode": backend.mode, "visible_round": backend.visible_round, "win": backend.current_window(),

@@ -463,7 +463,9 @@ def test_cli_sessions_switch(monkeypatch: pytest.MonkeyPatch, capsys: pytest.Cap
     base = ["serve", "--dev", "--store", "sqlite"]
     assert cli.main(base) == 0
     assert cli.main([*base, "--sessions"]) == 0
-    assert cli.main([*base, "--sessions", "--host", "0.0.0.0"]) == 0  # a session is asked for: any address
+    # a session is asked for: any address. Without --dev: the dev routes never leave the machine (ISSUE-30)
+    assert cli.main(["serve", "--store", "sqlite", "--sessions", "--host", "0.0.0.0"]) == 0
+    assert cli.main([*base, "--sessions", "--host", "0.0.0.0"]) == 2
     assert cli.main([*base, "--host", "0.0.0.0"]) == 2  # the open API stays on the loopback
     assert started == [("127.0.0.1", False), ("127.0.0.1", True), ("0.0.0.0", True)]
     assert "--sessions" in capsys.readouterr().err

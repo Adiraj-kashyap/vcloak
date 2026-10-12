@@ -59,6 +59,15 @@
     return run;
   };
 
+  /* Run fn in this client's queue: no request of this client is on the wire while it runs. */
+  Client.prototype.exclusive = function (fn) { return this._serial(fn); };
+
+  /* Forget how many payloads each window gave, so the next sync takes its windows from their start.
+   * For a server whose store was exchanged under the client (the mode switch of `serve --compare`): the
+   * other store may hold a message one window earlier or later. The numbers already seen stay, so a
+   * message read again is dropped as a repeat and a missing one is still a gap. */
+  Client.prototype.reread = function () { if (this.conv) this.conv.consumed = {}; };
+
   /* The key handles of this pane: made once, then found again in IndexedDB. */
   Client.prototype.init = function () {
     var self = this;

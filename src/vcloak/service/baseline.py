@@ -40,6 +40,7 @@ CREATE INDEX IF NOT EXISTS messages_conv_win_idx ON messages (conv, win);
 """
 
 Dumped = tuple[int, int, bytes]  # (id, win, payload), in physical order
+Clear = tuple[int, str, bytes, int, bytes]  # (id, ts, conv, win, payload): every column, in physical order
 
 
 def _conv_bytes(conv_id: int) -> bytes:
@@ -54,6 +55,8 @@ class BaselineStore(Protocol):
     def read(self, conv_id: int, win: int) -> list[bytes]: ...
 
     def dump(self) -> list[Dumped]: ...
+
+    def dump_clear(self) -> list[Clear]: ...
 
     def close(self) -> None: ...
 
@@ -92,6 +95,12 @@ class PgBaselineStore:
         with self._lock:
             got = self._conn.execute("SELECT id, win, payload FROM messages ORDER BY ctid").fetchall()
         return [(i, w, bytes(p)) for i, w, p in got]
+
+    def dump_clear(self) -> list[Clear]:
+        """The whole table as it is stored, the arrival time and the conversation id included."""
+        with self._lock:
+            got = self._conn.execute("SELECT id, ts, conv, win, payload FROM messages ORDER BY ctid").fetchall()
+        return [(i, t.isoformat(), bytes(c), w, bytes(p)) for i, t, c, w, p in got]
 
     def execute(self, query: str, params: tuple[Any, ...] = ()) -> list[tuple[Any, ...]]:
         with self._lock:
@@ -133,6 +142,11 @@ class SqliteBaselineStore:
         with self._lock:
             got = self._conn.execute("SELECT id, win, payload FROM messages ORDER BY rowid").fetchall()
         return [(i, w, bytes(p)) for i, w, p in got]
+
+    def dump_clear(self) -> list[Clear]:
+        with self._lock:
+            got = self._conn.execute("SELECT id, ts, conv, win, payload FROM messages ORDER BY rowid").fetchall()
+        return [(i, str(t), bytes(c), w, bytes(p)) for i, t, c, w, p in got]
 
     def close(self) -> None:
         with self._lock:
@@ -218,11 +232,13 @@ class BaselineBackend:
         first = max(current - windows + 1, 0)
         out: dict[int, dict[str, Any]] = {w: {"win": w, "state": "arrival", "rows": []}
                                           for w in range(first, current + 1)}
-        for row_id, win, payload in self.store.dump():
+        for row_id, ts, conv, win, payload in self.store.dump_clear():
             if win in out:
-                out[win]["rows"].append({"row_id": str(row_id), "bucket": None, "seq_enc": None, "payload": payload})
+                out[win]["rows"].append({"row_id": str(row_id), "bucket": None, "seq_enc": None, "payload": payload,
+                                         "ts": ts, "conv": conv})
         return [out[w] for w in sorted(out)]
 
     async def stored(self, windows: int) -> list[dict[str, Any]]:
-        """The rows of the newest `windows` windows in physical order, which here is the arrival order."""
+        """The rows of the newest `windows` windows in physical order, which here is the arrival order,
+        with the two columns this table holds in the clear and V-cloak does not have: `ts` and `conv`."""
         return await self._blocking(lambda: self._stored(windows))

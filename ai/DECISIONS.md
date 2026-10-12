@@ -258,3 +258,27 @@ Consequences: the server never decrypts a sequence number for the demo, and the 
 only the clients know the order. The overlay is empty for rows no pane has read (after a reload, other
 conversations). The dump carries full payloads (4124 B each), so the page fetches up to about 1 MB a second on
 loopback in dev. The route is unauthenticated in dev (ISSUE-30).
+
+## ADR-022 — Mode switch: a comparison backend that writes both stores (`serve --dev --compare`); the mode selects which one answers — ACCEPTED — 2026-10-12
+Context: M13 S5 asks for `/v1/mode` (dev) to flip between `vcloak` and `baseline` "so the same conversation can be
+dumped both ways". The two modes are two backends over two stores (M10): a switch that only exchanged the backend
+would show an empty panel after every flip, and two different conversations side by side prove nothing. ISSUE-30
+left two points for this step: `/v1/dump` reachable from another host with `--dev`, and a baseline dump without the
+columns that table holds in the clear.
+Decision: (1) `service/switch.py` `SwitchBackend` owns a `VcloakBackend` and a `BaselineBackend` on one clock. Every
+accepted message goes to both: the scheduler first (only it can refuse; a refused message reaches neither store),
+then the baseline insert, so that table is in arrival order whatever acknowledgement the sender waits for. Reads, the
+dump, the counters and `mode` come from the active one. (2) It is built only by `serve --dev --compare`; `serve`
+refuses `--compare` without `--dev` and with `--visible-round epoch`. Plain `--dev`, and every measurement (M14, M15),
+keep the single backend. (3) `GET /v1/mode` is open; `POST /v1/mode` answers 403 `dev_only` without `--dev` and 409
+`not_switchable` without `--compare`; `/v1/stats/live` carries `switchable`. (4) `serve` refuses `--dev` on a host
+that is not loopback, whatever else is given (ISSUE-30 point 1). (5) The baseline dump returns `ts` and `conv`
+(`BaselineStore.dump_clear`; `dump()` is unchanged for M14), and the panel shows them in place of `bucket` and
+`seq_enc` with a caption on what each layout leaks (ISSUE-30 point 2). (6) After a switch the page holds both panes,
+changes the mode, and has them read their open windows again (`Client.reread`): the per-window payload count is
+reset, the per-sender message numbers are kept, so a repeat is dropped and a gap is still flagged.
+Consequences: with `--compare` the server holds exactly the table V-cloak exists to avoid. It is a dev-only
+demonstration and the panel says so on screen; it must never be described as a deployment feature. No timing taken
+on a `--compare` server is a result. The two stores can disagree by one window about a message near a boundary, so a
+client that is not told about the switch (the Python SDK, a second tab) can stop with an order error. The M10 test
+that started `--dev` on `0.0.0.0 --allow-remote` now runs without `--dev`.

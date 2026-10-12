@@ -1,11 +1,14 @@
 """The `vcloak` command.
 
-    vcloak serve --mode vcloak|baseline --clock wall|sim [--visible-round window|epoch] [--dev] [--sessions]
+    vcloak serve --mode vcloak|baseline --clock wall|sim [--visible-round window|epoch] [--dev [--compare]] [--sessions]
 
 `serve` starts the backend of docs/API.md. Without `--dev` the master key is unsealed from the key
 file (`--key-file`, or VCLOAK_KEY_FILE, default secrets/k_master.sealed; create it with
 `python scripts/vcloak_keys.py init`) with the passphrase in VCLOAK_PASSPHRASE or typed at a prompt.
 `--dev` uses the fixed public development key: only for a throw-away database.
+It also turns the dev routes on (`GET /v1/dump`), so `serve` refuses `--dev` on a `--host` that is not a loopback
+address. `--dev --compare` keeps the baseline table beside the V-cloak store, writes every message to both and
+lets `POST /v1/mode` choose which one answers: the demonstration of M13, never a measurement (ADR-022).
 
 `--sessions` turns the session layer on (M11): accounts, DPoP-bound tokens, `/v1/ws`. Without it the API
 takes a conversation token from any caller, so `serve` then refuses a `--host` that is not a loopback
@@ -43,6 +46,8 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--visible-round", choices=VISIBLE_ROUNDS, default="window",
                    help="epoch reproduces the Review-1 layout, for the M14 comparison only")
     s.add_argument("--dev", action="store_true", help="use the fixed public development key (no passphrase)")
+    s.add_argument("--compare", action="store_true",
+                   help="with --dev: keep the baseline beside V-cloak and let POST /v1/mode switch (demo only)")
     s.add_argument("--key-file", default=None, help="the sealed master key file")
     s.add_argument("--store", choices=STORES, default="pg", help="sqlite is an in-memory store for demos and tests")
     s.add_argument("--dsn", default=None, help="PostgreSQL DSN (default: VCLOAK_PG_DSN or the development database)")
@@ -66,17 +71,39 @@ def build_parser() -> argparse.ArgumentParser:
 def build_backend(a: argparse.Namespace) -> ServiceBackend:
     """The backend `serve` runs, from parsed arguments. Nothing is opened on the device before startup."""
     clock: Clock = WallClock() if a.clock == "wall" else SimClock()
-    if a.mode == "baseline":
-        store: Any = (SqliteBaselineStore() if a.store == "sqlite"
-                      else PgBaselineStore(a.dsn, **({"schema": a.schema} if a.schema else {})))
+    compare = bool(getattr(a, "compare", False))
+
+    def baseline() -> BaselineBackend:
+        # in the comparison each store keeps its default schema: --schema names the one of --mode alone
+        schema = {"schema": a.schema} if a.schema and not compare else {}
+        store: Any = SqliteBaselineStore() if a.store == "sqlite" else PgBaselineStore(a.dsn, **schema)
         return BaselineBackend(store, clock, window_s=a.window_s, epoch_ms=a.epoch_ms)
+
+    if a.mode == "baseline" and not compare:
+        return baseline()
     from vcloak.storage.repo import PgRepo, SqliteRepo
 
-    repo: Any = SqliteRepo() if a.store == "sqlite" else PgRepo(a.dsn, schema=a.schema or "public")
+    repo: Any = SqliteRepo() if a.store == "sqlite" else PgRepo(a.dsn, schema=(not compare and a.schema) or "public")
     origin = EPOCH_ROUND_ORIGIN_MS // a.epoch_ms if (a.clock, a.visible_round) == ("wall", "epoch") else 0
-    return VcloakBackend(repo, clock, dev_master if a.dev else sealed_master(a.key_file), slots=a.slots,
-                         buckets=a.buckets, window_s=a.window_s, epoch_ms=a.epoch_ms, cand_k=a.cand_k,
-                         visible_round=a.visible_round, epoch_origin=origin)
+    vcloak = VcloakBackend(repo, clock, dev_master if a.dev else sealed_master(a.key_file), slots=a.slots,
+                           buckets=a.buckets, window_s=a.window_s, epoch_ms=a.epoch_ms, cand_k=a.cand_k,
+                           visible_round=a.visible_round, epoch_origin=origin)
+    if not compare:
+        return vcloak
+    from vcloak.service.switch import SwitchBackend
+
+    return SwitchBackend(vcloak, baseline(), mode=a.mode)
+
+
+def compare_refused(a: argparse.Namespace) -> str | None:
+    """Why `--compare` cannot run with these arguments, or None."""
+    if not a.compare:
+        return None
+    if not a.dev:
+        return "--compare needs --dev: it also stores every message in arrival order"
+    if a.visible_round != "window":
+        return "--compare needs --visible-round window"
+    return None
 
 
 def is_loopback(host: str) -> bool:
@@ -108,9 +135,18 @@ def serve(a: argparse.Namespace) -> int:
                   "address (or pass --allow-remote)", file=sys.stderr)
             return 2
         log.warning("remote_host_without_authentication")
+    if a.dev and not is_loopback(a.host):
+        log.event("remote_host_refused", level=logging.ERROR, error="dev_routes")
+        print("vcloak serve: --dev hands out the stored rows (GET /v1/dump) and uses a public key; --host must be "
+              "a loopback address", file=sys.stderr)
+        return 2
+    refused = compare_refused(a)
+    if refused is not None:
+        print(f"vcloak serve: {refused}", file=sys.stderr)
+        return 2
     import uvicorn
 
-    if a.dev and a.mode == "vcloak":
+    if a.dev and (a.mode == "vcloak" or a.compare):
         log.warning("dev_key_in_use", dev_key=True)
     log.event("serve", mode=a.mode, clock=a.clock, visible_round=a.visible_round, store=a.store, port=a.port,
               sessions=bool(a.sessions))

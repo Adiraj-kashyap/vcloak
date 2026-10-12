@@ -629,3 +629,30 @@
   200 rows or on PostgreSQL; the page in Firefox or Safari; a CUDA engine behind the service
 - Commit: 535e109
 - Next: M13 S5 ; human action: none. Keep Docker Desktop running when you type continue
+
+## Session 27 — 2026-10-12 18:40 — M13 Frontend: chat + server view — owner:Abhishek
+- Steps: S5→S5 (status after: IN_PROGRESS; checkpoint S5b)
+- Did: src/vcloak/service/switch.py (new): `SwitchBackend`, V-cloak and the baseline on one clock, every message
+  written to both, the active one answers. cli.py: `serve --compare` (needs --dev, window rounds); `--dev` refused on a
+  non-loopback host. web.py: `GET/POST /v1/mode` (403 without --dev, 409 without --compare), `switchable` in
+  `/v1/stats/live`, `ts` and `conv_hex` in `/v1/dump`. baseline.py: `dump_clear()`. web/: the switch is live
+  (chat.js `setMode`: both panes held, mode changed, windows read again via client.js `reread`), the panel shows
+  ts/conv in baseline mode and a caption on what each layout leaks; api.js no longer pretends a refused switch worked.
+  tests: test_web_app.py (+4: 25), test_service_sqlite.py (+7), test_session_ws.py (1 changed). docs/API.md,
+  docs/DEMO.md ("The same conversation both ways").
+- Evidence: runs/20261012-175413_M13_web_mode_switch_s5 (pytest_all.txt 1977 passed, 675 skipped; pytest_m13.txt 165 passed, 25 of them
+  the web app in Chrome; page_checks.json 13 checks; file_demo_check.json; server_view_{vcloak,baseline}_reveal_{light,dark}.png;
+  ruff clean; check_* PASS; a5_grep.txt empty; g10_rerun.txt); evidence/terminal/M13_S5_*
+- Metrics added: none (nothing measured: correctness only, numpy engine)
+- Decisions: ADR-022 (comparison backend behind --compare, mirrored writes, dev refused off loopback)
+- Issues: opened ISSUE-31 (intermittent browser test; limits of the switch; medium); ISSUE-30 points 1-2 done, stays open
+- Deviations from spec: `/v1/mode` works only with `--dev --compare`, not with `--dev` alone; two existing tests that
+  started `--dev` on 0.0.0.0 were changed (Amendments of ai/modules/M13)
+- Found on the way: the two stores can file one message under neighbouring windows, and the client counts payloads
+  per window, so a pane stopped with an order error after a switch until the page re-read its windows. `open_app` in
+  the tests raced the page's start-up (fixed). test_a_withheld_message_is_flagged_in_the_pane fails now and then, also
+  on the last commit (ISSUE-31). The footer of a live page still reads "data: seed" (ISSUE-31 point 4).
+- Not verified: S5b, S6 (not started); audit item A6; the switch on PostgreSQL, with a second client connected, or
+  with a full queue on a real server; the page in Firefox or Safari; a CUDA engine behind the service
+- Commit: PENDING
+- Next: M13 S5b ; human action: none. Keep Docker Desktop running when you type continue

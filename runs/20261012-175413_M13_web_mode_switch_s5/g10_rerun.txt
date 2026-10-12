@@ -1,0 +1,21 @@
+{
+ "checks": {
+  "the switch is enabled on a --compare server": true,
+  "V-cloak: the revealed order is not monotonic": true,
+  "baseline: the revealed order is monotonic": true,
+  "both panels hold the same ciphertexts": true,
+  "baseline rows carry ts and conv, V-cloak rows do not": true,
+  "the caption changes with the mode": true,
+  "the caption says the server stores both layouts": true,
+  "the strip follows the server": true,
+  "switching back gives the V-cloak order again": true,
+  "the panes read the conversation once, in the order sent": true,
+  "no pane stopped": true,
+  "no message text is in the table": true,
+  "both stores hold every message": true
+ },
+ "errors": [],
+ "ok": true
+}
+vcloak   [6, 4, 1, 3, 7, 2, 5, 8]
+baseline [1, 2, 3, 4, 5, 6, 7, 8]

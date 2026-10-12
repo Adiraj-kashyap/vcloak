@@ -79,3 +79,8 @@ stores, with a switch between V-cloak and the unprotected baseline. This is the 
   values (base64) and the page truncates them for display (ADR-021).
 - `/v1/dump` takes `limit` and `windows`; it also serves the baseline backend (`state: "arrival"`), ahead of S5.
 - `tests/service_contract.py` expected 404 for `/v1/dump` (M10); it now expects the 403 of A3.
+- 2026-10-12 (session 27, S5): `/v1/mode` flips only on `serve --dev --compare`, a comparison backend that writes
+  every message to both stores (ADR-022); with `--dev` alone `POST /v1/mode` answers 409 and the page's switch is
+  disabled. The S5 check runs on such a server, on closed windows for the V-cloak half (as in S4).
+- `serve` refuses `--dev` on a non-loopback host; the baseline dump carries `ts` and `conv_hex`, shown in the panel
+  in place of `bucket` and `seq_enc` (ISSUE-30 points 1-2).

@@ -195,6 +195,84 @@ def test_serve_listens_remotely_only_when_told_to(monkeypatch: pytest.MonkeyPatc
 
     started: list[str] = []
     monkeypatch.setattr(uvicorn, "run", lambda app, host, **kw: started.append(host))
-    assert cli.main(["serve", "--dev", "--store", "sqlite", "--host", "0.0.0.0", "--allow-remote"]) == 0
+    assert cli.main(["serve", "--store", "sqlite", "--host", "0.0.0.0", "--allow-remote"]) == 0
     assert cli.main(["serve", "--dev", "--store", "sqlite"]) == 0
     assert started == ["0.0.0.0", "127.0.0.1"]
+
+
+@pytest.mark.parametrize("extra", [["--allow-remote"], ["--sessions"], ["--sessions", "--compare"]])
+def test_serve_refuses_dev_on_a_host_that_is_not_loopback(extra: list[str], monkeypatch: pytest.MonkeyPatch,
+                                                          capsys: pytest.CaptureFixture[str]) -> None:
+    """ISSUE-30 (1): --dev opens GET /v1/dump without a session, so it never listens beyond the machine."""
+    import uvicorn
+
+    def never(*a: object, **kw: object) -> None:
+        raise AssertionError("the server must not start")
+
+    monkeypatch.setattr(uvicorn, "run", never)
+    assert cli.main(["serve", "--dev", "--store", "sqlite", "--host", "0.0.0.0", *extra]) == 2
+    assert "/v1/dump" in capsys.readouterr().err
+
+
+@pytest.mark.parametrize(("argv", "why"), [(["--compare"], "--compare needs --dev"),
+                                           (["--dev", "--compare", "--visible-round", "epoch"], "--visible-round")])
+def test_serve_refuses_compare_outside_dev(argv: list[str], why: str, monkeypatch: pytest.MonkeyPatch,
+                                           capsys: pytest.CaptureFixture[str]) -> None:
+    import uvicorn
+
+    def never(*a: object, **kw: object) -> None:
+        raise AssertionError("the server must not start")
+
+    monkeypatch.setattr(uvicorn, "run", never)
+    assert cli.main(["serve", "--store", "sqlite", *argv]) == 2
+    assert why in capsys.readouterr().err
+
+
+def test_cli_builds_the_comparison_backend_only_when_asked() -> None:
+    from vcloak.service.switch import SwitchBackend
+
+    assert not isinstance(cli.build_backend(_args("--dev")), SwitchBackend)
+    b = cli.build_backend(_args("--dev", "--compare"))
+    assert isinstance(b, SwitchBackend) and b.mode == "vcloak" and b.slots == b.vcloak.slots
+    assert isinstance(b.baseline, BaselineBackend) and b.switchable is True
+    b = cli.build_backend(_args("--dev", "--compare", "--mode", "baseline"))
+    assert isinstance(b, SwitchBackend) and b.mode == "baseline" and b.slots is None
+    assert b.set_mode("vcloak") == "vcloak" and b.mode == "vcloak"
+    with pytest.raises(ValueError):
+        b.set_mode("plain")
+
+
+class _Stub:
+    visible_round, window_s, epoch_ms, ready = "window", 60, 200, True
+
+    def __init__(self, mode: str, *, refuse: bool = False) -> None:
+        self.mode, self.refuse, self.got = mode, refuse, []
+
+    async def submit(self, conv_token: str, payload: bytes, *, stored: bool = False) -> None:
+        if self.refuse:
+            raise service_app.QueueFull("full")
+        self.got.append(payload)
+
+
+def test_a_message_the_scheduler_refuses_reaches_neither_store() -> None:
+    import asyncio
+
+    from vcloak.service.switch import SwitchBackend
+
+    async def scenario() -> None:
+        v, b = _Stub("vcloak"), _Stub("baseline")
+        sw = SwitchBackend(v, b)
+        await asyncio.gather(*(sw.submit("t" * 32, bytes([i])) for i in range(8)))
+        assert v.got == b.got == [bytes([i]) for i in range(8)]  # one order in both
+        v.refuse = True
+        for mode in ("vcloak", "baseline"):
+            sw.set_mode(mode)
+            with pytest.raises(service_app.QueueFull):
+                await sw.submit("t" * 32, b"x")
+        assert len(v.got) == len(b.got) == 8
+
+    asyncio.run(scenario())
+    with pytest.raises(ValueError):
+        w = _Stub("vcloak")
+        w.window_s = 30
+        SwitchBackend(w, _Stub("baseline"))

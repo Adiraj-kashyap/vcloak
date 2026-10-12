@@ -7,6 +7,7 @@
     live: false,            // true once the API answers
     dev: false,             // dev endpoints available
     mode: "vcloak",         // vcloak | baseline
+    switchable: false,      // the server can change its store mode (serve --dev --compare)
     reveal: false,
     backend: "—",
     runner: "—"

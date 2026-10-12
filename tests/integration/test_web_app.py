@@ -33,6 +33,7 @@ from headless import Browser, Page, find_browser
 from vcloak.cli import build_backend, build_parser
 from vcloak.crypto.client import PAYLOAD_LEN
 from vcloak.service.app import create_app
+from vcloak.service.models import conv_id_of
 from vcloak.service.session import PasswordParams, SessionConfig
 from vcloak.service.web import CSP, WEB_DIR
 
@@ -100,7 +101,7 @@ def test_stats_live_is_public_parameters_only() -> None:
     with app_client(dev=True) as c:
         body = c.get("/v1/stats/live").json()
     assert set(body) == {"mode", "dev", "sessions", "win", "window_s", "epoch_ms", "slots", "queued", "epochs",
-                         "payload_len", "gpu"}
+                         "payload_len", "switchable", "gpu"}
     assert body["mode"] == "vcloak" and body["dev"] is True and body["sessions"] is False
     assert body["payload_len"] == PAYLOAD_LEN and body["gpu"] is None
 
@@ -141,7 +142,8 @@ def test_dump_is_the_store_in_physical_order() -> None:
         assert [base64.b64decode(r["payload_b64"]) for r in d["rows"]] == [r.payload for r in stored]
         assert [base64.b64decode(r["seq_enc_b64"]) for r in d["rows"]] == [r.seq_enc for r in stored]
         assert [r["pos"] for r in d["rows"]] == list(range(16))
-        assert set(d["rows"][0]) == {"pos", "win", "row_id", "bucket", "seq_enc_b64", "payload_b64"}
+        assert set(d["rows"][0]) == {"pos", "win", "row_id", "bucket", "seq_enc_b64", "payload_b64", "ts", "conv_hex"}
+        assert all(r["ts"] is None and r["conv_hex"] is None for r in d["rows"])  # V-cloak rows have neither
         assert d["mode"] == "vcloak" and d["visible_round"] == "window" and d["truncated"] is False
         assert [w["win"] for w in d["windows"]] == list(range(d["win"] - 15, d["win"] + 1))
         assert d["windows"][-1]["state"] == "open"
@@ -169,6 +171,79 @@ def test_dump_of_the_baseline_is_the_arrival_order() -> None:
     ids = [int(r["row_id"]) for r in d["rows"]]
     assert ids == sorted(ids) and all(r["bucket"] is None and r["seq_enc_b64"] is None for r in d["rows"])
     assert {w["state"] for w in d["windows"]} == {"arrival"}
+    # ISSUE-30 (2): the two columns this table holds in the clear
+    assert {r["conv_hex"] for r in d["rows"]} == {conv_id_of("c" * 32).to_bytes(8, "little").hex()}
+    assert all(re.fullmatch(r"\d{4}-\d\d-\d\d[ T]\d\d:\d\d:\d\d.*", r["ts"]) for r in d["rows"])
+    assert [r["ts"] for r in d["rows"]] == sorted(r["ts"] for r in d["rows"])
+
+
+# ── S5: the mode switch ──────────────────────────────────────────────────────
+def test_mode_cannot_be_changed_without_dev_or_without_compare() -> None:
+    with app_client(dev=False) as c:
+        assert c.get("/v1/mode").json() == {"mode": "vcloak", "switchable": False}
+        r = c.post("/v1/mode", json={"mode": "baseline"})
+        assert r.status_code == 403 and r.json() == {"error": "dev_only"}
+    with app_client("--compare", dev=False) as c:  # the backend alone does not open the route
+        assert c.post("/v1/mode", json={"mode": "baseline"}).status_code == 403
+        assert c.get("/v1/stats/live").json()["switchable"] is False
+    for argv in ((), ("--mode", "baseline")):
+        with app_client(*argv, dev=True) as c:
+            r = c.post("/v1/mode", json={"mode": "baseline"})
+            assert r.status_code == 409 and r.json() == {"error": "not_switchable"}
+            assert c.get("/v1/mode").json() == {"mode": argv[-1] if argv else "vcloak", "switchable": False}
+            assert c.get("/v1/stats/live").json()["switchable"] is False
+
+
+def test_mode_switch_dumps_the_same_messages_both_ways() -> None:
+    """S5: with --compare every message is in both stores; the mode says which one answers. The V-cloak
+    dump of a closed window is not in arrival order, the baseline dump of the same messages is."""
+    token = "d" * 32
+    with app_client("--compare", "--epoch-ms", "50", "--window-s", "1", dev=True) as c:
+        assert c.get("/v1/mode").json() == {"mode": "vcloak", "switchable": True}
+        assert c.get("/v1/mode").headers["cache-control"] == "no-store"
+        post_stored(c, token, 16)
+        deadline = time.monotonic() + 20
+        while True:
+            cloak = c.get("/v1/dump?limit=500&windows=32").json()
+            if cloak["total"] == 16 and all(w["state"] == "reshuffled" for w in cloak["windows"] if w["rows"]):
+                break
+            assert time.monotonic() < deadline, cloak["windows"]
+            time.sleep(0.1)
+        order = [base64.b64decode(r["payload_b64"])[0] for r in cloak["rows"]]
+        assert cloak["mode"] == "vcloak" and sorted(order) == list(range(16)) and order != sorted(order)
+
+        r = c.post("/v1/mode", json={"mode": "baseline"})
+        assert r.status_code == 200 and r.json() == {"mode": "baseline", "switchable": True}
+        live = c.get("/v1/stats/live").json()
+        assert live["mode"] == "baseline" and live["slots"] is None and live["switchable"] is True
+        assert c.get("/healthz").json()["mode"] == c.get("/v1/windows").json()["mode"] == "baseline"
+        plain = c.get("/v1/dump?limit=500&windows=32").json()
+        assert plain["mode"] == "baseline" and {w["state"] for w in plain["windows"]} == {"arrival"}
+        assert [base64.b64decode(r["payload_b64"])[0] for r in plain["rows"]] == list(range(16))
+        assert {r["payload_b64"] for r in plain["rows"]} == {r["payload_b64"] for r in cloak["rows"]}
+        assert all(r["ts"] and r["conv_hex"] and r["bucket"] is None for r in plain["rows"])
+
+        def read_all() -> list[int]:
+            wins = sorted({r["win"] for r in plain["rows"]} | {r["win"] for r in cloak["rows"]})
+            answers = [c.post("/v1/read", json={"conv_token": token, "win": w}).json() for w in wins]
+            return [base64.b64decode(p)[0] for a in answers for p in a["payloads_b64"]]
+
+        assert read_all() == list(range(16))  # the route reads the arrival-order table
+        # a message sent in baseline mode is in the V-cloak store too
+        payload = base64.b64encode(bytes([16]) * PAYLOAD_LEN).decode()
+        body = {"conv_token": token, "payload_b64": payload, "ack": "stored"}
+        assert c.post("/v1/messages", json=body).status_code == 201
+        backend = c.app.state.backend  # type: ignore[attr-defined]
+        assert sorted(r.payload[0] for r in backend.vcloak.repo.dump()) == list(range(17))
+        assert [p[0] for _, _, p in backend.baseline.store.dump()] == list(range(17))
+
+        assert c.post("/v1/mode", json={"mode": "vcloak"}).json()["mode"] == "vcloak"
+        again = c.get("/v1/dump?limit=500&windows=32").json()
+        assert again["mode"] == "vcloak" and again["total"] == 17
+        assert read_all()[:16] == list(range(16))  # the same windows, read from the permuted store
+        for bad in ({"mode": "plain"}, {}, {"mode": "vcloak", "x": 1}):
+            assert c.post("/v1/mode", json=bad).status_code == 422, bad
+        assert c.get("/v1/mode").json()["mode"] == "vcloak"
 
 
 # ── A5: the files themselves ─────────────────────────────────────────────────
@@ -226,7 +301,8 @@ def browser() -> Iterator[Browser]:
 
 def open_app(browser: Browser, server: LocalServer) -> Page:
     page = browser.page(server.base + "/app/")
-    page.wait_for("document.readyState === 'complete' && !!(window.VC && VC.chat && VC.chat.ready)")
+    # the panes exist once the page has asked the server how it runs: before that `ready()` is not the sign-in yet
+    page.wait_for("document.readyState === 'complete' && !!(window.VC && VC.chat && VC.chat.panes.A)", timeout=20)
     assert page.evaluate("VC.chat.ready()") is True, page.evaluate(
         "['A','B'].map(u => document.getElementById('alert' + u).textContent)")
     return page
@@ -350,7 +426,8 @@ def test_the_server_view_shows_the_stored_rows_and_the_true_order(page: Page, se
         page.evaluate(f"VC.chat.send({js('AB'[i % 2])}, {js(text)})")
     page.wait_for(f"VC.chat.transcript('A').filter(m => m.text.startsWith({js(marker)})).length === 24", timeout=30)
     assert page.evaluate("document.getElementById('revealSwitch').disabled") is False
-    assert page.evaluate("document.getElementById('modeSwitch').disabled") is True  # S5
+    assert page.evaluate("document.getElementById('modeSwitch').disabled") is True  # no --compare: nothing to switch
+    assert page.evaluate("getComputedStyle(document.querySelector('th.clear-col')).display") == "none"
     assert page.evaluate("getComputedStyle(document.querySelector('th.reveal-col')).display") == "none"
     page.evaluate("document.getElementById('revealSwitch').click()")
     assert page.evaluate("getComputedStyle(document.querySelector('th.reveal-col')).display") == "table-cell"
@@ -386,16 +463,114 @@ def test_the_server_view_shows_the_stored_rows_and_the_true_order(page: Page, se
         Array.from(tr.cells).map(td => td.textContent))""")
     assert len(table) == len(view["rows"])
     for line, r in zip(table, view["rows"], strict=True):
-        assert line[1] == r["row_id"][:8] + "…" and line[3].startswith(str(r["win"]))
-        assert re.fullmatch(r"[0-9a-f]{8}…[0-9a-f]{4} \(44 B\)", line[4])
-        assert re.fullmatch(rf"[0-9a-f]{{8}}…[0-9a-f]{{4}} \({PAYLOAD_LEN} B\)", line[5])
-        assert line[6] == (f"#{r['n']} {r['who']}" if r["n"] else "—")
+        assert line[1] == r["row_id"][:8] + "…" and line[5].startswith(str(r["win"]))
+        assert line[2] == line[3] == "—"  # ts, conv: columns of the baseline table, hidden here
+        assert re.fullmatch(r"[0-9a-f]{8}…[0-9a-f]{4} \(44 B\)", line[6])
+        assert re.fullmatch(rf"[0-9a-f]{{8}}…[0-9a-f]{{4}} \({PAYLOAD_LEN} B\)", line[7])
+        assert line[8] == (f"#{r['n']} {r['who']}" if r["n"] else "—")
     note = page.evaluate("document.getElementById('serverNote').textContent")
     assert "the server did not supply it" in note and "number of rows per window" in note
     assert marker not in json.dumps(table)
     page.evaluate("document.getElementById('revealSwitch').click()")
     assert page.evaluate("getComputedStyle(document.querySelector('th.reveal-col')).display") == "none"
     assert page.errors() == []
+
+
+@needs_browser
+def test_the_mode_switch_shows_the_same_conversation_both_ways(browser: Browser) -> None:
+    """S5: on `serve --dev --compare` the switch exchanges the store that answers and the panel repaints.
+    With the true order revealed, the baseline rows are in the order of sending and the V-cloak rows of a
+    closed window are not; the panes go on reading across the switch without a gap or a repeat."""
+    with LocalServer([*ARGV, "--compare"], config=session_config()) as srv:
+        page = open_app(browser, srv)
+        try:
+            switch = "document.getElementById('modeSwitch')"
+
+            def shown_as(cls: str) -> str:
+                return str(page.evaluate(f"getComputedStyle(document.querySelector('th.{cls}')).display"))
+
+            def note() -> str:
+                return str(page.evaluate("document.getElementById('serverNote').textContent"))
+
+            assert page.evaluate("VC.state.switchable") is True and page.evaluate(switch + ".disabled") is False
+            texts = [f"cmp {i:02d}" for i in range(24)]
+            for i, text in enumerate(texts):
+                page.evaluate(f"VC.chat.send({js('AB'[i % 2])}, {js(text)})")
+            wait_transcripts(page, 24)
+            page.evaluate("document.getElementById('revealSwitch').click()")
+            page.wait_for("""(() => { const got = VC.chat.serverView().rows.filter(r => r.n);
+                return got.length === 24 && got.every(r => r.state === 'reshuffled'); })()""", timeout=30)
+            cloak = page.evaluate("VC.chat.serverView()")
+            shown = [r["n"] for r in cloak["rows"]]
+            assert cloak["mode"] == "vcloak" and sorted(shown) == list(range(1, 25))
+            assert shown != sorted(shown), "the V-cloak rows are in the order of sending"
+            assert all(r["ts"] is None and r["conv"] is None for r in cloak["rows"])
+            assert shown_as("clear-col") == "none" and shown_as("cloak-col") == "table-cell"
+            assert "--compare" in note()
+
+            # the switch: the same 24 messages, now in the order they were sent, with a time and a conversation id
+            page.evaluate(switch + ".click()")
+            page.wait_for("(v => v.mode === 'baseline' && v.rows.length === 24)(VC.chat.serverView())", timeout=20)
+            plain = page.evaluate("VC.chat.serverView()")
+            assert [r["n"] for r in plain["rows"]] == list(range(1, 25)), "the baseline rows are not in send order"
+            assert {r["payload_b64"] for r in plain["rows"]} == {r["payload_b64"] for r in cloak["rows"]}
+            assert [int(r["row_id"]) for r in plain["rows"]] == sorted(int(r["row_id"]) for r in plain["rows"])
+            assert len({r["conv"] for r in plain["rows"]}) == 1 and all(r["ts"] for r in plain["rows"])
+            assert page.evaluate(switch + ".checked") is True and page.evaluate("VC.state.mode") == "baseline"
+            assert page.evaluate("document.getElementById('ls-mode').textContent") == "baseline"
+            assert shown_as("clear-col") == "table-cell" and shown_as("cloak-col") == "none"
+            assert "Unprotected baseline" in note() and "who is in a conversation with whom" in note()
+            assert "--compare" in note()
+            table = page.evaluate("""Array.from(document.querySelectorAll('#dumpBody tr')).map(tr =>
+                Array.from(tr.cells).map(td => td.textContent))""")
+            assert [line[8] for line in table] == [f"#{i + 1} {'AB'[i % 2]}" for i in range(24)]
+            for line, r in zip(table, plain["rows"], strict=True):
+                assert line[2] == r["ts"] and line[3] == r["conv"]
+            mode = page.evaluate("VC.api.raw('GET', '/v1/mode').then(r => r.body)")
+            assert mode == {"mode": "baseline", "switchable": True}
+
+            # the panes read on from the other store: nothing twice, nothing missing, and they still send
+            more = [f"cmp base {i}" for i in range(6)]
+            for i, text in enumerate(more):
+                page.evaluate(f"VC.chat.send({js('AB'[i % 2])}, {js(text)})")
+            wait_transcripts(page, 30)
+            for user in "AB":
+                assert [m["text"] for m in transcript(page, user)] == texts + more
+            page.wait_for("VC.chat.serverView().rows.length === 30", timeout=20)
+            assert [r["n"] for r in page.evaluate("VC.chat.serverView()")["rows"]] == list(range(1, 31))
+
+            # and back: the six messages sent in baseline mode are in the V-cloak store as well
+            page.evaluate(switch + ".click()")
+            page.wait_for("""(() => { const v = VC.chat.serverView(); const got = v.rows.filter(r => r.n);
+                return v.mode === 'vcloak' && got.length === 30 && got.every(r => r.state === 'reshuffled'); })()""",
+                          timeout=30)
+            back = [r["n"] for r in page.evaluate("VC.chat.serverView()")["rows"]]
+            assert sorted(back) == list(range(1, 31)) and back != sorted(back)
+            assert page.evaluate(switch + ".checked") is False
+            for text in ("cmp after A", "cmp after B"):
+                page.evaluate(f"VC.chat.send({js(text[-1])}, {js(text)})")
+            wait_transcripts(page, 32)
+            assert [m["text"] for m in transcript(page, "B")] == texts + more + ["cmp after A", "cmp after B"]
+            panes = page.evaluate("['A','B'].map(u => [VC.chat.panes[u].halted, VC.chat.panes[u].alert])")
+            assert panes == [["", ""], ["", ""]]
+            assert len(srv.backend.vcloak.repo.dump()) == len(srv.backend.baseline.store.dump()) == 32
+            assert page.errors() == []
+        finally:
+            page.close()
+
+
+@needs_browser
+def test_the_page_says_when_the_mode_cannot_be_changed(browser: Browser, server: LocalServer) -> None:
+    """A server without --compare refuses the switch: the page keeps its mode and says so."""
+    page = open_app(browser, server)
+    try:
+        page.evaluate("VC.chat.setMode('baseline')")
+        page.wait_for("document.getElementById('serverNote').textContent.includes('was not changed')", timeout=20)
+        assert "409 not_switchable" in page.evaluate("document.getElementById('serverNote').textContent")
+        assert page.evaluate("[VC.state.mode, document.getElementById('modeSwitch').checked]") == ["vcloak", False]
+        assert page.evaluate("VC.chat.serverView().mode") == "vcloak"
+    finally:
+        page.close()
 
 
 @needs_browser
