@@ -821,6 +821,6 @@
   unlocked kernel-window run, so rule l cannot be applied inside this job (ISSUE-25).
 - Not verified: anything on a CUDA device. Whether the human has already started the job on Kaggle. The full test
   suite was not run (no code changed); only the tests of the index and of gpujob.
-- Commit: see git log (records)
+- Commit: 1dea96e (records)
 - Next: ingest 20261013-005946_M08_issue25k, close ISSUE-25 by rules f to l, add ANN-1 to report_oblivious, then M14 S1 ;
   human action: ISSUE-35 (run the job on Kaggle, put the results zip into gpujobs/inbox/). Do not change the repo before that
