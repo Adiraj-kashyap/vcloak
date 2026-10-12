@@ -66,8 +66,7 @@ gpu_job:                    # set by the gpu-job skill
 | M21 | Integration, validation, Review-4 readiness | Team | M17, M19, M20 | no | NOT_STARTED | S1 | 0 |
 
 ## Notes for the agent
-- Update the yaml block and the module row together. Keep this file under 120 lines.
-- `sessions` counts sessions spent on the module (including audit-only sessions).
+- Update the yaml block and the module row together; `sessions` includes audit-only sessions. Keep this file under 120 lines.
 - GPU modules (M03–M08) need a prep session and an ingest session; `gpu_job.pending` says which job the
   human still has to upload. Never mark such a module DONE while `pending` is set.
 - The build targets three gates: **Review 3** (interim, 20 marks) is satisfied by M00–M08 plus M13;
@@ -79,7 +78,7 @@ gpu_job:                    # set by the gpu-job skill
   above (M00 probe). Do not mix timings across the two images (ISSUE-3).
 - **M19 is calendar-bound.** Once M16 has real results, treat M19 as the highest-priority unmet unit
   even if other modules look more urgent — criterion 9 awards nothing without a dated submission proof.
-- The five quick-tagged `P-*` rows from M06 are smoke values, superseded by the M07 rows of session 20261011-213139.
+- The five quick-tagged `P-*` rows of M06 are smoke values, superseded by the M07 rows of session 20261011-213139.
 - Kaggle unpacks an uploaded job.zip into a folder: in a GPU JOB READY issue never give a path to job.zip on Kaggle.
 - M07 results are one runner session (20261011-213139, T4 / Xeon 2.00GHz x4). 65 of its 213 rows are UNSTABLE
   (ISSUE-15); never quote K-BITONIC-BW-PCT below 2^18 as bandwidth (ISSUE-14). Figures and notes are regenerated
@@ -115,7 +114,6 @@ gpu_job:                    # set by the gpu-job skill
   the same way. The E5 matrix is regenerated with `python bench/run_session_matrix.py`; never edit it by hand.
 - SEC-DPOP-VERIFY-US is a laptop-CPU time of the session layer, not a GPU or end-to-end number: M15 must say whether
   its runs had `--sessions` on and how many sockets were open (ISSUE-27).
-- The log allow-list is final and pinned by tests/security/test_log_redaction.py; a new log field is a change there.
-- Client (M12 DONE, ADR-019): `vcloak.client.sdk` is the reference client and imports nothing from `vcloak.service`;
-  M13's browser client follows docs/API.md "The client" byte for byte and shows the fingerprint. The demo transcript
-  comes from `python scripts/demo_two_users.py` only. Never claim forward secrecy or a verified cross-sender order (ISSUE-28).
+- The log allow-list is final (tests/security/test_log_redaction.py pins it); a new log field is a change there.
+- Client (M12 DONE, ADR-019): M13's browser client follows docs/API.md "The client" byte for byte and shows the
+  fingerprint; `vcloak.client` never imports `vcloak.service`. Never claim forward secrecy or a verified cross-sender order (ISSUE-28).
