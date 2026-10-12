@@ -602,5 +602,5 @@
   message it saw of a session; the gap test now lets B see one message first.
 - Not verified: S4-S6 and S5b (not started); audit items A3 and A6; the page in Firefox or Safari; the CSP against an
   injected script; token expiry and 503/504 in the browser; the page behind TLS; a CUDA engine behind the service
-- Commit: (this commit)
+- Commit: 3126fea
 - Next: M13 S4 ; human action: none. Keep Docker Desktop running when you type continue
