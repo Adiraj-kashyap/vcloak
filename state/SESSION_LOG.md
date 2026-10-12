@@ -485,5 +485,5 @@
 - Deviations from spec: targets outside M08 S2 and a new optional argument of gpu_open_and_key (Amendments of ai/modules/M08)
 - Not verified: anything on a CUDA device; the runtime of the job; whether the originals FAIL again
 - GPU job: 20261012-113437_M08_issue17 packed from 3671fac (bundle c8b5e6ab81d2...), pending
-- Commit: PENDING
+- Commit: 0dff9e0 (code and job: 3671fac)
 - Next: ingest 20261012-113437_M08_issue17 (then M11 S1) ; human action: ISSUE-24, run the job on Kaggle and put the results zip in gpujobs/inbox
