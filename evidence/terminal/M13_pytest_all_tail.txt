@@ -1,0 +1,3 @@
+SKIPPED [1] tests\unit\test_oracle_chacha.py:82: M02 references are wired in
+SKIPPED [1] tests\unit\test_runtime_backend.py:94: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+1961 passed, 675 skipped, 1 warning in 206.40s (0:03:26)

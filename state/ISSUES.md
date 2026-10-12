@@ -676,3 +676,20 @@ BLOCKS: none   SEVERITY: medium   OPENED: 2026-10-12 session 24
    and their loss is not detected. It polls every `--poll` seconds instead of following the socket ticks.
 4. Not exercised: the SDK over TLS, token expiry and 503/504 against the real service, concurrent senders.
 Proposed: keep for the prototype; M13 shows the fingerprint in the chat view; M20 lists points 1 and 2 as limitations.
+
+### ISSUE-29 [OPEN] M13 web app: the CSP still allows style attributes; what the browser client leaves open
+BLOCKS: none   SEVERITY: low   OPENED: 2026-10-12 session 25
+1. `/app` is served with `style-src-attr 'unsafe-inline'`: the prototype's charts, tiles and attack view write
+   `style=` attributes into innerHTML (16 places in web/js/charts.js, dashboard.js, experiments.js). It allows no
+   script and no stylesheet, but it is a relaxation of "default-src 'self'". M18 owns those files: replace the
+   attributes by classes or CSSOM calls, drop the directive from `service/web.py` and from
+   `test_csp_allows_no_inline_script_and_no_other_origin`.
+2. The pane accounts are made by the page; their random passwords sit in IndexedDB in readable form (ADR-020 (3)).
+3. A pane starts without a strict start: it cannot detect the loss of messages sent before the first one it saw of
+   a session (ADR-020 (4)); a reload therefore forgets what it had verified.
+4. Not exercised: the CSP against a real injected script; the page in Firefox or Safari (tests run in Chrome
+   only); the page behind TLS; token expiry in the browser (only an explicit refresh is tested); 503/504 retries in
+   the browser; a tab left open for hours.
+5. On a live server the page footer still reads "data: seed" and the strip reads "cpu": both come from the prototype
+   and are wired in S6 and M18.
+Proposed: point 1 in M18; points 2-4 are limitations to state in docs/DEMO.md and M20; point 5 closes with S6.

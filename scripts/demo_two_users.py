@@ -63,7 +63,7 @@ class LocalServer:
         self.sessions = SessionService(config or SessionConfig())
         self.port = free_port()
         self.base = f"http://127.0.0.1:{self.port}"
-        app = create_app(self.backend, sessions=self.sessions)
+        app = create_app(self.backend, sessions=self.sessions, dev=a.dev)
         self._server = uvicorn.Server(uvicorn.Config(app, host="127.0.0.1", port=self.port, access_log=False,
                                                      log_config=None, log_level="warning"))
         self._thread = threading.Thread(target=self._server.run, name="vcloak-demo-server", daemon=True)

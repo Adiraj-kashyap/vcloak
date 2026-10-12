@@ -576,3 +576,31 @@
   senders; a CUDA engine behind the service
 - Commit: 0d05cf0
 - Next: M13 S1 ; human action: none. Keep Docker Desktop running when you type continue
+
+## Session 25 — 2026-10-12 17:00 — M13 Frontend: chat + server view — owner:Abhishek
+- Steps: S1→S3 (status after: IN_PROGRESS; checkpoint S4)
+- Did: S1 src/vcloak/service/web.py (new): `web/` mounted at `/app`, an ASGI middleware that puts the CSP, nosniff and
+  `no-store` (dev) on every answer under /app, `GET /v1/stats/live` in a first form; `create_app(dev=, web_dir=)`,
+  `vcloak serve` passes `--dev`. S2 web/js/crypto.js (new: non-extractable ES256 device key and X25519 prekey as
+  CryptoKey handles in IndexedDB, DPoP proofs, HKDF, AES-256-GCM) and web/js/client.js (new: register, login, refresh
+  rotation, authenticated requests, one queue per client). S3 the conversation in client.js (seal, send with
+  `ack: stored` and retries, verified sync) and web/js/chat.js: two live panes, pending bubbles, fingerprint line, a
+  pane alert on a gap or a tampered payload; the demo path of the prototype kept for file://. web/js/api.js: `raw`,
+  no demo rows on a live server. scripts/headless.py (new): the installed Chrome/Edge over the DevTools protocol.
+  tests/integration/test_web_app.py (16). docs/API.md (`/app`, `/v1/stats/live`, the page as a client); docs/DEMO.md (new).
+- Evidence: runs/20261012-165025_M13_web_chat_s1_s3 (pytest_all.txt 1961 passed; pytest_m13.txt 16 passed in Chrome 154; page_checks.json;
+  chat_live_light.png, chat_live_dark.png, chat_file_demo.png; ruff clean; check_* PASS; serve_cli.txt; a5_grep.txt empty;
+  g10_rerun.txt); evidence/terminal/M13_*
+- Metrics added: none (nothing measured: correctness only, numpy engine)
+- Decisions: ADR-020 (the SDK's protocol in WebCrypto with X25519, key handles in IndexedDB, page-made demo accounts,
+  no strict start, reads on a fixed 1 s schedule, the CSP)
+- Issues: opened ISSUE-29 (CSP allows style attributes; limits of the browser client; low); closed none
+- Deviations from spec: X25519 instead of "ECDH P-256"; client.js beside crypto.js; `/v1/stats/live` started in S1;
+  Chrome over DevTools instead of Playwright; reads on a timer, not on the socket ticks (Amendments of ai/modules/M13)
+- Found on the way: Starlette answers `/app` (the redirect) and a 404 outside the mounted files, so headers set on the
+  file responses missed them: moved to a middleware. Without a strict start a reader cannot see a gap before the first
+  message it saw of a session; the gap test now lets B see one message first.
+- Not verified: S4-S6 and S5b (not started); audit items A3 and A6; the page in Firefox or Safari; the CSP against an
+  injected script; token expiry and 503/504 in the browser; the page behind TLS; a CUDA engine behind the service
+- Commit: (this commit)
+- Next: M13 S4 ; human action: none. Keep Docker Desktop running when you type continue

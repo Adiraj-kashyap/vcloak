@@ -56,3 +56,18 @@ stores, with a switch between V-cloak and the unprotected baseline. This is the 
 3. Where does the browser key live, and why can't script steal it?
 
 ## Next: M14  (M18 needs M14's results before the dashboard has anything to show)
+
+## Amendments
+- 2026-10-12 (session 25, S1-S3): S3 says "ECDH P-256"; the browser uses X25519, the agreement M12 fixed in
+  docs/API.md, so that a pane and the Python SDK are one protocol (ADR-020). P-256 is the ES256 device key only.
+- The session and conversation logic is `web/js/client.js` (a port of `vcloak.client.sdk`); `web/js/crypto.js` holds
+  the WebCrypto and IndexedDB parts. Both are extra classic scripts in `web/index.html`.
+- `GET /v1/stats/live` exists from S1 on in a first form (mode, dev, sessions, public parameters and counters,
+  payload size), because the page needs it to tell a live server from demo data; `epoch`, `last_write_ms` and `gpu`
+  are S6.
+- The headless browser is the installed Chrome or Edge driven over the DevTools protocol (`scripts/headless.py`),
+  not Playwright: nothing to install or download. `tests/integration/test_web_app.py` and S5b use it.
+- The CSP is `default-src 'self'` plus explicit directives; `style-src-attr 'unsafe-inline'` is a relaxation that
+  stays until M18 (ISSUE-29). The headers are set by an ASGI middleware, so the redirect of `/app` and a 404 carry
+  them too.
+- A pane reads once a second on a fixed schedule instead of following the socket ticks (ADR-020 (5)).

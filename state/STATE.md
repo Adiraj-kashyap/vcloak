@@ -3,13 +3,13 @@
 ```yaml
 project: v-cloak
 kit_version: 1.0
-last_session: 24
+last_session: 25
 last_session_date: 2026-10-12
 current_module: M13
-current_step: S1
-status: NOT_STARTED          # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
+current_step: S4
+status: IN_PROGRESS          # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
 next_unit: M13
-last_checkpoint: 2026-10-12 M12 DONE (S1-S4: SDK, vcloak-chat, prekey routes, two-user demo on PostgreSQL 10/10; audit PASS); M13 S1 next
+last_checkpoint: 2026-10-12 M13 S1-S3 passed (page at /app with CSP, two browser sessions, 30-message round trip in Chrome); M13 S4 next
 quick_mode_default: false
 local:                      # the laptop (no GPU) — filled by M00 S7
   os: "Windows-11-10.0.26200-SP0"
@@ -54,7 +54,7 @@ gpu_job:                    # set by the gpu-job skill
 | M10 | Service & scheduler | Divyansh | M09 | no | DONE | S5 | 2 |
 | M11 | Session security (E5) | Divyansh | M10 | no | DONE | S7 | 2 |
 | M12 | Client SDK & CLI | Abhishek | M11 | no | DONE | S4 | 1 |
-| M13 | Frontend: chat + server view | Abhishek | M12 | no | NOT_STARTED | S1 | 0 |
+| M13 | Frontend: chat + server view | Abhishek | M12 | no | IN_PROGRESS | S4 | 1 |
 | M14 | Security evaluation (E0–E2, anon set) | Abhishek | M08, M10 | no | NOT_STARTED | S1 | 0 |
 | M15 | End-to-end performance (E6) | Divyansh | M10, M11 | no | NOT_STARTED | S1 | 0 |
 | M16 | Results export | Abhishek | M07, M08, M14 | no | NOT_STARTED | S1 | 0 |
@@ -78,7 +78,6 @@ gpu_job:                    # set by the gpu-job skill
   above (M00 probe). Do not mix timings across the two images (ISSUE-3).
 - **M19 is calendar-bound.** Once M16 has real results, treat M19 as the highest-priority unmet unit
   even if other modules look more urgent — criterion 9 awards nothing without a dated submission proof.
-- The five quick-tagged `P-*` rows of M06 are smoke values, superseded by the M07 rows of session 20261011-213139.
 - Kaggle unpacks an uploaded job.zip into a folder: in a GPU JOB READY issue never give a path to job.zip on Kaggle.
 - M07 results are one runner session (20261011-213139, T4 / Xeon 2.00GHz x4). 65 of its 213 rows are UNSTABLE
   (ISSUE-15); never quote K-BITONIC-BW-PCT below 2^18 as bandwidth (ISSUE-14). Figures and notes are regenerated
@@ -110,10 +109,11 @@ gpu_job:                    # set by the gpu-job skill
 - Sessions (M11 DONE, ADR-017, ADR-018): `vcloak serve --sessions` turns them on (off by default: the open API stays
   loopback-only; smoke_restart and M14 use it). Client flow for M12/M13: docs/API.md "Sessions and DPoP". Every socket
   gets the same `tick` per epoch, so a client reads on a fixed schedule. Session state is in memory (ISSUE-26).
-- M11 tests build proofs with `tests/dpop_client.py`, never with the server's code; test M12's SDK against the server
-  the same way. The E5 matrix is regenerated with `python bench/run_session_matrix.py`; never edit it by hand.
+- M11 tests build proofs with `tests/dpop_client.py`. The E5 matrix: `python bench/run_session_matrix.py`, never by hand.
 - SEC-DPOP-VERIFY-US is a laptop-CPU time of the session layer, not a GPU or end-to-end number: M15 must say whether
   its runs had `--sessions` on and how many sockets were open (ISSUE-27).
 - The log allow-list is final (tests/security/test_log_redaction.py pins it); a new log field is a change there.
-- Client (M12 DONE, ADR-019): M13's browser client follows docs/API.md "The client" byte for byte and shows the
-  fingerprint; `vcloak.client` never imports `vcloak.service`. Never claim forward secrecy or a verified cross-sender order (ISSUE-28).
+- Client (M12, ADR-019): `vcloak.client` never imports `vcloak.service`. Never claim forward secrecy or a verified cross-sender order (ISSUE-28).
+- M13 (ADR-020): S1-S3 done. The page is `web/js/crypto.js` + `client.js` + `chat.js`; test it in the installed Chrome
+  with `scripts/headless.py` (browser tests SKIP without Chrome/Edge: read the skip count). S4 `/v1/dump` and S5 `/v1/mode` must
+  re-enable the two switches chat.js disables when live; S5b builds on headless.py; S6 fills `epoch`, `last_write_ms`, `gpu`.

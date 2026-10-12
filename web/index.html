@@ -62,6 +62,7 @@
   <div class="chatgrid">
     <div class="panel chatpane" data-user="A">
       <div class="panel-head"><span class="dot dot-a"></span><h2>User A</h2><span class="muted" id="keyA">device key: —</span></div>
+      <p class="pane-alert" id="alertA" role="alert" hidden></p>
       <div class="msgs" id="msgsA" role="log" aria-live="polite" aria-label="User A conversation"></div>
       <form class="composer" id="formA" autocomplete="off">
         <input id="inA" type="text" placeholder="Message as A…" aria-label="Message as User A">
@@ -71,6 +72,7 @@
 
     <div class="panel chatpane" data-user="B">
       <div class="panel-head"><span class="dot dot-b"></span><h2>User B</h2><span class="muted" id="keyB">device key: —</span></div>
+      <p class="pane-alert" id="alertB" role="alert" hidden></p>
       <div class="msgs" id="msgsB" role="log" aria-live="polite" aria-label="User B conversation"></div>
       <form class="composer" id="formB" autocomplete="off">
         <input id="inB" type="text" placeholder="Message as B…" aria-label="Message as User B">
@@ -78,6 +80,8 @@
       </form>
     </div>
   </div>
+
+  <p class="fingerprint" id="fingerprint" hidden></p>
 
   <div class="panel serverview">
     <div class="panel-head">
@@ -203,6 +207,8 @@
 <script src="js/store.js"></script>
 <script src="js/charts.js"></script>
 <script src="js/api.js"></script>
+<script src="js/crypto.js"></script>
+<script src="js/client.js"></script>
 <script src="js/chat.js"></script>
 <script src="js/dashboard.js"></script>
 <script src="js/experiments.js"></script>

@@ -704,3 +704,33 @@ Notes:
   a CUDA engine behind the service.
 - Evidence capture: terminal only (scripts/capture_evidence.py does not exist before M13): TERM-M12-DEMO,
   TERM-M12-DEMO-SUMMARY, TERM-M12-PYTEST.
+
+## Audit M13 — 2026-10-12 — session 25 — result: PASS for S1-S3 (checkpoint; module not complete: A3, A6 open)
+| Item | Result | Evidence |
+|---|---|---|
+| A1 nothing in the chat path decrypts on the server | PASS | runs/20261012-165025_M13_web_chat_s1_s3/pytest_m13.txt: test_thirty_messages_two_users_exact_order reads the store after the browser round trip: every payload is PAYLOAD_LEN bytes and none holds the marker, the text or an account name |
+| A2 the device key cannot be exported | PASS | runs/20261012-165025_M13_web_chat_s1_s3/pytest_m13.txt: test_the_private_keys_cannot_be_exported (jwk, pkcs8, raw rejected for the device key, the prekey and the content key of both panes; handles found in IndexedDB); recorded in docs/DEMO.md |
+| A3 /v1/dump and the reveal toggle disabled without --dev | NOT DONE | step S4; the route does not exist yet, both switches are disabled on a live server |
+| A4 the app loads from file:// with demo data | PASS | runs/20261012-165025_M13_web_chat_s1_s3/chat_file_demo.png and page_checks.json (`file`: protocol file:, chip "demo data", 5 bubbles per pane after one typed message, 8 sample rows, no page error) |
+| A5 CSP present, no inline script, no CDN | PASS | runs/20261012-165025_M13_web_chat_s1_s3/pytest_m13.txt (CSP on files, redirect and 404; no inline script or handler; no foreign host in web/**), a5_grep.txt empty. One relaxation: `style-src-attr 'unsafe-inline'` (ISSUE-29) |
+| A6 capture_evidence.py | NOT DONE | step S5b |
+| G1 | PASS | runs/20261012-165025_M13_web_chat_s1_s3/pytest_all.txt (1961 passed, 675 skipped: 674 need a CUDA device, 1 is tests/unit/test_oracle_chacha.py:82; no PostgreSQL skip and no browser skip) |
+| G2 | PASS | runs/20261012-165025_M13_web_chat_s1_s3/check_metrics.txt (331 rows, 0 problems). No metric added; web/** gained no number that is a result (BLOCK-derived sizes come from /v1/stats/live) |
+| G2b | PASS | nothing timed; manifest says backend numpy |
+| G3 | PASS | runs/20261012-165025_M13_web_chat_s1_s3/check_oblivious.txt (11 files, 0 findings); no kernel source changed |
+| G4 | PASS | runs/20261012-165025_M13_web_chat_s1_s3/check_secrets.txt (1042 files, 0 key-like runs), run after the evidence files were written. Keys of the page never leave the browser profile of the test, which is deleted |
+| G5 | N/A | no GPU twin |
+| G6 | PARTIAL | exist: web/ wired for the chat, src/vcloak/service/web.py, /v1/stats/live, web/js/crypto.js, tests/integration/test_web_app.py, docs/DEMO.md. Missing until S4-S5b: /v1/dump, /v1/mode, scripts/capture_evidence.py |
+| G7 | PASS | checked after the closing commit |
+| G8 | PASS | STATE: M13 IN_PROGRESS, step S4, sessions 1; next_unit M13 |
+| G9 | PASS | SESSION_LOG session 25, this entry, ISSUE-29 opened, ADR-020, M13 Amendments |
+| G10 | PASS | manifest valid; the browser tests and the service tests re-run give the same outcome (runs/20261012-165025_M13_web_chat_s1_s3/g10_rerun.txt: 106 passed) |
+Notes:
+- The browser tests ran in Chrome 154 headless only. The service is uvicorn inside the test process on loopback,
+  plain HTTP, the public development key, SQLite; `vcloak serve --dev --sessions` as a separate process was started
+  once and asked for /app/ and /v1/stats/live with curl (runs/20261012-165025_M13_web_chat_s1_s3/serve_cli.txt), not driven by a browser.
+- In the 30-message test each message is alone in its epoch (the sender waits for `stored`), so "exact in order" is
+  the order of awaited sends; concurrent senders are not tested.
+- The gap test simulates the withholding server inside the page (the pane's fetch is wrapped), not in the store.
+- The screenshots are in the run directory, not in evidence/screens: that set is written by capture_evidence.py (S5b).
+- Not verified: listed in SESSION_LOG session 25 and ISSUE-29 point 4.

@@ -1,0 +1,31 @@
+============================= test session starts =============================
+platform win32 -- Python 3.14.0, pytest-9.1.1, pluggy-1.6.0 -- D:\PJT\vcloak\.venv\Scripts\python.exe
+rootdir: D:\PJT\vcloak
+configfile: pyproject.toml
+plugins: anyio-4.15.1
+collecting ... collected 16 items
+
+tests/integration/test_web_app.py::test_app_serves_the_shell_with_a_strict_csp PASSED [  6%]
+tests/integration/test_web_app.py::test_csp_allows_no_inline_script_and_no_other_origin PASSED [ 12%]
+tests/integration/test_web_app.py::test_without_dev_the_page_is_revalidated_not_stored PASSED [ 18%]
+tests/integration/test_web_app.py::test_files_outside_web_are_not_served PASSED [ 25%]
+tests/integration/test_web_app.py::test_no_page_when_the_caller_wants_none PASSED [ 31%]
+tests/integration/test_web_app.py::test_stats_live_is_public_parameters_only PASSED [ 37%]
+tests/integration/test_web_app.py::test_the_shell_has_no_inline_script PASSED [ 43%]
+tests/integration/test_web_app.py::test_the_page_asks_no_other_host PASSED [ 50%]
+tests/integration/test_web_app.py::test_no_script_evaluates_text PASSED  [ 56%]
+tests/integration/test_web_app.py::test_both_panes_sign_in_with_their_own_key PASSED [ 62%]
+tests/integration/test_web_app.py::test_the_private_keys_cannot_be_exported PASSED [ 68%]
+tests/integration/test_web_app.py::test_thirty_messages_two_users_exact_order PASSED [ 75%]
+tests/integration/test_web_app.py::test_refresh_rotates_and_the_session_goes_on PASSED [ 81%]
+tests/integration/test_web_app.py::test_a_pane_talks_to_the_python_sdk PASSED [ 87%]
+tests/integration/test_web_app.py::test_a_withheld_message_is_flagged_in_the_pane PASSED [ 93%]
+tests/integration/test_web_app.py::test_without_sessions_the_page_says_how_to_start_the_server PASSED [100%]
+
+============================== warnings summary ===============================
+.venv\Lib\site-packages\fastapi\testclient.py:1
+  D:\PJT\vcloak\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================= 16 passed, 1 warning in 11.06s ========================

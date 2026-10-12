@@ -1,0 +1,48 @@
+{
+  "run_id": "20261012-165025_M13_web_chat_s1_s3",
+  "module": "M13",
+  "step": "S3",
+  "owner": "Abhishek",
+  "git_sha": "26d9b0c719c58c7a79e082e1e7b0ae7a0c4309db",
+  "dirty": true,
+  "command": "pytest -q; ruff check; check_*; headless page checks",
+  "seed": 0,
+  "quick": false,
+  "params": {},
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261012-165025",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U"
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791804025.2820237
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791804501.8037632
+  },
+  "outputs": [
+    "a5_grep.txt",
+    "chat_file_demo.png",
+    "chat_live_dark.png",
+    "chat_live_light.png",
+    "check_metrics.txt",
+    "check_oblivious.txt",
+    "check_secrets.txt",
+    "g10_rerun.txt",
+    "page_checks.json",
+    "page_checks.py",
+    "pytest_all.txt",
+    "pytest_m13.txt",
+    "ruff.txt",
+    "serve_cli.txt"
+  ],
+  "status": "OK",
+  "notes": "M13 S1-S3: full suite 1961 passed; 16 web app tests in headless Chrome; page checks and screenshots of the live and the file:// page. Correctness only, numpy engine: no metric."
+}

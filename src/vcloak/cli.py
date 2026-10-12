@@ -115,7 +115,7 @@ def serve(a: argparse.Namespace) -> int:
     log.event("serve", mode=a.mode, clock=a.clock, visible_round=a.visible_round, store=a.store, port=a.port,
               sessions=bool(a.sessions))
     # no access log and no connection lines: a line per request or per socket is an arrival record
-    uvicorn.run(create_app(build_backend(a), sessions=build_sessions(a)), host=a.host, port=a.port,
+    uvicorn.run(create_app(build_backend(a), sessions=build_sessions(a), dev=a.dev), host=a.host, port=a.port,
                 access_log=False, log_config=logsafe.server_log_config(uvicorn.config.LOGGING_CONFIG))
     return 0
 

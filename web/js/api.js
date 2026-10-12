@@ -29,14 +29,41 @@
     });
   }
 
+  /* One request of the live client (client.js): the status, the parsed body and the headers, whatever
+   * the status. It rejects only when no answer came. The wait is long: `ack: "stored"` answers at an
+   * epoch boundary. */
+  function raw(method, path, body, headers) {
+    var ctl = new AbortController();
+    var timer = setTimeout(function () { ctl.abort(); }, 20000);
+    var h = Object.assign({ "Accept": "application/json" }, headers || {});
+    var init = { method: method, headers: h, signal: ctl.signal, cache: "no-store", credentials: "omit" };
+    if (body !== undefined && body !== null) {
+      h["Content-Type"] = "application/json";
+      init.body = JSON.stringify(body);
+    }
+    return fetch(path, init).then(function (r) {
+      return r.text().then(function (t) {
+        clearTimeout(timer);
+        var parsed = null;
+        try { parsed = t ? JSON.parse(t) : null; } catch (e) { parsed = null; }
+        return { status: r.status, body: parsed, headers: r.headers };
+      });
+    }, function (e) { clearTimeout(timer); throw e; });
+  }
+
   var API = {
     canFetch: canFetch,
+    origin: canFetch ? location.origin : "",
+    raw: raw,
 
     /* Probe once at startup: decides live vs demo and reveals dev mode. */
     hello: function () {
       return get("/v1/stats/live").then(function (s) {
         VC.state.live = true;
         VC.state.dev = !!s.dev;
+        VC.state.sessions = !!s.sessions;
+        VC.state.payloadLen = s.payload_len;
+        if (s.mode) VC.state.mode = s.mode;
         VC.state.backend = (s.gpu && s.gpu.backend) || "cpu";
         VC.state.runner = (s.gpu && s.gpu.runner) || "local";
         return s;
@@ -64,6 +91,8 @@
 
     dump: function (limit) {
       return get("/v1/dump?limit=" + (limit || 50)).catch(function () {
+        /* a live server that does not hand out its rows: say so, never show demo rows in their place */
+        if (VC.state.live) return { rows: [], unavailable: true };
         var d = JSON.parse(JSON.stringify(DEMO.dump || { rows: [] }));
         if (VC.state.mode === "baseline") {
           d.rows.sort(function (a, b) { return a.sent - b.sent; });
@@ -72,16 +101,6 @@
         }
         return d;
       });
-    },
-
-    send: function (user, text) {
-      return post("/v1/messages", { user: user, text: text })
-        .catch(function () { return { accepted: true, demo: true }; });
-    },
-
-    read: function (user, win) {
-      return post("/v1/read", { user: user, win: win })
-        .catch(function () { return { items: [], demo: true }; });
     },
 
     logs: function (kind, tail) {

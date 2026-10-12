@@ -101,6 +101,20 @@ Answer `200 {"status": "ok", "mode": "vcloak", "ready": true, "epochs": 0, "over
 | `missed` | Epoch boundaries that passed while an earlier epoch was still being written. |
 | `queued` | Messages accepted and not yet written. |
 
+### `GET /v1/stats/live` (M13)
+Open, like `/v1/windows`. Answer `200 {"mode": "vcloak", "dev": true, "sessions": true, "win": 29363120,
+"window_s": 60, "epoch_ms": 200, "slots": 64, "queued": 0, "epochs": 12, "payload_len": 4124, "gpu": null}`:
+public parameters, the public counters of `/healthz`, and what the web page needs to decide how to run. `dev` and
+`sessions` say how the service was started; `payload_len` is the size every `payload_b64` must decode to; `slots` is
+null in baseline mode. `gpu` is null for now (the provenance of the compute backend is added with the live strip).
+
+### `GET /app/` (M13)
+The web app: the files of `web/` as they are on disk (`/app` redirects to `/app/`). Every answer under `/app` carries
+`Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'; style-src-attr 'unsafe-inline';
+img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'none'`,
+`X-Content-Type-Options: nosniff`, `Referrer-Policy: no-referrer`, and `Cache-Control: no-store` with `--dev`
+(`no-cache` without). The page needs `--sessions` to chat; see docs/DEMO.md.
+
 ## Sessions and DPoP (M11, ADR-017)
 
 An app created with a `SessionService` (`create_app(backend, sessions=...)`, or `vcloak serve --sessions`) has the
@@ -227,6 +241,11 @@ terminal chat on top of it, and `python scripts/demo_two_users.py` runs two of t
 | Message | plaintext = `version(1)=1, sender(1), session(8), number(LE64), text (UTF-8)`, padded to `BLOCK`, AES-256-GCM with the token in the associated data. At most `BLOCK - 19` bytes of text. |
 | Send | `POST /v1/messages` with `"ack": "stored"`. 503: again after `Retry-After`. 504 or a broken connection: the same ciphertext again; the number is not reused for another text until the message is confirmed. |
 | Read | The windows from the start of the conversation to the open one, newest first, handled oldest first. For each (sender, session) the numbers must come as 0, 1, 2, ...: an accepted number again is a repeat and is dropped; a higher one is a missing or reordered message (`SequenceError`); a payload that does not authenticate is `TamperError`. |
+
+The page at `/app` is a second client with the same rules and the same bytes (`web/js/crypto.js`, `web/js/client.js`,
+WebCrypto only): a pane and the SDK compute the same token and fingerprint and read each other's messages
+(`tests/integration/test_web_app.py`). Its two differences: the private keys are non-extractable handles in
+IndexedDB instead of a sealed file, and a pane starts reading at the open window without a strict start.
 
 A reader alone cannot see the loss of a sender's *last* messages, or of a whole session it saw nothing of; the
 sender checks that every message the store confirmed comes back (`verify_delivered`). The order between the two

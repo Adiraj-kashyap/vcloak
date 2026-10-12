@@ -1,0 +1,70 @@
+{
+ "browser": "Chrome/154.0.8037.98",
+ "live_ready": true,
+ "live": {
+  "conn": "live · dev",
+  "keyA": "alice_e4c83be4 · ES256 jkt p9xBc5…",
+  "keyB": "bob_cd01877e · ES256 jkt gsDr1X…",
+  "fingerprint": "Key fingerprint — A: 68520 37263 87265 78650 95588 05148 · B: 68520 37263 87265 78650 95588 05148 · ✓ equal: both ends hold the same prekeys",
+  "a": [
+   [
+    "alice",
+    0,
+    0,
+    "are we still on for the rehearsal?"
+   ],
+   [
+    "bob",
+    0,
+    0,
+    "yes, 6 pm"
+   ],
+   [
+    "alice",
+    1,
+    0,
+    "bring the laptop"
+   ],
+   [
+    "bob",
+    1,
+    0,
+    "which one"
+   ],
+   [
+    "alice",
+    2,
+    0,
+    "the one with the demo"
+   ],
+   [
+    "bob",
+    2,
+    0,
+    "ok"
+   ],
+   [
+    "alice",
+    3,
+    1,
+    "this one comes after a pause"
+   ]
+  ],
+  "same": true,
+  "note": "This server does not hand out its stored rows (GET /v1/dump gave no answer).",
+  "rows": 0
+ },
+ "live_errors": [],
+ "stored_rows": 7,
+ "file": {
+  "protocol": "file:",
+  "conn": "demo data",
+  "live": false,
+  "bubblesA": 5,
+  "bubblesB": 5,
+  "keyA": "device key: — (demo)",
+  "rows": 8,
+  "tiles": 10
+ },
+ "file_errors": []
+}

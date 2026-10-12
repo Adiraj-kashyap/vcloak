@@ -1,0 +1,400 @@
+"""M13: the web app, served by the real service and run in a real browser.
+
+Two layers:
+
+- the static mount and its headers (S1, A5), with the test client of the framework;
+- the page itself in headless Chrome or Edge (scripts/headless.py), against `vcloak serve --dev --sessions`
+  inside the test process (scripts/demo_two_users.py: uvicorn on a loopback port, wall clock, 2 s
+  windows). The browser's proofs, tokens and ciphertexts are checked by the server and by the Python SDK,
+  which share no code with the page. These tests are SKIPPED when no browser is installed: read the skip
+  count before calling the run a pass.
+
+Nothing here measures anything: the engine is the numpy simulator and the store is SQLite in memory.
+"""
+from __future__ import annotations
+
+import json
+import re
+import threading
+import time
+import uuid
+from collections.abc import Iterator
+from contextlib import contextmanager
+from pathlib import Path
+from typing import Any
+
+import pytest
+import uvicorn
+from fastapi.testclient import TestClient
+
+from demo_two_users import LocalServer, free_port, sign_in
+from headless import Browser, Page, find_browser
+from vcloak.cli import build_backend, build_parser
+from vcloak.crypto.client import PAYLOAD_LEN
+from vcloak.service.app import create_app
+from vcloak.service.session import PasswordParams, SessionConfig
+from vcloak.service.web import CSP, WEB_DIR
+
+EPOCH_MS = 100
+WINDOW_S = 2
+ARGV = ["--dev", "--sessions", "--store", "sqlite", "--window-s", str(WINDOW_S), "--epoch-ms", str(EPOCH_MS)]
+
+needs_browser = pytest.mark.skipif(find_browser() is None, reason="no Chrome or Edge installed (set VCLOAK_BROWSER)")
+
+
+# ── S1: the mount and its headers ────────────────────────────────────────────
+def app_client(*argv: str, dev: bool) -> TestClient:
+    a = build_parser().parse_args(["serve", "--store", "sqlite", "--dev", *argv])
+    return TestClient(create_app(build_backend(a), dev=dev))
+
+
+def test_app_serves_the_shell_with_a_strict_csp() -> None:
+    with app_client(dev=True) as c:
+        first = c.get("/app", follow_redirects=False)
+        assert first.status_code == 307 and first.headers["location"].endswith("/app/")
+        r = c.get("/app")
+        assert r.status_code == 200 and "<title>V-cloak</title>" in r.text
+        for answer in (first, r, c.get("/app/js/chat.js"), c.get("/app/css/app.css"), c.get("/app/nothing.js")):
+            assert answer.headers["content-security-policy"] == CSP
+            assert answer.headers["cache-control"] == "no-store"
+            assert answer.headers["x-content-type-options"] == "nosniff"
+        assert c.get("/app/nothing.js").status_code == 404
+        kind = c.get("/app/js/chat.js").headers["content-type"]
+        assert kind.startswith(("text/javascript", "application/javascript"))
+
+
+def test_csp_allows_no_inline_script_and_no_other_origin() -> None:
+    policy = dict(part.split(" ", 1) for part in CSP.split("; "))
+    assert policy["default-src"] == "'self'"
+    assert policy["script-src"] == "'self'"
+    assert policy["connect-src"] == "'self'"
+    assert policy["object-src"] == "'none'" and policy["base-uri"] == "'none'"
+    assert policy["frame-ancestors"] == "'none'"
+    # the one relaxation is style attributes (ISSUE-29): never a script, never a stylesheet
+    assert [k for k, v in policy.items() if "unsafe" in v] == ["style-src-attr"]
+    assert not any(v for v in policy.values() if "http" in v or "*" in v)
+
+
+def test_without_dev_the_page_is_revalidated_not_stored() -> None:
+    with app_client(dev=False) as c:
+        assert c.get("/app/").headers["cache-control"] == "no-cache"
+        assert c.get("/v1/stats/live").json()["dev"] is False
+
+
+def test_files_outside_web_are_not_served() -> None:
+    with app_client(dev=True) as c:
+        for path in ("/app/../pyproject.toml", "/app/%2e%2e/pyproject.toml", "/app/..%2fpyproject.toml",
+                     "/app/js/../../pyproject.toml"):
+            r = c.get(path)
+            assert r.status_code in (404, 400) or "[project]" not in r.text, path
+
+
+def test_no_page_when_the_caller_wants_none() -> None:
+    a = build_parser().parse_args(["serve", "--store", "sqlite", "--dev"])
+    with TestClient(create_app(build_backend(a), web_dir=False)) as c:
+        assert c.get("/app/").status_code == 404
+
+
+def test_stats_live_is_public_parameters_only() -> None:
+    with app_client(dev=True) as c:
+        body = c.get("/v1/stats/live").json()
+    assert set(body) == {"mode", "dev", "sessions", "win", "window_s", "epoch_ms", "slots", "queued", "epochs",
+                         "payload_len", "gpu"}
+    assert body["mode"] == "vcloak" and body["dev"] is True and body["sessions"] is False
+    assert body["payload_len"] == PAYLOAD_LEN and body["gpu"] is None
+
+
+# ── A5: the files themselves ─────────────────────────────────────────────────
+def web_sources() -> list[Path]:
+    return sorted(p for p in WEB_DIR.rglob("*") if p.suffix in (".html", ".js", ".css"))
+
+
+def test_the_shell_has_no_inline_script() -> None:
+    html = (WEB_DIR / "index.html").read_text(encoding="utf-8")
+    scripts = re.findall(r"<script\b([^>]*)>(.*?)</script>", html, flags=re.S)
+    assert scripts
+    for attrs, body in scripts:
+        src = re.search(r'\bsrc="([^"]+)"', attrs)
+        assert src and not body.strip(), "an inline script"
+        assert not re.match(r"[a-z]+:|//", src.group(1)), "a script from another origin"
+        assert "module" not in attrs  # classic scripts: the page must open from file:// (ADR-012)
+    assert not re.search(r"<[^>]+\son[a-z]+\s*=", html), "an inline event handler"
+    assert not re.search(r"javascript:", html, flags=re.I)
+    for href in re.findall(r'<link\b[^>]*\bhref="([^"]+)"', html):
+        assert href.startswith("data:") or not re.match(r"[a-z]+:|//", href), href
+
+
+def test_the_page_asks_no_other_host() -> None:
+    allowed = ("http://www.w3.org/",)  # XML namespace names: identifiers, never fetched
+    for path in web_sources():
+        for url in re.findall(r"""(?:https?:|wss?:)?//[A-Za-z0-9.-]+\.[a-z]{2,}[^\s"'<>)]*""",
+                              path.read_text(encoding="utf-8")):
+            assert url.startswith(allowed), f"{path.name}: {url}"
+
+
+def test_no_script_evaluates_text() -> None:
+    for path in web_sources():
+        if path.suffix == ".js":
+            text = path.read_text(encoding="utf-8")
+            assert not re.search(r"\beval\s*\(|new\s+Function\s*\(|document\.write", text), path.name
+
+
+# ── the page in a browser ────────────────────────────────────────────────────
+def session_config() -> SessionConfig:
+    # a cheap password hash and no rate limit: tests only
+    return SessionConfig(password=PasswordParams(t=1, m_kib=64, p=1), register_ip_max=10_000, login_ip_max=10_000)
+
+
+@pytest.fixture(scope="module")
+def server() -> Iterator[LocalServer]:
+    with LocalServer(ARGV, config=session_config()) as s:
+        yield s
+
+
+@pytest.fixture(scope="module")
+def browser() -> Iterator[Browser]:
+    with Browser() as b:
+        yield b
+
+
+def open_app(browser: Browser, server: LocalServer) -> Page:
+    page = browser.page(server.base + "/app/")
+    page.wait_for("document.readyState === 'complete' && !!(window.VC && VC.chat && VC.chat.ready)")
+    assert page.evaluate("VC.chat.ready()") is True, page.evaluate(
+        "['A','B'].map(u => document.getElementById('alert' + u).textContent)")
+    return page
+
+
+@pytest.fixture(scope="module")
+def page(browser: Browser, server: LocalServer) -> Iterator[Page]:
+    p = open_app(browser, server)
+    yield p
+    p.close()
+
+
+def js(value: Any) -> str:
+    return json.dumps(value)
+
+
+def transcript(page: Page, user: str) -> list[dict[str, Any]]:
+    return page.evaluate(f"VC.chat.transcript({js(user)})")
+
+
+def wait_transcripts(page: Page, n: int) -> None:
+    page.wait_for(f"VC.chat.transcript('A').length >= {n} && VC.chat.transcript('B').length >= {n}", timeout=30)
+
+
+@needs_browser
+def test_both_panes_sign_in_with_their_own_key(page: Page, server: LocalServer) -> None:
+    """S2: two independent sessions in one page, each bound to a key of its own."""
+    info = page.evaluate("""['A','B'].map(u => { const c = VC.chat.panes[u].client;
+        return {name: c.username, jkt: c.device.jkt, token: c.conv.token, fp: c.conv.fingerprint,
+                role: c.conv.role, label: document.getElementById('key' + u).textContent}; })""")
+    a, b = info
+    assert a["name"].startswith("alice_") and b["name"].startswith("bob_")
+    assert a["jkt"] != b["jkt"] and len(a["jkt"]) == 43
+    assert a["token"] == b["token"] and re.fullmatch(r"[A-Za-z0-9_-]{32}", a["token"])
+    assert a["fp"] == b["fp"] and re.fullmatch(r"(\d{5} ){5}\d{5}", a["fp"])
+    assert {a["role"], b["role"]} == {0, 1}
+    assert a["name"] in a["label"] and a["jkt"][:6] in a["label"]
+    assert a["name"] in server.sessions.accounts and b["name"] in server.sessions.accounts
+    assert page.evaluate("VC.state.live && VC.state.dev && VC.state.sessions") is True
+    assert page.evaluate("document.getElementById('conn').textContent") == "live · dev"
+    assert "equal" in page.evaluate("document.getElementById('fingerprint').textContent")
+    assert page.errors() == []  # no exception, no console error, nothing blocked by the CSP
+
+
+@needs_browser
+def test_the_private_keys_cannot_be_exported(page: Page) -> None:
+    """A2: the device key and the prekey are handles; the browser refuses to give their bytes to script."""
+    got = page.evaluate("""(async () => {
+        const out = {};
+        for (const u of ['A', 'B']) {
+            const c = VC.chat.panes[u].client;
+            for (const [name, key, formats] of [['device', c.device.privateKey, ['jwk', 'pkcs8']],
+                                                ['prekey', c.prekey.privateKey, ['jwk', 'pkcs8', 'raw']]]) {
+                out[u + name + ':extractable'] = key.extractable;
+                for (const f of formats) {
+                    out[u + name + ':' + f] = await crypto.subtle.exportKey(f, key).then(() => 'EXPORTED', e => e.name);
+                }
+            }
+            const kept = await VC.crypto.stored('device:' + u);
+            out[u + ':stored'] = kept.privateKey instanceof CryptoKey && kept.privateKey.extractable === false;
+            out[u + ':content'] = await crypto.subtle.exportKey('raw', c.conv.key).then(() => 'EXPORTED', e => e.name);
+        }
+        out.persistent = await VC.crypto.persistent();
+        return out; })()""")
+    assert got.pop("persistent") is True  # the handles are in IndexedDB, not only in memory
+    for name, value in got.items():
+        if name.endswith(":extractable"):
+            assert value is False, name
+        elif name.endswith(":stored"):
+            assert value is True, name
+        else:
+            assert value in ("InvalidAccessError", "NotSupportedError"), (name, value)
+
+
+@needs_browser
+def test_thirty_messages_two_users_exact_order(page: Page, server: LocalServer) -> None:
+    """S3 and A1: 30 messages over at least two windows come back in the order they were sent, at both
+    panes, and the store holds none of the text."""
+    before = len(transcript(page, "A"))
+    marker = uuid.uuid4().hex[:8]
+    sent = []
+    for i in range(30):
+        user = "AB"[(i * 7 + i // 3) % 2]
+        text = f"{marker} message {i:02d} from {user} · ünïcode ✓"
+        number = page.evaluate(f"VC.chat.send({js(user)}, {js(text)})")
+        sent.append((user, text, number))
+    wait_transcripts(page, before + 30)
+    names = page.evaluate("({A: VC.chat.panes.A.client.username, B: VC.chat.panes.B.client.username})")
+    for pane in "AB":
+        got = [m for m in transcript(page, pane) if m["text"].startswith(marker)]
+        assert [m["text"] for m in got] == [text for _, text, _ in sent]
+        assert [m["sender"] for m in got] == [names[user] for user, _, _ in sent]
+        assert [m["number"] for m in got] == [number for _, _, number in sent]
+        assert [m["mine"] for m in got] == [user == pane for user, _, _ in sent]
+        assert len({m["win"] for m in got}) >= 2, "the round trip must cross a window boundary"
+    for user in "AB":  # each sender's numbers are 0, 1, 2, ... without a hole
+        numbers = [n for u, _, n in sent if u == user]
+        assert numbers == list(range(numbers[0], numbers[0] + len(numbers)))
+    assert page.evaluate("['A','B'].map(u => VC.chat.panes[u].alert + VC.chat.panes[u].halted).join('')") == ""
+    assert page.evaluate("document.querySelectorAll('#msgsA .bub').length") >= 30
+
+    # A1: what the server stored is ciphertext of one size; none of the text is in it
+    rows = server.backend.repo.dump()
+    assert len(rows) >= 30
+    needles = [marker.encode(), b"message", "ünïcode".encode(), names["A"].encode(), names["B"].encode()]
+    for row in rows:
+        assert len(row.payload) == PAYLOAD_LEN
+        blob = row.payload + row.seq_enc + row.row_id.bytes
+        assert not any(n in blob for n in needles)
+    assert page.errors() == []
+
+
+@needs_browser
+def test_refresh_rotates_and_the_session_goes_on(browser: Browser, server: LocalServer) -> None:
+    """S2: the refresh token is single use; after a rotation the pane still sends and reads, and the
+    spent token is refused."""
+    page = open_app(browser, server)
+    try:
+        got = page.evaluate("""(async () => {
+            const c = VC.chat.panes.A.client, old = {access: c._access, refresh: c._refresh};
+            await c.refresh();
+            const n = await VC.chat.send('A', 'after the refresh');
+            return {rotated: c._refresh !== old.refresh && c.refreshes === 1, n: n, old: old.refresh}; })()""")
+        assert got["rotated"] is True and got["n"] == 0
+        page.wait_for("VC.chat.transcript('B').some(m => m.text === 'after the refresh')", timeout=20)
+        # the spent token again: refused, and the reuse revokes the login (docs/API.md)
+        reuse = page.evaluate(f"""(async () => {{
+            const c = VC.chat.panes.A.client;
+            const h = await c._headers('POST', '/v1/auth/refresh', false);
+            const r = await VC.api.raw('POST', '/v1/auth/refresh', {{refresh_token: {js(got["old"])}}}, h);
+            return [r.status, r.body.reason]; }})()""")
+        assert reuse == [401, "reuse"]
+    finally:
+        page.close()
+
+
+@needs_browser
+def test_a_pane_talks_to_the_python_sdk(browser: Browser, server: LocalServer) -> None:
+    """The browser client and vcloak.client.sdk agree byte for byte: same token, same fingerprint, and
+    each reads and verifies what the other wrote."""
+    page = open_app(browser, server)
+    try:
+        carol_name, tina_name = f"carol_{uuid.uuid4().hex[:8]}", f"tina_{uuid.uuid4().hex[:8]}"
+        carol = sign_in(server.base, carol_name)
+        tina = page.evaluate(f"""(async () => {{
+            const c = new VC.Client('T-' + {js(tina_name)});
+            await c.init();
+            await c.signIn({js(tina_name)}, {js(uuid.uuid4().hex)});
+            await c.start({js(carol_name)}, VC.state.payloadLen);
+            window.tina = c;
+            return {{token: c.conv.token, fp: c.conv.fingerprint, role: c.conv.role, win: c.conv.firstWin}}; }})()""")
+        conv = carol.start_conversation(tina_name, first_win=tina["win"])
+        assert conv.conv_token == tina["token"]
+        assert conv.fingerprint == tina["fp"]
+        assert {conv.role, tina["role"]} == {0, 1}
+
+        assert page.evaluate("tina.send('from the browser: héllo ✓')") == 0
+        assert carol.send("from python: grüße") == 0
+        assert page.evaluate("tina.send('second from the browser')") == 1
+        got = [(m.sender, m.number, m.text) for m in carol.sync()]
+        assert got == [(tina_name, 0, "from the browser: héllo ✓"), (carol_name, 0, "from python: grüße"),
+                       (tina_name, 1, "second from the browser")]
+        seen = page.evaluate("tina.sync().then(ms => ms.map(m => [m.sender, m.number, m.text, m.mine]))")
+        assert seen == [[tina_name, 0, "from the browser: héllo ✓", True], [carol_name, 0, "from python: grüße", False],
+                        [tina_name, 1, "second from the browser", True]]
+        carol.conversation.verify_delivered()
+        carol.close()
+        assert page.errors() == []
+    finally:
+        page.close()
+
+
+@needs_browser
+def test_a_withheld_message_is_flagged_in_the_pane(browser: Browser, server: LocalServer) -> None:
+    """S3: when the server leaves a message out, the reader's pane says so and shows nothing after it."""
+    page = open_app(browser, server)
+    try:
+        # B has to know where A's session stands: a reader cannot miss what came before the first
+        # message it ever saw of a session (docs/API.md)
+        assert page.evaluate("VC.chat.send('A', 'the first one')") == 0
+        page.wait_for("VC.chat.transcript('B').some(m => m.text === 'the first one')", timeout=20)
+        # from here on, a server that withholds from B the next message B has not seen yet
+        page.evaluate("""(() => {
+            const c = VC.chat.panes.B.client, fetch = c._fetch.bind(c);
+            let skip = null;
+            c._fetch = win => fetch(win).then(payloads => {
+                const done = c.conv.consumed[win] || 0;
+                if (!skip && payloads.length > done) skip = {win: win, index: done};
+                return skip && skip.win === win ? payloads.filter((_, i) => i !== skip.index) : payloads;
+            });
+            return true; })()""")
+        assert page.evaluate("VC.chat.send('A', 'the withheld one')") == 1
+        assert page.evaluate("VC.chat.send('A', 'the one after it')") == 2
+        page.wait_for("!document.getElementById('alertB').hidden", timeout=20)
+        alert = page.evaluate("document.getElementById('alertB').textContent")
+        assert alert.startswith("Order check failed") and "missing or out of order" in alert
+        shown = [m["text"] for m in transcript(page, "B")]
+        assert "the first one" in shown and "the withheld one" not in shown and "the one after it" not in shown
+        assert page.evaluate("document.querySelectorAll('#msgsB .bub.gap').length") == 1
+        # the sender reads its own messages back and is not affected
+        page.wait_for("VC.chat.transcript('A').some(m => m.text === 'the one after it')", timeout=20)
+        assert page.evaluate("document.getElementById('alertA').hidden") is True
+    finally:
+        page.close()
+
+
+@contextmanager
+def serving(app: Any) -> Iterator[str]:
+    """`app` on a loopback port, in a thread; yields its origin."""
+    port = free_port()
+    srv = uvicorn.Server(uvicorn.Config(app, host="127.0.0.1", port=port, access_log=False, log_config=None,
+                                        log_level="warning"))
+    thread = threading.Thread(target=srv.run, daemon=True)
+    thread.start()
+    deadline = time.monotonic() + 30
+    while not srv.started:
+        assert thread.is_alive() and time.monotonic() < deadline, "the server did not start"
+        time.sleep(0.02)
+    try:
+        yield f"http://127.0.0.1:{port}"
+    finally:
+        srv.should_exit = True
+        thread.join(timeout=30)
+
+
+@needs_browser
+def test_without_sessions_the_page_says_how_to_start_the_server(browser: Browser) -> None:
+    a = build_parser().parse_args(["serve", "--dev", "--store", "sqlite"])
+    with serving(create_app(build_backend(a), dev=True)) as base:
+        page = browser.page(base + "/app/")
+        try:
+            page.wait_for("document.readyState === 'complete' && !!(window.VC && VC.chat && VC.chat.ready)")
+            assert page.evaluate("VC.chat.ready()") is False
+            assert "--sessions" in page.evaluate("document.getElementById('alertA').textContent")
+            assert page.evaluate("document.querySelector('#formA button').disabled") is True
+            assert page.evaluate("document.getElementById('dumpBody').children.length") == 0  # never demo rows
+        finally:
+            page.close()

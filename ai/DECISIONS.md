@@ -214,3 +214,26 @@ names exist) and is not rate-limited. A reader cannot detect the loss of a sende
 session; the sender detects the first for its own messages. The session id restarts the numbering when a client
 restarts, so a restarted client needs no stored counter. The order between the two senders is not verifiable.
 A client reads on a fixed schedule, not when it expects a message (ADR-018).
+
+## ADR-020 — Browser client: the SDK's protocol in WebCrypto (X25519, not P-256), key handles in IndexedDB, reads on a fixed schedule — ACCEPTED — 2026-10-12
+Context: M13 S3 names "ECDH P-256 + HKDF → AES-256-GCM" for the browser, while M12 (ADR-019) fixed the client
+protocol as X25519 + HKDF with a token and a header that docs/API.md describes byte for byte. Two agreements would
+make two incompatible clients. M13 also leaves open where a pane's account comes from and when a pane reads.
+Decision: (1) The page implements the protocol of docs/API.md "The client" unchanged, with WebCrypto's X25519
+(`web/js/crypto.js`, `web/js/client.js`); a pane and the Python SDK interoperate, and a test proves it. P-256 is used
+only where the server requires it: the ES256 device key of the DPoP proofs. A browser without X25519 in WebCrypto
+gets a message in the pane, not a fallback. (2) The device key and the prekey are generated with
+`extractable: false` and stored in IndexedDB as CryptoKey handles, one pair per pane; K_content is imported as a
+non-extractable AES-GCM key. (3) Each pane has a demo account of its own, created by the page: a random name and a
+random password kept beside the handles. The password is readable by script; what binds a session is the device key.
+(4) A pane starts at the open window without a strict start (the first number it sees of a session is where that
+session begins for it), because a page reload begins in the middle of a conversation. (5) Both panes read once a
+second whether or not anything was sent, not after a send and not on every tick: a read schedule that follows the
+typing would tell the server when a pane expects a message. (6) `/app` is served with a CSP that allows scripts,
+styles and connections from the same origin only; `style-src-attr 'unsafe-inline'` stays until the prototype's
+charts stop using `style=` attributes (ISSUE-29).
+Consequences: a message shows up to about a second after it was stored. A pane cannot detect the loss of messages
+sent before the first one it saw of a session (ISSUE-28 point 2 applies to it more widely than to the strict SDK
+reader). Script running in the page can use the keys while it runs; the CSP is the defence against that, and it is
+untested against a real injection. The page needs a browser with X25519 in WebCrypto and a secure context (https,
+or http on loopback); it was run in Chrome only.

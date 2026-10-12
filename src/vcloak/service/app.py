@@ -70,6 +70,7 @@ from vcloak.service.models import (
 )
 from vcloak.service.scheduler import QUEUE_EPOCHS, Clock, EpochScheduler, NotStored, QueueFull
 from vcloak.service.session import SessionService, TokenSet, Verdict
+from vcloak.service.web import add_live_routes, mount_web
 from vcloak.storage.repo import CandidateOverflow, Repo
 
 T = TypeVar("T")
@@ -368,7 +369,10 @@ NO_STORE = {"Cache-Control": "no-store"}
 
 
 def create_app(backend: ServiceBackend, *, payload_len: int = PAYLOAD_LEN,
-               sessions: SessionService | None = None) -> FastAPI:
+               sessions: SessionService | None = None, dev: bool = False,
+               web_dir: Path | None | bool = None) -> FastAPI:
+    """`dev` is what `--dev` means to the page (M13). `web_dir`: the directory served at /app (default: the
+    repository's web/), or False for no page."""
     log = get_logger("api")
     hub = SocketHub(backend, sessions) if sessions is not None else None
     if hub is not None and sessions is not None:
@@ -469,6 +473,9 @@ def create_app(backend: ServiceBackend, *, payload_len: int = PAYLOAD_LEN,
     if sessions is not None and hub is not None:
         _add_session_routes(app, sessions, verify)
         _add_socket_routes(app, sessions, hub, verify)
+    add_live_routes(app, backend, dev=dev, sessions=sessions is not None, payload_len=payload_len)
+    if web_dir is not False:
+        mount_web(app, None if web_dir is None or web_dir is True else web_dir, dev=dev)
     return app
 
 
