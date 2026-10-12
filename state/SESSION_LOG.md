@@ -574,5 +574,5 @@
 - Found on the way: the lenient reader dropped a message older than its start as a repeat; it now raises
 - Not verified: SDK over TLS; token expiry and 503/504 against the real service; `vcloak-chat` by hand; concurrent
   senders; a CUDA engine behind the service
-- Commit: PENDING
+- Commit: 0d05cf0
 - Next: M13 S1 ; human action: none. Keep Docker Desktop running when you type continue
