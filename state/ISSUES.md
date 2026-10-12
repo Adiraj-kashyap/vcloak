@@ -490,7 +490,7 @@ locks `messages` first; the reader never fails and always sees the whole window
 connection serialise epochs, re-shuffles and reads. Still open: a writer on a second connection during the swap (the
 scheduler never inserts into a closed window, so this is untested by design), and point 2 (WAL lifetime, for M14).
 
-### ISSUE-22 [CLOSED PENDING_HASH] M10: a restart leaves windows un-shuffled, and a crash loses messages that were accepted but not yet written
+### ISSUE-22 [CLOSED 75a8bb5] M10: a restart leaves windows un-shuffled, and a crash loses messages that were accepted but not yet written
 BLOCKS: none   SEVERITY: medium   OPENED: 2026-10-12 session 18
 1. The scheduler keeps the set of windows it wrote and has not yet re-shuffled in memory only. After a restart the
    window that was open at shutdown, and any window that closed while the service was down, stays in its

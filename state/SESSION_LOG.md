@@ -466,6 +466,6 @@
 - Deviations from spec: one more table in the schema; one more request field and two more error answers
   (Amendments of ai/modules/M10)
 - Not verified: anything on a CUDA device; a kill inside the swap transaction on a live server; ack stored under load
-- Commit: PENDING_HASH
+- Commit: 75a8bb5
 - Next: M11 S1 ; human action: none. Keep Docker Desktop running when you type continue
 
