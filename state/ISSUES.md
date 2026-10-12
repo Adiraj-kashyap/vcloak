@@ -451,7 +451,7 @@ BLOCKS: none   SEVERITY: low   OPENED: 2026-10-12 session 16
    could not list it ("neither cuobjdump nor nvdisasm produced a listing"). The two compilers may emit different
    code. Fix in a later GPU job: save the cubin that CuPy caches, or build with the nvcc backend of CuPy for the audit.
 
-### ISSUE-20 [CLOSED PENDING] M09: the development database is a native PostgreSQL 17rc1 cluster; docker-compose.yml (postgres:16) was never started
+### ISSUE-20 [CLOSED 28c3080] M09: the development database is a native PostgreSQL 17rc1 cluster; docker-compose.yml (postgres:16) was never started
 BLOCKS: none   SEVERITY: low   OPENED: 2026-10-12 session 17
 1. The laptop has no Docker and the installed PostgreSQL 17 service asks for a password the agent does not have, so
    M09 runs on a private cluster started by `python scripts/pgdev.py up` (server 17rc1, a release candidate). ADR-008

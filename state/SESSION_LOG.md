@@ -427,5 +427,5 @@
 - Issues: closed ISSUE-20; opened ISSUE-21 (concurrent swap untested, WAL lifetime not measured; low)
 - Deviations from spec: none left for S1 (Docker postgres:16 is now the development database)
 - Not verified: the points of ISSUE-21
-- Commit: PENDING
+- Commit: 28c3080
 - Next: M10 S1 ; human action: none. Keep Docker Desktop running when you type continue
