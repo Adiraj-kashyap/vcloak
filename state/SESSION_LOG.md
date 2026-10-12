@@ -654,5 +654,5 @@
   on the last commit (ISSUE-31). The footer of a live page still reads "data: seed" (ISSUE-31 point 4).
 - Not verified: S5b, S6 (not started); audit item A6; the switch on PostgreSQL, with a second client connected, or
   with a full queue on a real server; the page in Firefox or Safari; a CUDA engine behind the service
-- Commit: PENDING
+- Commit: 5348044
 - Next: M13 S5b ; human action: none. Keep Docker Desktop running when you type continue
