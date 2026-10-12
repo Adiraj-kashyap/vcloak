@@ -55,6 +55,14 @@ the two; none of them replaces a target above.
   write_epoch_fresh  fixed vs fresh random contents, both built from new objects, and only the batch
                    that is used is built: the comparison of write_epoch without its staging.
 
+ISSUE-25: two device-stage series of these diagnostics FAIL at seed 8 (write_epoch_age, write_epoch_fresh)
+and the cause is not known. `--targets issue25` runs the three diagnostics again with more series of the
+same call, so that a FAIL is located in a stage:
+  write_epoch_null_st, write_epoch_age_st, write_epoch_fresh_st
+                   series device_ms and call_ms as before, core_ms (device_ms without h2d and d2h, the
+                   two stages that copy host memory, H5) and one series per stage of the engine.
+                   write_epoch_null_st is the control of a run: what it shows is not the contents.
+
 Under the numpy backend (the laptop) each target prepares and runs both classes once at a small size
 to check the plumbing and the outputs, and every metric is NOT_MEASURED (ai/GPU_RUNNER.md §3).
 """
@@ -589,8 +597,51 @@ class WriteEpochFresh(_WriteEpochDiag):
         self.batch = self.build(both[cls])  # the only batch, built last for either class
 
 
+# ISSUE-25: where in the device stages does a write_epoch series separate the classes?
+WRITE_STAGES = tuple(s for s in STAGES if s not in ("host", "open"))  # `open` is a read stage: never marked here
+TRANSFER_STAGES = ("h2d", "d2h")  # they copy host memory that `prepare` built (H5)
+STAGE_SERIES = ("device_ms", "call_ms", "core_ms", *(f"{s}_ms" for s in WRITE_STAGES))
+
+
+class _StageSeries:
+    """ISSUE-25: the same call and the same staging as the parent target, with every stage of the engine
+    as its own series and `core_ms`, the device stages without the two transfers. One call gives all of
+    them, so the series of a target are not independent tests. A stage is not batched: one that lasts
+    less than MIN_MEASUREMENT_MS is quoted with its median, and is read with that in mind."""
+
+    series = STAGE_SERIES
+
+    def measure(self, cp: Any, stream: Any, start: Any, end: Any, r: int) -> tuple[float, ...]:  # noqa: ARG002
+        self.run()  # type: ignore[attr-defined]
+        t = self.eng.last_timings()  # type: ignore[attr-defined]
+        device = t["total"] - t["host"]
+        return (device, t["total"], device - sum(t[s] for s in TRANSFER_STAGES), *(t[s] for s in WRITE_STAGES))
+
+    def params(self) -> dict[str, Any]:
+        return super().params() | {  # type: ignore[misc]
+            "core_ms": "device_ms minus the stages " + ", ".join(TRANSFER_STAGES),
+            "stage_series": "one series per engine stage: " + ", ".join(WRITE_STAGES) + "; not batched",
+            "series_of_one_call": len(STAGE_SERIES)}
+
+
+class WriteEpochNullSt(_StageSeries, WriteEpochNull):
+    name, metric = "write_epoch_null_st", "WRITE-EPOCH-NULL-ST"
+    title = "ISSUE-25 per stage, staging only: the same contents in both classes, built first vs built second"
+
+
+class WriteEpochAgeSt(_StageSeries, WriteEpochAge):
+    name, metric = "write_epoch_age_st", "WRITE-EPOCH-AGE-ST"
+    title = "ISSUE-25 per stage, staging only: the same contents in both classes, long-lived vs new objects"
+
+
+class WriteEpochFreshSt(_StageSeries, WriteEpochFresh):
+    name, metric = "write_epoch_fresh_st", "WRITE-EPOCH-FRESH-ST"
+    title = "ISSUE-25 per stage, symmetric staging: fixed contents vs random contents, one batch built"
+
+
 DIAG_CLASSES = (AeadConvNull, AeadConvSwap, AeadConvSym, AeadConvKernel, AeadTagNull, AeadTagSwap, AeadTagSym,
-                AeadTagKernel, WriteEpochNull, WriteEpochAge, WriteEpochFresh)
+                AeadTagKernel, WriteEpochNull, WriteEpochAge, WriteEpochFresh,
+                WriteEpochNullSt, WriteEpochAgeSt, WriteEpochFreshSt)
 
 
 def build_target(name: str, backend: Backend, seed: int, quick: bool) -> Target:
@@ -633,9 +684,12 @@ ISSUE17 = ("aead_conv", "aead_conv_null", "aead_conv_swap", "aead_conv_sym", "ae
            "aead_tag", "aead_tag_null", "aead_tag_swap", "aead_tag_sym", "aead_tag_kernel",
            "write_epoch", "write_epoch_null", "write_epoch_age", "write_epoch_fresh")
 ISSUE17_REP = tuple(n for n in ISSUE17 if n not in ("write_epoch_null", "write_epoch_age"))
+# ISSUE-25: the control first, so a FAIL of the other two is read against it in the same run.
+ISSUE25 = ("write_epoch_null_st", "write_epoch_age_st", "write_epoch_fresh_st")
 KNOWN = (*ALL, *DIAG)
 METRIC_OF.update({c.name: c.metric for c in DIAG_CLASSES})
-SERIES_SUFFIX = {"ms": "", "device_ms": "", "call_ms": "-CALL"}
+SERIES_SUFFIX = {"ms": "", "device_ms": "", "call_ms": "-CALL", "core_ms": "-CORE",
+                 **{f"{s}_ms": f"-{s.upper()}" for s in WRITE_STAGES}}
 
 
 def choose_r(single_ms: list[float], in_place: bool) -> tuple[int, str]:
@@ -773,11 +827,11 @@ def parse_targets(text: str) -> list[str]:
     for part in text.split(","):
         part = part.strip()
         group = {"all": ALL, "controls": CONTROLS, "targets": TARGETS, "issue17": ISSUE17,
-                 "issue17_rep": ISSUE17_REP}.get(part, (part,))
+                 "issue17_rep": ISSUE17_REP, "issue25": ISSUE25}.get(part, (part,))
         for name in group:
             if name not in KNOWN:
                 raise SystemExit(f"unknown target {name!r}; choose from: all, controls, targets, issue17, "
-                                 f"issue17_rep, {', '.join(KNOWN)}")
+                                 f"issue17_rep, issue25, {', '.join(KNOWN)}")
             if name not in names:
                 names.append(name)
     return names
@@ -786,7 +840,7 @@ def parse_targets(text: str) -> list[str]:
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n", 1)[0])
     ap.add_argument("--targets", default="all", help="comma list of: all, controls, targets, issue17, issue17_rep, "
-                    + ", ".join(KNOWN))
+                    "issue25, " + ", ".join(KNOWN))
     ap.add_argument("--seed", type=int, default=8)
     ap.add_argument("--quick", action="store_true", help=f"N = {N_QUICK} per class instead of {N_FULL}")
     ap.add_argument("--n-per-class", type=int, default=0, help="override N (recorded in the manifest)")

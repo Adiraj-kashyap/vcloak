@@ -183,7 +183,7 @@ def test_the_static_checker_flags_the_planted_leak_and_it_is_not_in_kernels() ->
 # --- ISSUE-17: the diagnostic targets -------------------------------------------------------------
 
 def test_issue17_groups() -> None:
-    assert set(rd.DIAG) <= set(rd.ISSUE17) and set(rd.ISSUE17_REP) < set(rd.ISSUE17)
+    assert set(rd.DIAG) <= {*rd.ISSUE17, *rd.ISSUE25} and set(rd.ISSUE17_REP) < set(rd.ISSUE17)
     assert {"aead_conv", "aead_tag", "write_epoch"} <= set(rd.ISSUE17_REP)  # the three failing targets, again
     assert rd.parse_targets("control_null,issue17") == ["control_null", *rd.ISSUE17]
     assert not set(rd.DIAG) & set(rd.ALL)  # `all` and `targets` stay what the M08 job measured
@@ -293,6 +293,69 @@ def test_issue17_write_epoch_variants() -> None:
     assert contents_of(t.batch) != fixed
     t.run()
     assert t.check(1) == 0 and t.series == ("device_ms", "call_ms")
+
+
+# --- ISSUE-25: the write_epoch diagnostics with one series per engine stage ---------------------
+
+def test_issue25_group() -> None:
+    assert rd.parse_targets("issue25") == list(rd.ISSUE25) and rd.ISSUE25[0] == "write_epoch_null_st"
+    assert not set(rd.ISSUE25) & {*rd.ALL, *rd.ISSUE17}  # the earlier jobs stay what they measured
+    assert rd.WRITE_STAGES == ("h2d", "tags", "sort", "compact", "d2h", "seal", "bucket")
+    assert rd.STAGE_SERIES[:3] == ("device_ms", "call_ms", "core_ms")  # the verdict series is the one that FAILED
+    assert set(rd.STAGE_SERIES) <= set(rd.SERIES_SUFFIX)
+    assert len(set(rd.SERIES_SUFFIX.values())) == len(rd.SERIES_SUFFIX) - 1  # only ms and device_ms share one
+
+
+@pytest.mark.parametrize("name", rd.ISSUE25)
+def test_issue25_series_add_up_and_the_staging_is_that_of_the_parent(name: str) -> None:
+    backend = get_backend("numpy")
+    t, parent = rd.build_target(name, backend, 8, True), rd.build_target(name.removesuffix("_st"), backend, 8, True)
+    for cls in (0, 1):
+        t.prepare(cls, np.random.default_rng(4))
+        parent.prepare(cls, np.random.default_rng(4))
+        assert contents_of(t.batch) == contents_of(parent.batch), (name, cls)
+        got = dict(zip(t.series, t.measure(None, None, None, None, 1), strict=True))
+        tm = t.eng.last_timings()
+        assert t.check(cls) == 0
+        assert got["call_ms"] == tm["total"] and got["device_ms"] == tm["total"] - tm["host"]
+        assert got["core_ms"] == got["device_ms"] - tm["h2d"] - tm["d2h"]
+        assert all(got[f"{s}_ms"] == tm[s] for s in rd.WRITE_STAGES)
+        assert sum(got[f"{s}_ms"] for s in rd.WRITE_STAGES) == pytest.approx(got["device_ms"], abs=1e-6)
+        assert tm["open"] == 0.0  # the read stage is never marked by write_epoch: no series for it
+        assert all(got[f"{s}_ms"] > 0 for s in rd.WRITE_STAGES)  # every series is a stage that ran
+    assert t.params()["series_of_one_call"] == len(rd.STAGE_SERIES) and "h2d, d2h" in t.params()["core_ms"]
+
+
+def test_issue25_plumbing_on_the_numpy_backend(tmp_path: Path, numpy_backend: None) -> None:
+    assert rd.main(["--targets", "control_null,issue25", "--out", str(tmp_path)]) == 0
+    s = summary(only_run(tmp_path))
+    assert [t["target"] for t in s["targets"]] == ["control_null", *rd.ISSUE25] and not s["errors"]
+    assert all(t["mismatches"] == 0 for t in s["targets"])
+    assert {m["value"] for m in s["metrics"]} == {"NOT_MEASURED"}
+
+
+def test_issue25_a_target_runs_through_the_measuring_loop(tmp_path: Path, fake_gpu: None) -> None:
+    # the stand-in device cannot hold the key store: the engine is the simulator, the loop is the real one
+    t = rd.build_target("write_epoch_age_st", get_backend("numpy"), 8, True)
+    res = rd.run_target(t, fakecupy.backend(), 60, 8, tmp_path, log=lambda s: None)
+    assert tuple(res["series"]) == rd.STAGE_SERIES and res["mismatches"] == 0 and res["r"] == 1
+    assert all(s["n_class0"] == s["n_class1"] == 60 for s in res["series"].values())
+    assert res["verdict"] == res["series"]["device_ms"]["verdict"]
+    raw = np.load(tmp_path / res["raw"])
+    assert raw["times_ms"].shape == (120, len(rd.STAGE_SERIES)) and list(raw["series"]) == list(rd.STAGE_SERIES)
+    stages = raw["times_ms"][:, 3:].sum(axis=1)
+    assert np.allclose(stages, raw["times_ms"][:, 0], atol=1e-6)  # the stages add up to the device series
+    assert len(rd.metrics_of([res], False, None)) == len(rd.STAGE_SERIES) + 1
+
+
+def test_issue25_metric_ids_name_the_stage() -> None:
+    series = {n: {"verdict": "PASS", "threshold": 4.5, "max_at": "raw", "tests": 101, "max_abs_t": 1.0}
+              for n in rd.STAGE_SERIES}
+    ms = rd.metrics_of([{"target": "write_epoch_age_st", "series": series, "r": 1, "n_per_class": 7}], False, None)
+    ids = [m["id"] for m in ms]
+    assert len(set(ids)) == len(ids) == len(rd.STAGE_SERIES) + 1
+    assert {"T-DUDECT-MAXT-WRITE-EPOCH-AGE-ST", "T-DUDECT-MAXT-WRITE-EPOCH-AGE-ST-CORE",
+            "T-DUDECT-MAXT-WRITE-EPOCH-AGE-ST-H2D", "T-DUDECT-MAXT-WRITE-EPOCH-AGE-ST-D2H"} <= set(ids)
 
 
 def test_open_and_key_writes_into_given_outputs() -> None:

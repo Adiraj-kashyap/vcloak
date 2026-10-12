@@ -1,0 +1,149 @@
+{
+  "metrics": [
+    {
+      "id": "T-DUDECT-MAXT-CONTROL-NULL",
+      "value": "NOT_MEASURED",
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "T-DUDECT-N-CONTROL-NULL",
+      "value": "NOT_MEASURED",
+      "unit": "measurements",
+      "stat": "per class",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "T-DUDECT-MAXT-WRITE-EPOCH-NULL-ST",
+      "value": "NOT_MEASURED",
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "T-DUDECT-N-WRITE-EPOCH-NULL-ST",
+      "value": "NOT_MEASURED",
+      "unit": "measurements",
+      "stat": "per class",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "T-DUDECT-MAXT-WRITE-EPOCH-AGE-ST",
+      "value": "NOT_MEASURED",
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "T-DUDECT-N-WRITE-EPOCH-AGE-ST",
+      "value": "NOT_MEASURED",
+      "unit": "measurements",
+      "stat": "per class",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "T-DUDECT-MAXT-WRITE-EPOCH-FRESH-ST",
+      "value": "NOT_MEASURED",
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "numpy backend: no GPU on this machine"
+    },
+    {
+      "id": "T-DUDECT-N-WRITE-EPOCH-FRESH-ST",
+      "value": "NOT_MEASURED",
+      "unit": "measurements",
+      "stat": "per class",
+      "note": "numpy backend: no GPU on this machine"
+    }
+  ],
+  "timer": null,
+  "executed_by": "numpy twins (vcloak.gpu.sim)",
+  "t_threshold": 4.5,
+  "n_per_class": 100000,
+  "quick": false,
+  "caveat": "Free Colab/Kaggle GPUs are shared: a PASS says that no dependence was detected with this many measurements on this device in this session, not that none exists.",
+  "errors": [],
+  "device": {
+    "backend": "numpy",
+    "is_gpu": false,
+    "device": "12th Gen Intel(R) Core(TM) i7-1255U",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U",
+    "cpu_count": 12,
+    "ram_gb": 15.6,
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0"
+  },
+  "targets": [
+    {
+      "target": "control_null",
+      "title": "null control: fused bitonic sort, the same fixed input in both classes",
+      "class0": "fixed sorted tags",
+      "class1": "the same fixed sorted tags",
+      "params": {
+        "n": 256,
+        "kernel": "gpu_bitonic_sort (fused launch plan)"
+      },
+      "mismatches": 0,
+      "verdict": "NOT_MEASURED",
+      "expected_verdict": "PASS"
+    },
+    {
+      "target": "write_epoch_null_st",
+      "title": "ISSUE-25 per stage, staging only: the same contents in both classes, built first vs built second",
+      "class0": "the fixed submissions, rebuilt from new objects; the batch built first",
+      "class1": "the same fixed submissions, rebuilt from new objects; the batch built second",
+      "params": {
+        "slots": 64,
+        "n_real": 16,
+        "epoch": 1,
+        "timer": "time.perf_counter (numpy simulator: not a performance result)",
+        "device_ms": "total minus the engine's host stage; stages: h2d, tags, sort, compact, d2h, seal, bucket, open, host",
+        "core_ms": "device_ms minus the stages h2d, d2h",
+        "stage_series": "one series per engine stage: h2d, tags, sort, compact, d2h, seal, bucket; not batched",
+        "series_of_one_call": 10
+      },
+      "mismatches": 0,
+      "verdict": "NOT_MEASURED",
+      "expected_verdict": "PASS"
+    },
+    {
+      "target": "write_epoch_age_st",
+      "title": "ISSUE-25 per stage, staging only: the same contents in both classes, long-lived vs new objects",
+      "class0": "the fixed submissions, built from the long-lived Python ints of the target",
+      "class1": "the same fixed submissions, built from Python ints created just before the call",
+      "params": {
+        "slots": 64,
+        "n_real": 16,
+        "epoch": 1,
+        "timer": "time.perf_counter (numpy simulator: not a performance result)",
+        "device_ms": "total minus the engine's host stage; stages: h2d, tags, sort, compact, d2h, seal, bucket, open, host",
+        "core_ms": "device_ms minus the stages h2d, d2h",
+        "stage_series": "one series per engine stage: h2d, tags, sort, compact, d2h, seal, bucket; not batched",
+        "series_of_one_call": 10
+      },
+      "mismatches": 0,
+      "verdict": "NOT_MEASURED",
+      "expected_verdict": "PASS"
+    },
+    {
+      "target": "write_epoch_fresh_st",
+      "title": "ISSUE-25 per stage, symmetric staging: fixed contents vs random contents, one batch built",
+      "class0": "the fixed submissions, rebuilt from new objects before every call",
+      "class1": "fresh random conv_id, seq and payload for every submission",
+      "params": {
+        "slots": 64,
+        "n_real": 16,
+        "epoch": 1,
+        "timer": "time.perf_counter (numpy simulator: not a performance result)",
+        "device_ms": "total minus the engine's host stage; stages: h2d, tags, sort, compact, d2h, seal, bucket, open, host",
+        "core_ms": "device_ms minus the stages h2d, d2h",
+        "stage_series": "one series per engine stage: h2d, tags, sort, compact, d2h, seal, bucket; not batched",
+        "series_of_one_call": 10
+      },
+      "mismatches": 0,
+      "verdict": "NOT_MEASURED",
+      "expected_verdict": "PASS"
+    }
+  ]
+}

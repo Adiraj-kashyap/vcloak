@@ -1,0 +1,16 @@
+{
+  "title": "ISSUE-25 (two device-stage series of the write_epoch diagnostics FAIL at seed 8): write_epoch_null, write_epoch_age and write_epoch_fresh again with one series per engine stage (h2d, tags, sort, compact, d2h, seal, bucket) and core_ms, the device stages without h2d and d2h - at seed 8 (where it failed) and at three new seeds (10, 11, 12); write_epoch_null_st and a full-N control_null are the controls of each run",
+  "step": "S2",
+  "seed": 8,
+  "commands": [
+    {"name": "nvidia_smi", "cmd": "nvidia-smi", "timeout": 120},
+    {"name": "check_oblivious", "cmd": "python scripts/check_oblivious.py kernels/", "timeout": 300, "stop_on_fail": false},
+    {"name": "pytest_issue25", "cmd": "python -m pytest -p no:cacheprovider -rs -q tests/unit/test_run_dudect.py tests/gpu/test_engine.py", "timeout": 1800, "stop_on_fail": false},
+    {"name": "dudect_selftest", "cmd": "python bench/run_dudect.py --targets controls --seed 8 --quick --name i25_selftest --out runs", "timeout": 1800, "stop_on_fail": false},
+    {"name": "dudect_issue25_s8", "cmd": "python bench/run_dudect.py --targets control_null,issue25 --seed 8 {quick} --name dudect_i25_s8 --out runs", "timeout": 10800, "stop_on_fail": false},
+    {"name": "dudect_issue25_s10", "cmd": "python bench/run_dudect.py --targets control_null,issue25 --seed 10 {quick} --name dudect_i25_s10 --out runs", "timeout": 10800, "stop_on_fail": false},
+    {"name": "dudect_issue25_s11", "cmd": "python bench/run_dudect.py --targets control_null,issue25 --seed 11 {quick} --name dudect_i25_s11 --out runs", "timeout": 10800, "stop_on_fail": false},
+    {"name": "dudect_issue25_s12", "cmd": "python bench/run_dudect.py --targets control_null,issue25 --seed 12 {quick} --name dudect_i25_s12 --out runs", "timeout": 10800, "stop_on_fail": false},
+    {"name": "nvidia_smi_after", "cmd": "nvidia-smi", "timeout": 120, "stop_on_fail": false}
+  ]
+}
