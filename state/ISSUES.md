@@ -574,7 +574,7 @@ BLOCKS: none   SEVERITY: low   OPENED: 2026-10-12 session 19
    database) is not repaired. The marks and the acknowledgement have never run on a CUDA device.
 Not a human action.
 
-### ISSUE-24 [CLOSED THISCOMMIT] HUMAN ACTION REQUIRED — GPU JOB READY: ISSUE-17 dudect diagnostics (job 20261012-113437_M08_issue17)
+### ISSUE-24 [CLOSED 1569d66] HUMAN ACTION REQUIRED — GPU JOB READY: ISSUE-17 dudect diagnostics (job 20261012-113437_M08_issue17)
 BLOCKS: M14   SEVERITY: high   OPENED: 2026-10-12 session 20
 Why: three dudect series FAILED in the M08 job (ISSUE-17) and the cause is unknown. This job measures them again
 together with controls that separate "the kernel time depends on the data" from "the test harness treats the two

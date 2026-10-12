@@ -508,5 +508,5 @@
 - Issues: closed ISSUE-24; ISSUE-17 updated with the result, stays OPEN; opened ISSUE-25 (device-stage FAILs, high, BLOCKS M14)
 - Deviations from spec: none new (Amendments of ai/modules/M08 record the result)
 - Not verified: the cause of ISSUE-25; staging and clock state are not separated; one GPU model
-- Commit: THISCOMMIT
+- Commit: 1569d66
 - Next: M11 S1 ; human action: none now (team decision on whole-call host timing before M14, see ISSUE-17). Keep Docker Desktop running when you type continue
