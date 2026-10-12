@@ -794,6 +794,6 @@
   regeneration. The message of commit c510682 says 21 unit tests; it is 9 test functions, 18 cases.
 - Not verified: anything on a CUDA device. Whether Kaggle accepts the clock lock; whether a blocker of at most 2^20
   ChaCha blocks keeps the compaction queued; what one NVML read costs per measurement; the runtime of the job.
-- Commit: c510682 (prep, the commit of the job), HASH (records)
+- Commit: c510682 (prep, the commit of the job), 57af640 (records)
 - Next: ingest 20261013-005946_M08_issue25k, close ISSUE-25 by the rules, then M14 S1 ; human action: ISSUE-35 (run the job on Kaggle,
   put the results zip into gpujobs/inbox/, and say what to do with the session-31 rows). Do not change the repo before that
