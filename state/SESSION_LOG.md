@@ -414,5 +414,5 @@
   and files (Amendments of ai/modules/M09)
 - Not verified: docker-compose.yml on a Docker engine; anything on PostgreSQL 16; the swap under concurrent
   connections; how long WAL of a closed window survives; behaviour at bench sizes (the largest test window is 700 rows)
-- Commit: PENDING
+- Commit: db7b746
 - Next: M10 S1 ; human action: none required (optional: ISSUE-20). `fix ISSUE-17` is still needed before M14
