@@ -934,3 +934,35 @@ Notes:
 - This job and the ISSUE-17 job have the same driver (580.178.04) but are two runner sessions: values are not pooled.
 - capture-evidence: figures and terminal output were copied from the run directories and indexed by hand (5 rows);
   `capture_evidence.py` was not run, because web/ is unchanged and no dashboard data exists before M18.
+
+## Audit M08 (fix ISSUE-25, prep of the last job) — 2026-10-13 — session 32 — result: PASS for the prep (checkpoint at the GPU JOB READY gate; ISSUE-25 stays open, nothing measured)
+| Item | Result | Evidence |
+|---|---|---|
+| A1 planted leak detected | N/A | not measured here; control_leak and control_leak_q are in the job (rule f) |
+| A2 verdicts at full N | N/A | the new targets have no verdict before the ingest; the five S2 targets are unchanged |
+| A3 SASS | N/A | no kernel changed; ISSUE-19 as before |
+| A4 ncu | N/A | NOT_MEASURED as before (ISSUE-18) |
+| A5 a FAIL blocks M14, never softened | PASS | ISSUE-17 and ISSUE-25 stay OPEN and high; no row of METRICS_INDEX changed; the re-label was not applied |
+| G1 | PASS | runs/20261013-005353_M08_i25k_prep/pytest_all.txt (2026 passed, 1 skipped, 674 deselected); pytest_changed_rerun.txt (127 passed) after the last two edits |
+| G2 | PASS | runs/20261013-005353_M08_i25k_prep/check_metrics.txt (475 rows, 0 problems); no metric added |
+| G3 | PASS | runs/20261013-005353_M08_i25k_prep/check_oblivious.txt (11 files, 0 findings); no kernel changed |
+| G4 | PASS | runs/20261013-005353_M08_i25k_prep/check_secrets_final.txt, after the records and the allow-listed bundle sha |
+| G5 | N/A | no kernel or twin added; the new targets check the device output against the existing twins (`check`) |
+| G6 | PASS | bench/run_dudect.py, bench/jobs/M08_issue25k.json, gpujobs/out/20261013-005946_M08_issue25k/job.zip exist |
+| G7 | PASS | checked after the closing commit |
+| G8 | PASS | STATE: status BLOCKED_HUMAN, gpu_job.pending this job, M08 sessions 7, next_unit M14 |
+| G9 | PASS | SESSION_LOG session 32, this entry, ISSUE-25 and ISSUE-17 updates, ISSUE-35, ADR-023, M08 Amendments |
+| G10 | PASS | manifests of runs/20261013-005353_M08_i25k_prep and runs/20261013-005359_M08_i25k_plumb valid (numpy, NOT_MEASURED for the plumbing) |
+Notes:
+- The session request named the clock as the cause of the session-31 FAILs and asked for 56 rows to be marked
+  UNSTABLE. The ingested data do not support it: 64 series PASS at the same steady 585 MHz, and both classes of
+  every series share that clock. The rows were left as measured and the question is put to the human.
+- The request also supposed that the control might run as a block before the targets within a comparison. The
+  classes are shuffled per measurement; control_null is a separate target. Nothing in the harness needed a fix here.
+- The window rests on one assumption that only the runner can confirm: that an event queried as not reached means
+  the launches behind it were enqueued while the device was busy. Unqueued measurements are counted, not dropped.
+- Rule i of ISSUE-25 keeps a real finding from being timeboxed away: a target that FAILS beside a passing control
+  in both seeds is a result against P3, not an unusable run.
+- The full suite ran before two late edits (a line split in a test, one template line in report_oblivious.py);
+  the tests of the changed files were run again. The suite was not repeated in full.
+- capture-evidence: not run. web/, results/ and state/METRICS_INDEX.md are unchanged.

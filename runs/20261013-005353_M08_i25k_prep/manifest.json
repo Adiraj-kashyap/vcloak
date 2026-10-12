@@ -32,12 +32,13 @@
   "telemetry_end": {
     "available": false,
     "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
-    "ts": 1791833385.7351635
+    "ts": 1791833487.878986
   },
   "outputs": [
     "check_metrics.txt",
     "check_oblivious.txt",
     "check_secrets.txt",
+    "check_secrets_final.txt",
     "clock_facts.py",
     "clock_facts.txt",
     "plumbing.txt",

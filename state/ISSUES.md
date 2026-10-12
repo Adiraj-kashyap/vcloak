@@ -466,6 +466,10 @@ Still open, so the issue is not closed:
 What M14 may write until then: with symmetric staging no timing difference between the classes was detected for AEAD
 open at N = 100000 per class in two seeds, and the FAILs of the S2 staging are reproduced with identical contents. It
 must not write that AEAD open is constant time, and nothing about the write path beyond the measured series.
+Update 2026-10-13 session 32: point 2 is decided by the human and recorded as ADR-023. The timing of the host
+orchestration is outside the threat model (a dump carries no timing; a live compromised server is excluded by
+PROJECT_BRIEF §3) and P3 is claimed for the kernels only. The whole-call FAIL stays in every table as measured and is
+listed as a limitation; it does not block M14 by itself any more. Points 1 and 3 are still open, so the issue is.
 
 ### ISSUE-18 [OPEN] M08 ncu: the runner refuses the GPU performance counters (ERR_NVGPUCTRPERM); divergence is NOT_MEASURED
 BLOCKS: none   SEVERITY: medium   OPENED: 2026-10-12 session 16
@@ -713,6 +717,54 @@ The issue stays OPEN: the cause is located more narrowly, it is not removed, and
 - Evidence: evidence/terminal/M08_issue25_gates.txt, M08_issue25_gpu_run_output.txt; evidence/figures/M08_issue25_s*_dudect_*.png.
 Until that is measured, M14 must not write that the device stages of the write path, or the compaction, are
 timing-independent of the contents. It may quote these series with their verdicts, the FAILs included.
+Update 2026-10-13 session 32 (prep of the LAST job; nothing measured, the issue stays open):
+- Read from the code, and pinned by a test: in `write_epoch` the stages tags, sort and compact never receive the
+  submissions. Their device inputs come from K_tag, the epoch and n_real, and are byte-identical in both classes of
+  all three `*_st` targets (`test_issue25_tags_and_compact_get_the_same_device_input_in_both_classes`, runs/20261013-005353_M08_i25k_prep/pytest_all.txt).
+  So H8 is excluded for the session-31 series: compact_ms of write_epoch_fresh_st cannot be a dependence of the
+  compaction kernels on the contents, because those kernels got the same bytes. What separates the classes there is
+  outside the kernels' data (H7: host launch code inside a stage interval, and what the host did before it). It
+  also means the session-31 job never tested tags or compact against THEIR data (the key, the permutation).
+- The clock, from the ingested runs (runs/20261013-005353_M08_i25k_prep/clock_facts.txt): all 120 write_epoch series ran at 585 MHz, steady
+  (before 585, after 585, relative change 0.0, status LOW, throttle_reasons 0 in every telemetry row); 56 of them
+  FAIL and 64 PASS at that same clock. The four controls PASS at 1050 to 1110 MHz. The clock is therefore the same
+  for the failing and the passing write_epoch series, and for both classes of each: the PASS/FAIL split does not
+  follow the clock split. What the clock does separate is the control (a sort) from the write_epoch targets.
+- The interleaving was checked: `dudect.balanced_classes` shuffles the 2N class labels and every measurement takes
+  its class from that order (`test_the_class_order_is_a_random_interleaving_not_two_blocks`). control_null is a
+  separate target that runs before the others, as a target of its own; it is not one of the two classes of any
+  series, so it does not explain a FAIL with equal contents.
+- NOT done, a decision for the human: the session request asked to re-label the 56 failing series UNSTABLE in the
+  metrics index on the ground of gpu-bench rule 5. The rule is a clock drop of more than 15% during the run; no
+  write_epoch target had one, and `timing.clock_check` classed all 12 as LOW, not UNSTABLE. In this index UNSTABLE
+  replaces the value, so the label would remove 56 measured values and keep the 64 PASS values taken at the same
+  clock. The rows are unchanged. If a label is wanted, the one the data supports covers all 120 series (measured at
+  585 MHz, 37% of the maximum, the control at another clock) and keeps the values.
+- Built: `bench/run_dudect.py --targets issue25k` (tags_kernel, compact_kernel, tags_kernel_null,
+  compact_kernel_null; control_leak_q with the self-test). Kernel-only window: a blocker launch of public size, then
+  the start event, the r launches and the end event enqueued while the device is busy, so no host code runs between
+  the events; `cudaEventQuery` on the start event flags a measurement that was not queued. Classes differ on the
+  device: one fixed key vs random keys, one fixed permutation vs random ones, from device pools of equal size. The
+  SM clock is read after every measurement; `--lock-clock` asks `nvidia-smi -lgc max,max` and records the answer;
+  without a lock the warm-up waits for 8 polls without a rise (at most 120 s).
+- Job 20261013-005946_M08_issue25k (ISSUE-35): self-test, then seeds 8 and 10, each with a full-N control_null.
+- Reading rules, written before the results exist (threshold 4.5, N = 100000 per class; the verdict of a series is
+  the test on ALL measurements, the test without flagged ones is quoted beside it):
+  f. A run is usable only if control_leak_q FAILS (the window has power), control_null PASSES, there are 0
+     mismatches, and in each target fewer than 5% of the measurements are flagged (unqueued or off the clock).
+  g. Kernel-level result for a kernel: its `_null` PASSES and its target PASSES in both seeds. Wording: no
+     dependence detected at this N, on this device; never "constant time".
+  h. `_null` FAILS in either seed: the window still separates equal contents, the target of that kernel is not
+     readable, the result for it is unusable.
+  i. `_null` PASSES and the target FAILS in both seeds with one sign of t: a dependence of the kernel time on its
+     data is the reading. It is a finding against P3 and is reported as one; ADR-023 does not cover it.
+  j. `_null` PASSES and the target FAILS in one seed only: not decided, reported as measured.
+  k. A lock that was refused is not a failure of the run; the modal clock and the flag counts are reported.
+- Timebox (human, session 32): this is the only further job. If the result is unusable (rule f or h), no new job:
+  the kernel-window series are recorded NOT_MEASURED with the reason (shared cloud GPU, the harness could not
+  isolate the kernel), the obliviousness claim rests on the SASS reading, the Nsight branch efficiency and the E3
+  trace invariance, and M14 is unblocked. Note for that session: Nsight is NOT_MEASURED today (ISSUE-18), so that
+  sentence may only name what was measured. Rule i is a result, not "unusable": it is reported, not timeboxed away.
 
 ### ISSUE-26 [OPEN] M11: accounts and sessions live in memory; a restart forgets every account and logs every client out
 BLOCKS: none   SEVERITY: medium   OPENED: 2026-10-12 session 22
@@ -899,3 +951,37 @@ Confirm by running: ls gpujobs/inbox/      (it must list results_20261012-191630
 Then type: continue
 Closed 2026-10-13 session 31: the human ran the job on Kaggle (session 20261012-135251, Tesla T4) and the results zip
 was ingested; all 9 commands exit 0, git sha and bundle sha match (runs/20261013-000602_M08_i25_ingest/gates.txt).
+
+### ISSUE-35 [OPEN] HUMAN ACTION REQUIRED — GPU JOB READY: ISSUE-25 kernel-only dudect of tags and compact (job 20261013-005946_M08_issue25k)
+BLOCKS: M14   SEVERITY: high   OPENED: 2026-10-13 session 32
+Why: the kernel-level timing claim can only be measured on the GPU, and this laptop has none. This is the last job
+for ISSUE-25 (timebox): whatever comes back, the next session closes the question and M14 starts after it.
+GPU JOB READY — 20261013-005946_M08_issue25k              (runtime not measured; plan for 2 to 3 hours, see the note below)
+Use Kaggle for this one (the job is long, and it asks for a clock lock that needs root, which Kaggle gives).
+File to upload: D:\PJT\vcloak\gpujobs\out\20261013-005946_M08_issue25k\job.zip
+Notebook:       D:\PJT\vcloak\colab\VCloak_GPU_Runner.ipynb
+Do this (Kaggle, as for the earlier jobs):
+  1. kaggle.com -> Create -> New Notebook -> File -> Import Notebook -> pick colab\VCloak_GPU_Runner.ipynb.
+  2. Settings -> Accelerator -> GPU T4 x2.   (the step everyone forgets)
+  3. + Add Input -> Upload -> gpujobs\out\20261013-005946_M08_issue25k\job.zip as a dataset. Kaggle unpacks it into a
+     folder: that is fine.
+  4. Nothing to type in Cell 2: leave KAGGLE_INPUT = "" . The cell finds the job under /kaggle/input and must
+     print "Bundle verified".
+  5. Run Cell 1. It must print a GPU name (e.g. Tesla T4). If it prints NO GPU, redo step 2.
+  6. Run the remaining cells and keep the tab open until the last one finishes. The long cell prints nothing
+     while a command runs: that is normal. Do not start anything else in that notebook while it runs.
+  7. Download results_20261013-005946_M08_issue25k.zip from the Output panel.
+  8. Move that file into D:\PJT\vcloak\gpujobs\inbox\   (do not unzip or rename it).
+Bring back only the results zip, even if a cell reports a failure. Do not commit or edit anything in the repo
+  before the next session: a change to src/, kernels/, tests/, bench/ or scripts/ makes the result stale.
+No passphrase is needed: the job uses fixed TEST keys.
+The job asks the driver to pin the GPU clock (`nvidia-smi -lgc`) and resets it at the end (`nvidia-smi -rgc`). If
+  Kaggle refuses, that is recorded and the job goes on: it is not an error of yours.
+A dudect FAIL in the output is not an error of yours either: control_leak and control_leak_q MUST fail.
+Note on the runtime: two measuring runs (seeds 8 and 10), each control_null and four kernel-only targets at
+  N = 100000 per class. Every measurement now waits for a blocker launch and reads the clock, and the size of the
+  blocker is fitted on the runner, so the earlier jobs give no figure for it. 2 to 3 hours is a plan, not a measurement.
+Also wanted from you, in the same reply (see ISSUE-25, update of session 32): whether the session-31 rows are to be
+  re-labelled, and how. They are unchanged for now.
+Confirm by running: ls gpujobs/inbox/      (it must list results_20261013-005946_M08_issue25k.zip)
+Then type: continue

@@ -766,3 +766,34 @@
 - Commit: a9178f8
 - Next: fix ISSUE-25, prep of the kernel-window target for tags and compact (then a GPU job), M14 S1 after it ;
   human action: none now. The team decision on whole-call host timing (ISSUE-17 point 2) is needed before M14
+
+## Session 32 — 2026-10-13 01:10 — fix ISSUE-25 (M08 GPU obliviousness audit), prep of the last job — owner:Aditya
+- Steps: none new (M08 stays DONE); the prep half of `fix ISSUE-25` (status after: BLOCKED_HUMAN, job 20261013-005946_M08_issue25k)
+- Did: `bench/run_dudect.py`: group `issue25k` (tags_kernel, compact_kernel, a same-contents control of each,
+  control_leak_q). The timed window is enqueued behind a blocker launch, so no host code runs between the two events;
+  an event query flags a measurement that was not queued. The SM clock is read after every measurement, flags for
+  off-clock ones, `--lock-clock` (nvidia-smi -lgc, answer recorded, reset at the end). `telemetry.sm_clock`,
+  `lock_clock`, `unlock_clock`; `timing.warm_until_stable(flat_polls=)`. Job spec `bench/jobs/M08_issue25k.json`.
+- Found by reading the code (pinned by a test): tags, sort and compact of write_epoch never receive the submissions,
+  so their device inputs were byte-identical in both classes of every session-31 target. H8 is excluded for those
+  series; they also never tested these kernels against their own data. The new classes do (key, permutation).
+- Checked against the session request: (a) the class order IS a random interleaving per measurement; control_null is a
+  separate target, not a class, so it does not explain the equal-contents FAILs. (b) All 120 write_epoch series ran
+  at a steady 585 MHz: 56 FAIL, 64 PASS at the same clock (runs/20261013-005353_M08_i25k_prep/clock_facts.txt). No target had a clock drop.
+- NOT done: the 56 rows were not re-labelled UNSTABLE. Rule 5 is not met by any of them, and the label would
+  replace 56 measured values while the 64 PASS values at the same clock stay. Left to the human (ISSUE-25, ISSUE-35).
+- Evidence: runs/20261013-005353_M08_i25k_prep (clock_facts.txt; pytest_all.txt 2026 passed, 1 skipped (tests/unit/test_oracle_chacha.py:82),
+  674 deselected; pytest_changed_rerun.txt 127 passed after the last two edits; ruff, check_oblivious, check_secrets,
+  check_metrics PASS); runs/20261013-005359_M08_i25k_plumb (numpy, NOT_MEASURED: plumbing and outputs, 0 mismatches)
+- Metrics added: none (nothing measured; the backend was numpy)
+- Decisions: ADR-023 (the human's decision: P3 is claimed for the kernels, host timing is outside the threat model)
+- Issues: ISSUE-25 updated (findings, reading rules f to k, timebox), stays OPEN; ISSUE-17 point 2 decided, stays
+  open for points 1 and 3; opened ISSUE-35 (HUMAN ACTION REQUIRED, GPU JOB READY)
+- Deviations from spec: the window and the per-measurement clock are not in M08 S1 (Amendments). The limitation
+  line was added to the generator of section 4.O.6, not to docs/REPORT_CH4_NOTES.md: it appears at the next
+  regeneration. The message of commit c510682 says 21 unit tests; it is 9 test functions, 18 cases.
+- Not verified: anything on a CUDA device. Whether Kaggle accepts the clock lock; whether a blocker of at most 2^20
+  ChaCha blocks keeps the compaction queued; what one NVML read costs per measurement; the runtime of the job.
+- Commit: c510682 (prep, the commit of the job), HASH (records)
+- Next: ingest 20261013-005946_M08_issue25k, close ISSUE-25 by the rules, then M14 S1 ; human action: ISSUE-35 (run the job on Kaggle,
+  put the results zip into gpujobs/inbox/, and say what to do with the session-31 rows). Do not change the repo before that
