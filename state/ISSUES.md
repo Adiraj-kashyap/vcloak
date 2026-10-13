@@ -1510,7 +1510,7 @@ exists for two runners is safe: index rows and the exporter are keyed by (METRIC
 (pc_runner/results/previous, counters still refused) was not ingested. Deviations of the PC setup from SETUP.txt
 (no CUDA Toolkit, header wheels, standalone Nsight Compute extracted from its MSI): pc_runner/HANDOFF.md.
 
-### ISSUE-48 [OPEN] The ncu result of the PC runner is indexed but appears in no generated table or text; caveats of that result
+### ISSUE-48 [CLOSED 0856c6e] The ncu result of the PC runner is indexed but appears in no generated table or text; caveats of that result
 BLOCKS: none   SEVERITY: medium   OPENED: 2026-10-14 session 47
 1. Decision for the owner: how the PC ncu result is reported. `scripts/export_results.py` and
    `vcloak.bench.report_oblivious` pin the Kaggle run runs/20261012-040027_M08_ncu, so results/oblivious/
@@ -1535,3 +1535,18 @@ BLOCKS: none   SEVERITY: medium   OPENED: 2026-10-14 session 47
 4. Low: the optional unit_tests command of job 20261013-224820_M00 exited 2 on the PC at collection (httpx and
    matplotlib are not in the package list of pc_runner/SETUP.txt; gpujobs/out/20261013-224820_M00/logs/03_unit_tests.txt).
    No test ran there. If the PC is used again: add the packages to SETUP.txt or leave the step out of PC jobs.
+Resolution (2026-10-14, session 48, 0856c6e; decisions of the owner in the session request):
+- Point 1: option (a). `report_oblivious --ncu-second` writes a table and a paragraph of its own for runner
+  pc-rtx3050laptopgpu (section 4.O.5, results/oblivious/ncu_divergence_pc-rtx3050laptopgpu.csv,
+  results/paper/ncu_second_table.tex); the T4 rows, ncu_divergence.csv and sidechannel_table.tex are unchanged.
+  The reporting leads with the positive control (the validated null), in the notes and in docs/RESULTS_ANALYSIS.md.
+- Point 2: the environment record stays the Kaggle T4; the PC is named in section 4.O.1 as the second measurement
+  platform (ADR-025). record_env.py was not run for it.
+- Point 3, bitonic_pairs_global: resolved by a lookup, no new run. The saved SASS listing has branch instructions
+  for that kernel (one conditional), so the 0 / 0 is a counter that collected nothing: NOT_MEASURED (ANN-5 of the
+  index; runs/20261014-014529_M08_issue48_report/sass_crosscheck.txt). The other three kernels are kept. The other
+  caveats of point 3 are carried in the generated text. Why the instrumentation missed that kernel: not
+  investigated, and not needed for the report.
+- Wording: every generated place that reports ncu now states both platforms (4.O.2, 4.O.5, 4.O.6, 4.S,
+  PAPER_UPDATES section 5).
+- Point 4: httpx and matplotlib are in the install line of pc_runner/SETUP.txt. Not verified on the PC.

@@ -3,13 +3,13 @@
 ```yaml
 project: v-cloak
 kit_version: 1.0
-last_session: 47
+last_session: 48
 last_session_date: 2026-10-14
 current_module: M15
 current_step: S1
 status: NOT_STARTED           # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
 next_unit: M15
-last_checkpoint: 2026-10-14 session 47: PC runner jobs 20261013-224820_M00 and 20261013-224820_M08_ncu ingested (runner pc-rtx3050laptopgpu), ISSUE-47 and ISSUE-18 closed, ISSUE-48 opened; next: M15 S1
+last_checkpoint: 2026-10-14 session 48: ISSUE-48 closed (the PC ncu result has its own table, control first; bitonic_pairs_global NOT_MEASURED, ANN-5); next: M15 S1
 quick_mode_default: false
 local:                      # the laptop (no GPU) — filled by M00 S7
   os: "Windows-11-10.0.26200-SP0"
@@ -49,7 +49,7 @@ gpu_job:                    # set by the gpu-job skill
 | M05 | GPU AEAD-open, restore, compaction | Aditya | M04 | no | DONE | S4 | 2 |
 | M06 | GPU engine | Aditya | M05 | no | DONE | S5 | 2 |
 | M07 | GPU performance metrics (E4) | Aditya | M06 | no | DONE | S6 | 2 |
-| M08 | GPU obliviousness audit (E3) | Aditya | M06 | no | DONE | S5 | 11 |
+| M08 | GPU obliviousness audit (E3) | Aditya | M06 | no | DONE | S5 | 12 |
 | M09 | Storage (PostgreSQL) | Divyansh | M06 | no | DONE | S5 | 1 |
 | M10 | Service & scheduler | Divyansh | M09 | no | DONE | S5 | 2 |
 | M11 | Session security (E5) | Divyansh | M10 | no | DONE | S7 | 2 |
@@ -101,12 +101,13 @@ Keep this file under 120 lines: one or two lines per note, the detail lives in t
   two seeds, one T4; staging and SM clock change together", naming ISSUE-37 (S2 never re-measured that way). The
   kernel-only series of tags and compact are NOT_MEASURED (ISSUE-36 closed, ANN-4): never write "no dependence
   detected" for them. SASS is a manual reading (ISSUE-19). No further dudect job.
-- ncu: NOT_MEASURED on the T4 (Kaggle refuses the counters). Measured on pc-rtx3050laptopgpu only
-  (runs/20261014-003929_M08_ncu, 8 T-NCU rows, log2n 16, one run): quote it with that runner's name and the
-  caveats of ISSUE-48, never as a T4 value and never beside the T4 SASS count as one measurement. The generated
-  tables and notes still pin the Kaggle run and say NOT_MEASURED until the owner decides ISSUE-48.
-- The obliviousness section of docs/REPORT_CH4_NOTES.md is generated (`python -m vcloak.bench.report_oblivious`,
-  command: line 1 of runs/20261013-171026_M16_prefixes/report_command.txt). Never edit it by hand.
+- ncu (ISSUE-48 closed): the T4 is NOT_MEASURED (Kaggle refuses the counters); divergence was measured on
+  pc-rtx3050laptopgpu, in its own table (4.O.5, ncu_second_table.tex). Always lead with the positive control ("an
+  instrument that read N divergent targets on a planted leak reported 0 on ..."), name the runner, state both
+  platforms. bitonic_pairs_global is NOT_MEASURED there (empty counters, SASS has branches; ANN-5). Never a T4 value.
+- The obliviousness section of docs/REPORT_CH4_NOTES.md and the block of docs/RESULTS_ANALYSIS.md are generated
+  (`python -m vcloak.bench.report_oblivious`; both commands: runs/20261014-014529_M08_issue48_report/report_command.txt,
+  which replaces the one of runs/20261013-171026_M16_prefixes). Never edit them by hand.
 - Database: `docker compose up -d --wait db` (postgres:16, 127.0.0.1:54329; docker.exe is under
   %LOCALAPPDATA%/Programs/DockerDesktop/resources/bin). Fallback: `python scripts/pgdev.py up` (never both).
   Integration tests SKIP when no database answers: read the skip count before calling G1 a pass.

@@ -1437,3 +1437,26 @@ Notes:
   packages). It is optional in the job spec and no GPU result depends on it (ISSUE-48 point 4).
 - The PC result is in no generated table yet, and has caveats (bitonic_pairs_global counts no branch target at all):
   ISSUE-48. Nothing in results/, docs/ or web/ changed in this session.
+
+## Audit — session 48 — 2026-10-14 — ISSUE-48: reporting of the PC ncu result (M08 follow-up, no module step) — RESULT: PASS
+M08 stays DONE. Of its checklist A4 and A5 are touched; A1-A3 are unchanged since the M08 audit.
+| Check | Result | Evidence |
+|---|---|---|
+| A4 ncu metrics collected or NOT_MEASURED with the reason | PASS | RUN/sass_crosscheck.txt, ANN-5: one value withdrawn with its reason; 6 of 8 values stay on pc-rtx3050laptopgpu; the Kaggle rows stay NOT_MEASURED |
+| A5 no verdict softened | PASS | git diff of docs/REPORT_CH4_NOTES.md in 0856c6e: no dudect verdict, t value or SASS row changed; tests/unit/test_bench_report_oblivious.py (29 passed, in RUN/pytest_all.txt) |
+| G1 | PASS | RUN/pytest_all.txt (2149 passed, 675 skipped, numpy backend; the skips are the GPU and database tests) |
+| G2 | PASS | RUN/check_metrics.txt (829 rows, 0 problems); no row added, one withdrawn (rule 5, ANN-5) |
+| G2b | PASS | the reported values come from runs/20261014-003929_M08_ncu (backend cupy, gpu_job block, runner pc-rtx3050laptopgpu); the generator refuses any other kind of run (unit tests) |
+| G3 | PASS | RUN/check_oblivious.txt (11 files, 0 findings); no kernel changed |
+| G4 | PASS | RUN/check_secrets.txt, run after the evidence copies (2118 files, 0 key-like runs) |
+| G5 | N/A | no GPU twin was written |
+| G6 | PASS | RUN/export_check.txt and a second `--check` before the commit (40 files, 0 would change) |
+| G7 | PASS | 0856c6e and the records commit, owner Aditya; review/publication/ stays untracked as before |
+| G8 | PASS | STATE: session 48, next_unit M15, gpu_job.pending null, M08 sessions 12 |
+| G9 | PASS | SESSION_LOG session 48, this entry, ISSUE-48 closed, ANN-5 |
+| G10 | N/A | nothing was measured; the report is reproduced by RUN/report_command.txt (export --check: 0 would change) |
+Notes:
+- RUN is runs/20261014-014529_M08_issue48_report.
+- The SASS listing used for the cross-check is the sm_75 nvcc build; the profiled code is the nvrtc build for cc 8.6.
+  The generated text says so. The in-run hardware counter is the second, same-platform indication.
+- No job is pending, so the change to src/vcloak/bench and scripts/ makes no bundle stale.

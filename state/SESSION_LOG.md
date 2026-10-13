@@ -1179,3 +1179,33 @@
   the PC and is committed as received: its setup claims were not checked here, only its two SHA-256 values
 - Commit: 555b4f5 (ingest, evidence), records in the next commit
 - Next: M15 S1 ; human action: none to start M15; ISSUE-48 when convenient
+
+## Session 48 — 2026-10-14 — M08 follow-up: ISSUE-48, how the PC ncu result is reported — owner:Aditya
+- Steps: not a module step (M08 stays DONE; status after: next_unit M15). The owner answered ISSUE-48 in the session
+  request: both proposals accepted, plus three instructions (control first; resolve bitonic_pairs_global from the
+  SASS evidence held; state both platforms wherever ncu is reported) and the SETUP.txt packages.
+- Did: `report_oblivious --ncu-second/--analysis` (a second runner gets its own table and paragraph, led by its
+  positive control; a divergent 0 is reported only when the kernel's own uniform count is not zero, or when the SASS
+  listing has no branch instruction); `report_security` and `export_results` state both platforms; new
+  results/paper/ncu_second_table.tex; docs/RESULTS_ANALYSIS.md created with the generated block; 7 unit tests;
+  httpx and matplotlib in pc_runner/SETUP.txt.
+- Result: bitonic_pairs_global on the PC is NOT_MEASURED: its uniform and divergent counters are both 0 over its
+  launches and the saved SASS listing of the kernel has branch instructions (one conditional), so the counter
+  collected nothing; in the same run the hardware branch counter of that kernel is not zero while the instrumented
+  one is. The reported statement covers 3 of the 4 audited kernels, after the control. T4 rows unchanged.
+- Evidence: runs/20261014-014529_M08_issue48_report (sass_crosscheck.py/.txt, report_command.txt,
+  report_oblivious.txt, report_security.txt, export.txt, export_check.txt, pytest_all.txt 2149 passed 675 skipped,
+  check_*.txt, ruff.txt); evidence/terminal/M08_S48_*, evidence/gpu/M08_pc_ncu_divergence_reported.csv
+- Metrics added: none. One row withdrawn to NOT_MEASURED: T-NCU-DIVERGENT-BITONIC-PAIRS-GLOBAL of
+  runs/20261014-003929_M08_ncu (ANN-5; the run's own 0.0 stays in its summary.json)
+- Decisions: those of the owner (ISSUE-48). By the agent: the cross-check counts every branch instruction that
+  scripts/sass_check.py indexed (T-SASS-BRA), the stricter reading of "no branch instructions"
+- Issues: closed ISSUE-48 (0856c6e)
+- Deviations from spec: no screenshot: no view of the app shows this result (the dashboard is wired in M18), so
+  terminal and GPU evidence only. The two security figure PDFs that the regeneration rewrote byte-for-byte
+  differently were restored from git (same data). review/publication/ is still untracked and untouched.
+- Not verified: why the instrumented counters missed bitonic_pairs_global; what `.avg` averages over; that the PC
+  build of that kernel has the same branches as the sm_75 listing (it is another build of the same source);
+  SETUP.txt on the PC
+- Commit: 0856c6e (code, results, evidence), records in the next commit
+- Next: M15 S1 ; human action: none
