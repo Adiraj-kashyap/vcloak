@@ -1095,3 +1095,38 @@ Notes:
 - The manifest is dirty (the code of this session was not committed when the run started).
 - The evaluation conversation keys are derived from the public seed in memory and are not written anywhere.
 - The schemas m14_eval and m14_eval_quick (G10 re-run) are left in the development database.
+
+## Audit M14 — 2026-10-13 — session 37 — result: PASS for the prep of S2 to S5 (checkpoint; module BLOCKED_HUMAN on job 20261013-105517_M14, A1 open)
+| Item | Result | Evidence |
+|---|---|---|
+| S2 check (>= 60 conversations read back, CAND_K, occupancy) | PASS on the simulator only | RUN/e0_restoration.json (60 of 60 in exact order, 7683 messages, 960 reads), RUN/e1_attack.json W60 occupancy (peak 91, CAND_K 128) |
+| S3 check (table and ablation figure saved) | PARTIAL | RUN/attack_table.csv (six layouts, 38 checks ok); the figure is drawn at the ingest from the device numbers (module Amendments) |
+| S4 check (gates of TESTING section 4) | PASS in quick sizes on the simulator only | runs/20261013-102418_M14_security_e2_quick/e2_uniformity.json (3 of 3 gates); the full sizes (n 2^16, 1000 epochs) are not run locally |
+| S5 check (trace invariance vs merge sort) | PASS on the simulator only | runs/20261013-102417_M14_security_e3/e3_trace.json (6 of 6 gates; device 1 trace, merge sort 4); the M08 link is written at the ingest |
+| A1 real stack (mode=vcloak, db=postgres, engine=gpu) | NOT MET | every manifest of this session says engine numpy-simulator; job 20261013-105517_M14 is packed for it (ISSUE-38, ISSUE-39) |
+| A2 acceptance gates recorded | PARTIAL | the gates are evaluated and written by every stage (failures exit 1); on device numbers only after the ingest |
+| A3 GPU-vs-oracle table | N/A | S7 not written (ISSUE-40) |
+| A4 dudect FAIL reflected | N/A | the S5 summary is written at the ingest; e3_trace.json says it is the logical trace only |
+| G1 | PASS | RUN/pytest_all.txt (2075 passed, 675 skipped: 674 need a CUDA device, 1 deliberate; 25 new cases) |
+| G2 | PASS | RUN/check_metrics.txt (564 rows, 0 problems); 35 rows added, all S- ids, backend numpy, runner local |
+| G2b | PASS | no performance or side-channel metric added; nothing from this session is labelled cupy |
+| G3 | PASS | RUN/check_oblivious.txt (11 files, 0 findings); no kernel source changed; the launch hook in gpu/kernels.py receives n and the launch only |
+| G4 | PASS | RUN/check_secrets.txt (0 key-like runs) after two fixes, see the notes |
+| G5 | PASS (simulator) | tests/unit/test_eval_security.py: device permutation = `epoch_permutation_ref` for 3 epochs; device sort = oracle sort for 5 inputs. No new kernel twin |
+| G6 | PARTIAL | eval/attack.py, eval/uniformity.py, eval/trace.py, bench/run_security_eval.py exist; eval/anonymity.py, results/security and the notes section belong to S6, S7 and the ingest |
+| G7 | PASS | checked after the closing commit |
+| G8 | PASS | STATE: M14 BLOCKED_HUMAN at S2, 2 sessions, pending 20261013-105517_M14; 115 lines (limit 120) |
+| G9 | PASS | SESSION_LOG session 37, this entry, ISSUE-39 and ISSUE-40 opened, ISSUE-38 updated |
+| G10 | PASS | manifests valid; RUN/g10_quick_rerun.txt (quick, PostgreSQL: exit 0) |
+Notes:
+- RUN is runs/20261013-103235_M14_security_e0e1. Everything here ran on the numpy simulator: it shows the code paths and the
+  statistics work, and nothing about a GPU. No step of S2 to S5 is complete until its check passes on the ingested job.
+- Two earlier runs of this session are kept as FAIL: runs/20261013-101036_M14_security_e0e1 (crash in the EPOCH layout,
+  no result file) and runs/20261013-101519_M14_security_e0e1 (EPOCH layout recorded as failed, five layouts ok). Cause:
+  PostgreSQL "out of shared memory" when one statement touches ~4500 partitions. Fixed by dumping and dropping in batches.
+- G4 needed two changes: trace digests are the first 128 bits of a SHA-256 (full digests are 64-hex runs), and the
+  docker pull lines were removed from the rehearsal log (an image digest); the file says so in its header.
+- scripts/runner_stack.py was rehearsed in a root ubuntu:22.04 container (RUN/runner_stack_container_rehearsal.txt:
+  PostgreSQL 14.24 installed, hygiene as required, quick attack stage exit 0). Colab itself was not tried.
+- STATE.md was rewritten from 124 to 115 lines at the request of the human; notes were shortened, none dropped.
+

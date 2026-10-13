@@ -3,13 +3,13 @@
 ```yaml
 project: v-cloak
 kit_version: 1.0
-last_session: 36
+last_session: 37
 last_session_date: 2026-10-13
 current_module: M14
 current_step: S2
-status: IN_PROGRESS          # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
+status: BLOCKED_HUMAN        # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
 next_unit: M14
-last_checkpoint: 2026-10-13 session 36: M14 S1 passed (24733 messages = 24733 rows, PostgreSQL, numpy simulator); ISSUE-37 and ISSUE-38 opened; next: M14 S2
+last_checkpoint: 2026-10-13 session 37: M14 S2-S5 written, numpy simulator only (no step check passed on the device yet); GPU job 20261013-105517_M14 packed (ISSUE-39); next: ingest it, then gates for S2-S5
 quick_mode_default: false
 local:                      # the laptop (no GPU) — filled by M00 S7
   os: "Windows-11-10.0.26200-SP0"
@@ -33,7 +33,7 @@ runner:                     # the free remote GPU — filled from the ingested M
   peak_bw_gbs: 320.064
   last_session_id: "20261012-135251"
 gpu_job:                    # set by the gpu-job skill
-  pending: null   # job id awaiting the upload of the human, or null
+  pending: 20261013-105517_M14   # job id awaiting the upload of the human, or null
   last_ingested: 20261013-005946_M08_issue25k
 ```
 
@@ -55,7 +55,7 @@ gpu_job:                    # set by the gpu-job skill
 | M11 | Session security (E5) | Divyansh | M10 | no | DONE | S7 | 2 |
 | M12 | Client SDK & CLI | Abhishek | M11 | no | DONE | S4 | 1 |
 | M13 | Frontend: chat + server view | Abhishek | M12 | no | DONE | S6 | 5 |
-| M14 | Security evaluation (E0–E2, anon set) | Abhishek | M08, M10 | no | IN_PROGRESS | S2 | 1 |
+| M14 | Security evaluation (E0–E2, anon set) | Abhishek | M08, M10 | no | BLOCKED_HUMAN | S2 | 2 |
 | M15 | End-to-end performance (E6) | Divyansh | M10, M11 | no | NOT_STARTED | S1 | 0 |
 | M16 | Results export | Abhishek | M07, M08, M14 | no | NOT_STARTED | S1 | 0 |
 | M18 | Frontend: dashboard, experiments, logs | Abhishek | M13, M14 | no | NOT_STARTED | S1 | 0 |
@@ -66,59 +66,50 @@ gpu_job:                    # set by the gpu-job skill
 | M21 | Integration, validation, Review-4 readiness | Team | M17, M19, M20 | no | NOT_STARTED | S1 | 0 |
 
 ## Notes for the agent
-- Update the yaml block and the module row together; `sessions` includes audit-only sessions. Keep this file under 120 lines.
-- GPU modules (M03–M08) need a prep session and an ingest session; `gpu_job.pending` says which job the
-  human still has to upload. Never mark such a module DONE while `pending` is set.
-- The build targets three gates: **Review 3** (interim, 20 marks) is satisfied by M00–M08 plus M13;
-  the **Draft / Report Review** (5 marks) is M22; **Review 4** (final, 25 marks) needs everything and
-  adds M19–M21. See `ai/REVIEW_RUBRICS.md`.
-- G4 runs `python scripts/check_secrets.py`. `gpujob.py pack` allow-lists the new `bundle_sha256` itself (ISSUE-5, closed):
-  commit `scripts/secrets_allowlist.json` with the session; it is not bundled, so that commit does not make a job stale.
-- The M05 and M06 jobs ran on a newer Kaggle image (driver 580.178.04, CUDA 12.8 / runtime 12090) than the `runner` block
-  above (M00 probe). Do not mix timings across the two images (ISSUE-3).
-- **M19 is calendar-bound.** Once M16 has real results, treat M19 as the highest-priority unmet unit
-  even if other modules look more urgent — criterion 9 awards nothing without a dated submission proof.
-- Kaggle unpacks an uploaded job.zip into a folder: in a GPU JOB READY issue never give a path to job.zip on Kaggle.
-- M07 results are one runner session (20261011-213139, T4 / Xeon 2.00GHz x4). 65 of its 213 rows are UNSTABLE
-  (ISSUE-15); never quote K-BITONIC-BW-PCT below 2^18 as bandwidth (ISSUE-14). Figures and notes are regenerated
-  with `python -m vcloak.bench.report`, never edited by hand.
-- write_epoch misses EPOCH_MS at 2^16 slots because of host Python (one uuid object per row), not the GPU
-  (ISSUE-12, BLOCKS M15): vectorise the row building in its own unit, then re-measure with a new GPU job.
+Keep this file under 120 lines: one or two lines per note, the detail lives in the issue or ADR it names.
+- Update the yaml block and the module row together; `sessions` includes audit-only sessions.
+- GPU modules need a prep and an ingest session; never mark one DONE while `gpu_job.pending` is set. In a GPU JOB
+  READY issue never give a path to job.zip on Kaggle (it unpacks uploads into a folder).
+- Gates: Review 3 = M00–M08 + M13; Draft Review = M22; Review 4 = everything + M19–M21 (`ai/REVIEW_RUBRICS.md`).
+- **M19 is calendar-bound.** Once M16 has real results it is the highest-priority unmet unit (criterion 9 needs a
+  dated submission proof).
+- G4 = `python scripts/check_secrets.py`. `gpujob.py pack` allow-lists the new bundle sha itself: commit
+  `scripts/secrets_allowlist.json` with the session (it is not bundled, so that does not make a job stale).
+- Runner images differ: M05/M06 ran on driver 580.178.04 / CUDA 12.8, the `runner` block is the M00 probe. Never mix
+  timings across images (ISSUE-3).
+- M07: one runner session (20261011-213139). 65 of 213 rows are UNSTABLE (ISSUE-15); never quote K-BITONIC-BW-PCT
+  below 2^18 as bandwidth (ISSUE-14). Figures and notes only through `python -m vcloak.bench.report`.
+- write_epoch misses EPOCH_MS at 2^16 slots because of host Python, not the GPU (ISSUE-12, BLOCKS M15): vectorise
+  the row building in its own unit, then re-measure with a new GPU job.
 - M08 is DONE with a negative result: dudect FAILS for aead_conv, aead_tag and the whole write_epoch call (ISSUE-17,
-  CLOSED in session 35). The diagnostic job 20261012-113437_M08_issue17 (two seeds) reproduced the three FAILs and traces
-  the AEAD ones to the harness staging (same-contents controls FAIL, symmetric staging PASSES) and the whole-call one to
-  host Python object state; section 4.O.3 and results/oblivious/staging_diagnostics.csv show this beside the S2 rows.
-  ADR-023: P3 is claimed for the KERNELS; host timing is outside the threat model, a limitation, never claimed. M14 quotes
-  the AEAD result only as "no dependence on the contents detected with symmetric staging, N 100000, two seeds, one T4;
-  staging and SM clock change together", and tags and compact (ISSUE-25, CLOSED) only with the limits of ISSUE-36 and
-  ANN-1 / ANN-2. No further GPU job (timebox). Never write "constant time". S2 was never re-measured with symmetric
-  staging: ISSUE-37 (low) keeps that residual; M14, M20 and M22 name it with the AEAD result.
-  ncu is NOT_MEASURED (ISSUE-18); the SASS claim rests on bench/sass_explained.json, a manual reading (ISSUE-19).
-- The obliviousness section of docs/REPORT_CH4_NOTES.md is generated by `python -m vcloak.bench.report_oblivious`
-  (markers BEGIN/END M08 OBLIVIOUS; full command: runs/20261013-091541_M08_issue17_table/report_command.txt). Never edit it by hand.
-- Database: `docker compose up -d --wait db` (postgres:16, 127.0.0.1:54329; Docker Desktop must be running, and in a
-  shell opened before the install docker.exe is under %LOCALAPPDATA%/Programs/DockerDesktop/resources/bin). Fallback
-  without Docker: `python scripts/pgdev.py up` (17rc1, same port, never both). The integration tests SKIP when no
-  database answers, so read the skip count before calling G1 a pass. M09 passed on both servers.
-- Repo contract (ADR-014): `fetch_candidates` raises `CandidateOverflow` above K; `rewrite_window` needs the stored row
-  count; re-shuffle through `storage.reshuffle.reshuffle_window(repo, engine, win)`. M10 must handle the overflow.
-- Service (ADR-015): `python -m vcloak.cli serve --dev --store sqlite` runs it without a database; `scripts/smoke_service.py`
-  is the live round trip. The server assigns conv_id (hash of conv_token) and seq (arrival position). One thread owns
-  the engine. Log only through `service.logsafe` (new fields go on its allow-list in M11, never around it).
-- Restart (ADR-016, ISSUE-22 closed): the store lists the windows still to be re-shuffled (`pending_windows`); new
-  Repo implementations need `mark_pending` / `pending_windows`. A kill loses the in-memory queue by design: only
-  `ack: "stored"` (201) means durable. M12 must use it and drop repeats, M15 must name the ack it measures (ISSUE-23).
-  `scripts/smoke_restart.py` is the live kill-and-restart check. The service has never run on a CUDA device.
-- Sessions (M11 DONE, ADR-017, ADR-018): `vcloak serve --sessions` turns them on (off by default: the open API stays
-  loopback-only; smoke_restart and M14 use it). Client flow for M12/M13: docs/API.md "Sessions and DPoP". Every socket
-  gets the same `tick` per epoch, so a client reads on a fixed schedule. Session state is in memory (ISSUE-26).
-- M11 tests build proofs with `tests/dpop_client.py`. The E5 matrix: `python bench/run_session_matrix.py`, never by hand.
-- SEC-DPOP-VERIFY-US is a laptop-CPU time of the session layer, not a GPU or end-to-end number: M15 must say whether
-  its runs had `--sessions` on and how many sockets were open (ISSUE-27).
-- The log allow-list is final (tests/security/test_log_redaction.py pins it); a new log field is a change there.
-- Client (M12, ADR-019): `vcloak.client` never imports `vcloak.service`. Never claim forward secrecy or a verified cross-sender order (ISSUE-28).
-- M13 DONE (ADR-020..022). Browser tests need Chrome (`scripts/headless.py`; read the skip count). Only closed windows are
-  shuffled. `serve --dev --compare` stores every message twice: never measure on it. `/v1/stats/live` gives `last_write_ms`
-  (host wall clock, --dev only): never a metric (ISSUE-33). capture_evidence.py keeps another run's pictures in evidence/superseded/.
-- M14: `python bench/run_security_eval.py --stage s1` (schema m14_eval, dropped at each run). Local runs are the numpy
-  simulator: A1 (engine=gpu) is open, ISSUE-38 BLOCKS M14 being DONE. `eval.traffic.replay` needs `autorun=False`.
+  closed). Diagnostics trace the AEAD FAILs to the harness staging and the whole-call FAIL to host Python state.
+  ADR-023: P3 is claimed for the KERNELS only; host timing is a limitation. Never write "constant time".
+- How M14/M20/M22 quote M08: AEAD only as "no dependence on the contents detected with symmetric staging, N 100000,
+  two seeds, one T4; staging and SM clock change together", naming ISSUE-37 (S2 never re-measured that way); tags
+  and compact only with the limits of ISSUE-36 and ANN-1 / ANN-2. ncu is NOT_MEASURED (ISSUE-18); the SASS claim
+  rests on a manual reading (ISSUE-19). The dudect timebox of session 32 stands: no further dudect job.
+- The obliviousness section of docs/REPORT_CH4_NOTES.md is generated (`python -m vcloak.bench.report_oblivious`,
+  command in runs/20261013-091541_M08_issue17_table/report_command.txt). Never edit it by hand.
+- Database: `docker compose up -d --wait db` (postgres:16, 127.0.0.1:54329; docker.exe is under
+  %LOCALAPPDATA%/Programs/DockerDesktop/resources/bin). Fallback: `python scripts/pgdev.py up` (never both).
+  Integration tests SKIP when no database answers: read the skip count before calling G1 a pass.
+- Repo contract (ADR-014): `fetch_candidates` raises `CandidateOverflow` above K; `rewrite_window` needs the stored
+  row count; re-shuffle through `storage.reshuffle.reshuffle_window(repo, engine, win)`.
+- Service (ADR-015): `python -m vcloak.cli serve --dev --store sqlite`; `scripts/smoke_service.py` is the live round
+  trip. One thread owns the engine. Log only through `service.logsafe`; its allow-list is final and pinned by
+  tests/security/test_log_redaction.py.
+- Restart (ADR-016): only `ack: "stored"` (201) means durable; a kill loses the in-memory queue by design. M15 must
+  name the ack it measures (ISSUE-23). `scripts/smoke_restart.py` is the live check.
+- Sessions (ADR-017, ADR-018): `vcloak serve --sessions` (off by default). State is in memory (ISSUE-26). E5 matrix:
+  `python bench/run_session_matrix.py`. SEC-DPOP-VERIFY-US is a laptop-CPU time: M15 must say whether `--sessions`
+  was on and how many sockets were open (ISSUE-27).
+- Client (ADR-019): `vcloak.client` never imports `vcloak.service`. Never claim forward secrecy or a verified
+  cross-sender order (ISSUE-28).
+- M13 (ADR-020..022): browser tests need Chrome (read the skip count). `serve --dev --compare` stores every message
+  twice: never measure on it. `/v1/stats/live` `last_write_ms` is never a metric (ISSUE-33).
+- M14: `python bench/run_security_eval.py --stage s1|attack|uniformity|trace` (schemas m14_eval*, dropped at each
+  run; `eval.traffic.replay` needs `autorun=False`). Local runs are the numpy simulator: correctness only, never a
+  GPU result. The human allowed ONE full-stack GPU job (ISSUE-38): `bench/jobs/M14.json` starts PostgreSQL in the
+  runner (`scripts/runner_stack.py`, runner only), runs S1-S5 with `--backend cupy` and every test marked gpu
+  (`bench/run_gpu_tests.py`). At the ingest: gates of TESTING §4, figures from the run JSON, link M08 in the S5
+  summary, close ISSUE-38; then S6 and S7 (not written, not in the job: ISSUE-40).

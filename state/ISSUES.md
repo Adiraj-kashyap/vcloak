@@ -1129,3 +1129,51 @@ Not decided here; to settle before M14 can be DONE, at the latest when S2 to S6 
    amendment to the module file.
 The timebox of session 32 was about further dudect jobs; whether it covers an M14 job is for the human to say.
 Until then every M14 number is indexed with backend numpy / runner local and is never called a GPU result.
+Decided by the human (session 37, 2026-10-13): way 1. A GPU job for M14 is allowed and wanted, as a full-stack job with
+PostgreSQL installed and started in the runner; the M14 numbers must not stay labelled numpy / local. Job 20261013-105517_M14
+is packed (ISSUE-39). This issue stays OPEN until that job is ingested and A1 is checked on its manifests.
+
+### ISSUE-39 [OPEN] HUMAN ACTION REQUIRED — GPU JOB READY: M14 on the full stack, and the tests marked gpu (job 20261013-105517_M14)
+BLOCKS: M14   SEVERITY: high   OPENED: 2026-10-13 session 37
+Why: M14 needs its numbers from the T4 with PostgreSQL behind the service (ISSUE-38), and the 674 tests that skip locally need a run.
+Do this:
+```
+GPU JOB READY — 20261013-105517_M14              (runtime not measured; plan for about 1 hour)
+
+1. Open https://colab.research.google.com  ->  File > Upload notebook
+   Pick:  colab/VCloak_GPU_Runner.ipynb
+2. Runtime > Change runtime type > T4 GPU > Save        <- easy to miss
+3. Run Cell 1. It must print a GPU name (e.g. Tesla T4).
+4. Run Cell 2, upload:  gpujobs/out/20261013-105517_M14/job.zip
+5. Run Cell 3 (keep the tab open), then Cell 4 to download results_20261013-105517_M14.zip
+6. Put that file in:  gpujobs/inbox/
+7. New session, type: continue
+
+Use Colab for this job, not Kaggle: command 3 installs PostgreSQL with apt-get and needs the internet, which is
+on by default in Colab. (On Kaggle it works only with Settings > Internet switched on; Kaggle unpacks the
+uploaded zip into a folder and Cell 2 finds it by itself.)
+If Cell 3 shows "stack_up: exit 1", the PostgreSQL install failed: the job still finishes the other commands,
+download the results anyway and say so.
+Full detail: YOUR_CHECKLIST.md
+```
+What the job runs: nvidia-smi; `scripts/runner_stack.py up` (pip packages of the service, apt-get postgresql, a private
+cluster on 127.0.0.1:54329 with the hygiene settings); check_oblivious; `run_security_eval.py` stages s1, attack
+(six layouts, E0 on W60), uniformity, trace, all with `--backend cupy --seed 2026`; `run_gpu_tests.py --expect 674`;
+the PostgreSQL settings; nvidia-smi. Every command is `stop_on_fail: false`, so one failure does not hide the rest.
+Never run on a device before: the service and its engine thread on CuPy, PostgreSQL in the runner, the whole
+`-m gpu` selection in one pytest process (earlier jobs ran files of it). The runtime is an estimate, not a measurement.
+Confirm by running: `ls gpujobs/inbox/` shows results_20261013-105517_M14.zip
+Then type: continue
+
+### ISSUE-40 [OPEN] M14 S6 (anonymity set) and S7 (comparison with the oracle) are not written and not in job 20261013-105517_M14
+BLOCKS: M14   SEVERITY: medium   OPENED: 2026-10-13 session 37
+The human asked for E0 to E3 in the job; S6 and S7 were not part of it and are not written.
+1. S7 needs no device: it compares the ingested numbers with the oracle (`seed/`, run locally) in a table.
+2. S6 replays traffic for 10, 100 and 1000 users. Audit A1 wants those numbers from the real stack too, so S6 needs
+   either a second (small) GPU job or a decision to report S6 from the numpy simulator with A1 recorded as not met
+   for S6. The module text does not say how users map to conversations; that has to be fixed and written down first.
+3. Seen on the simulator (runs/20261013-103235_M14_security_e0e1/e1_attack.json): at W = 300 the peak bucket-window occupancy is above CAND_K
+   (128), so a read at W = 300 would answer `candidate_overflow`. The ablation only dumps that layout; the default
+   W = 60 stays below CAND_K. To be re-read on the device numbers and stated with the ablation.
+Decision for the human at the ingest: a second job for S6, or S6 on the simulator.
+

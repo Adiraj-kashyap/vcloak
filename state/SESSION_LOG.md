@@ -900,3 +900,31 @@
 - Commit: 63a41b5
 - Next: M14 S2 (E0 restoration) ; human action: none required. Optional: decide ISSUE-36; say whether an M14 GPU
   job is allowed (ISSUE-38)
+
+## Session 37 — 2026-10-13 — M14 Security evaluation, S2 to S5 prep and the full-stack GPU job — owner:Abhishek
+- Steps: S2, S3, S4, S5 written and run on the simulator; none complete (status after: BLOCKED_HUMAN, current_step S2,
+  job 20261013-105517_M14 pending)
+- Human decisions this session: a full-stack GPU job for M14 is allowed and wanted (ISSUE-38, way 1), on Colab; the
+  674 tests marked gpu are to run in it; STATE.md back under 120 lines. ISSUE-36 was summarised; not decided yet.
+- Did: src/vcloak/eval/attack.py, uniformity.py, trace.py; `kernels.set_launch_hook` (public arguments);
+  bench/run_security_eval.py stages attack, uniformity, trace; scripts/runner_stack.py (PostgreSQL in the runner);
+  bench/run_gpu_tests.py; bench/jobs/M14.json; tests/unit/test_eval_security.py (25 cases); STATE.md 124 -> 115 lines.
+- Result (numpy simulator, seed 2026, PostgreSQL 16.15, correctness only): six layouts, 24733 rows each; turn-order
+  accuracy BASELINE 1.0000, EPOCH 0.9820, W1 0.9202, W10 0.6867, W60 0.5560, W300 0.5068; E0 60 of 60 in exact order;
+  quick uniformity 3 of 3 gates; trace 6 of 6 gates.
+- Evidence: runs/20261013-103235_M14_security_e0e1 (e1_attack.json, attack_table.csv, e0_restoration.json, pytest_all.txt 2075 passed 675 skipped,
+  check_*.txt, ruff.txt, g10_quick_rerun.txt, runner_stack_container_rehearsal.txt);
+  runs/20261013-102418_M14_security_e2_quick; runs/20261013-102417_M14_security_e3; evidence/terminal/M14_S2S5_*
+- Metrics added: 35 rows (S-TAU-*, S-TURNACC-*, S-F-*, S-E0-RESTORE, S-CANDK, S-OCC-*, S-CHI2*, S-TAUBAND-PCT,
+  S-TAU-SIGMA-MEAS, S-TRACE-DISTINCT-*), all backend numpy / runner local; the job gives the cupy rows
+- Decisions: none new (ADR); S4 gate definitions and the other choices are in the Amendments of the module file
+- Issues: ISSUE-38 updated (decided, stays OPEN until the ingest); opened ISSUE-39 (GPU JOB READY, BLOCKS M14) and
+  ISSUE-40 (S6, S7 not written and not in the job; W300 occupancy above CAND_K on the simulator)
+- Deviations from spec: S2 and S3 are one stage; figures at the ingest, not in the job; trace digests are 128 bits;
+  the uniformity run in the repo is quick sizes (the full sizes are too slow on the simulator)
+- Not verified: anything on a CUDA device; scripts/runner_stack.py on Colab itself (rehearsed in an ubuntu:22.04
+  container as root); the service's engine thread with CuPy; that `-m gpu` selects 674 tests on the runner; the
+  job's runtime (about 1 hour is an estimate)
+- Commit: e5a82fc (code, packed from it); records in the following commit
+- Next: ingest job 20261013-105517_M14 ; human action: ISSUE-39 (run the job on Colab); decide ISSUE-36 and ISSUE-40
+
