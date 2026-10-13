@@ -1391,3 +1391,27 @@ Notes:
   change; RUN/pytest_all.txt is the final tree.
 - Not verified: compilation in Overleaf; any timing (none was taken locally); the cause of the instability of
   write_epoch on the runner.
+
+## Audit — session 46 — 2026-10-13 — PC runner kit and job packing (M08 follow-up, no module step) — RESULT: PASS
+No module checklist applies (M08 is DONE and nothing of its audit changed); global checks only.
+| Check | Result | Evidence |
+|---|---|---|
+| G1 | PASS | RUN/pytest_all.txt (2142 passed, 1 skipped, 674 deselected; `-m "not gpu"`, numpy backend) |
+| G2 | PASS | RUN/check_metrics.txt (817 rows, 0 problems); no number was added to any log, table or doc |
+| G2b | PASS | no GPU metric recorded; both jobs are pending, nothing is ingested |
+| G3 | PASS | RUN/check_oblivious.txt (11 files, 0 findings); no kernel changed |
+| G4 | PASS | RUN/check_secrets.txt (0 key-like runs); the two bundle digests are allow-listed by pack |
+| G5 | N/A | no GPU twin was written |
+| G6 | PASS | RUN/export_check.txt (0 files would change) |
+| G7 | PASS | 072ee8c and the records commit, owner Aditya |
+| G8 | PASS | STATE: session 46, next_unit M15, gpu_job.pending names both jobs, M08 sessions 10 |
+| G9 | PASS | SESSION_LOG session 46, this entry, ISSUE-47 opened, ISSUE-18 updated, ADR-025 |
+| G10 | N/A | nothing was measured, so there is nothing to reproduce |
+Notes:
+- RUN is runs/20261013-224907_M08_pc_runner_kit.
+- The kit was exercised only where a GPU-less laptop can: run_job.py and check_setup.py refuse without nvidia-smi,
+  VCLOAK_RUNNER=local is refused, verify_result.py fails a Kaggle zip on the runner name and fails a zip with refused
+  counters (a scratch copy of the Kaggle M08 result with the runner name rewritten; never ingested, never indexed).
+- Not verified: everything that needs the PC. SETUP.txt was written from documentation and memory of NVIDIA's
+  install pages; no address in it was fetched in this session.
+

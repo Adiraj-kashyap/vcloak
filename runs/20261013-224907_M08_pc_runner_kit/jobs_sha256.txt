@@ -1,0 +1,7 @@
+$ sha256sum pc_runner/jobs/*.zip gpujobs/out/20261013-224820_M00/job.zip gpujobs/out/20261013-224820_M08_ncu/job.zip
+9d2aeb138ce937e42a0290f3ee89f8fadbd2140aad662385000a8bb2b08fb4d2 *pc_runner/jobs/1_probe_20261013-224820_M00.zip
+ec95d606470f7459a1d853dcdb318dfb2799d59afdde63a9fb5899c3ab6776ae *pc_runner/jobs/2_ncu_20261013-224820_M08_ncu.zip
+9d2aeb138ce937e42a0290f3ee89f8fadbd2140aad662385000a8bb2b08fb4d2 *gpujobs/out/20261013-224820_M00/job.zip
+ec95d606470f7459a1d853dcdb318dfb2799d59afdde63a9fb5899c3ab6776ae *gpujobs/out/20261013-224820_M08_ncu/job.zip
+
+exit 0

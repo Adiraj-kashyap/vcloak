@@ -1,0 +1,48 @@
+V-CLOAK PC RUNNER - RUN A JOB (after SETUP.txt step 7 says READY)
+
+Terminal in this folder, environment active:
+   WINDOWS      .venv\Scripts\activate
+   LINUX/WSL2   source .venv/bin/activate   and   export PATH=/usr/local/cuda/bin:$PATH
+Close games, browsers with video and anything else that uses the GPU. Plug a laptop in.
+
+THE COMMAND (one job zip at a time, in this order: smallest first)
+
+   JOB 1, the probe (runtime on this machine not measured; plan a few minutes):
+     python run_job.py jobs/1_probe_20261013-224820_M00.zip
+
+   JOB 2, ncu branch efficiency for ISSUE-18 (not measured either; plan 10 to 20 minutes):
+     python run_job.py jobs/2_ncu_20261013-224820_M08_ncu.zip
+   Job 2 needs the GPU counters (SETUP.txt step 6). If you chose "run as root / as administrator" there,
+   start this command the same way (Linux:  sudo env "PATH=$PATH" python run_job.py jobs/2_...zip ).
+
+WHERE THE RESULTS APPEAR
+   results/results_20261013-224820_M00.zip
+   results/results_20261013-224820_M08_ncu.zip
+   (in this folder. A second attempt of a job moves the first one to results/previous/; nothing is deleted.)
+
+THE PROOF, BEFORE YOU LEAVE THE MACHINE
+   run_job.py ends every job with a verification of the results zip. Read the last line:
+
+     VERDICT: PASS - copy results_<job>.zip into gpujobs/inbox/ on the laptop
+         The zip is complete: runner pc-<gpu>, the GPU was used, every required command ended with
+         exit 0, and for job 2 the counters carry values and the planted-leak control shows divergence.
+     VERDICT: FAIL
+         The lines under it say what is wrong. The usual one for job 2:
+         "ncu measured nothing: the driver refused the GPU performance counters" -> SETUP.txt step 6,
+         then run job 2 again. Do not leave with a FAIL you can still fix.
+
+   To see the verdict of a zip again:
+     python verify_result.py results/results_20261013-224820_M08_ncu.zip
+
+   You may leave when BOTH zips say PASS. If job 2 cannot pass on this machine, bring its zip anyway:
+   a refusal is recorded as NOT_MEASURED with the reason, which is what ISSUE-18 says today.
+
+BACK AT THE LAPTOP
+   Copy the two results_*.zip files (not results/previous/) into the repository folder  gpujobs/inbox/
+   Open a new Claude Code session and type:  continue
+   Never edit a zip, rename it, or type a number from the screen into the project.
+
+IF SOMETHING ELSE GOES WRONG
+   "nvidia-smi does not answer"      SETUP.txt step 1
+   "VCLOAK_RUNNER is ..."            close the terminal, open a new one; do not set that variable
+   a command FAILED                  the zip in results/ still holds logs/; bring it and say what you saw

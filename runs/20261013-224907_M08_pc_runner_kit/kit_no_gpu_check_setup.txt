@@ -1,0 +1,6 @@
+$ python check_setup.py
+[WARN] python                 3.14.0  (SETUP.txt names 3.12; continue only if CuPy below is OK)
+[FAIL] gpu / runner name      nvidia-smi does not answer: no NVIDIA driver, or no NVIDIA GPU (SETUP.txt step 1).
+FileNotFoundError: [WinError 2] The system cannot find the file specified
+
+exit 1

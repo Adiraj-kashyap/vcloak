@@ -1,0 +1,32 @@
+{
+  "job_id": "20261013-224820_M08_ncu",
+  "module": "M08_ncu",
+  "step": "S4",
+  "title": "M08 ISSUE-18: Nsight Compute branch counters (divergent branches, branch efficiency) of the four kernels and the planted-leak control, on a machine whose owner can permit the GPU performance counters",
+  "quick": false,
+  "params": {},
+  "seed": 8,
+  "git_sha": "072ee8ca96569a4f0cddbd55fea9de3e11ec50b1",
+  "dirty": false,
+  "packed_at": "2026-10-13T17:18:20+00:00",
+  "bundle_sha256": "0a8a2d59e7fa31ffe0afaea6bc96fdfceeab58c35bc81bcef51e0cc8771bb1ac",
+  "n_files": 199,
+  "commands": [
+    {
+      "name": "nvidia_smi",
+      "cmd": "nvidia-smi",
+      "timeout": 120
+    },
+    {
+      "name": "ncu",
+      "cmd": "python bench/run_ncu.py --seed 8 --out runs",
+      "timeout": 2400
+    },
+    {
+      "name": "nvidia_smi_after",
+      "cmd": "nvidia-smi",
+      "timeout": 120,
+      "stop_on_fail": false
+    }
+  ]
+}

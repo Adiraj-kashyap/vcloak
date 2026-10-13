@@ -1,0 +1,49 @@
+{
+  "run_id": "20261013-224907_M08_pc_runner_kit",
+  "module": "M08",
+  "step": "S4",
+  "owner": "Aditya",
+  "git_sha": "072ee8ca96569a4f0cddbd55fea9de3e11ec50b1",
+  "dirty": true,
+  "command": "pytest -q -m 'not gpu'; ruff check; check_secrets, check_oblivious, check_metrics; pc_runner self-checks on the GPU-less laptop; scripts/gpujob.py pack M00; pack M08_ncu",
+  "seed": 0,
+  "quick": false,
+  "params": {},
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261013-224907",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U",
+    "cpu_count": 12
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791911947.231274
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791911950.9880552
+  },
+  "outputs": [
+    "check_metrics.txt",
+    "check_oblivious.txt",
+    "check_secrets.txt",
+    "export_check.txt",
+    "jobs_sha256.txt",
+    "kit_dry_run_job1.txt",
+    "kit_dry_run_job2.txt",
+    "kit_no_gpu_check_setup.txt",
+    "kit_no_gpu_run_job.txt",
+    "kit_runner_local_refused.txt",
+    "kit_verify_kaggle_M00_zip.txt",
+    "kit_verify_refused_counters_zip.txt",
+    "pytest_all.txt",
+    "ruff.txt"
+  ],
+  "status": "OK",
+  "notes": "local checks only (numpy backend, no measurement); the kit itself was not run on a GPU; kit_verify_refused_counters_zip.txt uses a scratch copy of the Kaggle M08 result with the runner name rewritten, to exercise the verifier"
+}

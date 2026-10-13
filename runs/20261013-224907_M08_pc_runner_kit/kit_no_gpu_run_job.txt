@@ -1,0 +1,6 @@
+$ python run_job.py jobs/1_probe_20261013-224820_M00.zip
+!! nvidia-smi does not answer: no NVIDIA driver, or no NVIDIA GPU (SETUP.txt step 1).
+FileNotFoundError: [WinError 2] The system cannot find the file specified
+Nothing was run.
+
+exit 1

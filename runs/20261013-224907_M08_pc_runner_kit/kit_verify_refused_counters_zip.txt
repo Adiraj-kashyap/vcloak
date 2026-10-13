@@ -1,0 +1,22 @@
+$ python verify_result.py "C:\Users\HP\AppData\Local\Temp\claude\d--PJT-vcloak\078a850d-bc13-41fc-b991-54cce1864eef\scratchpad\fake_pc_M08.zip"
+job        20261012-041010_M08  (M08 GPU obliviousness audit: planted-leak kernel parity, dudect self-t)
+machine    runner pc-test, gpu Tesla T4, driver 580.178.04, cupy 14.0.1, ncu NVIDIA (R) Nsight Compute Command Line P, 4 cpu
+command    nvidia_smi         exit 0    ok
+command    check_oblivious    exit 0    ok
+command    pytest_planted_leak exit 0    ok
+command    dudect_selftest    exit 0    ok
+command    dudect             exit 0    ok
+command    sass               exit 0    ok
+command    ncu                exit 0    ok
+command    nvidia_smi_after   exit 0    ok
+run        20261012-031245_M08_dudect_selftest_quick status OK  backend cupy  runner pc-test
+run        20261012-031331_M08_dudect         status OK  backend cupy  runner pc-test
+run        20261012-040020_M08_sass           status OK  backend cupy  runner pc-test
+run        20261012-040027_M08_ncu            status NOT_MEASURED  backend cupy  runner pc-test
+ncu        0 of 8 counters carry a value, 0 csv rows; planted-leak control shows divergence: None
+
+VERDICT: FAIL
+  - 20261012-040027_M08_ncu: status NOT_MEASURED: the driver refused the GPU performance counters to this user (ERR_NVGPUCTRPERM)
+  - ncu measured nothing: the driver refused the GPU performance counters to this user (ERR_NVGPUCTRPERM)  -> SETUP.txt step 6, then run job 2 again
+
+exit 1

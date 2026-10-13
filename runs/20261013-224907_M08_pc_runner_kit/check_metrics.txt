@@ -1,0 +1,4 @@
+$ python scripts/check_metrics.py
+check_metrics: 817 metric rows, 0 problems -> PASS
+
+exit 0

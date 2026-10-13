@@ -1124,3 +1124,24 @@
 - Not verified: Overleaf compilation; the cause of the instability; anything about 65536 slots on the current code
 - Commit: 99987e6 (ingest), c3d4e26 (M16), records a90039b
 - Next: M19 S1 ; human action: none to start M19 (it has human gates of its own: guide approval, the submission)
+
+## Session 46 — 2026-10-13 — M08 follow-up: PC runner kit and two jobs for it (ISSUE-18) — owner:Aditya
+- Steps: not a module step. Unit named by the owner in the session request (status after: M08 stays DONE; next_unit M15)
+- Did: the request arrived as a pasted block, so the agent asked whether it was the instruction and how to scope the
+  session; answers: yes, and "kit now, M15 next session". ADR-025 records the third runner. Kit pc_runner/: SETUP.txt,
+  RUN.txt, check_setup.py, run_job.py (VCLOAK_RUNNER=pc-<gpu> from nvidia-smi, refuses any other name), verify_result.py.
+  Code: vcloak.runs accepts pc-<gpu>; run_ncu.py and gpu_entry.py start ncu by its resolved path (a .bat on Windows);
+  bench/jobs/M08_ncu.json (the ncu step alone). Packed 20261013-224820_M00 and 20261013-224820_M08_ncu from 072ee8c.
+- Result: nothing measured. Local suite 2142 passed, 1 skipped, 674 deselected (numpy backend).
+- Evidence: runs/20261013-224907_M08_pc_runner_kit (pytest_all.txt, ruff.txt, check_*.txt, export_check.txt, kit_*.txt, jobs_sha256.txt)
+- Metrics added: none
+- Decisions: ADR-025 (decision of the owner, recorded by the agent)
+- Issues: opened ISSUE-47 (GPU JOBS READY, PC runner); ISSUE-18 updated (OPEN)
+- Deviations from spec: hard rule 2 and ai/GPU_RUNNER.md name Colab and Kaggle only (ADR-025). status is not
+  BLOCKED_HUMAN although two jobs are pending, because the owner asked for M15 meanwhile. next_unit is M15, not the
+  calendar-bound M19, by the same instruction. review/publication/ was untracked before the session and is left so.
+- Not verified: the kit on any machine with a GPU; the Windows and WSL2 instructions; the download addresses in
+  SETUP.txt (not fetched); that ncu works under WSL2; that the unit tests of job 1 pass on Windows (optional command)
+- Commit: 072ee8c (kit and code), records in the next commit
+- Next: M15 S1 ; human action: ISSUE-47 (run the two jobs on the PC) and its staleness decision
+

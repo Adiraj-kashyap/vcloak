@@ -1,0 +1,4 @@
+$ python -m ruff check src tests bench scripts pc_runner colab/gpu_entry.py
+All checks passed!
+
+exit 0

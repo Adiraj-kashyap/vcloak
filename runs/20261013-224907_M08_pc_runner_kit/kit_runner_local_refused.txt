@@ -1,0 +1,11 @@
+$ python -c "import kit_common as k; k.runner_name()"
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import kit_common as k; k.runner_name()
+                            ~~~~~~~~~~~~~^^
+  File "D:\PJT\vcloak\pc_runner\kit_common.py", line 50, in runner_name
+    raise KitError(f"VCLOAK_RUNNER is {given!r}. On this machine it must be pc-<gpu> (lower case, for example "
+                   "pc-rtx3060) and never 'local'. Unset it and the kit names the runner after the GPU.")
+kit_common.KitError: VCLOAK_RUNNER is 'local'. On this machine it must be pc-<gpu> (lower case, for example pc-rtx3060) and never 'local'. Unset it and the kit names the runner after the GPU.
+
+exit 1

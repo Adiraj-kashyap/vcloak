@@ -3,13 +3,13 @@
 ```yaml
 project: v-cloak
 kit_version: 1.0
-last_session: 45
+last_session: 46
 last_session_date: 2026-10-13
-current_module: M19
+current_module: M15
 current_step: S1
 status: NOT_STARTED           # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
-next_unit: M19
-last_checkpoint: 2026-10-13 session 45: job 20261013-173239_M07_issue12k ingested (UNSTABLE at 1024 to 65536 slots; ISSUE-12 closed as an accepted limitation); M16 A1 amended (ISSUE-46) and M16 DONE; next: M19 S1
+next_unit: M15
+last_checkpoint: 2026-10-13 session 46: PC runner kit pc_runner/ (ADR-025), jobs 20261013-224820_M00 and 20261013-224820_M08_ncu packed for it (ISSUE-47); next: M15 S1 by instruction of the owner, M19 after it
 quick_mode_default: false
 local:                      # the laptop (no GPU) — filled by M00 S7
   os: "Windows-11-10.0.26200-SP0"
@@ -33,7 +33,7 @@ runner:                     # the free remote GPU — filled from the ingested M
   peak_bw_gbs: 320.064
   last_session_id: "20261012-135251"
 gpu_job:                    # set by the gpu-job skill
-  pending: null   # job id awaiting the upload of the human, or null
+  pending: "20261013-224820_M00, 20261013-224820_M08_ncu"   # PC runner (ISSUE-47); does not block M15
   last_ingested: 20261013-173239_M07_issue12k
 ```
 
@@ -49,7 +49,7 @@ gpu_job:                    # set by the gpu-job skill
 | M05 | GPU AEAD-open, restore, compaction | Aditya | M04 | no | DONE | S4 | 2 |
 | M06 | GPU engine | Aditya | M05 | no | DONE | S5 | 2 |
 | M07 | GPU performance metrics (E4) | Aditya | M06 | no | DONE | S6 | 2 |
-| M08 | GPU obliviousness audit (E3) | Aditya | M06 | no | DONE | S5 | 9 |
+| M08 | GPU obliviousness audit (E3) | Aditya | M06 | no | DONE | S5 | 10 |
 | M09 | Storage (PostgreSQL) | Divyansh | M06 | no | DONE | S5 | 1 |
 | M10 | Service & scheduler | Divyansh | M09 | no | DONE | S5 | 2 |
 | M11 | Session security (E5) | Divyansh | M10 | no | DONE | S7 | 2 |
@@ -84,6 +84,9 @@ Keep this file under 120 lines: one or two lines per note, the detail lives in t
   under valid conditions (Colab 2 vCPU and Kaggle 4 vCPU both UNSTABLE). Never write that it fits or misses, never
   quote an UNSTABLE attempt, never call the two runs a before/after. M15 gives no verdict for that size. No column
   arrays, no further job. Section 4.P.6 of the notes is marked STALE by hand (the only hand edit).
+- ADR-025: a PC with an NVIDIA GPU is a third runner, `pc-<gpu>`, never `local`; kit in pc_runner/. Two jobs wait for
+  it (ISSUE-47): results in the inbox are ingested first. Until then a commit in a bundled path makes them stale
+  (ISSUE-47 "Staleness": ask the owner before `--allow-stale`). PC numbers are never mixed with T4 numbers.
 - ADR-024: comparisons only within one runner platform (provider + vCPU); a comparison job names it in its spec
   (`runner_required`, `cpu_count_required`) and the runner refuses another; provenance lines carry the vCPU count.
 - M16 (DONE): `python scripts/export_results.py` (`--check` in audits) writes results/paper, results/figures,

@@ -1,0 +1,13 @@
+$ python verify_result.py ../gpujobs/done/results_20261011-014756_M00.zip
+job        20261011-014756_M00  (M00 runner probe: device properties, vector-add RawKernel, D2D copy ba)
+machine    runner kaggle, gpu Tesla T4, driver 580.82.07, cupy 14.0.1, ncu NVIDIA (R) Nsight Compute Command Line P, 2 cpu
+command    nvidia_smi         exit 0    ok
+command    probe              exit 0    ok
+command    unit_tests         exit 1    FAILED (optional)
+run        20261011-110031_M00_gpu_probe      status OK  backend cupy  runner kaggle
+run        20261011-110133_M00_gpu_probe      status OK  backend cupy  runner kaggle
+
+VERDICT: FAIL
+  - runner is 'kaggle', not pc-<gpu>
+
+exit 1

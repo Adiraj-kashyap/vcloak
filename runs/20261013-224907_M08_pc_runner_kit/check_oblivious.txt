@@ -1,0 +1,4 @@
+$ python scripts/check_oblivious.py kernels/
+check_oblivious: 11 file(s), 0 finding(s) - PASS
+
+exit 0

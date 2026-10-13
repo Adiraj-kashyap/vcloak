@@ -588,6 +588,11 @@ independent leg beside the SASS reading and E3; nothing tried, nothing measured)
 - Otherwise it needs a machine with an NVIDIA GPU and administrator rights (the steps above).
 - Proposed order: ingest the ISSUE-25 job first; if its result is unusable (rule f or h), try the Colab ncu job
   before M14; if it is usable, this stays optional. The human decides at that handoff.
+Update 2026-10-13 session 46 (decision of the owner, ADR-025): a PC with a discrete NVIDIA GPU is the third runner.
+The ncu step alone is packed for it as job 20261013-224820_M08_ncu (ISSUE-47). Nothing is measured yet. A result
+from the PC describes the nvrtc code on THAT GPU model, not on the T4 of the SASS listing: it is reported with its
+own provenance and never as a T4 value (ADR-024). This issue closes when that job is ingested with counters that
+carry values and a planted-leak control that shows divergence; a refusal on the PC leaves it NOT_MEASURED.
 
 ### ISSUE-19 [OPEN] M08 SASS: sass_check.py labels every conditional branch DATA; no listing of the nvrtc code that runs
 BLOCKS: none   SEVERITY: low   OPENED: 2026-10-12 session 16
@@ -1453,3 +1458,41 @@ if the row is missing) and section 3 of report/TRACEABILITY.md lists them. That 
 amendment.
 Follow-up (owner: opportunistic, never its own job, blocks nothing): if an M14-type GPU job is run for another
 reason, extend the bench scripts so that these 9 values get METRIC-IDs.
+
+### ISSUE-47 [OPEN] HUMAN ACTION REQUIRED — GPU JOBS READY for the PC runner: the M00 probe, then the ncu job of ISSUE-18 (jobs 20261013-224820_M00 and 20261013-224820_M08_ncu)
+BLOCKS: none (M15 may run meanwhile; see "Staleness" below)   SEVERITY: medium   OPENED: 2026-10-13 session 46
+Why: decision of the owner (ADR-025). The PC is a third runner under the job protocol; the project stays on the
+laptop. Both jobs are packed from commit 072ee8c and are already inside the kit folder.
+Do this:
+```
+GPU JOBS READY — PC runner                 (runtime on that machine not measured)
+
+1. Copy the whole folder  pc_runner/  to the PC (USB stick or any file transfer). About 4 MB.
+   It holds SETUP.txt, RUN.txt, the three scripts and jobs/ with the two job zips.
+2. On the PC: follow pc_runner/SETUP.txt, steps 1 to 7 (driver check, Python 3.12, CUDA Toolkit 12.x,
+   CuPy wheel, GPU counters, check_setup.py). Step 7 must end with:  READY. Continue with RUN.txt.
+3. Follow pc_runner/RUN.txt. Two commands, smallest job first:
+     python run_job.py jobs/1_probe_20261013-224820_M00.zip
+     python run_job.py jobs/2_ncu_20261013-224820_M08_ncu.zip
+4. Each command ends with a line  VERDICT: PASS  or  VERDICT: FAIL  and says why.
+   Do not leave the machine with a FAIL you can still fix (the usual one: GPU counters refused -> SETUP step 6).
+5. Take  pc_runner/results/results_20261013-224820_M00.zip  and
+         pc_runner/results/results_20261013-224820_M08_ncu.zip
+   and put both in the repository folder:  gpujobs/inbox/
+6. New session, type: continue
+```
+Staleness (a decision for the owner): ingest refuses a result when a bundled path (src, kernels, tests, bench,
+scripts, colab/gpu_entry.py) changed after the pack commit. M15 will add code there. Either ingest these two results
+before the first M15 commit, or accept an ingest with `--allow-stale` whose session records `git diff 072ee8c HEAD`
+for the files the two jobs execute (bench/probe_gpu.py, bench/run_ncu.py, bench/ncu_workload.py, bench/run_dudect.py,
+src/vcloak/gpu, src/vcloak/runs.py, kernels, colab/gpu_entry.py) and finds it empty. The agent does not choose.
+For the ingest session:
+- Ingest the probe first. Its rows have the METRIC-IDs of the Kaggle probe with runner pc-<gpu>: check how
+  `_index_metrics` and check_metrics treat an ID that exists for two runners before trusting the index.
+- Do not run `scripts/record_env.py` for the PC probe without asking: the `runner` block of STATE.md and docs/ENV.md
+  describe the Kaggle T4 (ADR-025 point 4).
+- Not verified: the kit has never run on a machine with a GPU. Its Windows and WSL2 paths, the Nsight Compute
+  folder search and the counter check of check_setup.py were written from documentation, not from a run
+  (runs/20261013-224907_M08_pc_runner_kit holds what could be run here: refusals without a GPU, the verifier on old result zips).
+Confirm by running: `ls gpujobs/inbox/` shows both results_20261013-224820_*.zip
+Then type: continue
