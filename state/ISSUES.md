@@ -236,8 +236,8 @@ read_window is stable at all seven K (largest CV of the indexed attempts 0.086).
 pipeline run, as in the smoke run; it is recorded with every P-* metric. The five quick-tagged smoke rows stay in
 the index as history and are not results.
 
-### ISSUE-12 [OPEN] write_epoch is dominated by host work; at SLOTS 65536 the whole call is UNMEASURED under valid conditions since the row-id change (it missed EPOCH_MS before it)
-BLOCKS: none (M15 gives no verdict for 65536 slots before the Kaggle rerun of ISSUE-45 is ingested; the limitation is NOT accepted yet)   SEVERITY: high   OPENED: 2026-10-11 session 12
+### ISSUE-12 [CLOSED c3d4e26] write_epoch is dominated by host work; at SLOTS 65536 the whole call is UNMEASURED under valid conditions since the row-id change (it missed EPOCH_MS before it)
+BLOCKS: none (accepted limitation, decision of the owner in session 45: the whole call at 65536 slots is unmeasured under valid conditions for the current code; M15 gives no verdict for that size)   SEVERITY: high   OPENED: 2026-10-11 session 12
 Symptom: in runs/20261011-163049_M06_pipeline_smoke_quick the `host` stage is 199.78 ms of a 208.11 ms median total
 at SLOTS 65536 (9.64 of 10.84 ms at 4096; 0.51 of 1.57 ms at 64). The device stages together are about 8 ms at
 65536 (d2h 5.7 ms, sort 0.88, compact 0.77, h2d 0.57). EPOCH_MS is 200.
@@ -302,6 +302,37 @@ Framing for docs/RESULTS_ANALYSIS.md once valid numbers exist (owner, session 44
 against EPOCH_MS is the result of the contribution (the oblivious shuffle runs there) and is stated first; the
 whole-call figure at 65536 slots is host-side row marshalling in Python on a free-tier cloud VM. State both, and
 state which part is the oblivious shuffle. Numbers only from valid (not UNSTABLE) rows.
+Update session 45 (ingest of job 20261013-173239_M07_issue12k; runs/20261013-121512_M07_pipeline, 5 of 5 commands exit 0;
+reading in runs/20261013-174910_M07_issue12k_ingest_checks/gates.txt).
+- Platform: the job ran on the platform AND the image of the M07 before-measurement (session 20261011-213139):
+  Kaggle, Tesla T4, 4 vCPU, the same CPU model, CUDA 12090, driver 580.178.04, CuPy 14.0.1, the same Python and OS.
+  ADR-024 is satisfied; nothing differs that would have to be stated beside the numbers.
+- Result at 65536 slots: write_epoch is UNSTABLE on both attempts (CV of the whole call above the limit 0.1), so by
+  gpu-bench rule 10 there is NO gate verdict and no value. The question "does the whole call meet EPOCH_MS at 65536
+  slots after the row-id change" is still UNMEASURED under valid conditions, now on the right platform as well.
+  The before/after of the row-id change is NOT_MEASURED: the before side is a valid row (P-WRITE-EPOCH-P99-S65536
+  279.5451 ms, old code, FAIL of the whole call), the after side is not a value. No attempt of the new run is quoted.
+- The Colab result was not only a runner artifact in this sense: on 4 vCPU the configuration is unstable too. What
+  the instability comes from is not profiled.
+- Also UNSTABLE in this run: write_epoch at 1024, 4096 and 16384 slots (the same three sizes as in the M07 run,
+  ISSUE-15 item 3). Stable: write_epoch at 64 slots and read_window at all seven K (8 of 12 configurations; 40 of the
+  60 indexed rows carry a value, 20 are UNSTABLE).
+- What the run does establish (not timings): `uuid.py` does not appear in host_profile.txt, the engine tests pass on
+  the device (154 passed) and write_epoch equals the oracle at every size (0 mismatches).
+- Exports: nothing new is handed to the paper. pipeline_breakdown.dat and the two write_epoch figures stay held
+  back; their reason text now says that the rerun is UNSTABLE (scripts/export_results.py, `--check` clean).
+Decision for the owner (the agent did not choose): (b) column arrays in the engine and a new job; (c) accept the
+limitation: the report states the device part against EPOCH_MS from valid rows and the whole call at 65536 slots as
+unmeasured under valid conditions on a free-tier runner (old code: a stable miss); (d) one more run of the same job
+on Kaggle, which may be UNSTABLE again. Until decided, M15 gives no verdict for 65536 slots.
+Decision of the owner (session 45, the same day): (c), the limitation is ACCEPTED. No further job, no column arrays.
+How it is stated from now on (M15, M20, M22, the paper): the device part of write_epoch against EPOCH_MS, from valid
+rows only, is the result of the contribution and comes first. The whole call at 65536 slots is host-side row
+marshalling in Python on a free-tier cloud VM: for the code before the row-id change it is a stable miss
+(P-WRITE-EPOCH-P99-S65536 of runs/20261011-215653_M07_pipeline); for the current code it is unmeasured under valid
+conditions (two runs, Colab 2 vCPU and Kaggle 4 vCPU, both UNSTABLE at that size). Never write that the current
+code fits or misses the epoch at 65536 slots, never quote an attempt of an UNSTABLE run, and never present the two
+runs as a before/after. M15 gives no verdict for that size and says why. Closed as an accepted limitation.
 
 ### ISSUE-13 [CLOSED 9ae9ba5] HUMAN ACTION REQUIRED — GPU JOB READY: M07 performance sweeps (job 20261011-224124_M07)
 BLOCKS: M07   SEVERITY: high   OPENED: 2026-10-11 session 13
@@ -1360,7 +1391,7 @@ Then type: continue
 Closed session 43: the human ran the job on Colab (T4, 2 vCPU; session 20261013-111455) and the bundle was ingested
 (698dff2): 5 of 5 commands exit 0, run dir runs/20261013-111612_M07_pipeline. The result is in ISSUE-12.
 
-### ISSUE-45 [OPEN] HUMAN ACTION REQUIRED — GPU JOB READY: write_epoch on Kaggle with 4 vCPU, the platform of the M07 measurement (job 20261013-173239_M07_issue12k)
+### ISSUE-45 [CLOSED 99987e6] HUMAN ACTION REQUIRED — GPU JOB READY: write_epoch on Kaggle with 4 vCPU, the platform of the M07 measurement (job 20261013-173239_M07_issue12k)
 BLOCKS: none (ISSUE-12 waits for it; M15 gives no verdict for 65536 slots before it is ingested)   SEVERITY: high   OPENED: 2026-10-13 session 44
 Why: decision of the owner on ISSUE-12 (option a). One job settles whether 65536 slots miss EPOCH_MS on 4 vCPU and
 gives an after-measurement on the platform of the before-measurement (ADR-024). It must run on KAGGLE, not Colab:
@@ -1389,8 +1420,10 @@ and the choice goes back to the owner (accept the limitation, as announced). If 
 session the run is ingested and the difference is stated beside the numbers.
 Confirm by running: `ls gpujobs/inbox/` shows results_20261013-173239_M07_issue12k.zip
 Then type: continue
+Closed session 45: the bundle was in the inbox and is ingested (Kaggle, 4 vCPU, driver 580.178.04, CUDA 12090: the
+platform and image of the M07 run; 5 of 5 commands exit 0). Reading: ISSUE-12, update session 45.
 
-### ISSUE-46 [OPEN] M16 audit A1 is not met as written: 9 macros are traced to a run file, not to a METRIC-ID
+### ISSUE-46 [CLOSED c3d4e26] M16 audit A1 is not met as written: 9 macros are traced to a run file, not to a METRIC-ID
 BLOCKS: M16   SEVERITY: medium   OPENED: 2026-10-13 session 44
 What: A1 of ai/modules/M16 asks that every macro value is traceable to a METRIC-ID. Of the 48 contract macros 31 are
 index rows, 7 are public parameters, 1 is pending (resAESus, ADR-003) and 9 are measured values that exist only in
@@ -1406,3 +1439,17 @@ Decision for the owner: (a) accept run dir + file + path as traceability for val
 index, and amend A1 (one line under Amendments of the module file; M16 is then DONE at the next `audit M16`);
 (b) add the IDs to the M14 bench scripts and take them from the next M14-type job; (c) drop these 9 macros to pending.
 Until decided: M16 is AUDIT_FAILED and M19, M20, M22 (which depend on it) do not start.
+Decision of the owner (session 45): (a), with two conditions. The amendment is in ai/modules/M16_results_export.md.
+1. Narrow scope: only the run dir + file + JSON path of an INGESTED run counts. The exporter enforces it
+   (`Exporter.field` raises for a value without an index row whose run has no cupy backend or no job id in its
+   manifest; three new tests in tests/unit/test_export_results.py). All 9 macros and the 41 other run-file values
+   (tau_hist.dat 24, trace_table.tex 10, the verdict column of dudect_table.tex 7) come from ingested runs.
+2. Visible exception: report/TRACEABILITY.md (generated by the exporter) lists the 9 macros first, then the 41, each
+   with run dir, job id, file and JSON path.
+Correction of this issue's own text: "the same holds for session_table.tex" was wrong. Its 26 observed outcomes come
+from runs/20261012-160139_M11_session_matrix, a LOCAL run, so the amended rule does not cover them. They are the single cases
+behind the index row SEC-E5-PASS (26/26) of that run; the exporter now names that METRIC-ID for them (it refuses
+if the row is missing) and section 3 of report/TRACEABILITY.md lists them. That is A1 as originally written, not the
+amendment.
+Follow-up (owner: opportunistic, never its own job, blocks nothing): if an M14-type GPU job is run for another
+reason, extend the bench scripts so that these 9 values get METRIC-IDs.

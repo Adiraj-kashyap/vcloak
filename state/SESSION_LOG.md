@@ -1098,3 +1098,29 @@
 - Next: ingest 20261013-173239_M07_issue12k if it is in the inbox, then M16 A1 ; human action: ISSUE-45 (run the job on
   Kaggle), ISSUE-46 (decide A1), ISSUE-41 and ISSUE-43 (answers announced for this handoff)
 
+
+- GPU-JOB 20261013-173239_M07_issue12k ingested 2026-10-13 17:49: runner kaggle, gpu Tesla T4, session 20261013-121357, overall exit 0, runs 20261013-121512_M07_pipeline, 60 metrics indexed.
+
+## Session 45 — 2026-10-13 — M16 Results export: ingest of the ISSUE-12 rerun, A1 decided, M16 DONE — owner:Abhishek
+- Steps: ingest (M07 S5, owner Aditya), then M16 audit (status after: M16 DONE at S4; next_unit M19)
+- Did: ingested job 20261013-173239_M07_issue12k (Kaggle; 5 of 5 commands exit 0) and read its gates against the M07 run.
+  Asked the owner the two open decisions. ISSUE-46: (a) with conditions; A1 amended in the module file, the exporter
+  enforces "ingested run or index row", report/TRACEABILITY.md is generated. ISSUE-12: (c), limitation accepted.
+  Exporter: hold-back reasons updated; session_table.tex no longer prints a failed check twice.
+- Result: the run is on the platform and image of the M07 run (Kaggle, T4, 4 vCPU, CUDA 12090, driver 580.178.04).
+  write_epoch is UNSTABLE at 1024, 4096, 16384 and 65536 slots, so there is no gate verdict at 65536 and the
+  before/after of the row-id change is NOT_MEASURED. Stable: write_epoch at 64 slots, read_window at all seven K.
+  Export: 39 files, 372 mapped values (163 index rows, 37 derived, 64 parameters, 75 run-file fields, 33 without a value).
+- Evidence: runs/20261013-121512_M07_pipeline (device run); runs/20261013-174910_M07_issue12k_ingest_checks (gates.txt, a1_traceability.txt,
+  pytest_all.txt 2142 passed 675 skipped, export_check.txt, check_*.txt, ruff.txt, g10_quick_rerun.txt, job_log_*.txt);
+  evidence/terminal/M16_S45_*; report/TRACEABILITY.md
+- Metrics added: 60 rows P-WRITE-EPOCH-* and P-READ-WINDOW-* of the run (backend cupy, runner kaggle): 40 values, 20 UNSTABLE
+- Decisions: A1 amendment (module file, no ADR); ISSUE-12 accepted limitation. Both decisions of the owner
+- Issues: closed ISSUE-12 (c3d4e26), ISSUE-45 (99987e6), ISSUE-46 (c3d4e26); opened none
+- Deviations from spec: the module says "Next: M18"; next_unit is M19 by instruction of the owner (calendar-bound).
+  A3 is the syntax check only. The M07 notes section was not regenerated (4.P.6 stays marked STALE).
+  The 26 session-table outcomes are tied to SEC-E5-PASS instead of the amendment (their run is local).
+  The first answer of the owner arrived in the field of the ISSUE-12 question; both questions were asked again.
+- Not verified: Overleaf compilation; the cause of the instability; anything about 65536 slots on the current code
+- Commit: 99987e6 (ingest), c3d4e26 (M16)
+- Next: M19 S1 ; human action: none to start M19 (it has human gates of its own: guide approval, the submission)

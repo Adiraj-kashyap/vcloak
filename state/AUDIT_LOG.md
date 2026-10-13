@@ -1355,3 +1355,39 @@ Notes:
   still a valid measurement of that code, and is not exported as a result of the current code.
 - The job was packed after the last code commit (f3903bc); records and evidence do not make it stale.
 
+
+## Audit M16 — 2026-10-13 — session 45 — result: PASS
+| Item | Result | Evidence |
+|---|---|---|
+| A1 every macro value traceable (amended 2026-10-13, ISSUE-46); mapping file; check_metrics | PASS | RUN/a1_traceability.txt: of 48 macros 31 index rows, 7 parameters, 1 pending, 9 read from ingested runs (job 20261013-105517_M14); 50 run-file values in all, 0 from a run that is not ingested; 26 session outcomes under SEC-E5-PASS; report/TRACEABILITY.md; results/paper/macro_map.json; RUN/check_metrics.txt (817 rows, 0 problems) |
+| A2 no quick-tagged metric in the paper outputs | PASS | tests/unit/test_export_results.py; RUN/pytest_all.txt |
+| A3 the files compile | PASS (syntax check only) | no `paper/` and no LaTeX on this machine, so the fallback of the checklist applies: RUN/export_stdout.txt "tex syntax check PASS". Compilation in Overleaf is not verified |
+| Ingest: job id, bundle sha, git sha; exit codes | PASS | RUN/ingest_stdout.txt (5 of 5 commands exit 0); runs/20261013-121512_M07_pipeline: valid (RUN/manifests_valid.txt) |
+| Ingest: same platform and image as the before-measurement (ADR-024) | PASS | RUN/gates.txt: runner, vCPU, CPU model, CUDA, driver, CuPy, Python, OS all the same as session 20261011-213139 |
+| Ingest: gates applied (CV, clock) | PASS (the result is negative) | RUN/gates.txt: 4 of 12 configurations UNSTABLE (write_epoch at 1024, 4096, 16384, 65536); no verdict at 65536; before/after NOT_MEASURED; 20 of 60 index rows UNSTABLE |
+| Owner decision: ISSUE-46 (a) with scope and visibility conditions | PASS | ai/modules/M16_results_export.md Amendments; `Exporter.field` refuses a value without an index row from a run that is not ingested (3 tests); report/TRACEABILITY.md |
+| Owner decision: ISSUE-12 (c), limitation accepted | PASS | state/ISSUES.md ISSUE-12 (closing text fixes the wording for M15, M20, M22); STATE note |
+| G1 | PASS | RUN/pytest_all.txt (2142 passed, 675 skipped: 674 need a CUDA device, 1 is the M02 wiring skip; no database skip) |
+| G2 | PASS | RUN/check_metrics.txt; 60 rows added by the ingest, none typed |
+| G2b | PASS | the 60 rows are backend cupy, runner kaggle, with a gpu_job block in the manifest; nothing local was indexed |
+| G3 | PASS | RUN/check_oblivious.txt (11 files, 0 findings); no kernel changed |
+| G4 | PASS | RUN/check_secrets.txt (0 key-like runs) |
+| G5 | N/A | no GPU twin was written; on the device write_epoch equals the oracle at every size (0 mismatches, summary.json of the ingested run) |
+| G6 | PASS | RUN/deliverables.txt (16 of 16 paths, 7 figures as PDF and PNG). e2e_table.tex is all pending (M15 has not run) and pipeline_breakdown.dat has no rows (ISSUE-12): both by design, both say so |
+| G7 | PASS | 99987e6 (owner Aditya), c3d4e26 (owner Abhishek); clean tree checked after the records commit |
+| G8 | PASS | STATE: M16 DONE at S4, sessions 2, gpu_job.pending null, next_unit M19 |
+| G9 | PASS | SESSION_LOG session 45, this entry, ISSUE-12, ISSUE-45 and ISSUE-46 closed |
+| G10 | PASS | RUN/export_check.txt (a second run changes no file); RUN/g10_quick_rerun.txt (simulator, 0 oracle mismatches, correctness only) |
+Notes:
+- RUN is runs/20261013-174910_M07_issue12k_ingest_checks.
+- A1 passes by the amendment of the owner, not by new measurements: the 9 macros still have no METRIC-ID. The
+  exception is listed in report/TRACEABILITY.md section 1.
+- Found while applying the amendment: ISSUE-46 said that session_table.tex was in the same case. It is not: its run
+  is local. Its 26 outcomes are the cases of the index row SEC-E5-PASS, which the exporter now names; the amendment
+  was not stretched to cover a local run.
+- Found and fixed: session_table.tex printed the failed check twice in 22 rows ("401 (jti) (jti)") since 4a50288;
+  a formatting defect of the exporter, no value changed.
+- The first full test run of the session (RUN/pytest_all_after_ingest.txt, 2138 passed) is from before the exporter
+  change; RUN/pytest_all.txt is the final tree.
+- Not verified: compilation in Overleaf; any timing (none was taken locally); the cause of the instability of
+  write_epoch on the runner.

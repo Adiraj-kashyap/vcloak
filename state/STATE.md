@@ -3,13 +3,13 @@
 ```yaml
 project: v-cloak
 kit_version: 1.0
-last_session: 44
+last_session: 45
 last_session_date: 2026-10-13
-current_module: M16
-current_step: S4
-status: AUDIT_FAILED          # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
-next_unit: M16
-last_checkpoint: 2026-10-13 session 44: M16 S1-S4 written (f3903bc), audit A1 not met (ISSUE-46, decision of the owner); Kaggle job 20261013-173239_M07_issue12k packed (ISSUE-45); next: ingest it if it is in the inbox, then M16 A1
+current_module: M19
+current_step: S1
+status: NOT_STARTED           # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
+next_unit: M19
+last_checkpoint: 2026-10-13 session 45: job 20261013-173239_M07_issue12k ingested (UNSTABLE at 1024 to 65536 slots; ISSUE-12 closed as an accepted limitation); M16 A1 amended (ISSUE-46) and M16 DONE; next: M19 S1
 quick_mode_default: false
 local:                      # the laptop (no GPU) — filled by M00 S7
   os: "Windows-11-10.0.26200-SP0"
@@ -33,8 +33,8 @@ runner:                     # the free remote GPU — filled from the ingested M
   peak_bw_gbs: 320.064
   last_session_id: "20261012-135251"
 gpu_job:                    # set by the gpu-job skill
-  pending: 20261013-173239_M07_issue12k   # job id awaiting the upload of the human, or null
-  last_ingested: 20261013-163732_M07_issue12
+  pending: null   # job id awaiting the upload of the human, or null
+  last_ingested: 20261013-173239_M07_issue12k
 ```
 
 ## Modules
@@ -57,7 +57,7 @@ gpu_job:                    # set by the gpu-job skill
 | M13 | Frontend: chat + server view | Abhishek | M12 | no | DONE | S6 | 5 |
 | M14 | Security evaluation (E0–E2, anon set) | Abhishek | M08, M10 | no | DONE | S7 | 6 |
 | M15 | End-to-end performance (E6) | Divyansh | M10, M11 | no | NOT_STARTED | S1 | 0 |
-| M16 | Results export | Abhishek | M07, M08, M14 | no | AUDIT_FAILED | S4 | 1 |
+| M16 | Results export | Abhishek | M07, M08, M14 | no | DONE | S4 | 2 |
 | M18 | Frontend: dashboard, experiments, logs | Abhishek | M13, M14 | no | NOT_STARTED | S1 | 0 |
 | M17 | Final audit & demo (Review 3 close-out) | Team | all required | no | NOT_STARTED | S1 | 0 |
 | M22 | Draft report (prelim pages, Ch.1–4, similarity) | Team | M16 | no | NOT_STARTED | S1 | 0 |
@@ -79,17 +79,18 @@ Keep this file under 120 lines: one or two lines per note, the detail lives in t
   timings across images (ISSUE-3).
 - M07: one runner session (20261011-213139). 65 of 213 rows are UNSTABLE (ISSUE-15); never quote K-BITONIC-BW-PCT
   below 2^18 as bandwidth (ISSUE-14). Figures and notes only through `python -m vcloak.bench.report`.
-- ISSUE-12 (OPEN, limitation NOT accepted): at 2^16 slots write_epoch is UNMEASURED under valid conditions since the
-  row-id change; the Colab run was UNSTABLE in 12 of 12 configurations and none of its attempts is quoted anywhere.
-  Rerun on Kaggle 4 vCPU = ISSUE-45; at its ingest compare vCPU, CUDA and driver with session 20261011-213139.
-  M15 goes after M16 and gives no verdict for 65536 slots before that ingest. No column arrays. Section 4.P.6 of the
-  notes is marked STALE by hand (the only hand edit); the framing for docs/RESULTS_ANALYSIS.md is in ISSUE-12.
+- ISSUE-12 (CLOSED, accepted limitation): state the device part of write_epoch against EPOCH_MS first (valid rows
+  only). The whole call at 65536 slots: old code a stable miss (runs/20261011-215653_M07_pipeline); current code UNMEASURED
+  under valid conditions (Colab 2 vCPU and Kaggle 4 vCPU both UNSTABLE). Never write that it fits or misses, never
+  quote an UNSTABLE attempt, never call the two runs a before/after. M15 gives no verdict for that size. No column
+  arrays, no further job. Section 4.P.6 of the notes is marked STALE by hand (the only hand edit).
 - ADR-024: comparisons only within one runner platform (provider + vCPU); a comparison job names it in its spec
   (`runner_required`, `cpu_count_required`) and the runner refuses another; provenance lines carry the vCPU count.
-- M16: `python scripts/export_results.py` (`--check` in audits) writes results/paper, results/figures,
-  results/PAPER_UPDATES.md, results/deck_numbers.md; never edit them by hand. Run it again after every ingest that
-  changes the index. Open: ISSUE-46 (9 macros come from run files without a METRIC-ID). scripts/ and tests/ are in
-  the job bundle: pack a job after the last code commit of a session, or the ingest is stale.
+- M16 (DONE): `python scripts/export_results.py` (`--check` in audits) writes results/paper, results/figures,
+  results/PAPER_UPDATES.md, results/deck_numbers.md and report/TRACEABILITY.md; never edit them by hand. Run it again
+  after every ingest that changes the index. A1 is amended (ISSUE-46): a value without a METRIC-ID must come from an
+  INGESTED run or the exporter refuses it. Opportunistic only: if an M14-type job runs for another reason, index the
+  9 macros of TRACEABILITY section 1. scripts/ and tests/ are in the job bundle: pack after the last code commit.
 - M08 is DONE with a negative result: dudect FAILS for aead_conv, aead_tag and the whole write_epoch call (ISSUE-17,
   closed). Diagnostics trace the AEAD FAILs to the harness staging and the whole-call FAIL to host Python state.
   ADR-023: P3 is claimed for the KERNELS only; host timing is a limitation. Never write "constant time".
