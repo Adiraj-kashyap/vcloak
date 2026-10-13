@@ -873,5 +873,5 @@
   bullet and of one limitation line in 4.O.3 / 4.O.6 changes when diagnostics are given.
 - Not verified: nothing on a CUDA device this session. For the AEAD targets staging and SM clock change together;
   the generator says so and does not separate them. The gates script was inline and is not saved.
-- Commit: PENDINGHASH
+- Commit: 44d7ff5
 - Next: M14 S1 (Security evaluation, owner Abhishek) ; human action: none required. Optional: decide ISSUE-36

@@ -382,7 +382,7 @@ Then open a new session and type: continue
 Closed 2026-10-12 session 16: the human ran the job on Kaggle (session 20261012-031230, Tesla T4) and the results
 zip was ingested; all 8 commands exit 0, git sha and bundle sha match (runs/20261012-093714_M08_ingest_audit/gates.txt).
 
-### ISSUE-17 [CLOSED PENDINGHASH] M08 dudect: three target series FAIL at N = 100000 (aead_conv, write_epoch whole call, aead_tag)
+### ISSUE-17 [CLOSED 44d7ff5] M08 dudect: three target series FAIL at N = 100000 (aead_conv, write_epoch whole call, aead_tag)
 BLOCKS: M14   SEVERITY: high   OPENED: 2026-10-12 session 16
 Finding (job 20261012-041010_M08, runner session 20261012-031230, Tesla T4, threshold 4.5; all values from
 runs/20261012-031331_M08_dudect/summary.json and dudect_<target>.json, recomputed from the raw npz in runs/20261012-093714_M08_ingest_audit/gates.txt):
