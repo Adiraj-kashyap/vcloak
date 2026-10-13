@@ -26,7 +26,7 @@ unless the row says how it is derived). `<run dir>/manifest.json` names the job,
 | `\resTauMean` | -2.91e-05 | runs/20261013-055417_M14_security_e2 | 20261013-105517_M14 | e2_uniformity.json | `tau_band.mean_tau` |
 | `\resTauMaxAbs` | 0.0099 | runs/20261013-055417_M14_security_e2 | 20261013-105517_M14 | e2_uniformity.json | `tau_band.max_abs_tau` |
 
-## 2. Tables and data files (41 values)
+## 2. Tables and data files (44 values)
 
 ### results/paper/dudect_table.tex (7)
 
@@ -39,6 +39,14 @@ unless the row says how it is derived). `<run dir>/manifest.json` names the job,
 | `\dudectrows row 5 col 4` | FAIL | runs/20261012-031331_M08_dudect | 20261012-041010_M08 | summary.json | `targets.3.series.call_ms.verdict` |
 | `\dudectrows row 6 col 4` | FAIL | runs/20261012-031331_M08_dudect | 20261012-041010_M08 | summary.json | `targets.4.series.ms.verdict` |
 | `\dudectrows row 7 col 4` | FAIL | runs/20261012-031331_M08_dudect | 20261012-041010_M08 | summary.json | `targets.5.series.ms.verdict` |
+
+### results/paper/ncu_second_table.tex (3)
+
+| Value | Exported as | Run dir | Ingested job | File | JSON path |
+|---|---|---|---|---|---|
+| `\ncusecondrows row 1 col 4` | 1 | runs/20261014-003929_M08_ncu | 20261013-224820_M08_ncu | summary.json | `control.launches` |
+| `\ncusecondrows row 1 col 5` | 8704 | runs/20261014-003929_M08_ncu | 20261013-224820_M08_ncu | summary.json | `control.uniform` |
+| `\ncusecondrows row 1 col 6` | 128 | runs/20261014-003929_M08_ncu | 20261013-224820_M08_ncu | summary.json | `control.divergent` |
 
 ### results/paper/tau_hist.dat (24)
 
@@ -84,7 +92,7 @@ unless the row says how it is derived). `<run dir>/manifest.json` names the job,
 | `\tracerows row 5 col 2` | \texttt{288a7ca25ae483083cbe1c0206839468} | runs/20261013-055444_M14_security_e3 | 20261013-105517_M14 | e3_trace.json | `sort.rows.4.device_trace_sha256` |
 | `\tracerows row 5 col 3` | \texttt{dfcde07f57bd429c5ea38dc26194124c} | runs/20261013-055444_M14_security_e3 | 20261013-105517_M14 | e3_trace.json | `sort.rows.4.merge_sort_trace_sha256` |
 
-## 3. Breakdowns of an index row (26 values)
+## 3. Breakdowns of an index row (34 values)
 
 These values are the single cases behind one index row of the same run, and are covered by that
 METRIC-ID. The backend column is that of the index row: `numpy/local` is a functional run on the
@@ -118,3 +126,11 @@ laptop (no device, no timing), which the amended rule does not need to cover.
 | session_table.tex `\sessionrows row 24 col 3` | 429 (rate\_limited) | SEC-E5-PASS (26/26, numpy/local) | runs/20261012-160139_M11_session_matrix | e5_matrix.json | `rows.23.observed` |
 | session_table.tex `\sessionrows row 25 col 3` | 429 (rate\_limited) | SEC-E5-PASS (26/26, numpy/local) | runs/20261012-160139_M11_session_matrix | e5_matrix.json | `rows.24.observed` |
 | session_table.tex `\sessionrows row 26 col 3` | keys equal | SEC-E5-PASS (26/26, numpy/local) | runs/20261012-160139_M11_session_matrix | e5_matrix.json | `rows.25.observed` |
+| ncu_second_table.tex `\ncusecondrows row 2 col 4` | 44 | T-NCU-DIVERGENT-BITONIC-PAIRS-GLOBAL (NOT_MEASURED, cupy/pc-rtx3050laptopgpu) | runs/20261014-003929_M08_ncu | summary.json | `per_kernel.bitonic_pairs_global.launches` |
+| ncu_second_table.tex `\ncusecondrows row 2 col 5` | 0 | T-NCU-DIVERGENT-BITONIC-PAIRS-GLOBAL (NOT_MEASURED, cupy/pc-rtx3050laptopgpu) | runs/20261014-003929_M08_ncu | summary.json | `per_kernel.bitonic_pairs_global.uniform` |
+| ncu_second_table.tex `\ncusecondrows row 3 col 4` | 7 | T-NCU-DIVERGENT-BITONIC-SHARED (0.0, cupy/pc-rtx3050laptopgpu) | runs/20261014-003929_M08_ncu | summary.json | `per_kernel.bitonic_shared.launches` |
+| ncu_second_table.tex `\ncusecondrows row 3 col 5` | 4480 | T-NCU-DIVERGENT-BITONIC-SHARED (0.0, cupy/pc-rtx3050laptopgpu) | runs/20261014-003929_M08_ncu | summary.json | `per_kernel.bitonic_shared.uniform` |
+| ncu_second_table.tex `\ncusecondrows row 4 col 4` | 1 | T-NCU-DIVERGENT-BITONIC-SHARED-FULL (0.0, cupy/pc-rtx3050laptopgpu) | runs/20261014-003929_M08_ncu | summary.json | `per_kernel.bitonic_shared_full.launches` |
+| ncu_second_table.tex `\ncusecondrows row 4 col 5` | 4096 | T-NCU-DIVERGENT-BITONIC-SHARED-FULL (0.0, cupy/pc-rtx3050laptopgpu) | runs/20261014-003929_M08_ncu | summary.json | `per_kernel.bitonic_shared_full.uniform` |
+| ncu_second_table.tex `\ncusecondrows row 5 col 4` | 1 | T-NCU-DIVERGENT-AEAD-OPEN-SEQ (0.0, cupy/pc-rtx3050laptopgpu) | runs/20261014-003929_M08_ncu | summary.json | `per_kernel.aead_open_seq.launches` |
+| ncu_second_table.tex `\ncusecondrows row 5 col 5` | 2560 | T-NCU-DIVERGENT-AEAD-OPEN-SEQ (0.0, cupy/pc-rtx3050laptopgpu) | runs/20261014-003929_M08_ncu | summary.json | `per_kernel.aead_open_seq.uniform` |

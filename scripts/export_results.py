@@ -102,6 +102,10 @@ class Exporter:
             self.runs.update(summary["run_dirs"])
             if area == "oblivious":
                 self.kernel_window = summary.get("kernel_window", {})
+                # the ncu run of another runner (ADR-025): a table of its own, never a cell of the first runner
+                self.ncu_second = summary.get("ncu_second")
+                if self.ncu_second:
+                    self.runs["ncu_second"] = self.ncu_second["run_dir"]
         self.runs["session"] = "runs/" + self._load(Path("results") / "session" / "e5_matrix.json")["run_id"]
         self.quick = {k: bool(self._load(Path(d) / "manifest.json")["quick"]) for k, d in self.runs.items()}
         self.entries: list[dict[str, Any]] = []
@@ -308,6 +312,34 @@ class Exporter:
                   src={**v.src, "reason": "NOT_MEASURED: the ncu job has no series for this kernel"})
         return v
 
+    def ncu_second_table(self) -> None:
+        """Divergence on the second runner: the positive control first, then the audited kernels. The runner is
+        named in every row. A kernel whose index row is withdrawn prints `\\notmeasured`."""
+        sec = self.ncu_second
+        if not sec:
+            return
+        runner = f"{BS}texttt{{{tex_escape(sec['runner'])}}}"
+
+        def name(k: str) -> str:
+            return f"{BS}texttt{{{tex_escape(k)}}}"
+
+        ctl = sec["control_kernel"]
+        rows: list[list[V | str]] = [[
+            runner, name(ctl), "positive control", self.field("ncu_second", "summary.json", "control.launches", _int),
+            self.field("ncu_second", "summary.json", "control.uniform", _int),
+            self.field("ncu_second", "summary.json", "control.divergent", _int)]]
+        for k in sec["kernels"]:
+            mid = k["metric_id"]
+            div = self.metric(mid, "ncu_second", _int)
+            if k["reported"] == "NOT_MEASURED" and div.ok:
+                raise ExportError(f"{mid}: the notes report NOT_MEASURED for {sec['run_dir']} but the index row "
+                                  "still holds a value (withdraw it with an ANN note first)")
+            rows.append([runner, name(k["kernel"]), "audited",
+                         self.field("ncu_second", "summary.json", f"per_kernel.{k['kernel']}.launches", _int, mid=mid),
+                         self.field("ncu_second", "summary.json", f"per_kernel.{k['kernel']}.uniform", _int, mid=mid),
+                         div])
+        self._table("ncu_second_table.tex", "ncusecondrows", rows)
+
     def side_channel(self) -> None:
         m = self.metric
         summary = self._load(Path(self.runs["dudect"]) / "summary.json")
@@ -341,6 +373,8 @@ class Exporter:
         self._table("sidechannel_table.tex", "sidechannelrows", [
             [f"{BS}texttt{{{tex_escape(k.lower().replace('-', '_'))}}}", m(f"T-SASS-BRA-{k}", "sass", _int),
              self._ncu(k)] for k in kernels])
+
+        self.ncu_second_table()
 
         held = "M15 (end-to-end performance) has not run"
         self._table("e2e_table.tex", "etoerows", [[self.pending(held) for _ in range(4)]])
@@ -379,6 +413,29 @@ class Exporter:
     def interim(self) -> dict[str, str]:
         text = (self.root / "seed" / "PAPER_RESULTS_CONTRACT.md").read_text(encoding="utf-8")
         return dict(re.findall(r"^\| `\\(res\w+)` \| ([^|]+?) \|$", text, flags=re.M))
+
+    def _ncu_second_lines(self, which: str) -> list[str]:
+        """What PAPER_UPDATES.md says about ncu: both platforms, and the control before the zeros."""
+        sec = self.ncu_second
+        t4 = self._load(Path("results") / "oblivious" / "oblivious_summary.json")
+        issue = t4.get("issues", {}).get("ncu", "no issue")
+        if not sec:
+            return [] if which == "files" else [f"- ncu divergence is NOT_MEASURED ({issue})."]
+        if which == "files":
+            return ["- New, needs a table of its own beside sidechannel_table.tex: ncu_second_table.tex "
+                    "(`ncusecondrows`: runner, kernel,",
+                    f"  role, launches, uniform branch targets, divergent branch targets). It is runner "
+                    f"`{sec['runner']}`, not the T4:",
+                    "  never merge its column into sidechannel_table.tex, whose ncu column stays as exported."]
+        lost = ", ".join(k["kernel"] for k in sec["kernels"] if k["reported"] == "NOT_MEASURED")
+        return [f"- ncu divergence: the cloud runner ({t4['provenance']['runner']}, {t4['provenance']['gpu']}) refused "
+                f"the performance counters, so it is NOT_MEASURED there ({issue}).",
+                f"  Divergence was therefore measured on a second platform, named in the text, with the positive "
+                f"control stated first ({sec['issue']}):",
+                f"  {sec['claim']}",
+                *([f"  NOT_MEASURED on that runner: {lost} (its counters were empty and its SASS listing has "
+                   "branches)."] if lost else []),
+                "  Write it as a validated null on that GPU, one run at one size; never as a T4 measurement."]
 
     def lists(self, macros: list[tuple[str, V]]) -> None:
         interim = self.interim()
@@ -420,6 +477,7 @@ class Exporter:
             "  target, N per class, max |t|, verdict), sidechannel_table.tex "
             "(`sidechannelrows`: kernel, SASS conditional",
             "  branches, ncu divergent branches), e2e_table.tex (`etoerows`), pipeline_breakdown.dat.",
+            *self._ncu_second_lines("files"),
             "- attack_table.tex now has a row for W = 1 s and for the unshuffled baseline; throughput_table.tex and",
             "  throughput.dat cover 2^10 to 2^22 and their CPU column is the oracle bitonic "
             "sort on the CPU of the runner.",
@@ -434,8 +492,8 @@ class Exporter:
             "measured. P3 is claimed for the",
             "  kernels only (ADR-023); never write \"constant time\". The kernel-only series of "
             "tags and compaction are",
-            "  NOT_MEASURED (ISSUE-36), ncu divergence is NOT_MEASURED (ISSUE-18), the SASS "
-            "reading is manual (ISSUE-19).",
+            "  NOT_MEASURED (ISSUE-36), the SASS reading is manual (ISSUE-19).",
+            *self._ncu_second_lines("statement"),
             "- Occupancy: the peak in the macros is the W = 60 layout. Larger windows and populations exceed CAND_K",
             "  (ISSUE-43); the paper must state the sizing limit beside `resMaxOcc`.",
             "- Real-time claim for write_epoch: no number is exported (ISSUE-12). Do not state "

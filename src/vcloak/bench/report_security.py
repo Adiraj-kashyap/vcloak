@@ -300,12 +300,24 @@ def oblivious_link(path: Path | None) -> list[str]:
     obl = json.loads(path.read_text(encoding="utf-8"))
     issues = obl.get("issues", {})
     fails = ", ".join(f"`{x}`" for x in obl.get("fails", [])) or "none"
+    prov = obl["provenance"]
+    ncu = (f"- Nsight Compute divergence: {NM} ({obl.get('ncu_reason') or 'see 4.O.5'}; "
+           f"{issues.get('ncu', 'no issue')}).")
+    sec = obl.get("ncu_second")
+    if sec:  # both platforms in one statement, the control before the zeros (section 4.O.5)
+        lost = ", ".join(f"`{k['kernel']}`" for k in sec["kernels"] if k["reported"] == NM)
+        ncu = (f"- Nsight Compute divergence: the cloud runner (`{prov.get('runner', NM)}`, {prov.get('gpu', NM)}) "
+               f"refused the GPU performance counters, so it is {NM} there ({issues.get('ncu', 'no issue')}). "
+               f"Divergence was therefore measured on a second platform, with a positive control. {sec['claim']} "
+               + (f"{NM} there: {lost}. " if lost else "")
+               + f"It is not a {prov.get('gpu', NM)} measurement and is never pooled with one ({sec['issue']}, "
+               "section 4.O.5).")
     return [
         f"- Timing is not part of this experiment. The dudect runs of M08 (section 4.O, summary `{path.as_posix()}`, "
         f"job {obl['provenance']['job_id']}) gave the verdict FAIL for these series: {fails} "
         f"({issues.get('fail', 'no issue')}). The reading of those verdicts, with its diagnostics and limits, is "
         "section 4.O.3; it is not repeated here.",
-        f"- Nsight Compute divergence: {NM} ({obl.get('ncu_reason') or 'see 4.O.5'}; {issues.get('ncu', 'no issue')}).",
+        ncu,
         "- So the result of this section is about the logical trace only: which pairs are compared and which "
         "launches are issued does not depend on the data. The timing property is claimed for the kernels only, and "
         "host timing is a stated limitation (ADR-023).",

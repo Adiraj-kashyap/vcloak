@@ -44,7 +44,7 @@ None of the three has been run by this project yet. check_setup.py (step 7) is w
    LINUX/WSL2   python3 -m venv .venv
                 source .venv/bin/activate
    THEN, ALL    python -m pip install --upgrade pip
-                python -m pip install cupy-cuda12x numpy scipy nvidia-ml-py cryptography pytest
+                python -m pip install cupy-cuda12x numpy scipy nvidia-ml-py cryptography pytest httpx matplotlib
    Activate the environment again in every new terminal (the second line of your column).
 
 6. ALLOW THE GPU PERFORMANCE COUNTERS (job 2 only; needs administrator rights on the PC)

@@ -15,14 +15,15 @@
   "dudect": "runs/20261012-031331_M08_dudect",
   "sass": "runs/20261012-040020_M08_sass",
   "ncu": "runs/20261012-040027_M08_ncu",
+  "ncu_second": "runs/20261014-003929_M08_ncu",
   "session": "runs/20261012-160139_M11_session_matrix"
  },
  "counts": {
-  "metric": 163,
+  "metric": 166,
   "param": 64,
   "derived": 37,
-  "field": 75,
-  "pending": 33
+  "field": 86,
+  "pending": 34
  },
  "entries": [
   {
@@ -4934,6 +4935,185 @@
    ],
    "run_dir": "runs/20261012-040027_M08_ncu",
    "reason": "NOT_MEASURED: the ncu job has no series for this kernel"
+  },
+  {
+   "target": "ncu_second_table.tex",
+   "name": "\\ncusecondrows row 1 col 4",
+   "value": "1",
+   "kind": "field",
+   "metric_ids": [],
+   "run_dir": "runs/20261014-003929_M08_ncu",
+   "file": "summary.json",
+   "path": "control.launches",
+   "gpu_job": "20261013-224820_M08_ncu"
+  },
+  {
+   "target": "ncu_second_table.tex",
+   "name": "\\ncusecondrows row 1 col 5",
+   "value": "8704",
+   "kind": "field",
+   "metric_ids": [],
+   "run_dir": "runs/20261014-003929_M08_ncu",
+   "file": "summary.json",
+   "path": "control.uniform",
+   "gpu_job": "20261013-224820_M08_ncu"
+  },
+  {
+   "target": "ncu_second_table.tex",
+   "name": "\\ncusecondrows row 1 col 6",
+   "value": "128",
+   "kind": "field",
+   "metric_ids": [],
+   "run_dir": "runs/20261014-003929_M08_ncu",
+   "file": "summary.json",
+   "path": "control.divergent",
+   "gpu_job": "20261013-224820_M08_ncu"
+  },
+  {
+   "target": "ncu_second_table.tex",
+   "name": "\\ncusecondrows row 2 col 4",
+   "value": "44",
+   "kind": "field",
+   "metric_ids": [
+    "T-NCU-DIVERGENT-BITONIC-PAIRS-GLOBAL"
+   ],
+   "run_dir": "runs/20261014-003929_M08_ncu",
+   "file": "summary.json",
+   "path": "per_kernel.bitonic_pairs_global.launches"
+  },
+  {
+   "target": "ncu_second_table.tex",
+   "name": "\\ncusecondrows row 2 col 5",
+   "value": "0",
+   "kind": "field",
+   "metric_ids": [
+    "T-NCU-DIVERGENT-BITONIC-PAIRS-GLOBAL"
+   ],
+   "run_dir": "runs/20261014-003929_M08_ncu",
+   "file": "summary.json",
+   "path": "per_kernel.bitonic_pairs_global.uniform"
+  },
+  {
+   "target": "ncu_second_table.tex",
+   "name": "\\ncusecondrows row 2 col 6",
+   "value": "\\notmeasured",
+   "kind": "pending",
+   "metric_ids": [
+    "T-NCU-DIVERGENT-BITONIC-PAIRS-GLOBAL"
+   ],
+   "run_dir": "runs/20261014-003929_M08_ncu",
+   "reason": "NOT_MEASURED"
+  },
+  {
+   "target": "ncu_second_table.tex",
+   "name": "\\ncusecondrows row 3 col 4",
+   "value": "7",
+   "kind": "field",
+   "metric_ids": [
+    "T-NCU-DIVERGENT-BITONIC-SHARED"
+   ],
+   "run_dir": "runs/20261014-003929_M08_ncu",
+   "file": "summary.json",
+   "path": "per_kernel.bitonic_shared.launches"
+  },
+  {
+   "target": "ncu_second_table.tex",
+   "name": "\\ncusecondrows row 3 col 5",
+   "value": "4480",
+   "kind": "field",
+   "metric_ids": [
+    "T-NCU-DIVERGENT-BITONIC-SHARED"
+   ],
+   "run_dir": "runs/20261014-003929_M08_ncu",
+   "file": "summary.json",
+   "path": "per_kernel.bitonic_shared.uniform"
+  },
+  {
+   "target": "ncu_second_table.tex",
+   "name": "\\ncusecondrows row 3 col 6",
+   "value": "0",
+   "kind": "metric",
+   "metric_ids": [
+    "T-NCU-DIVERGENT-BITONIC-SHARED"
+   ],
+   "run_dir": "runs/20261014-003929_M08_ncu",
+   "unit": "branches",
+   "backend": "cupy",
+   "runner": "pc-rtx3050laptopgpu"
+  },
+  {
+   "target": "ncu_second_table.tex",
+   "name": "\\ncusecondrows row 4 col 4",
+   "value": "1",
+   "kind": "field",
+   "metric_ids": [
+    "T-NCU-DIVERGENT-BITONIC-SHARED-FULL"
+   ],
+   "run_dir": "runs/20261014-003929_M08_ncu",
+   "file": "summary.json",
+   "path": "per_kernel.bitonic_shared_full.launches"
+  },
+  {
+   "target": "ncu_second_table.tex",
+   "name": "\\ncusecondrows row 4 col 5",
+   "value": "4096",
+   "kind": "field",
+   "metric_ids": [
+    "T-NCU-DIVERGENT-BITONIC-SHARED-FULL"
+   ],
+   "run_dir": "runs/20261014-003929_M08_ncu",
+   "file": "summary.json",
+   "path": "per_kernel.bitonic_shared_full.uniform"
+  },
+  {
+   "target": "ncu_second_table.tex",
+   "name": "\\ncusecondrows row 4 col 6",
+   "value": "0",
+   "kind": "metric",
+   "metric_ids": [
+    "T-NCU-DIVERGENT-BITONIC-SHARED-FULL"
+   ],
+   "run_dir": "runs/20261014-003929_M08_ncu",
+   "unit": "branches",
+   "backend": "cupy",
+   "runner": "pc-rtx3050laptopgpu"
+  },
+  {
+   "target": "ncu_second_table.tex",
+   "name": "\\ncusecondrows row 5 col 4",
+   "value": "1",
+   "kind": "field",
+   "metric_ids": [
+    "T-NCU-DIVERGENT-AEAD-OPEN-SEQ"
+   ],
+   "run_dir": "runs/20261014-003929_M08_ncu",
+   "file": "summary.json",
+   "path": "per_kernel.aead_open_seq.launches"
+  },
+  {
+   "target": "ncu_second_table.tex",
+   "name": "\\ncusecondrows row 5 col 5",
+   "value": "2560",
+   "kind": "field",
+   "metric_ids": [
+    "T-NCU-DIVERGENT-AEAD-OPEN-SEQ"
+   ],
+   "run_dir": "runs/20261014-003929_M08_ncu",
+   "file": "summary.json",
+   "path": "per_kernel.aead_open_seq.uniform"
+  },
+  {
+   "target": "ncu_second_table.tex",
+   "name": "\\ncusecondrows row 5 col 6",
+   "value": "0",
+   "kind": "metric",
+   "metric_ids": [
+    "T-NCU-DIVERGENT-AEAD-OPEN-SEQ"
+   ],
+   "run_dir": "runs/20261014-003929_M08_ncu",
+   "unit": "branches",
+   "backend": "cupy",
+   "runner": "pc-rtx3050laptopgpu"
   },
   {
    "target": "e2e_table.tex",

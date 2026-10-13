@@ -20,6 +20,9 @@ Device results: runner session 20261013-054610 (colab, Tesla T4, 2 vCPU), job 20
   fused sort ms, GPU sort with transfers ms, best oblivious CPU ms, speed-up), dudect_table.tex (`dudectrows`:
   target, N per class, max |t|, verdict), sidechannel_table.tex (`sidechannelrows`: kernel, SASS conditional
   branches, ncu divergent branches), e2e_table.tex (`etoerows`), pipeline_breakdown.dat.
+- New, needs a table of its own beside sidechannel_table.tex: ncu_second_table.tex (`ncusecondrows`: runner, kernel,
+  role, launches, uniform branch targets, divergent branch targets). It is runner `pc-rtx3050laptopgpu`, not the T4:
+  never merge its column into sidechannel_table.tex, whose ncu column stays as exported.
 - attack_table.tex now has a row for W = 1 s and for the unshuffled baseline; throughput_table.tex and
   throughput.dat cover 2^10 to 2^22 and their CPU column is the oracle bitonic sort on the CPU of the runner.
 
@@ -29,6 +32,7 @@ Device results: runner session 20261013-054610 (colab, Tesla T4, 2 vCPU), job 20
 - e2e_table.tex: M15 (end-to-end performance) has not run
 - gpu_kernels_table.tex: UNSTABLE
 - macros.tex: ADR-003: the server profile is ChaCha20/Poly1305; no AES time exists in this build
+- ncu_second_table.tex: NOT_MEASURED
 - pipeline_breakdown.dat: ISSUE-12: the pipeline was measured before the row-id change; the rerun on the same platform is UNSTABLE
 - sidechannel_table.tex: NOT_MEASURED
 - sidechannel_table.tex: NOT_MEASURED: the ncu job has no series for this kernel
@@ -90,7 +94,12 @@ Device results: runner session 20261013-054610 (colab, Tesla T4, 2 vCPU), job 20
 ## 5. Statements the numbers no longer support, or support differently
 - Timing side channel: the dudect table has FAIL rows and rows that are not measured. P3 is claimed for the
   kernels only (ADR-023); never write "constant time". The kernel-only series of tags and compaction are
-  NOT_MEASURED (ISSUE-36), ncu divergence is NOT_MEASURED (ISSUE-18), the SASS reading is manual (ISSUE-19).
+  NOT_MEASURED (ISSUE-36), the SASS reading is manual (ISSUE-19).
+- ncu divergence: the cloud runner (kaggle, Tesla T4) refused the performance counters, so it is NOT_MEASURED there (ISSUE-18).
+  Divergence was therefore measured on a second platform, named in the text, with the positive control stated first (ISSUE-48):
+  An instrument that read 128 divergent branch targets on a planted-leak control reported 0 on 3 of the 4 audited kernels (runner `pc-rtx3050laptopgpu`, NVIDIA GeForce RTX 3050 Laptop GPU).
+  NOT_MEASURED on that runner: bitonic_pairs_global (its counters were empty and its SASS listing has branches).
+  Write it as a validated null on that GPU, one run at one size; never as a T4 measurement.
 - Occupancy: the peak in the macros is the W = 60 layout. Larger windows and populations exceed CAND_K
   (ISSUE-43); the paper must state the sizing limit beside `resMaxOcc`.
 - Real-time claim for write_epoch: no number is exported (ISSUE-12). Do not state that a full epoch of 2^16

@@ -181,6 +181,9 @@ carries a `<!--M:ID-->` tag that names its row in `state/METRICS_INDEX.md`. Verd
   largest |t| of these tests reaches 4.5. dudect's second-order test is not implemented.
 - The code that ran is CuPy's nvrtc build of `kernels/*.cu` (cupy.RawModule (nvrtc)).
 - Free Colab/Kaggle GPUs are shared: a PASS says that no dependence was detected with this many measurements on this device in this session, not that none exists.
+- Second measurement platform (ADR-025), used for section 4.O.5 only: runner `pc-rtx3050laptopgpu`, NVIDIA GeForce RTX 3050 Laptop GPU (cc 8.6),
+  16 logical CPUs, driver 610.88, CUDA runtime 12090, CuPy 14.2.0, Windows-11-10.0.26300-SP0; runner session 20261014-003925,
+  GPU job 20261013-224820_M08_ncu, run `runs/20261014-003929_M08_ncu`. Nothing measured there is pooled with, or replaces, a Tesla T4 value.
 
 ## 4.O.2 Summary
 | target | run | N / class | max \|t\| | verdict | SASS conditional branches explained | ncu divergent branches |
@@ -199,6 +202,8 @@ A verdict in bold differs from the verdict that was expected. The two controls a
 FAIL (the planted `if (x) spin(1000)` kernel) and `control_null` must PASS (the same input in both classes).
 The SASS column counts conditional branches of the nvcc-built listing; the bitonic and write_epoch rows share the
 three comparator kernels. The kernels of write_epoch that have no listing in this job are not counted.
+The ncu column is the Tesla T4 run, where the cloud runner refused the performance counters; divergence was therefore
+measured on a second platform, runner `pc-rtx3050laptopgpu`, with a positive control: its table is in 4.O.5 and is not merged into this one.
 
 ## 4.O.3 dudect findings
 3 of the 6 target series FAIL at N = 100000<!--M:T-DUDECT-N-AEAD-CONV--> per class:
@@ -324,16 +329,53 @@ the generator):
   not obtained (NOT_MEASURED: neither cuobjdump nor nvdisasm produced one on the runner).
 
 ## 4.O.5 Nsight Compute divergence
+Two platforms, reported side by side and never pooled (ADR-024, ADR-025):
+- Runner `kaggle` (Tesla T4): the cloud runner refused the GPU performance counters, so the
+  divergence metrics are `NOT_MEASURED` there (ISSUE-18); details below.
+- Divergence was therefore measured on a second platform, runner `pc-rtx3050laptopgpu` (NVIDIA GeForce RTX 3050 Laptop GPU), together with a
+  positive control (ISSUE-48).
+
+### Runner `pc-rtx3050laptopgpu`: the positive control, then the audited kernels
+An instrument that read 128 divergent branch targets on a planted-leak control reported 0 on 3 of the 4 audited kernels (runner `pc-rtx3050laptopgpu`, NVIDIA GeForce RTX 3050 Laptop GPU).
+The control is read first because it is what makes the zeros evidence: a zero from a counter that has been shown
+to see a planted leak is a validated null, and a zero from a counter that was never shown to see anything is not.
+The control kernel (`bench/planted/planted_leak.cu`) and the audited kernels were profiled in one `ncu` process
+(`runs/20261014-003929_M08_ncu`, `control` and `per_kernel` of summary.json).
+
+| runner | kernel | role | launches | uniform branch targets | divergent branch targets | basis |
+|---|---|---|---|---|---|---|
+| pc-rtx3050laptopgpu | planted_leak | positive control | 1 | 8704 | 128 | a branch on secret data, planted on purpose: must diverge |
+| pc-rtx3050laptopgpu | bitonic_pairs_global | audited | 44 | 0 | NOT_MEASURED<!--M:T-NCU-DIVERGENT-BITONIC-PAIRS-GLOBAL--> | the counter collected nothing: 0 uniform and 0 divergent targets, although the sm_75 listing of this kernel has 2 branch instructions (1 conditional) |
+| pc-rtx3050laptopgpu | bitonic_shared | audited | 7 | 4480 | 0.0<!--M:T-NCU-DIVERGENT-BITONIC-SHARED--> | 4480 uniform branch targets counted beside it |
+| pc-rtx3050laptopgpu | bitonic_shared_full | audited | 1 | 4096 | 0.0<!--M:T-NCU-DIVERGENT-BITONIC-SHARED-FULL--> | 4096 uniform branch targets counted beside it |
+| pc-rtx3050laptopgpu | aead_open_seq | audited | 1 | 2560 | 0.0<!--M:T-NCU-DIVERGENT-AEAD-OPEN-SEQ--> | 2560 uniform branch targets counted beside it |
+
+- `bitonic_pairs_global` is `NOT_MEASURED`, not 0. Its divergent and its uniform counter are both 0 over 44 launches, so the counter collected nothing. Cross-check against the saved SASS listing (`runs/20261012-040020_M08_sass`, the sm_75 nvcc build of the same source, not the profiled build): the kernel has 2 branch instructions, 1 of them conditional, so it is not branch-free and the 0 is a failed collection, not a reading. In the same run the hardware counter `smsp__inst_executed_op_branch.sum` counted 90112 executed branch instructions over the 44 launches while the instrumented `sm__sass_inst_executed_op_branch.sum` counted 0: branches ran and the instrumented counters did not see them. The raw 0 stays in the run dir; the index row is withdrawn (ISSUE-48). Why the instrumentation missed this kernel was not investigated.
+- What the values are: sums over the profiled launches of the `.avg` aggregate of
+  `sm__sass_branch_targets_threads_divergent.avg` and `sm__sass_branch_targets_threads_uniform.avg`. What `.avg` averages over was not
+  checked against the Nsight Compute documentation, so the values are read as zero / non-zero, not as an exact
+  number of branches.
+- Scope: one run, seed 8, log2n 16, one GPU model. The code profiled is CuPy's nvrtc build
+  for compute capability 8.6, not the sm_75 code of the SASS listing in 4.O.4 and not the code
+  that ran on the Tesla T4. It is not a Tesla T4 measurement and says nothing about other sizes.
+- Platform: NVIDIA GeForce RTX 3050 Laptop GPU (cc 8.6), 16 logical CPUs, driver 610.88, CUDA runtime 12090,
+  CuPy 14.2.0, Windows-11-10.0.26300-SP0; runner session 20261014-003925, GPU job 20261013-224820_M08_ncu, packed from commit
+  `072ee8c`. Table: `results/oblivious/ncu_divergence_pc-rtx3050laptopgpu.csv`.
+
+### Runner `kaggle`: refused
 0 of 8 metrics measured. Reason: the driver refused the GPU performance counters to this user (ERR_NVGPUCTRPERM).
 `ncu --query-metrics` returned 0 branch metric names for the same reason. The
 branch-efficiency and divergent-branch metrics of the four profiled kernels are `NOT_MEASURED` in the index
 (ISSUE-18); the raw tool output is `results/oblivious/ncu_profile_raw.txt`.
 
 ## 4.O.6 Limitations
-- One runner session on a shared GPU; no repeat on a second session or a second GPU model.
+- dudect and SASS: one runner session on a shared GPU; no repeat on a second session or a second GPU model.
+  Only the ncu divergence was measured on a second GPU model (runner `pc-rtx3050laptopgpu`, 4.O.5).
 - dudect can show a dependence, not its absence; N is 100000<!--M:T-DUDECT-N-BITONIC-EQUAL--> per class.
 - 3 target series FAIL with the staging of this job; the diagnostics are in 4.O.3 (ISSUE-17).
-- No dynamic divergence measurement (ISSUE-18); no listing of the executed nvrtc code (ISSUE-19).
+- Dynamic divergence: the cloud runner refused the performance counters, so it is NOT_MEASURED on the Tesla T4 (ISSUE-18);
+  it was measured on runner `pc-rtx3050laptopgpu` only, in one run at log2n 16, with the positive control (ISSUE-48),
+  and is NOT_MEASURED for `bitonic_pairs_global`. No listing of the executed nvrtc code (ISSUE-19).
 - P3 is a claim about the kernels. The host code that issues the launches (Python) is not constant time and is
   not claimed to be: timing can be observed only on a live server, which the threat model excludes (ADR-023).
   A whole-call or per-stage series that FAILS with equal contents stays in the tables as measured.
@@ -436,7 +478,7 @@ The attacker reads the table in physical order (`ORDER BY ctid`) and guesses tha
 - Device sort at n = 1024: 1<!--M:S-TRACE-DISTINCT-DEVICE--> distinct trace over 5 inputs, equal to the trace of the oracle; merge sort on the same inputs: 4<!--M:S-TRACE-DISTINCT-MERGESORT--> distinct traces.
 - `write_epoch` at 64 slots: the launch list and the pair schedule are identical over 5 batches. The hook records public launch arguments only; digests are sha256, first 128 bits.
 - Timing is not part of this experiment. The dudect runs of M08 (section 4.O, summary `results/oblivious/oblivious_summary.json`, job 20261012-041010_M08) gave the verdict FAIL for these series: `write_epoch:call_ms`, `aead_tag:ms`, `aead_conv:ms` (ISSUE-17). The reading of those verdicts, with its diagnostics and limits, is section 4.O.3; it is not repeated here.
-- Nsight Compute divergence: NOT_MEASURED (the driver refused the GPU performance counters to this user (ERR_NVGPUCTRPERM); ISSUE-18).
+- Nsight Compute divergence: the cloud runner (`kaggle`, Tesla T4) refused the GPU performance counters, so it is NOT_MEASURED there (ISSUE-18). Divergence was therefore measured on a second platform, with a positive control. An instrument that read 128 divergent branch targets on a planted-leak control reported 0 on 3 of the 4 audited kernels (runner `pc-rtx3050laptopgpu`, NVIDIA GeForce RTX 3050 Laptop GPU). NOT_MEASURED there: `bitonic_pairs_global`. It is not a Tesla T4 measurement and is never pooled with one (ISSUE-48, section 4.O.5).
 - So the result of this section is about the logical trace only: which pairs are compared and which launches are issued does not depend on the data. The timing property is claimed for the kernels only, and host timing is a stated limitation (ADR-023).
 
 ## 4.S.6 Tests marked `gpu` on the device

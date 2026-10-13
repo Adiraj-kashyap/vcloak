@@ -372,3 +372,100 @@ def test_diagnostics_refuse_a_numpy_run_and_a_second_session(tree: dict[str, Pat
     (dg["seeds"][1] / "manifest.json").write_text(json.dumps(man), encoding="utf-8")
     with pytest.raises(ReportError, match="not an ingested cupy run"):
         _generate(tree, diagnostics=dg)
+
+
+# ---------------------------------------------------------------- ncu on a second runner (ADR-025, ISSUE-48)
+
+def _second(tree: dict[str, Path], uniform: float = 0.0, control: float = 128.0, sass_branches: int | None = 2,
+            runner: str = "pc-gpu") -> dict[str, Any]:
+    """An ncu run of another runner that profiled k_one; `uniform` is what the counter saw beside 0 divergent."""
+    counters = {"divergent": 0.0, "divergent_metric": "sm_div.avg", "uniform_metric": "sm_uni.avg", "launches": 3,
+                "uniform": uniform, "efficiency_pct": 100.0 if uniform else None}
+    ctl = {**counters, "divergent": control, "uniform": 64.0, "launches": 1}
+    d = _run(tree["root"], "ncu_pc", {
+        "metrics": [{"id": "T-NCU-DIVERGENT-K-ONE", "value": 0.0, "unit": "branches", "stat": "sum", "note": "n"}],
+        "reason": None, "per_kernel": {"k_one": counters, "planted_leak": ctl},
+        "control": {"kernel": "planted_leak", "divergent_seen": control > 0, **ctl}}, session="s2")
+    man = json.loads((d / "manifest.json").read_text(encoding="utf-8"))
+    man["env"].update({"runner": runner, "gpu": "Other GPU", "cc": "8.6", "cpu_count": 16})
+    man["params"] = {"log2n": 16, "kernels": ["k_one"], "control": "planted_leak"}
+    man["seed"] = 8
+    (d / "manifest.json").write_text(json.dumps(man), encoding="utf-8")
+    (d / "ncu_by_kernel.csv").write_text(
+        "kernel,metric,launches,sum,min,max\n"
+        f"k_one,{ro.SASS_BRANCH_INST},3,0.0,0.0,0.0\nk_one,{ro.HW_BRANCH_INST},3,96.0,32.0,32.0\n", encoding="utf-8")
+    summ = json.loads((tree["sass"] / "summary.json").read_text(encoding="utf-8"))
+    summ["metrics"] = [] if sass_branches is None else [{"id": "T-SASS-BRA-K-ONE", "value": sass_branches}]
+    (tree["sass"] / "summary.json").write_text(json.dumps(summ), encoding="utf-8")
+    return {"run": d, "issue": "ISSUE-D"}
+
+
+def _second_notes(tree: dict[str, Path], **kw: Any) -> tuple[dict[str, Any], str]:
+    notes = tree["root"] / "notes.md"
+    s = _generate(tree, notes=notes, ncu_second=_second(tree, **kw), analysis=tree["root"] / "analysis.md")
+    return s, notes.read_text(encoding="utf-8")
+
+
+def test_second_runner_gets_its_own_table_led_by_the_control(tree: dict[str, Path]) -> None:
+    s, text = _second_notes(tree, uniform=640.0)
+    k = s["ncu_second"]["kernels"][0]
+    assert (k["reported"], k["state"]) == ("0", "measured")
+    claim = "An instrument that read 128 divergent branch targets on a planted-leak control reported 0 on 1 of the 1"
+    assert claim in text and "validated null" in text
+    assert text.index(claim) < text.index("| pc-gpu | k_one | audited |")
+    assert "| pc-gpu | planted_leak | positive control | 1 | 64 | 128 |" in text
+    assert "0.0<!--M:T-NCU-DIVERGENT-K-ONE-->" in text
+    # both platforms are stated, and the rows of the first runner are untouched
+    assert "the cloud runner refused the GPU performance counters" in text and "runner `pc-gpu`" in text
+    assert "Second measurement platform (ADR-025)" in text
+    first = (tree["root"] / "out" / "ncu_divergence.csv").read_text(encoding="utf-8")
+    assert "NOT_MEASURED" in first and "pc-gpu" not in first
+    own = (tree["root"] / "out" / "ncu_divergence_pc-gpu.csv").read_text(encoding="utf-8").splitlines()
+    assert own[1].startswith("pc-gpu,Other GPU,planted_leak,positive_control") and ",measured," in own[2]
+    analysis = (tree["root"] / "analysis.md").read_text(encoding="utf-8")
+    assert analysis.index(claim) < analysis.index("Kernels the statement covers")
+    assert ro.ANALYSIS_BEGIN in analysis and "ISSUE-B" in analysis and "ISSUE-D" in analysis
+
+
+def test_empty_counters_with_branches_in_the_listing_are_not_measured(tree: dict[str, Path]) -> None:
+    s, text = _second_notes(tree, uniform=0.0, sass_branches=2)
+    k = s["ncu_second"]["kernels"][0]
+    assert (k["reported"], k["state"]) == ("NOT_MEASURED", "collected_nothing")
+    assert "NOT_MEASURED<!--M:T-NCU-DIVERGENT-K-ONE-->" in text and "0.0<!--M:T-NCU-DIVERGENT-K-ONE-->" not in text
+    assert "`k_one` is `NOT_MEASURED`, not 0" in text and "has 2 branch instructions" in text
+    assert "counted 96 executed branch instructions" in text
+    assert "reported 0 on 0 of the 1 audited kernels" in text
+
+
+def test_empty_counters_are_kept_only_when_the_listing_has_no_branch(tree: dict[str, Path]) -> None:
+    s, text = _second_notes(tree, uniform=0.0, sass_branches=0)
+    k = s["ncu_second"]["kernels"][0]
+    assert (k["reported"], k["state"]) == ("0", "corroborated")
+    assert "corroborated by SASS" in text
+
+
+def test_empty_counters_without_a_listing_are_not_measured(tree: dict[str, Path]) -> None:
+    s, _ = _second_notes(tree, uniform=0.0, sass_branches=None)
+    assert s["ncu_second"]["kernels"][0]["state"] == "collected_nothing"
+
+
+def test_without_a_control_that_diverges_no_kernel_is_reported(tree: dict[str, Path]) -> None:
+    s, text = _second_notes(tree, uniform=640.0, control=0.0)
+    assert s["ncu_second"]["control_ok"] is False
+    assert s["ncu_second"]["kernels"][0]["reported"] == "NOT_MEASURED"
+    assert "did **not** show divergence on the planted-leak control" in text
+
+
+def test_second_runner_must_be_another_runner_and_an_ingested_run(tree: dict[str, Path]) -> None:
+    with pytest.raises(ReportError, match="a second platform is another runner"):
+        _generate(tree, ncu_second=_second(tree, runner="kaggle"))
+
+
+def test_without_a_second_runner_the_section_is_as_before(tree: dict[str, Path]) -> None:
+    notes = tree["root"] / "notes.md"
+    s = _generate(tree, notes=notes)
+    text = notes.read_text(encoding="utf-8")
+    assert "ncu_second" not in s and "Second measurement platform" not in text
+    assert "- No dynamic divergence measurement (ISSUE-B); no listing of the executed nvrtc code (ISSUE-C)." in text
+    with pytest.raises(ReportError, match="--analysis needs --ncu-second"):
+        _generate(tree, analysis=tree["root"] / "a.md")

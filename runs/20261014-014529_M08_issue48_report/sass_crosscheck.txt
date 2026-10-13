@@ -1,0 +1,50 @@
+SASS listings: 20261012-040020_M08_sass/sass_*.txt, arch sm_75, cuobjdump -sass
+ncu run: 20261014-003929_M08_ncu, runner pc-rtx3050laptopgpu, cc 8.6 (nvrtc build: another build of the same source than the listing)
+
+bitonic_pairs_global: 72 instructions in the listing, 3 branch instructions (1 conditional); index T-SASS-BRA-BITONIC-PAIRS-GLOBAL = 2
+    0050  @P0 EXIT
+    0410  EXIT
+    0420  BRA 0x420
+  ncu: divergent 0.0  uniform 0.0  launches 44
+  ncu: sm__sass_inst_executed_op_branch.sum = 0.0   smsp__inst_executed_op_branch.sum = 90112.0
+  note: this opcode scan lists 3 lines, scripts/sass_check.py indexed 2; both are above zero
+
+bitonic_shared: 120 instructions in the listing, 5 branch instructions (3 conditional); index T-SASS-BRA-BITONIC-SHARED = 4
+    0050  @P0 EXIT
+    0290  @!P0 BRA 0x620
+    0610  @P0 BRA 0x2b0
+    0720  EXIT
+    0730  BRA 0x730
+  ncu: divergent 0.0  uniform 4480.0  launches 7
+  ncu: sm__sass_inst_executed_op_branch.sum = 71680.0   smsp__inst_executed_op_branch.sum = 86016.0
+  note: this opcode scan lists 5 lines, scripts/sass_check.py indexed 4; both are above zero
+
+bitonic_shared_full: 128 instructions in the listing, 7 branch instructions (5 conditional); index T-SASS-BRA-BITONIC-SHARED-FULL = 6
+    0050  @P0 EXIT
+    02b0  @!P0 BRA 0x6a0
+    02e0  @!P0 BRA 0x670
+    0660  @P0 BRA 0x300
+    0690  @!P0 BRA 0x2d0
+    07a0  EXIT
+    07b0  BRA 0x7b0
+  ncu: divergent 0.0  uniform 4096.0  launches 1
+  ncu: sm__sass_inst_executed_op_branch.sum = 65536.0   smsp__inst_executed_op_branch.sum = 67584.0
+  note: this opcode scan lists 7 lines, scripts/sass_check.py indexed 6; both are above zero
+
+aead_open_seq: 624 instructions in the listing, 5 branch instructions (3 conditional); index T-SASS-BRA-AEAD-OPEN-SEQ = 4
+    0050  @P0 EXIT
+    08c0  @P0 BRA 0x2a0
+    0fd0  @P0 BRA 0x9b0
+    26d0  EXIT
+    26e0  BRA 0x26e0
+  ncu: divergent 0.0  uniform 2560.0  launches 1
+  ncu: sm__sass_inst_executed_op_branch.sum = 40960.0   smsp__inst_executed_op_branch.sum = 45056.0
+  note: this opcode scan lists 5 lines, scripts/sass_check.py indexed 4; both are above zero
+
+control planted_leak: divergent 128.0  uniform 8704.0  launches 1  divergent_seen True
+
+VERDICT per audited kernel:
+  bitonic_pairs_global: NOT_MEASURED (0/0 although the listing has branch instructions: the counter collected nothing)
+  bitonic_shared: MEASURED (the counter counted branch targets of this kernel)
+  bitonic_shared_full: MEASURED (the counter counted branch targets of this kernel)
+  aead_open_seq: MEASURED (the counter counted branch targets of this kernel)

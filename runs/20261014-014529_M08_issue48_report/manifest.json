@@ -1,0 +1,48 @@
+{
+  "run_id": "20261014-014529_M08_issue48_report",
+  "module": "M08",
+  "step": "S5",
+  "owner": "Aditya",
+  "git_sha": "0d77a1fb2707d059734508608831d7c6595eefa3",
+  "dirty": true,
+  "command": "python runs/<this>/sass_crosscheck.py; python -m vcloak.bench.report_oblivious (report_command.txt); python scripts/export_results.py; pytest -q; ruff; check_metrics, check_oblivious, check_secrets; export --check",
+  "seed": 0,
+  "quick": false,
+  "params": {},
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261014-014529",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U",
+    "cpu_count": 12
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791922529.541052
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791922947.5674455
+  },
+  "outputs": [
+    "capture_terminal.json",
+    "check_metrics.txt",
+    "check_oblivious.txt",
+    "check_secrets.txt",
+    "export.txt",
+    "export_check.txt",
+    "pytest_all.txt",
+    "report_command.txt",
+    "report_oblivious.txt",
+    "report_security.txt",
+    "ruff.txt",
+    "sass_crosscheck.py",
+    "sass_crosscheck.txt"
+  ],
+  "status": "OK",
+  "notes": "no measurement: report generation and checks on the laptop (backend numpy); every value reported comes from the ingested runs it names"
+}

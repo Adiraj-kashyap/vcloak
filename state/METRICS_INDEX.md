@@ -66,6 +66,20 @@ compact_kernel_null) in runs/20261013-022124_M08_dudect_i25k_s8 and runs/2026101
   (runs/20261013-171026_M16_prefixes/report_command.txt). scripts/check_metrics.py accepts NOT_MEASURED against a
   summary.json value (rule 5): a value may be withdrawn, never changed.
 
+ANN-5 (2026-10-14, session 48; decision of the owner on ISSUE-48). It covers 1 row: T-NCU-DIVERGENT-BITONIC-PAIRS-GLOBAL
+of runs/20261014-003929_M08_ncu (runner pc-rtx3050laptopgpu).
+- Its value is NOT_MEASURED. The run wrote 0.0, and that value stays in summary.json of the run dir; it is withdrawn
+  because the uniform and the divergent counter of this kernel are both 0 over all its launches, so the counter
+  collected nothing, while the saved SASS listing of the kernel (runs/20261012-040020_M08_sass, the sm_75 nvcc
+  build) contains branch instructions, one of them conditional. A 0 from an empty counter is not a reading. The
+  lookup is runs/20261014-014529_M08_issue48_report/sass_crosscheck.txt. Nothing was re-measured, estimated or
+  replaced.
+- The rule, applied by `vcloak.bench.report_oblivious --ncu-second`: empty counters and no branch instruction in the
+  listing: the 0 is reported as corroborated by SASS; empty counters and a branch instruction in the listing:
+  NOT_MEASURED. The other three T-NCU-DIVERGENT rows of that run stay: their own uniform count is not zero.
+- T-NCU-BRANCHEFF-BITONIC-PAIRS-GLOBAL of the same run was NOT_MEASURED from the start and is unchanged. The eight
+  T-NCU rows of runs/20261012-040027_M08_ncu (runner kaggle, counters refused) are unchanged.
+
 | Metric ID | Value | Unit | Stat | Module | Run dir | Command | Date | Quick | Backend | Runner |
 |---|---|---|---|---|---|---|---|---|---|---|
 | ENV-PEAK-BW | 320.064 | GB/s | theoretical | M00 | runs/20261011-110031_M00_gpu_probe | python bench/probe_gpu.py --seed 7 --out runs | 20261011 | no | cupy | kaggle |
@@ -889,7 +903,7 @@ compact_kernel_null) in runs/20261013-022124_M08_dudect_i25k_s8 and runs/2026101
 | ENV-D2D-BW | 185.788 | GB/s | median | M00 | runs/20261014-001653_M00_gpu_probe | python bench/probe_gpu.py --seed 7 --out runs | 20261014 | no | cupy | pc-rtx3050laptopgpu |
 | ENV-MAX-LOG2N | 24 | log2(n) | value | M00 | runs/20261014-001653_M00_gpu_probe | python bench/probe_gpu.py --seed 7 --out runs | 20261014 | no | cupy | pc-rtx3050laptopgpu |
 | ENV-VRAM-FREE | 3.466 | GB | value | M00 | runs/20261014-001653_M00_gpu_probe | python bench/probe_gpu.py --seed 7 --out runs | 20261014 | no | cupy | pc-rtx3050laptopgpu |
-| T-NCU-DIVERGENT-BITONIC-PAIRS-GLOBAL | 0.0 | branches | sum | M08 | runs/20261014-003929_M08_ncu | python bench/run_ncu.py --seed 8 --out runs | 20261014 | no | cupy | pc-rtx3050laptopgpu |
+| T-NCU-DIVERGENT-BITONIC-PAIRS-GLOBAL | NOT_MEASURED | branches | sum | M08 | runs/20261014-003929_M08_ncu | python bench/run_ncu.py --seed 8 --out runs | 20261014 | no | cupy | pc-rtx3050laptopgpu |
 | T-NCU-BRANCHEFF-BITONIC-PAIRS-GLOBAL | NOT_MEASURED | % | ratio of sums | M08 | runs/20261014-003929_M08_ncu | python bench/run_ncu.py --seed 8 --out runs | 20261014 | no | cupy | pc-rtx3050laptopgpu |
 | T-NCU-DIVERGENT-BITONIC-SHARED | 0.0 | branches | sum | M08 | runs/20261014-003929_M08_ncu | python bench/run_ncu.py --seed 8 --out runs | 20261014 | no | cupy | pc-rtx3050laptopgpu |
 | T-NCU-BRANCHEFF-BITONIC-SHARED | 100.0 | % | ratio of sums | M08 | runs/20261014-003929_M08_ncu | python bench/run_ncu.py --seed 8 --out runs | 20261014 | no | cupy | pc-rtx3050laptopgpu |

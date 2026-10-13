@@ -1,0 +1,6 @@
+runner,gpu,kernel,role,launches,uniform_branch_targets,divergent_branch_targets,reported,state,basis,sass_branch_instructions,metric_id,run_dir
+pc-rtx3050laptopgpu,NVIDIA GeForce RTX 3050 Laptop GPU,planted_leak,positive_control,1,8704.0,128.0,128,control_ok,planted branch on secret data: must diverge,,,runs/20261014-003929_M08_ncu
+pc-rtx3050laptopgpu,NVIDIA GeForce RTX 3050 Laptop GPU,bitonic_pairs_global,audited,44,0.0,0.0,NOT_MEASURED,collected_nothing,"the counter collected nothing: 0 uniform and 0 divergent targets, although the sm_75 listing of this kernel has 2 branch instructions (1 conditional)",2,T-NCU-DIVERGENT-BITONIC-PAIRS-GLOBAL,runs/20261014-003929_M08_ncu
+pc-rtx3050laptopgpu,NVIDIA GeForce RTX 3050 Laptop GPU,bitonic_shared,audited,7,4480.0,0.0,0,measured,4480 uniform branch targets counted beside it,4,T-NCU-DIVERGENT-BITONIC-SHARED,runs/20261014-003929_M08_ncu
+pc-rtx3050laptopgpu,NVIDIA GeForce RTX 3050 Laptop GPU,bitonic_shared_full,audited,1,4096.0,0.0,0,measured,4096 uniform branch targets counted beside it,6,T-NCU-DIVERGENT-BITONIC-SHARED-FULL,runs/20261014-003929_M08_ncu
+pc-rtx3050laptopgpu,NVIDIA GeForce RTX 3050 Laptop GPU,aead_open_seq,audited,1,2560.0,0.0,0,measured,2560 uniform branch targets counted beside it,4,T-NCU-DIVERGENT-AEAD-OPEN-SEQ,runs/20261014-003929_M08_ncu

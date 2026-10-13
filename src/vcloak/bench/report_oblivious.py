@@ -1,12 +1,15 @@
 """M08 S5: the obliviousness summary table, results/oblivious/ and the Chapter 4 notes section.
 
     python -m vcloak.bench.report_oblivious --selftest runs/<dudect_selftest> --dudect runs/<dudect> \
-        --sass runs/<sass> --ncu runs/<ncu> --out results/oblivious --notes docs/REPORT_CH4_NOTES.md
+        --sass runs/<sass> --ncu runs/<ncu> --out results/oblivious --notes docs/REPORT_CH4_NOTES.md \
+        [--ncu-second runs/<ncu of another runner> --analysis docs/RESULTS_ANALYSIS.md]
 
 Nothing here measures. Every cell is read from a run's summary.json; the four runs must be `cupy` runs of one
 runner session and one GPU job, otherwise nothing is written. A verdict is copied, never recomputed: a FAIL
 stays a FAIL in the table and in the notes (audit A5). The branch explanations of bench/sass_explained.json are
 checked against the saved listing, instruction by instruction, before they are counted as explained.
+`--ncu-second` is the ncu run of another runner (ADR-025): it gets a table and a paragraph of its own, led by
+its positive control, and never fills or replaces a cell of the first runner.
 """
 from __future__ import annotations
 
@@ -36,6 +39,9 @@ KERNELS_OF = {
     "aead_tag": ("aead_open_seq",),
     "aead_conv": ("aead_open_seq",),
 }
+ANALYSIS_BEGIN, ANALYSIS_END = "<!-- BEGIN M08 OBLIVIOUS ANALYSIS -->", "<!-- END M08 OBLIVIOUS ANALYSIS -->"
+# the instrumented and the hardware count of executed branch instructions, as bench/run_ncu.py aggregates them
+SASS_BRANCH_INST, HW_BRANCH_INST = "sm__sass_inst_executed_op_branch.sum", "smsp__inst_executed_op_branch.sum"
 _INSTR = re.compile(r"\s*/\*([0-9a-f]{4})\*/\s+(.*?)\s*;")
 
 
@@ -145,8 +151,217 @@ def summary_rows(runs: dict[str, dict[str, Any]], branches: list[dict[str, Any]]
     return rows
 
 
+def _count(x: Any) -> str:
+    """A counter value as the run wrote it, without a trailing `.0`."""
+    return NM if x is None else str(int(x)) if float(x) == int(x) else str(x)
+
+
+def second_platform(run: dict[str, Any], prov: dict[str, Any], sass: dict[str, Any], root: Path,
+                    issue: str) -> dict[str, Any]:
+    """The ncu run of another runner (ADR-025), read on its own: the positive control first, then one row per
+    audited kernel. A divergent count of 0 is reported only when the same counter family counted branch targets
+    of that kernel; when it counted none at all, the SASS listing decides: no branch instruction there means the
+    0 is corroborated, a branch instruction there means the counter collected nothing and the kernel is
+    NOT_MEASURED. Without a control that shows divergence no kernel is reported."""
+    m, summ = run["manifest"], run["summary"]
+    env = m["env"]
+    if env["backend"] != "cupy" or "gpu_job" not in m:
+        raise ReportError(f"ncu-second {run['id']}: not an ingested cupy run")
+    if m["quick"]:
+        raise ReportError(f"ncu-second {run['id']}: a quick run")
+    if env["runner"] == prov["runner"]:
+        raise ReportError(f"ncu-second {run['id']}: runner {env['runner']} is the runner of the summary "
+                          "(a second platform is another runner)")
+    if summ.get("reason"):
+        raise ReportError(f"ncu-second {run['id']}: nothing was measured there ({summ['reason']})")
+    control = summ.get("control") or {}
+    control_ok = control.get("divergent_seen") is True
+    counters: dict[tuple[str, str], str] = {}
+    by_kernel = run["dir"] / "ncu_by_kernel.csv"
+    if by_kernel.exists():
+        with by_kernel.open(newline="", encoding="utf-8") as f:
+            counters = {(r["kernel"], r["metric"]): r["sum"] for r in csv.DictReader(f)}
+    sass_fn = {f["function"]: f for fs in sass["summary"].get("functions", {}).values() for f in fs}
+    arch = sass["summary"].get("log", {}).get("arch", NM)
+    rows = []
+    for k in m["params"]["kernels"]:
+        d = summ["per_kernel"].get(k) or {}
+        mid = metric_id("T-NCU-DIVERGENT", k)
+        div, uni = d.get("divergent"), d.get("uniform")
+        row = {"kernel": k, "metric": mid, "launches": d.get("launches"), "uniform": uni, "divergent": div,
+               "sass_branches": run_metric(sass, metric_id("T-SASS-BRA", k)),
+               "sass_conditional": sass_fn.get(k, {}).get("conditional"),
+               "sass_inst": counters.get((k, SASS_BRANCH_INST)), "hw_inst": counters.get((k, HW_BRANCH_INST))}
+        if not control_ok:
+            row.update(reported=NM, state="no_control", basis="the positive control showed no divergence")
+        elif div is None:
+            row.update(reported=NM, state="no_counter", basis="no divergent-branch counter for this kernel")
+        elif (uni or 0) + div > 0:
+            row.update(reported=_count(div), state="measured",
+                       basis=f"{_count(uni)} uniform branch targets counted beside it")
+        elif row["sass_branches"] == 0:
+            row.update(reported=_count(div), state="corroborated",
+                       basis=f"no branch target counted; corroborated by SASS: the {arch} listing of this kernel "
+                             "has no branch instruction")
+        elif row["sass_branches"] is None:
+            row.update(reported=NM, state="collected_nothing",
+                       basis="no branch target counted and no SASS listing to cross-check")
+        else:
+            row.update(reported=NM, state="collected_nothing",
+                       basis=f"the counter collected nothing: 0 uniform and 0 divergent targets, although the "
+                             f"{arch} listing of this kernel has {row['sass_branches']} branch instructions "
+                             f"({row['sass_conditional']} conditional)")
+        rows.append(row)
+    return {"run": run, "run_dir": rel(run["dir"], root), "issue": issue, "runner": env["runner"],
+            "gpu": env["gpu"], "cc": env.get("cc", NM), "driver": env.get("driver", NM), "cuda": env.get("cuda", NM),
+            "cupy": env.get("cupy", NM), "os": env.get("os", NM), "cpu_count": env.get("cpu_count"),
+            "session_id": env["session_id"], "job_id": m["gpu_job"].get("job_id", NM), "git_sha": m["git_sha"],
+            "seed": m.get("seed"), "log2n": m["params"].get("log2n"), "ncu_version": summ.get("ncu_version"),
+            "control": {"kernel": control.get("kernel", NM), "ok": control_ok, "divergent": control.get("divergent"),
+                        "uniform": control.get("uniform"), "launches": control.get("launches"),
+                        "metric": control.get("divergent_metric"), "uniform_metric": control.get("uniform_metric")},
+            "sass_arch": arch, "sass_dir": rel(sass["dir"], root), "rows": rows}
+
+
+def run_metric(run: dict[str, Any], mid: str) -> Any:
+    return run["metrics"][mid]["value"] if mid in run["metrics"] else None
+
+
+def _second_claim(sec: dict[str, Any]) -> str:
+    """The sentence the reporting leads with: the control reading first, the zeros after it."""
+    c = sec["control"]
+    ok = [r for r in sec["rows"] if r["state"] in ("measured", "corroborated")]
+    zero = [r for r in ok if float(r["divergent"]) == 0]
+    if not c["ok"]:
+        return (f"On runner `{sec['runner']}` the instrument did **not** show divergence on the planted-leak control, "
+                f"so nothing it reported for the audited kernels is evidence: all are `{NM}`.")
+    return (f"An instrument that read {_count(c['divergent'])} divergent branch targets on a planted-leak control "
+            f"reported 0 on {len(zero)} of the {len(sec['rows'])} audited kernels (runner `{sec['runner']}`, "
+            f"{sec['gpu']}).")
+
+
+def second_ncu_text(sec: dict[str, Any], prov: dict[str, Any], issues: dict[str, str]) -> str:
+    c = sec["control"]
+    run = {"x": sec["run"]}
+
+    def cell(r: dict[str, Any]) -> str:
+        return f"{r['reported']}<!--M:{r['metric']}-->" if r["reported"] == NM else tagged(run, r["metric"])
+
+    table = _md_table(
+        ["runner", "kernel", "role", "launches", "uniform branch targets", "divergent branch targets", "basis"],
+        [[sec["runner"], c["kernel"], "positive control", _count(c["launches"]), _count(c["uniform"]),
+          _count(c["divergent"]), "a branch on secret data, planted on purpose: must diverge"]]
+        + [[sec["runner"], r["kernel"], "audited", _count(r["launches"]), _count(r["uniform"]), cell(r),
+            r["basis"]] for r in sec["rows"]])
+    failed = [r for r in sec["rows"] if r["state"] == "collected_nothing"]
+    corro = [r for r in sec["rows"] if r["state"] == "corroborated"]
+    notes = []
+    for r in failed:
+        hw = ""
+        if r["hw_inst"] is not None and r["sass_inst"] is not None:
+            hw = (f" In the same run the hardware counter `{HW_BRANCH_INST}` counted {_count(float(r['hw_inst']))} "
+                  f"executed branch instructions over the {_count(r['launches'])} launches while the instrumented "
+                  f"`{SASS_BRANCH_INST}` counted {_count(float(r['sass_inst']))}: branches ran and the instrumented "
+                  "counters did not see them.")
+        notes.append(
+            f"- `{r['kernel']}` is `{NM}`, not 0. Its divergent and its uniform counter are both 0 over "
+            f"{_count(r['launches'])} launches, so the counter collected nothing. Cross-check against the saved SASS "
+            f"listing (`{sec['sass_dir']}`, the {sec['sass_arch']} nvcc build of the same source, not the profiled "
+            f"build): the kernel has {r['sass_branches']} branch "
+            f"instructions, {r['sass_conditional']} of them conditional, so it is not branch-free and the 0 is a "
+            f"failed collection, not a reading.{hw} The raw 0 stays in the run dir; the index row is withdrawn "
+            f"({sec['issue']}). Why the instrumentation missed this kernel was not investigated.")
+    for r in corro:
+        notes.append(
+            f"- `{r['kernel']}`: no branch target was counted at all, and the 0 is reported because it is "
+            f"corroborated by SASS: the {sec['sass_arch']} listing of this kernel (`{sec['sass_dir']}`) contains no "
+            "branch instruction, so there was nothing to count.")
+    cpus = NM if sec["cpu_count"] is None else f"{sec['cpu_count']} logical CPUs"
+    notes_text = "".join(n + "\n" for n in notes)
+    return f"""## 4.O.5 Nsight Compute divergence
+Two platforms, reported side by side and never pooled (ADR-024, ADR-025):
+- Runner `{prov['runner']}` ({prov['gpu']}): the cloud runner refused the GPU performance counters, so the
+  divergence metrics are `{NM}` there ({issues['ncu']}); details below.
+- Divergence was therefore measured on a second platform, runner `{sec['runner']}` ({sec['gpu']}), together with a
+  positive control ({sec['issue']}).
+
+### Runner `{sec['runner']}`: the positive control, then the audited kernels
+{_second_claim(sec)}
+The control is read first because it is what makes the zeros evidence: a zero from a counter that has been shown
+to see a planted leak is a validated null, and a zero from a counter that was never shown to see anything is not.
+The control kernel (`bench/planted/planted_leak.cu`) and the audited kernels were profiled in one `ncu` process
+(`{sec['run_dir']}`, `control` and `per_kernel` of summary.json).
+
+{table}
+
+{notes_text}- What the values are: sums over the profiled launches of the `.avg` aggregate of
+  `{c['metric']}` and `{c['uniform_metric']}`. What `.avg` averages over was not
+  checked against the Nsight Compute documentation, so the values are read as zero / non-zero, not as an exact
+  number of branches.
+- Scope: one run, seed {sec['seed']}, log2n {sec['log2n']}, one GPU model. The code profiled is CuPy's nvrtc build
+  for compute capability {sec['cc']}, not the {sec['sass_arch']} code of the SASS listing in 4.O.4 and not the code
+  that ran on the {prov['gpu']}. It is not a {prov['gpu']} measurement and says nothing about other sizes.
+- Platform: {sec['gpu']} (cc {sec['cc']}), {cpus}, driver {sec['driver']}, CUDA runtime {sec['cuda']},
+  CuPy {sec['cupy']}, {sec['os']}; runner session {sec['session_id']}, GPU job {sec['job_id']}, packed from commit
+  `{sec['git_sha'][:7]}`. Table: `results/oblivious/ncu_divergence_{sec['runner']}.csv`.
+
+### Runner `{prov['runner']}`: refused"""
+
+
+def analysis_section(sec: dict[str, Any], prov: dict[str, Any], issues: dict[str, str]) -> str:
+    """The interpretation of the divergence result for docs/RESULTS_ANALYSIS.md, in the same order as the notes."""
+    c = sec["control"]
+    kept = [r for r in sec["rows"] if r["state"] in ("measured", "corroborated")]
+    lost = [r for r in sec["rows"] if r["state"] not in ("measured", "corroborated")]
+    run = {"x": sec["run"]}
+    kept_list = "\n".join(
+        f"- `{r['kernel']}`: {tagged(run, r['metric'])} divergent, {r['basis']} ({_count(r['launches'])} "
+        f"launch(es))." for r in kept) or "- none"
+    lost_list = "\n".join(f"- `{r['kernel']}`: {NM}<!--M:{r['metric']}-->. {r['basis'][0].upper()}{r['basis'][1:]}."
+                          for r in lost) or "- none"
+    return f"""{ANALYSIS_BEGIN}
+## Obliviousness (P3): what the branch-divergence result means
+
+Generated by `python -m vcloak.bench.report_oblivious` from ingested run dirs; do not edit this block by hand.
+The measurement itself is section 4.O.5 of `docs/REPORT_CH4_NOTES.md`.
+
+**Result.** {_second_claim(sec)}
+
+**Why it is stated this way.** A profiler that reports 0 divergent branches proves nothing by itself: the counter
+may be unsupported, refused or silently empty. Here the same counters, in the same `ncu` process, were first shown
+to see a leak that was planted on purpose: {_count(c['divergent'])} divergent branch targets beside
+{_count(c['uniform'])} uniform ones on `{c['kernel']}` (`{sec['run_dir']}`, `control` of summary.json). The zeros
+of the audited kernels are therefore a validated null, which is a categorically stronger statement than an
+unvalidated one. It is still a null: it says no thread of a warp took a different branch target from its
+neighbours in this run, not that none ever can.
+
+**Kernels the statement covers** (runner `{sec['runner']}`):
+{kept_list}
+
+**Kernels it does not cover:**
+{lost_list}
+A kernel is dropped rather than counted as a zero when its counters were empty and the SASS listing shows it has
+branches: an empty counter is not a reading. The other kernels are kept because their own uniform count is
+non-zero, which shows the counter was collecting for them.
+
+**Where it was measured, and where it was not.** The cloud runner (`{prov['runner']}`, {prov['gpu']}) refused the
+GPU performance counters, so divergence is `{NM}` on the {prov['gpu']} ({issues['ncu']}). Divergence was therefore
+measured on a second platform, runner `{sec['runner']}` ({sec['gpu']}, compute capability {sec['cc']}), with the
+positive control ({sec['issue']}). The two platforms are reported side by side and never pooled (ADR-024,
+ADR-025): this divergence table is the only result of section 4.O that comes from the second platform, and
+nothing from it replaces a {prov['gpu']} value.
+
+**Limits.** One run, seed {sec['seed']}, log2n {sec['log2n']}, one GPU model; the profiled code is the nvrtc build
+for compute capability {sec['cc']}, not the code that ran on the {prov['gpu']}. The values are sums of an `.avg`
+aggregate whose exact definition was not checked, so they are read as zero / non-zero. Branch divergence is one
+channel: this result says nothing about timing, where the dudect findings of section 4.O.3 stand as measured.
+{ANALYSIS_END}
+"""
+
+
 def build_section(runs: dict[str, dict[str, Any]], prov: dict[str, Any], root: Path, rows: list[dict[str, Any]],
-                  branches: list[dict[str, Any]], issues: dict[str, str], diagnostics: str = "") -> str:
+                  branches: list[dict[str, Any]], issues: dict[str, str], diagnostics: str = "",
+                  second: dict[str, Any] | None = None) -> str:
     def t(run: str, mid: str) -> str:
         return tagged({run: runs[run]}, mid)
 
@@ -190,6 +405,29 @@ def build_section(runs: dict[str, dict[str, Any]], prov: dict[str, Any], root: P
     crops = runs["dudect"]["manifest"]["params"]["percentile_crops"]
     n_series = sum(r["run"] == "dudect" and r["target"] in TARGETS for r in rows)
     leak_t, n_full = t("selftest", "T-DUDECT-MAXT-CONTROL-LEAK"), t("dudect", "T-DUDECT-N-AEAD-CONV")
+    setup2 = ncu_col = ""
+    ncu_head = "## 4.O.5 Nsight Compute divergence"
+    lim_one = "- One runner session on a shared GPU; no repeat on a second session or a second GPU model."
+    lim_ncu = f"- No dynamic divergence measurement ({issues['ncu']}); no"
+    if second:
+        cpus = NM if second["cpu_count"] is None else f"{second['cpu_count']} logical CPUs"
+        setup2 = ("\n- Second measurement platform (ADR-025), used for section 4.O.5 only: runner "
+                  f"`{second['runner']}`, {second['gpu']} (cc {second['cc']}),\n  {cpus}, driver {second['driver']}, "
+                  f"CUDA runtime {second['cuda']}, CuPy {second['cupy']}, {second['os']}; runner session "
+                  f"{second['session_id']},\n  GPU job {second['job_id']}, run `{second['run_dir']}`. Nothing measured "
+                  f"there is pooled with, or replaces, a {prov['gpu']} value.")
+        ncu_col = (f"\nThe ncu column is the {prov['gpu']} run, where the cloud runner refused the performance "
+                   f"counters; divergence was therefore\nmeasured on a second platform, runner `{second['runner']}`, "
+                   "with a positive control: its table is in 4.O.5 and is not merged into this one.")
+        ncu_head = second_ncu_text(second, prov, issues)
+        lim_one = ("- dudect and SASS: one runner session on a shared GPU; no repeat on a second session or a "
+                   "second GPU model.\n  Only the ncu divergence was measured on a second GPU model (runner "
+                   f"`{second['runner']}`, 4.O.5).")
+        lost = [r["kernel"] for r in second["rows"] if r["state"] not in ("measured", "corroborated")]
+        lim_ncu = (f"- Dynamic divergence: the cloud runner refused the performance counters, so it is {NM} on the "
+                   f"{prov['gpu']} ({issues['ncu']});\n  it was measured on runner `{second['runner']}` only, in one "
+                   f"run at log2n {second['log2n']}, with the positive control ({second['issue']}),\n  and is {NM} "
+                   f"for {', '.join(f'`{k}`' for k in lost) or 'no kernel'}. No")
     if diagnostics:
         diagnostics = "\n\n" + diagnostics
         cause = ("This job does not say whether it comes from the device, from host work inside the timed window, or\n"
@@ -219,7 +457,7 @@ carries a `<!--M:ID-->` tag that names its row in `state/METRICS_INDEX.md`. Verd
   percentile crops whose thresholds come from a calibration batch that is not tested. The verdict is FAIL when the
   largest |t| of these tests reaches {d['t_threshold']}. dudect's second-order test is not implemented.
 - The code that ran is CuPy's nvrtc build of `kernels/*.cu` ({d['executed_by']}).
-- {d['caveat']}
+- {d['caveat']}{setup2}
 
 ## 4.O.2 Summary
 {table}
@@ -227,7 +465,7 @@ carries a `<!--M:ID-->` tag that names its row in `state/METRICS_INDEX.md`. Verd
 A verdict in bold differs from the verdict that was expected. The two controls are not targets: `control_leak` must
 FAIL (the planted `if (x) spin(1000)` kernel) and `control_null` must PASS (the same input in both classes).
 The SASS column counts conditional branches of the nvcc-built listing; the bitonic and write_epoch rows share the
-three comparator kernels. The kernels of write_epoch that have no listing in this job are not counted.
+three comparator kernels. The kernels of write_epoch that have no listing in this job are not counted.{ncu_col}
 
 ## 4.O.3 dudect findings
 {len(fails)} of the {n_series} target series FAIL at N = {n_full} per class:
@@ -266,17 +504,17 @@ the generator):
 - Limitation: the listing is the nvcc build. A listing of the nvrtc build that CuPy executes was
   {'saved' if nvrtc_ok else f'not obtained ({NM}: neither cuobjdump nor nvdisasm produced one on the runner)'}.
 
-## 4.O.5 Nsight Compute divergence
+{ncu_head}
 {len(ncu_measured)} of {len(ncu_ids)} metrics measured. Reason: {ncu['reason'] or 'none'}.
 `ncu --query-metrics` returned {len(ncu['branch_metrics_queried'])} branch metric names for the same reason. The
 branch-efficiency and divergent-branch metrics of the four profiled kernels are `{NM}` in the index
 ({issues['ncu']}); the raw tool output is `results/oblivious/ncu_profile_raw.txt`.
 
 ## 4.O.6 Limitations
-- One runner session on a shared GPU; no repeat on a second session or a second GPU model.
+{lim_one}
 - dudect can show a dependence, not its absence; N is {t('dudect', 'T-DUDECT-N-BITONIC-EQUAL')} per class.
 - {open_fails} ({issues['fail']}).
-- No dynamic divergence measurement ({issues['ncu']}); no listing of the executed nvrtc code ({issues['sass']}).
+{lim_ncu} listing of the executed nvrtc code ({issues['sass']}).
 - P3 is a claim about the kernels. The host code that issues the launches (Python) is not constant time and is
   not claimed to be: timing can be observed only on a live server, which the threat model excludes (ADR-023).
   A whole-call or per-stage series that FAILS with equal contents stays in the tables as measured.
@@ -607,11 +845,11 @@ Read by the rules written in {issue} before the job ran (a reading, not a proof)
     return section, rows
 
 
-def merge_notes(path: Path, section: str) -> None:
-    """Replace the M08 block of the notes, or append it; the rest of the file is left as it is."""
+def merge_notes(path: Path, section: str, begin: str = BEGIN, end: str = END) -> None:
+    """Replace the block between the two markers, or append it; the rest of the file is left as it is."""
     old = path.read_text(encoding="utf-8") if path.exists() else ""
-    if BEGIN in old and END in old:
-        new = old[:old.index(BEGIN)] + section.strip("\n") + old[old.index(END) + len(END):]
+    if begin in old and end in old:
+        new = old[:old.index(begin)] + section.strip("\n") + old[old.index(end) + len(end):]
     else:
         new = old.rstrip("\n") + ("\n\n" if old else "") + section.strip("\n") + "\n"
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -621,12 +859,19 @@ def merge_notes(path: Path, section: str) -> None:
 def generate(selftest: str | Path, dudect: str | Path, sass: str | Path, ncu: str | Path, out: str | Path,
              explained: str | Path, issues: dict[str, str], notes: str | Path | None = None,
              root: str | Path = ".", kernel_window: dict[str, Any] | None = None,
-             diagnostics: dict[str, Any] | None = None) -> dict[str, Any]:
+             diagnostics: dict[str, Any] | None = None, ncu_second: dict[str, Any] | None = None,
+             analysis: str | Path | None = None) -> dict[str, Any]:
     root, out = Path(root), Path(out)
     runs = {"selftest": load_run(selftest), "dudect": load_run(dudect), "sass": load_run(sass), "ncu": load_run(ncu)}
     prov = check_inputs(runs, root)
     branches = check_explanations(runs["sass"], json.loads(Path(explained).read_text(encoding="utf-8")))
     rows = summary_rows(runs, branches)
+    second = None
+    if ncu_second:
+        second = second_platform(load_run(ncu_second["run"]), prov, runs["sass"], root,
+                                 ncu_second.get("issue", "no issue"))
+    elif analysis:
+        raise ReportError("--analysis needs --ncu-second (the analysis block is about that measurement)")
     missing = [x for x in TARGETS if x not in {r["target"] for r in rows if r["run"] == "dudect"}]
     if missing:
         raise ReportError(f"targets without a verdict at full N: {', '.join(missing)}")
@@ -683,6 +928,21 @@ def generate(selftest: str | Path, dudect: str | Path, sass: str | Path, ncu: st
     write_csv(out / "ncu_divergence.csv", ["metric_id", "value", "unit", "stat", "note", "run_dir"],
               [[m["id"], m["value"], m["unit"], m["stat"], m["note"], run_dirs["ncu"]]
                for m in runs["ncu"]["summary"]["metrics"]])
+    second_files: list[str] = []
+    if second:  # a file of its own: the rows of the first runner above are not touched
+        c = second["control"]
+        name = f"ncu_divergence_{second['runner']}.csv"
+        write_csv(out / name,
+                  ["runner", "gpu", "kernel", "role", "launches", "uniform_branch_targets", "divergent_branch_targets",
+                   "reported", "state", "basis", "sass_branch_instructions", "metric_id", "run_dir"],
+                  [[second["runner"], second["gpu"], c["kernel"], "positive_control", c["launches"], c["uniform"],
+                    c["divergent"], _count(c["divergent"]), "control_ok" if c["ok"] else "control_failed",
+                    "planted branch on secret data: must diverge", "", "", second["run_dir"]]]
+                  + [[second["runner"], second["gpu"], r["kernel"], "audited", r["launches"], r["uniform"],
+                      r["divergent"], r["reported"], r["state"], r["basis"],
+                      "" if r["sass_branches"] is None else r["sass_branches"], r["metric"], second["run_dir"]]
+                     for r in second["rows"]])
+        second_files = [name]
 
     extra, kw_files, kw_dirs = "", [], {}
     if kernel_window:
@@ -714,19 +974,28 @@ def generate(selftest: str | Path, dudect: str | Path, sass: str | Path, ncu: st
                "fails": fails, "sass_conditional_branches": len(branches), "sass_explained_public": len(branches),
                "ncu_reason": runs["ncu"]["summary"]["reason"], "issues": issues,
                "files": sorted(set(copied) | {"summary_table.csv", "sass_branches_explained.csv",
-                                              "ncu_divergence.csv"} | set(kw_files)
+                                              "ncu_divergence.csv"} | set(kw_files) | set(second_files)
                                | ({"staging_diagnostics.csv"} if diag_rows else set())),
                "generated_by": "python -m vcloak.bench.report_oblivious"}
     if kw_dirs:
         summary["kernel_window"] = kw_dirs
+    if second:
+        summary["ncu_second"] = {
+            "run_dir": second["run_dir"], "runner": second["runner"], "gpu": second["gpu"], "issue": second["issue"],
+            "session_id": second["session_id"], "job_id": second["job_id"], "control_ok": second["control"]["ok"],
+            "control_kernel": second["control"]["kernel"], "claim": _second_claim(second),
+            "kernels": [{"kernel": r["kernel"], "metric_id": r["metric"], "reported": r["reported"],
+                         "state": r["state"], "basis": r["basis"]} for r in second["rows"]]}
     if diag_dirs:
         summary["diagnostics"] = diag_dirs
         summary["diagnostic_fails"] = [f"{r['target']}:{r['series']}:s{r['seed']}" for r in diag_rows
                                        if r["job"] == "diagnostic" and r["verdict"] == "FAIL"]
     (out / "oblivious_summary.json").write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
     if notes:
-        section = build_section(runs, prov, root, rows, branches, issues, diag_text.strip("\n"))
+        section = build_section(runs, prov, root, rows, branches, issues, diag_text.strip("\n"), second)
         merge_notes(Path(notes), section.replace(END, extra.strip("\n") + "\n" + END) if extra else section)
+    if analysis and second:
+        merge_notes(Path(analysis), analysis_section(second, prov, issues), ANALYSIS_BEGIN, ANALYSIS_END)
     return summary
 
 
@@ -747,6 +1016,9 @@ def main(argv: list[str] | None = None) -> int:
                     help="record the kernel-window series as NOT_MEASURED under this issue (a decision, never a FAIL)")
     ap.add_argument("--diagnostics", nargs="*", default=[], help="full-N run dirs of the staging diagnostics job")
     ap.add_argument("--issue-diagnostics", default="no issue")
+    ap.add_argument("--ncu-second", default=None, help="ncu run dir of another runner (ADR-025): its own table")
+    ap.add_argument("--issue-ncu-second", default="no issue")
+    ap.add_argument("--analysis", default=None, help="merge the interpretation of --ncu-second into this file")
     a = ap.parse_args(argv)
     issues = {"fail": a.issue_fail, "ncu": a.issue_ncu, "sass": a.issue_sass}
     kw = None
@@ -757,8 +1029,9 @@ def main(argv: list[str] | None = None) -> int:
               "issue": a.issue_kernel_window, "withdrawn": a.kernel_window_not_measured}
     try:
         diag = {"seeds": a.diagnostics, "issue": a.issue_diagnostics} if a.diagnostics else None
+        second = {"run": a.ncu_second, "issue": a.issue_ncu_second} if a.ncu_second else None
         s = generate(a.selftest, a.dudect, a.sass, a.ncu, a.out, a.explained, issues, a.notes, kernel_window=kw,
-                     diagnostics=diag)
+                     diagnostics=diag, ncu_second=second, analysis=a.analysis)
     except ReportError as e:
         print(f"report_oblivious: {NM} - {e}")
         return 1
@@ -770,6 +1043,9 @@ def main(argv: list[str] | None = None) -> int:
               f"{len(s['diagnostic_fails'])} series FAIL (kept)")
     print(f"  SASS conditional branches explained {s['sass_explained_public']}/{s['sass_conditional_branches']}"
           f"   ncu: {s['ncu_reason'] or 'measured'}")
+    if "ncu_second" in s:
+        print(f"  ncu on runner {s['ncu_second']['runner']} ({s['ncu_second']['issue']}): " + ", ".join(
+            f"{k['kernel']} {k['reported']}" for k in s["ncu_second"]["kernels"]))
     return 0
 
 

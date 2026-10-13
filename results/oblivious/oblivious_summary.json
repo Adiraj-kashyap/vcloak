@@ -49,6 +49,7 @@
     "dudect_write_epoch_call_ms.png",
     "kernel_window.csv",
     "ncu_divergence.csv",
+    "ncu_divergence_pc-rtx3050laptopgpu.csv",
     "ncu_profile_raw.txt",
     "ncu_query_metrics.txt",
     "sass_aead_open.txt",
@@ -77,6 +78,47 @@
       "runs/20261012-145303_M08_dudect_i25_s10",
       "runs/20261012-155223_M08_dudect_i25_s11",
       "runs/20261012-165055_M08_dudect_i25_s12"
+    ]
+  },
+  "ncu_second": {
+    "run_dir": "runs/20261014-003929_M08_ncu",
+    "runner": "pc-rtx3050laptopgpu",
+    "gpu": "NVIDIA GeForce RTX 3050 Laptop GPU",
+    "issue": "ISSUE-48",
+    "session_id": "20261014-003925",
+    "job_id": "20261013-224820_M08_ncu",
+    "control_ok": true,
+    "control_kernel": "planted_leak",
+    "claim": "An instrument that read 128 divergent branch targets on a planted-leak control reported 0 on 3 of the 4 audited kernels (runner `pc-rtx3050laptopgpu`, NVIDIA GeForce RTX 3050 Laptop GPU).",
+    "kernels": [
+      {
+        "kernel": "bitonic_pairs_global",
+        "metric_id": "T-NCU-DIVERGENT-BITONIC-PAIRS-GLOBAL",
+        "reported": "NOT_MEASURED",
+        "state": "collected_nothing",
+        "basis": "the counter collected nothing: 0 uniform and 0 divergent targets, although the sm_75 listing of this kernel has 2 branch instructions (1 conditional)"
+      },
+      {
+        "kernel": "bitonic_shared",
+        "metric_id": "T-NCU-DIVERGENT-BITONIC-SHARED",
+        "reported": "0",
+        "state": "measured",
+        "basis": "4480 uniform branch targets counted beside it"
+      },
+      {
+        "kernel": "bitonic_shared_full",
+        "metric_id": "T-NCU-DIVERGENT-BITONIC-SHARED-FULL",
+        "reported": "0",
+        "state": "measured",
+        "basis": "4096 uniform branch targets counted beside it"
+      },
+      {
+        "kernel": "aead_open_seq",
+        "metric_id": "T-NCU-DIVERGENT-AEAD-OPEN-SEQ",
+        "reported": "0",
+        "state": "measured",
+        "basis": "2560 uniform branch targets counted beside it"
+      }
     ]
   },
   "diagnostics": {

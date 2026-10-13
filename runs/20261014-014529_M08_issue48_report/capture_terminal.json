@@ -1,0 +1,23 @@
+{
+ "module": "M08",
+ "run": "runs/20261014-014529_M08_issue48_report (git 0d77a1f, dirty)",
+ "date": "2026-10-14",
+ "views": {},
+ "checks": {},
+ "ok": true,
+ "superseded": [],
+ "index_rows": [
+  "TERM-M08-S48-SASS-CROSSCHECK",
+  "TERM-M08-S48-REPORT-OBLIVIOUS",
+  "TERM-M08-S48-PYTEST-ALL",
+  "TERM-M08-S48-CHECK-METRICS",
+  "TERM-M08-S48-EXPORT-CHECK"
+ ],
+ "files_written": [
+  "terminal/M08_S48_sass_crosscheck.txt",
+  "terminal/M08_S48_report_oblivious.txt",
+  "terminal/M08_S48_pytest_all.txt",
+  "terminal/M08_S48_check_metrics.txt",
+  "terminal/M08_S48_export_check.txt"
+ ]
+}

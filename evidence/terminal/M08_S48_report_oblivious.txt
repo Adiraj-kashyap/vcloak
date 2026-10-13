@@ -1,0 +1,5 @@
+report_oblivious: session 20261012-031230  31 files -> results/oblivious
+  controls OK   dudect FAIL: write_epoch:call_ms, aead_tag:ms, aead_conv:ms
+  diagnostics (ISSUE-17): 2 seeds, 18 series FAIL (kept)
+  SASS conditional branches explained 16/16   ncu: the driver refused the GPU performance counters to this user (ERR_NVGPUCTRPERM)
+  ncu on runner pc-rtx3050laptopgpu (ISSUE-48): bitonic_pairs_global NOT_MEASURED, bitonic_shared 0, bitonic_shared_full 0, aead_open_seq 0
