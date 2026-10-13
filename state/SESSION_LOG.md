@@ -897,6 +897,6 @@
 - Not verified: anything on a CUDA device; the read path (S2); the attack (S3); that the PostgreSQL dump order is
   the physical order the attack needs. The same events as the seed oracle are expected from the same draws (a unit
   test compares against a copy of its loop); the oracle itself was not run this session.
-- Commit: PENDING
+- Commit: 63a41b5
 - Next: M14 S2 (E0 restoration) ; human action: none required. Optional: decide ISSUE-36; say whether an M14 GPU
   job is allowed (ISSUE-38)
