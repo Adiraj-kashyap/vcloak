@@ -1,0 +1,14 @@
+A1 reading of results/paper/macro_map.json (generated; every line is counted from the map and the manifests)
+counts by kind: {'metric': 163, 'param': 64, 'derived': 37, 'field': 75, 'pending': 33}
+run-file values without an index row of their own: 50; not from an ingested run: 0
+   7 dudect_table.tex runs/20261012-031331_M08_dudect 20261012-041010_M08 cupy kaggle
+   1 macros.tex runs/20261013-054644_M14_security_s1 20261013-105517_M14 cupy colab
+   1 macros.tex runs/20261013-054727_M14_security_e0e1 20261013-105517_M14 cupy colab
+   7 macros.tex runs/20261013-055417_M14_security_e2 20261013-105517_M14 cupy colab
+   24 tau_hist.dat runs/20261013-055417_M14_security_e2 20261013-105517_M14 cupy colab
+   10 trace_table.tex runs/20261013-055444_M14_security_e3 20261013-105517_M14 cupy colab
+macros among them: resMeanPerEpoch resRestoreN resTVD resChiIdeal resTVDIdeal resTauSigma resTauBand resTauMean resTauMaxAbs
+run-file values under an index row of the same run: 26
+   26 session_table.tex SEC-E5-PASS runs/20261012-160139_M11_session_matrix
+macros.tex by kind: {'metric': 31, 'param': 7, 'derived': 1, 'field': 8, 'pending': 1}
+A1 (amended 2026-10-13): PASS

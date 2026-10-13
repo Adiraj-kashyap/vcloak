@@ -45,8 +45,8 @@ LAYOUTS = (("BASELINE", "Conv", "Arrival order (no shuffle)"), ("EPOCH", "Epoch"
 SIZES = range(10, 23)
 ADRS = ("ADR-003", "ADR-005", "ADR-006", "ADR-007")
 # Figures that describe code or series which the notes mark as stale or withdrawn are not handed to the paper.
-FIGURES_HELD = {"fig_write_epoch_host_device": "ISSUE-12: measured before the row-id change; rerun pending",
-                "fig_write_epoch_device_stages": "ISSUE-12: measured before the row-id change; rerun pending"}
+HELD_ISSUE12 = "ISSUE-12: measured before the row-id change; the rerun on the same platform is UNSTABLE"
+FIGURES_HELD = {"fig_write_epoch_host_device": HELD_ISSUE12, "fig_write_epoch_device_stages": HELD_ISSUE12}
 
 
 class ExportError(Exception):
@@ -127,10 +127,27 @@ class Exporter:
         return V(fmt(row["value"]), raw=float(row["value"]), src={**src, "unit": row["unit"], "backend": row["backend"],
                                                                  "runner": row["runner"]})
 
-    def field(self, run: str, file: str, path: str, fmt: Callable[[Any], str], kind: str = "field") -> V:
-        src = {"kind": kind, "metric_ids": [], "run_dir": self.runs[run], "file": file, "path": path}
+    def ingested(self, run_dir: str) -> str | None:
+        """The job id of an ingested device run, or None (a local run, or a run of another backend)."""
+        man = self._load(Path(run_dir) / "manifest.json")
+        job = (man.get("gpu_job") or {}).get("job_id")
+        return job if job and man.get("env", {}).get("backend") == "cupy" else None
+
+    def field(self, run: str, file: str, path: str, fmt: Callable[[Any], str], kind: str = "field",
+              mid: str | None = None) -> V:
+        """A value read from a file of a run. Audit A1 (amended): a measured value without an index row of its own
+        must come from an ingested run; `mid` names the index row of the same run that a breakdown belongs to."""
+        src = {"kind": kind, "metric_ids": [mid] if mid else [], "run_dir": self.runs[run], "file": file, "path": path}
         if self.quick[run]:
             return V(PENDING, ok=False, src={**src, "kind": "pending", "reason": "quick run (audit A2)"})
+        if mid and (mid, self.runs[run]) not in self.index:
+            raise ExportError(f"{file}:{path}: no index row {mid} for {self.runs[run]} (audit A1)")
+        if kind == "field" and not mid:
+            job = self.ingested(self.runs[run])
+            if job is None:
+                raise ExportError(f"{file}:{path}: a value without a METRIC-ID from {self.runs[run]}, "
+                                  "which is not an ingested run (audit A1)")
+            src["gpu_job"] = job
         cur = self._load(Path(self.runs[run]) / file)
         for part in path.split("."):
             cur = cur[int(part)] if isinstance(cur, list) else cur[part]
@@ -254,11 +271,13 @@ class Exporter:
         srows = []
         for i, r in enumerate(e5):
             def obs(_x: Any, r: dict[str, Any] = r) -> str:
-                return tex_escape(r["observed"] + (f" ({r['failed_check']})" if r["failed_check"] else ""))
+                check = r["failed_check"]  # e5_matrix.json already names it inside `observed`
+                seen = not check or f"({check})" in r["observed"]
+                return tex_escape(r["observed"] + ("" if seen else f" ({check})"))
 
             srows.append([f("session", "e5_matrix.json", f"rows.{i}.scenario", tex_escape, "param"),
                           f("session", "e5_matrix.json", f"rows.{i}.expected", tex_escape, "param"),
-                          f("session", "e5_matrix.json", f"rows.{i}.observed", obs)])
+                          f("session", "e5_matrix.json", f"rows.{i}.observed", obs, mid="SEC-E5-PASS")])
         self._table("session_table.tex", "sessionrows", srows)
 
         wl = ["W tauglobal tauwithin turnacc samefrac"]
@@ -326,10 +345,11 @@ class Exporter:
         held = "M15 (end-to-end performance) has not run"
         self._table("e2e_table.tex", "etoerows", [[self.pending(held) for _ in range(4)]])
         self.note("pipeline_breakdown.dat", "all rows",
-                  self.pending("ISSUE-12: the pipeline was measured before the row-id change; rerun pending"))
+                  self.pending("ISSUE-12: the pipeline was measured before the row-id change; "
+                               "the rerun on the same platform is UNSTABLE"))
         self.files["results/paper/pipeline_breakdown.dat"] = (
             "# held back: the write_epoch stage breakdown was measured before the row-id change (ISSUE-12);\n"
-            "# the rerun on the platform of that measurement is pending. No row is exported until it is ingested.\n"
+            "# the rerun on the platform of that measurement is UNSTABLE at 1024 to 65536 slots. No row is exported.\n"
             "slots h2d tags sort compact d2h host\n")
 
     # ------------------------------------------------------------------ figures and the two lists
@@ -420,7 +440,8 @@ class Exporter:
             "  (ISSUE-43); the paper must state the sizing limit beside `resMaxOcc`.",
             "- Real-time claim for write_epoch: no number is exported (ISSUE-12). Do not state "
             "that a full epoch of 2^16",
-            "  slots fits or misses EPOCH_MS until the rerun is ingested.",
+            "  slots fits or misses EPOCH_MS: the rerun is ingested and UNSTABLE at that size (unmeasured under valid",
+            "  conditions).",
             "- The oracle comparison of M14 (ISSUE-41): do not write that the GPU matches the oracle.",
             "- The `Conv` macros (`resTurnConv`, `resSameConv`, `resTauGConv`, "
             "`resTauConvGlobal`, `resTauConvWithin`) are",
@@ -445,6 +466,53 @@ class Exporter:
                  + (", ".join(f"`{n}`" for n, v in macros if interim.get(n) == v.text) or "none") + ".", ""]
         self.files["results/deck_numbers.md"] = "\n".join(deck)
 
+    def traceability(self) -> None:
+        """report/TRACEABILITY.md: every exported value that has no index row of its own, with its full trace."""
+        def parts(e: dict[str, Any]) -> list[dict[str, Any]]:
+            return [p for p in [e, *e.get("from", [])] if p["kind"] == "field"]
+
+        def row(e: dict[str, Any], p: dict[str, Any]) -> str:
+            name = e["name"].replace("|", "/")
+            how = f" ({e['how']}; the other part is index row {', '.join(e['metric_ids'])})" if e is not p else ""
+            return (f"| `{name}`{how} | {e['value']} | {p['run_dir']} | {p.get('gpu_job', '-')} | {p['file']} | "
+                    f"`{p['path']}` |")
+
+        head = ["| Value | Exported as | Run dir | Ingested job | File | JSON path |", "|---|---|---|---|---|---|"]
+        loose = [(e, p) for e in self.entries for p in parts(e) if not p["metric_ids"]]
+        under = [(e, p) for e in self.entries for p in parts(e) if p["metric_ids"]]
+        macros = [(e, p) for e, p in loose if e["target"] == "macros.tex"]
+        others = [(e, p) for e, p in loose if e["target"] != "macros.tex"]
+        out = ["# TRACEABILITY: exported values without a METRIC-ID of their own", "",
+               "Generated by `python scripts/export_results.py` from results/paper/macro_map.json. Do not edit by "
+               "hand.", "",
+               "Audit item A1 of M16, as amended on 2026-10-13 (decision of the owner, ISSUE-46): a value is traceable",
+               "when it is an index row of state/METRICS_INDEX.md, or when it is read from the run dir, file and JSON",
+               "path of an INGESTED run (a device run that came back in a result bundle: backend cupy, with the job id",
+               "in its manifest). A value with no run behind it, or read from a run that is not ingested and has no",
+               "index row, still fails A1: the exporter stops with an error instead of writing it.",
+               "", "To follow a value: open `<run dir>/<file>`, walk the JSON path (dots separate keys and list",
+               "positions), and compare with the exported text (the exporter only formats: rounding, no arithmetic,",
+               "unless the row says how it is derived). `<run dir>/manifest.json` names the job, the commit and the "
+               "runner.", "",
+               f"## 1. Macros of results/paper/macros.tex ({len(macros)})", "", *head,
+               *[row(e, p) for e, p in macros], ""]
+        out += [f"## 2. Tables and data files ({len(others)} values)", ""]
+        for target in sorted({e["target"] for e, _ in others}):
+            sel = [(e, p) for e, p in others if e["target"] == target]
+            out += [f"### results/paper/{target} ({len(sel)})", "", *head, *[row(e, p) for e, p in sel], ""]
+        out += [f"## 3. Breakdowns of an index row ({len(under)} values)", "",
+                "These values are the single cases behind one index row of the same run, and are covered by that",
+                "METRIC-ID. The backend column is that of the index row: `numpy/local` is a functional run on the",
+                "laptop (no device, no timing), which the amended rule does not need to cover.", "",
+                "| Value | Exported as | METRIC-ID (index value, backend/runner) | Run dir | File | JSON path |",
+                "|---|---|---|---|---|---|"]
+        for e, p in under:
+            r = self.index[(p["metric_ids"][0], p["run_dir"])]
+            out.append(f"| {e['target']} `{e['name']}` | {e['value']} | {r['id']} ({r['value']}, {r['backend']}/"
+                       f"{r['runner']}) | {p['run_dir']} | {p['file']} | `{p['path']}` |")
+        out.append("")
+        self.files["report/TRACEABILITY.md"] = "\n".join(out)
+
     # ------------------------------------------------------------------ run
     def build(self) -> None:
         macros = self.write_macros()
@@ -452,6 +520,7 @@ class Exporter:
         self.side_channel()
         self.figures()
         self.lists(macros)
+        self.traceability()
         counts: dict[str, int] = {}
         for e in self.entries:
             counts[e["kind"]] = counts.get(e["kind"], 0) + 1

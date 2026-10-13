@@ -1,0 +1,27 @@
+{
+ "module": "M16",
+ "run": "runs/20261013-174910_M07_issue12k_ingest_checks (git 148c1fc, dirty)",
+ "date": "2026-10-13",
+ "views": {},
+ "checks": {},
+ "ok": true,
+ "superseded": [],
+ "index_rows": [
+  "TERM-M16-S45-GATES",
+  "TERM-M16-S45-JOB-LOG-04-PIPELINE",
+  "TERM-M16-S45-JOB-LOG-02-CPU-INFO",
+  "TERM-M16-S45-JOB-LOG-01-NVIDIA-SMI",
+  "TERM-M16-S45-A1-TRACEABILITY",
+  "TERM-M16-S45-EXPORT-CHECK",
+  "TERM-M16-S45-PYTEST-ALL"
+ ],
+ "files_written": [
+  "terminal/M16_S45_gates.txt",
+  "terminal/M16_S45_job_log_04_pipeline.txt",
+  "terminal/M16_S45_job_log_02_cpu_info.txt",
+  "terminal/M16_S45_job_log_01_nvidia_smi.txt",
+  "terminal/M16_S45_a1_traceability.txt",
+  "terminal/M16_S45_export_check.txt",
+  "terminal/M16_S45_pytest_all.txt"
+ ]
+}

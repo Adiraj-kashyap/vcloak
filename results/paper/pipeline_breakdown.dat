@@ -1,3 +1,3 @@
 # held back: the write_epoch stage breakdown was measured before the row-id change (ISSUE-12);
-# the rerun on the platform of that measurement is pending. No row is exported until it is ingested.
+# the rerun on the platform of that measurement is UNSTABLE at 1024 to 65536 slots. No row is exported.
 slots h2d tags sort compact d2h host

@@ -1,0 +1,16 @@
+run dir     C:\Users\HP\AppData\Local\Temp\claude\d--PJT-vcloak\130f3802-c085-4adc-b62e-a183571ab67d\scratchpad\runs\20261013-175238_M07_pipeline_quick
+backend     numpy   timer time.perf_counter (numpy simulator: not a performance result)   calls 30
+write_epoch      64  oracle_mismatches=0
+write_epoch    1024  oracle_mismatches=0
+write_epoch    4096  oracle_mismatches=0
+write_epoch   16384  oracle_mismatches=0
+write_epoch   65536  oracle_mismatches=0
+read_window      64  oracle_mismatches=0
+read_window     128  oracle_mismatches=0
+read_window     256  oracle_mismatches=0
+read_window     512  oracle_mismatches=0
+read_window    1024  oracle_mismatches=0
+read_window    2048  oracle_mismatches=0
+read_window    4096  oracle_mismatches=0
+status      NOT_MEASURED
+exit 0

@@ -87,3 +87,41 @@ def test_tex_check_catches_a_broken_snippet(built) -> None:
 def test_files_on_disk_are_what_the_exporter_writes(built) -> None:
     _, ex = built
     assert ex.write(check=True) == []
+
+
+def test_a_value_without_an_index_row_comes_from_an_ingested_run(built) -> None:
+    """Audit A1 as amended (ISSUE-46): run dir + file + JSON path counts only for an ingested device run."""
+    _, ex = built
+    loose = [p for e in ex.entries for p in [e, *e.get("from", [])] if p["kind"] == "field" and not p["metric_ids"]]
+    assert loose
+    for p in loose:
+        man = json.loads((ROOT / p["run_dir"] / "manifest.json").read_text(encoding="utf-8"))
+        assert man["env"]["backend"] == "cupy" and man["gpu_job"]["job_id"] == p["gpu_job"], p
+
+
+def test_a_local_run_file_value_without_an_index_row_is_refused(built) -> None:
+    mod, ex = built
+    assert ex.ingested(ex.runs["session"]) is None  # the E5 matrix is a laptop run
+    with pytest.raises(mod.ExportError, match="not an ingested run"):
+        ex.field("session", "e5_matrix.json", "rows.0.observed", str)
+    with pytest.raises(mod.ExportError, match="no index row"):
+        ex.field("session", "e5_matrix.json", "rows.0.observed", str, mid="SEC-NO-SUCH-ROW")
+    assert ex.field("session", "e5_matrix.json", "rows.0.observed", str, mid="SEC-E5-PASS").ok
+
+
+def test_the_traceability_file_lists_every_macro_without_an_index_row(built) -> None:
+    _, ex = built
+    text = ex.files["report/TRACEABILITY.md"]
+    loose = [e for e in ex.entries if e["target"] == "macros.tex"
+             and any(p["kind"] == "field" and not p["metric_ids"] for p in [e, *e.get("from", [])])]
+    assert len(loose) == 9
+    for e in loose:
+        line = next(ln for ln in text.splitlines() if ln.startswith(f"| `{e['name']}`"))
+        for p in [e, *e.get("from", [])]:
+            if p["kind"] == "field":
+                assert p["run_dir"] in line and p["file"] in line and f"`{p['path']}`" in line and p["gpu_job"] in line
+
+
+def test_the_session_table_names_a_failed_check_once(built) -> None:
+    _, ex = built
+    assert not re.search(r"\(([a-z\_]+)\) \(\1\)", ex.files["results/paper/session_table.tex"])

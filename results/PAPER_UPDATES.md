@@ -29,7 +29,7 @@ Device results: runner session 20261013-054610 (colab, Tesla T4, 2 vCPU), job 20
 - e2e_table.tex: M15 (end-to-end performance) has not run
 - gpu_kernels_table.tex: UNSTABLE
 - macros.tex: ADR-003: the server profile is ChaCha20/Poly1305; no AES time exists in this build
-- pipeline_breakdown.dat: ISSUE-12: the pipeline was measured before the row-id change; rerun pending
+- pipeline_breakdown.dat: ISSUE-12: the pipeline was measured before the row-id change; the rerun on the same platform is UNSTABLE
 - sidechannel_table.tex: NOT_MEASURED
 - sidechannel_table.tex: NOT_MEASURED: the ncu job has no series for this kernel
 - throughput_table.tex: UNSTABLE
@@ -94,7 +94,8 @@ Device results: runner session 20261013-054610 (colab, Tesla T4, 2 vCPU), job 20
 - Occupancy: the peak in the macros is the W = 60 layout. Larger windows and populations exceed CAND_K
   (ISSUE-43); the paper must state the sizing limit beside `resMaxOcc`.
 - Real-time claim for write_epoch: no number is exported (ISSUE-12). Do not state that a full epoch of 2^16
-  slots fits or misses EPOCH_MS until the rerun is ingested.
+  slots fits or misses EPOCH_MS: the rerun is ingested and UNSTABLE at that size (unmeasured under valid
+  conditions).
 - The oracle comparison of M14 (ISSUE-41): do not write that the GPU matches the oracle.
 - The `Conv` macros (`resTurnConv`, `resSameConv`, `resTauGConv`, `resTauConvGlobal`, `resTauConvWithin`) are
   exported from the unshuffled baseline of the device run, whose visible round is the 60 s window. The interim

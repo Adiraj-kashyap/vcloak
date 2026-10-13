@@ -1,0 +1,10 @@
+job 20261013-173239_M07_issue12k  module M07_issue12k  quick False
+runner kaggle  gpu Tesla T4  driver 580.178.04  cupy 14.0.1  session 20261013-121357
+  [1] nvidia_smi: exit 0 ok
+  [2] cpu_info: exit 0 ok
+  [3] pytest_engine_regression: exit 0 ok
+  [4] pipeline: exit 0 ok
+  [5] nvidia_smi_after: exit 0 ok
+overall exit 0
+ingested 1 run dir(s): 20261013-121512_M07_pipeline
+indexed 60 metric(s); bundle moved to gpujobs/done/results_20261013-173239_M07_issue12k.zip

@@ -83,7 +83,8 @@
      "metric_ids": [],
      "run_dir": "runs/20261013-054644_M14_security_s1",
      "file": "s1_traffic.json",
-     "path": "epochs_passed"
+     "path": "epochs_passed",
+     "gpu_job": "20261013-105517_M14"
     }
    ]
   },
@@ -160,7 +161,8 @@
    "metric_ids": [],
    "run_dir": "runs/20261013-054727_M14_security_e0e1",
    "file": "e0_restoration.json",
-   "path": "conversations_checked"
+   "path": "conversations_checked",
+   "gpu_job": "20261013-105517_M14"
   },
   {
    "target": "macros.tex",
@@ -206,7 +208,8 @@
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
    "file": "e2_uniformity.json",
-   "path": "chi2.mean_tvd"
+   "path": "chi2.mean_tvd",
+   "gpu_job": "20261013-105517_M14"
   },
   {
    "target": "macros.tex",
@@ -216,7 +219,8 @@
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
    "file": "e2_uniformity.json",
-   "path": "chi2.ideal_sampler.chi2_first"
+   "path": "chi2.ideal_sampler.chi2_first",
+   "gpu_job": "20261013-105517_M14"
   },
   {
    "target": "macros.tex",
@@ -239,7 +243,8 @@
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
    "file": "e2_uniformity.json",
-   "path": "chi2.ideal_sampler.mean_tvd_first"
+   "path": "chi2.ideal_sampler.mean_tvd_first",
+   "gpu_job": "20261013-105517_M14"
   },
   {
    "target": "macros.tex",
@@ -279,7 +284,8 @@
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
    "file": "e2_uniformity.json",
-   "path": "tau_band.sigma_theory"
+   "path": "tau_band.sigma_theory",
+   "gpu_job": "20261013-105517_M14"
   },
   {
    "target": "macros.tex",
@@ -289,7 +295,8 @@
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
    "file": "e2_uniformity.json",
-   "path": "tau_band.band_3sigma"
+   "path": "tau_band.band_3sigma",
+   "gpu_job": "20261013-105517_M14"
   },
   {
    "target": "macros.tex",
@@ -299,7 +306,8 @@
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
    "file": "e2_uniformity.json",
-   "path": "tau_band.mean_tau"
+   "path": "tau_band.mean_tau",
+   "gpu_job": "20261013-105517_M14"
   },
   {
    "target": "macros.tex",
@@ -322,7 +330,8 @@
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
    "file": "e2_uniformity.json",
-   "path": "tau_band.max_abs_tau"
+   "path": "tau_band.max_abs_tau",
+   "gpu_job": "20261013-105517_M14"
   },
   {
    "target": "macros.tex",
@@ -945,7 +954,8 @@
    "metric_ids": [],
    "run_dir": "runs/20261013-055444_M14_security_e3",
    "file": "e3_trace.json",
-   "path": "sort.rows.0.device_trace_sha256"
+   "path": "sort.rows.0.device_trace_sha256",
+   "gpu_job": "20261013-105517_M14"
   },
   {
    "target": "trace_table.tex",
@@ -955,7 +965,8 @@
    "metric_ids": [],
    "run_dir": "runs/20261013-055444_M14_security_e3",
    "file": "e3_trace.json",
-   "path": "sort.rows.0.merge_sort_trace_sha256"
+   "path": "sort.rows.0.merge_sort_trace_sha256",
+   "gpu_job": "20261013-105517_M14"
   },
   {
    "target": "trace_table.tex",
@@ -975,7 +986,8 @@
    "metric_ids": [],
    "run_dir": "runs/20261013-055444_M14_security_e3",
    "file": "e3_trace.json",
-   "path": "sort.rows.1.device_trace_sha256"
+   "path": "sort.rows.1.device_trace_sha256",
+   "gpu_job": "20261013-105517_M14"
   },
   {
    "target": "trace_table.tex",
@@ -985,7 +997,8 @@
    "metric_ids": [],
    "run_dir": "runs/20261013-055444_M14_security_e3",
    "file": "e3_trace.json",
-   "path": "sort.rows.1.merge_sort_trace_sha256"
+   "path": "sort.rows.1.merge_sort_trace_sha256",
+   "gpu_job": "20261013-105517_M14"
   },
   {
    "target": "trace_table.tex",
@@ -1005,7 +1018,8 @@
    "metric_ids": [],
    "run_dir": "runs/20261013-055444_M14_security_e3",
    "file": "e3_trace.json",
-   "path": "sort.rows.2.device_trace_sha256"
+   "path": "sort.rows.2.device_trace_sha256",
+   "gpu_job": "20261013-105517_M14"
   },
   {
    "target": "trace_table.tex",
@@ -1015,7 +1029,8 @@
    "metric_ids": [],
    "run_dir": "runs/20261013-055444_M14_security_e3",
    "file": "e3_trace.json",
-   "path": "sort.rows.2.merge_sort_trace_sha256"
+   "path": "sort.rows.2.merge_sort_trace_sha256",
+   "gpu_job": "20261013-105517_M14"
   },
   {
    "target": "trace_table.tex",
@@ -1035,7 +1050,8 @@
    "metric_ids": [],
    "run_dir": "runs/20261013-055444_M14_security_e3",
    "file": "e3_trace.json",
-   "path": "sort.rows.3.device_trace_sha256"
+   "path": "sort.rows.3.device_trace_sha256",
+   "gpu_job": "20261013-105517_M14"
   },
   {
    "target": "trace_table.tex",
@@ -1045,7 +1061,8 @@
    "metric_ids": [],
    "run_dir": "runs/20261013-055444_M14_security_e3",
    "file": "e3_trace.json",
-   "path": "sort.rows.3.merge_sort_trace_sha256"
+   "path": "sort.rows.3.merge_sort_trace_sha256",
+   "gpu_job": "20261013-105517_M14"
   },
   {
    "target": "trace_table.tex",
@@ -1065,7 +1082,8 @@
    "metric_ids": [],
    "run_dir": "runs/20261013-055444_M14_security_e3",
    "file": "e3_trace.json",
-   "path": "sort.rows.4.device_trace_sha256"
+   "path": "sort.rows.4.device_trace_sha256",
+   "gpu_job": "20261013-105517_M14"
   },
   {
    "target": "trace_table.tex",
@@ -1075,7 +1093,8 @@
    "metric_ids": [],
    "run_dir": "runs/20261013-055444_M14_security_e3",
    "file": "e3_trace.json",
-   "path": "sort.rows.4.merge_sort_trace_sha256"
+   "path": "sort.rows.4.merge_sort_trace_sha256",
+   "gpu_job": "20261013-105517_M14"
   },
   {
    "target": "throughput.dat",
@@ -3094,7 +3113,9 @@
    "name": "\\sessionrows row 1 col 3",
    "value": "200",
    "kind": "field",
-   "metric_ids": [],
+   "metric_ids": [
+    "SEC-E5-PASS"
+   ],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
    "file": "e5_matrix.json",
    "path": "rows.0.observed"
@@ -3122,9 +3143,11 @@
   {
    "target": "session_table.tex",
    "name": "\\sessionrows row 2 col 3",
-   "value": "401 (jti) (jti)",
+   "value": "401 (jti)",
    "kind": "field",
-   "metric_ids": [],
+   "metric_ids": [
+    "SEC-E5-PASS"
+   ],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
    "file": "e5_matrix.json",
    "path": "rows.1.observed"
@@ -3152,9 +3175,11 @@
   {
    "target": "session_table.tex",
    "name": "\\sessionrows row 3 col 3",
-   "value": "401 (key\\_binding) (key\\_binding)",
+   "value": "401 (key\\_binding)",
    "kind": "field",
-   "metric_ids": [],
+   "metric_ids": [
+    "SEC-E5-PASS"
+   ],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
    "file": "e5_matrix.json",
    "path": "rows.2.observed"
@@ -3182,9 +3207,11 @@
   {
    "target": "session_table.tex",
    "name": "\\sessionrows row 4 col 3",
-   "value": "401 (htu) (htu)",
+   "value": "401 (htu)",
    "kind": "field",
-   "metric_ids": [],
+   "metric_ids": [
+    "SEC-E5-PASS"
+   ],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
    "file": "e5_matrix.json",
    "path": "rows.3.observed"
@@ -3212,9 +3239,11 @@
   {
    "target": "session_table.tex",
    "name": "\\sessionrows row 5 col 3",
-   "value": "401 (htm) (htm)",
+   "value": "401 (htm)",
    "kind": "field",
-   "metric_ids": [],
+   "metric_ids": [
+    "SEC-E5-PASS"
+   ],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
    "file": "e5_matrix.json",
    "path": "rows.4.observed"
@@ -3242,9 +3271,11 @@
   {
    "target": "session_table.tex",
    "name": "\\sessionrows row 6 col 3",
-   "value": "401 (iat) (iat)",
+   "value": "401 (iat)",
    "kind": "field",
-   "metric_ids": [],
+   "metric_ids": [
+    "SEC-E5-PASS"
+   ],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
    "file": "e5_matrix.json",
    "path": "rows.5.observed"
@@ -3272,9 +3303,11 @@
   {
    "target": "session_table.tex",
    "name": "\\sessionrows row 7 col 3",
-   "value": "401 (token\\_mac) (token\\_mac)",
+   "value": "401 (token\\_mac)",
    "kind": "field",
-   "metric_ids": [],
+   "metric_ids": [
+    "SEC-E5-PASS"
+   ],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
    "file": "e5_matrix.json",
    "path": "rows.6.observed"
@@ -3302,9 +3335,11 @@
   {
    "target": "session_table.tex",
    "name": "\\sessionrows row 8 col 3",
-   "value": "401 (ath) (ath)",
+   "value": "401 (ath)",
    "kind": "field",
-   "metric_ids": [],
+   "metric_ids": [
+    "SEC-E5-PASS"
+   ],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
    "file": "e5_matrix.json",
    "path": "rows.7.observed"
@@ -3332,9 +3367,11 @@
   {
    "target": "session_table.tex",
    "name": "\\sessionrows row 9 col 3",
-   "value": "401 (proof\\_format) (proof\\_format)",
+   "value": "401 (proof\\_format)",
    "kind": "field",
-   "metric_ids": [],
+   "metric_ids": [
+    "SEC-E5-PASS"
+   ],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
    "file": "e5_matrix.json",
    "path": "rows.8.observed"
@@ -3362,9 +3399,11 @@
   {
    "target": "session_table.tex",
    "name": "\\sessionrows row 10 col 3",
-   "value": "401 (signature) (signature)",
+   "value": "401 (signature)",
    "kind": "field",
-   "metric_ids": [],
+   "metric_ids": [
+    "SEC-E5-PASS"
+   ],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
    "file": "e5_matrix.json",
    "path": "rows.9.observed"
@@ -3392,9 +3431,11 @@
   {
    "target": "session_table.tex",
    "name": "\\sessionrows row 11 col 3",
-   "value": "401 (alg) (alg)",
+   "value": "401 (alg)",
    "kind": "field",
-   "metric_ids": [],
+   "metric_ids": [
+    "SEC-E5-PASS"
+   ],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
    "file": "e5_matrix.json",
    "path": "rows.10.observed"
@@ -3424,7 +3465,9 @@
    "name": "\\sessionrows row 12 col 3",
    "value": "open (ready)",
    "kind": "field",
-   "metric_ids": [],
+   "metric_ids": [
+    "SEC-E5-PASS"
+   ],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
    "file": "e5_matrix.json",
    "path": "rows.11.observed"
@@ -3452,9 +3495,11 @@
   {
    "target": "session_table.tex",
    "name": "\\sessionrows row 13 col 3",
-   "value": "close 4401 (ticket\\_unused) (ticket\\_unused)",
+   "value": "close 4401 (ticket\\_unused)",
    "kind": "field",
-   "metric_ids": [],
+   "metric_ids": [
+    "SEC-E5-PASS"
+   ],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
    "file": "e5_matrix.json",
    "path": "rows.12.observed"
@@ -3482,9 +3527,11 @@
   {
    "target": "session_table.tex",
    "name": "\\sessionrows row 14 col 3",
-   "value": "close 4401 (ticket\\_key) (ticket\\_key)",
+   "value": "close 4401 (ticket\\_key)",
    "kind": "field",
-   "metric_ids": [],
+   "metric_ids": [
+    "SEC-E5-PASS"
+   ],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
    "file": "e5_matrix.json",
    "path": "rows.13.observed"
@@ -3512,9 +3559,11 @@
   {
    "target": "session_table.tex",
    "name": "\\sessionrows row 15 col 3",
-   "value": "close 4401 (ticket\\_exp) (ticket\\_exp)",
+   "value": "close 4401 (ticket\\_exp)",
    "kind": "field",
-   "metric_ids": [],
+   "metric_ids": [
+    "SEC-E5-PASS"
+   ],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
    "file": "e5_matrix.json",
    "path": "rows.14.observed"
@@ -3542,9 +3591,11 @@
   {
    "target": "session_table.tex",
    "name": "\\sessionrows row 16 col 3",
-   "value": "401 (token\\_exp) (token\\_exp)",
+   "value": "401 (token\\_exp)",
    "kind": "field",
-   "metric_ids": [],
+   "metric_ids": [
+    "SEC-E5-PASS"
+   ],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
    "file": "e5_matrix.json",
    "path": "rows.15.observed"
@@ -3574,7 +3625,9 @@
    "name": "\\sessionrows row 17 col 3",
    "value": "200",
    "kind": "field",
-   "metric_ids": [],
+   "metric_ids": [
+    "SEC-E5-PASS"
+   ],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
    "file": "e5_matrix.json",
    "path": "rows.16.observed"
@@ -3602,9 +3655,11 @@
   {
    "target": "session_table.tex",
    "name": "\\sessionrows row 18 col 3",
-   "value": "401 (key\\_binding) (key\\_binding)",
+   "value": "401 (key\\_binding)",
    "kind": "field",
-   "metric_ids": [],
+   "metric_ids": [
+    "SEC-E5-PASS"
+   ],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
    "file": "e5_matrix.json",
    "path": "rows.17.observed"
@@ -3632,9 +3687,11 @@
   {
    "target": "session_table.tex",
    "name": "\\sessionrows row 19 col 3",
-   "value": "401 (reuse) (reuse)",
+   "value": "401 (reuse)",
    "kind": "field",
-   "metric_ids": [],
+   "metric_ids": [
+    "SEC-E5-PASS"
+   ],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
    "file": "e5_matrix.json",
    "path": "rows.18.observed"
@@ -3662,9 +3719,11 @@
   {
    "target": "session_table.tex",
    "name": "\\sessionrows row 20 col 3",
-   "value": "401 (family\\_revoked) (family\\_revoked)",
+   "value": "401 (family\\_revoked)",
    "kind": "field",
-   "metric_ids": [],
+   "metric_ids": [
+    "SEC-E5-PASS"
+   ],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
    "file": "e5_matrix.json",
    "path": "rows.19.observed"
@@ -3692,9 +3751,11 @@
   {
    "target": "session_table.tex",
    "name": "\\sessionrows row 21 col 3",
-   "value": "401 (token\\_revoked) (token\\_revoked)",
+   "value": "401 (token\\_revoked)",
    "kind": "field",
-   "metric_ids": [],
+   "metric_ids": [
+    "SEC-E5-PASS"
+   ],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
    "file": "e5_matrix.json",
    "path": "rows.20.observed"
@@ -3722,9 +3783,11 @@
   {
    "target": "session_table.tex",
    "name": "\\sessionrows row 22 col 3",
-   "value": "close 4001 (session\\_ended) (session\\_ended)",
+   "value": "close 4001 (session\\_ended)",
    "kind": "field",
-   "metric_ids": [],
+   "metric_ids": [
+    "SEC-E5-PASS"
+   ],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
    "file": "e5_matrix.json",
    "path": "rows.21.observed"
@@ -3752,9 +3815,11 @@
   {
    "target": "session_table.tex",
    "name": "\\sessionrows row 23 col 3",
-   "value": "401 (token\\_revoked) (token\\_revoked)",
+   "value": "401 (token\\_revoked)",
    "kind": "field",
-   "metric_ids": [],
+   "metric_ids": [
+    "SEC-E5-PASS"
+   ],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
    "file": "e5_matrix.json",
    "path": "rows.22.observed"
@@ -3782,9 +3847,11 @@
   {
    "target": "session_table.tex",
    "name": "\\sessionrows row 24 col 3",
-   "value": "429 (rate\\_limited) (rate\\_limited)",
+   "value": "429 (rate\\_limited)",
    "kind": "field",
-   "metric_ids": [],
+   "metric_ids": [
+    "SEC-E5-PASS"
+   ],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
    "file": "e5_matrix.json",
    "path": "rows.23.observed"
@@ -3812,9 +3879,11 @@
   {
    "target": "session_table.tex",
    "name": "\\sessionrows row 25 col 3",
-   "value": "429 (rate\\_limited) (rate\\_limited)",
+   "value": "429 (rate\\_limited)",
    "kind": "field",
-   "metric_ids": [],
+   "metric_ids": [
+    "SEC-E5-PASS"
+   ],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
    "file": "e5_matrix.json",
    "path": "rows.24.observed"
@@ -3844,7 +3913,9 @@
    "name": "\\sessionrows row 26 col 3",
    "value": "keys equal",
    "kind": "field",
-   "metric_ids": [],
+   "metric_ids": [
+    "SEC-E5-PASS"
+   ],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
    "file": "e5_matrix.json",
    "path": "rows.25.observed"
@@ -4065,7 +4136,8 @@
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
    "file": "e2_uniformity.json",
-   "path": "tau_band.histogram.counts.0"
+   "path": "tau_band.histogram.counts.0",
+   "gpu_job": "20261013-105517_M14"
   },
   {
    "target": "tau_hist.dat",
@@ -4075,7 +4147,8 @@
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
    "file": "e2_uniformity.json",
-   "path": "tau_band.histogram.counts.1"
+   "path": "tau_band.histogram.counts.1",
+   "gpu_job": "20261013-105517_M14"
   },
   {
    "target": "tau_hist.dat",
@@ -4085,7 +4158,8 @@
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
    "file": "e2_uniformity.json",
-   "path": "tau_band.histogram.counts.2"
+   "path": "tau_band.histogram.counts.2",
+   "gpu_job": "20261013-105517_M14"
   },
   {
    "target": "tau_hist.dat",
@@ -4095,7 +4169,8 @@
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
    "file": "e2_uniformity.json",
-   "path": "tau_band.histogram.counts.3"
+   "path": "tau_band.histogram.counts.3",
+   "gpu_job": "20261013-105517_M14"
   },
   {
    "target": "tau_hist.dat",
@@ -4105,7 +4180,8 @@
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
    "file": "e2_uniformity.json",
-   "path": "tau_band.histogram.counts.4"
+   "path": "tau_band.histogram.counts.4",
+   "gpu_job": "20261013-105517_M14"
   },
   {
    "target": "tau_hist.dat",
@@ -4115,7 +4191,8 @@
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
    "file": "e2_uniformity.json",
-   "path": "tau_band.histogram.counts.5"
+   "path": "tau_band.histogram.counts.5",
+   "gpu_job": "20261013-105517_M14"
   },
   {
    "target": "tau_hist.dat",
@@ -4125,7 +4202,8 @@
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
    "file": "e2_uniformity.json",
-   "path": "tau_band.histogram.counts.6"
+   "path": "tau_band.histogram.counts.6",
+   "gpu_job": "20261013-105517_M14"
   },
   {
    "target": "tau_hist.dat",
@@ -4135,7 +4213,8 @@
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
    "file": "e2_uniformity.json",
-   "path": "tau_band.histogram.counts.7"
+   "path": "tau_band.histogram.counts.7",
+   "gpu_job": "20261013-105517_M14"
   },
   {
    "target": "tau_hist.dat",
@@ -4145,7 +4224,8 @@
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
    "file": "e2_uniformity.json",
-   "path": "tau_band.histogram.counts.8"
+   "path": "tau_band.histogram.counts.8",
+   "gpu_job": "20261013-105517_M14"
   },
   {
    "target": "tau_hist.dat",
@@ -4155,7 +4235,8 @@
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
    "file": "e2_uniformity.json",
-   "path": "tau_band.histogram.counts.9"
+   "path": "tau_band.histogram.counts.9",
+   "gpu_job": "20261013-105517_M14"
   },
   {
    "target": "tau_hist.dat",
@@ -4165,7 +4246,8 @@
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
    "file": "e2_uniformity.json",
-   "path": "tau_band.histogram.counts.10"
+   "path": "tau_band.histogram.counts.10",
+   "gpu_job": "20261013-105517_M14"
   },
   {
    "target": "tau_hist.dat",
@@ -4175,7 +4257,8 @@
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
    "file": "e2_uniformity.json",
-   "path": "tau_band.histogram.counts.11"
+   "path": "tau_band.histogram.counts.11",
+   "gpu_job": "20261013-105517_M14"
   },
   {
    "target": "tau_hist.dat",
@@ -4185,7 +4268,8 @@
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
    "file": "e2_uniformity.json",
-   "path": "tau_band.histogram.counts.12"
+   "path": "tau_band.histogram.counts.12",
+   "gpu_job": "20261013-105517_M14"
   },
   {
    "target": "tau_hist.dat",
@@ -4195,7 +4279,8 @@
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
    "file": "e2_uniformity.json",
-   "path": "tau_band.histogram.counts.13"
+   "path": "tau_band.histogram.counts.13",
+   "gpu_job": "20261013-105517_M14"
   },
   {
    "target": "tau_hist.dat",
@@ -4205,7 +4290,8 @@
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
    "file": "e2_uniformity.json",
-   "path": "tau_band.histogram.counts.14"
+   "path": "tau_band.histogram.counts.14",
+   "gpu_job": "20261013-105517_M14"
   },
   {
    "target": "tau_hist.dat",
@@ -4215,7 +4301,8 @@
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
    "file": "e2_uniformity.json",
-   "path": "tau_band.histogram.counts.15"
+   "path": "tau_band.histogram.counts.15",
+   "gpu_job": "20261013-105517_M14"
   },
   {
    "target": "tau_hist.dat",
@@ -4225,7 +4312,8 @@
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
    "file": "e2_uniformity.json",
-   "path": "tau_band.histogram.counts.16"
+   "path": "tau_band.histogram.counts.16",
+   "gpu_job": "20261013-105517_M14"
   },
   {
    "target": "tau_hist.dat",
@@ -4235,7 +4323,8 @@
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
    "file": "e2_uniformity.json",
-   "path": "tau_band.histogram.counts.17"
+   "path": "tau_band.histogram.counts.17",
+   "gpu_job": "20261013-105517_M14"
   },
   {
    "target": "tau_hist.dat",
@@ -4245,7 +4334,8 @@
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
    "file": "e2_uniformity.json",
-   "path": "tau_band.histogram.counts.18"
+   "path": "tau_band.histogram.counts.18",
+   "gpu_job": "20261013-105517_M14"
   },
   {
    "target": "tau_hist.dat",
@@ -4255,7 +4345,8 @@
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
    "file": "e2_uniformity.json",
-   "path": "tau_band.histogram.counts.19"
+   "path": "tau_band.histogram.counts.19",
+   "gpu_job": "20261013-105517_M14"
   },
   {
    "target": "tau_hist.dat",
@@ -4265,7 +4356,8 @@
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
    "file": "e2_uniformity.json",
-   "path": "tau_band.histogram.counts.20"
+   "path": "tau_band.histogram.counts.20",
+   "gpu_job": "20261013-105517_M14"
   },
   {
    "target": "tau_hist.dat",
@@ -4275,7 +4367,8 @@
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
    "file": "e2_uniformity.json",
-   "path": "tau_band.histogram.counts.21"
+   "path": "tau_band.histogram.counts.21",
+   "gpu_job": "20261013-105517_M14"
   },
   {
    "target": "tau_hist.dat",
@@ -4285,7 +4378,8 @@
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
    "file": "e2_uniformity.json",
-   "path": "tau_band.histogram.counts.22"
+   "path": "tau_band.histogram.counts.22",
+   "gpu_job": "20261013-105517_M14"
   },
   {
    "target": "tau_hist.dat",
@@ -4295,7 +4389,8 @@
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
    "file": "e2_uniformity.json",
-   "path": "tau_band.histogram.counts.23"
+   "path": "tau_band.histogram.counts.23",
+   "gpu_job": "20261013-105517_M14"
   },
   {
    "target": "dudect_table.tex",
@@ -4331,7 +4426,8 @@
    "metric_ids": [],
    "run_dir": "runs/20261012-031331_M08_dudect",
    "file": "summary.json",
-   "path": "targets.0.series.ms.verdict"
+   "path": "targets.0.series.ms.verdict",
+   "gpu_job": "20261012-041010_M08"
   },
   {
    "target": "dudect_table.tex",
@@ -4367,7 +4463,8 @@
    "metric_ids": [],
    "run_dir": "runs/20261012-031331_M08_dudect",
    "file": "summary.json",
-   "path": "targets.1.series.ms.verdict"
+   "path": "targets.1.series.ms.verdict",
+   "gpu_job": "20261012-041010_M08"
   },
   {
    "target": "dudect_table.tex",
@@ -4403,7 +4500,8 @@
    "metric_ids": [],
    "run_dir": "runs/20261012-031331_M08_dudect",
    "file": "summary.json",
-   "path": "targets.2.series.ms.verdict"
+   "path": "targets.2.series.ms.verdict",
+   "gpu_job": "20261012-041010_M08"
   },
   {
    "target": "dudect_table.tex",
@@ -4439,7 +4537,8 @@
    "metric_ids": [],
    "run_dir": "runs/20261012-031331_M08_dudect",
    "file": "summary.json",
-   "path": "targets.3.series.device_ms.verdict"
+   "path": "targets.3.series.device_ms.verdict",
+   "gpu_job": "20261012-041010_M08"
   },
   {
    "target": "dudect_table.tex",
@@ -4475,7 +4574,8 @@
    "metric_ids": [],
    "run_dir": "runs/20261012-031331_M08_dudect",
    "file": "summary.json",
-   "path": "targets.3.series.call_ms.verdict"
+   "path": "targets.3.series.call_ms.verdict",
+   "gpu_job": "20261012-041010_M08"
   },
   {
    "target": "dudect_table.tex",
@@ -4511,7 +4611,8 @@
    "metric_ids": [],
    "run_dir": "runs/20261012-031331_M08_dudect",
    "file": "summary.json",
-   "path": "targets.4.series.ms.verdict"
+   "path": "targets.4.series.ms.verdict",
+   "gpu_job": "20261012-041010_M08"
   },
   {
    "target": "dudect_table.tex",
@@ -4547,7 +4648,8 @@
    "metric_ids": [],
    "run_dir": "runs/20261012-031331_M08_dudect",
    "file": "summary.json",
-   "path": "targets.5.series.ms.verdict"
+   "path": "targets.5.series.ms.verdict",
+   "gpu_job": "20261012-041010_M08"
   },
   {
    "target": "dudect_table.tex",
@@ -4871,7 +4973,7 @@
    "value": "\\pending",
    "kind": "pending",
    "metric_ids": [],
-   "reason": "ISSUE-12: the pipeline was measured before the row-id change; rerun pending"
+   "reason": "ISSUE-12: the pipeline was measured before the row-id change; the rerun on the same platform is UNSTABLE"
   }
  ]
 }

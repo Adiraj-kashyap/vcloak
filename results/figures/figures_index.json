@@ -68,12 +68,12 @@
   {
    "figure": "fig_write_epoch_device_stages",
    "from": "results/perf",
-   "reason": "ISSUE-12: measured before the row-id change; rerun pending"
+   "reason": "ISSUE-12: measured before the row-id change; the rerun on the same platform is UNSTABLE"
   },
   {
    "figure": "fig_write_epoch_host_device",
    "from": "results/perf",
-   "reason": "ISSUE-12: measured before the row-id change; rerun pending"
+   "reason": "ISSUE-12: measured before the row-id change; the rerun on the same platform is UNSTABLE"
   },
   {
    "figure": "dudect_aead_conv",

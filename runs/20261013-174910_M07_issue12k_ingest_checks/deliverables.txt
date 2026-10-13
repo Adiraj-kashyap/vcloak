@@ -1,0 +1,17 @@
+exists scripts/export_results.py
+exists results/paper/macros.tex
+exists results/paper/attack_table.tex
+exists results/paper/trace_table.tex
+exists results/paper/throughput_table.tex
+exists results/paper/session_table.tex
+exists results/paper/window_ablation.dat
+exists results/paper/tau_hist.dat
+exists results/paper/throughput.dat
+exists results/paper/gpu_kernels_table.tex
+exists results/paper/dudect_table.tex
+exists results/paper/e2e_table.tex
+exists results/paper/macro_map.json
+exists results/deck_numbers.md
+exists results/PAPER_UPDATES.md
+exists report/TRACEABILITY.md
+figures: 7 pdf, 7 png

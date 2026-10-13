@@ -1,0 +1,57 @@
+ISSUE-12 gate reading (generated; nothing here is measured or typed: values are read from summary.json)
+
+== after the fix: runs/20261013-121512_M07_pipeline
+git f3903bcc5028a397fbe7bfed1a30ad9ad4ffbb1e  gpu_job 20261013-173239_M07_issue12k  runner kaggle  session 20261013-121357
+device Tesla T4  cuda 12090  host cpu Intel(R) Xeon(R) CPU @ 2.00GHz x4  ram_gb 31.3  timer cupy.cuda.Event
+oracle mismatches 0  cv_limit 0.1  unstable configs 4 of 12: write_epoch@1024, write_epoch@4096, write_epoch@16384, write_epoch@65536
+slots | attempt | stable | cv_total | median_total_ms | p99_total_ms | median_device_ms | p99_device_ms | median_host_ms | host_share | clock
+64 | 1 | True | 0.0929 | 0.9124 | 1.1758 | 0.7471 | 0.9574 | 0.1621 | 0.1777 | 585->585 of 1590 MHz (LOW)
+1024 | 1 | False | 0.7852 | 2.3728 | 4.0237 | 0.9128 | 1.4845 | 1.4471 | 0.6099 | 585->585 of 1590 MHz (LOW)
+1024 | 2 | False | 0.5555 | 2.1731 | 2.6910 | 0.8471 | 1.1325 | 1.3158 | 0.6055 | 585->585 of 1590 MHz (LOW)
+4096 | 1 | False | 0.5040 | 7.2902 | 29.8209 | 1.3332 | 1.6265 | 5.9385 | 0.8146 | 585->585 of 1590 MHz (LOW)
+4096 | 2 | False | 0.4742 | 6.8161 | 28.1489 | 1.2548 | 1.6190 | 5.5866 | 0.8196 | 585->585 of 1590 MHz (LOW)
+16384 | 1 | False | 0.2733 | 30.5096 | 60.8769 | 2.4943 | 2.9882 | 27.9546 | 0.9163 | 585->585 of 1590 MHz (LOW)
+16384 | 2 | False | 0.2721 | 26.9927 | 56.6947 | 2.1890 | 2.9171 | 24.8048 | 0.9189 | 585->585 of 1590 MHz (LOW)
+65536 | 1 | False | 0.1415 | 156.8790 | 211.8944 | 8.9194 | 10.9161 | 147.8006 | 0.9421 | 585->585 of 1590 MHz (LOW)
+65536 | 2 | False | 0.1399 | 154.3743 | 199.4360 | 8.9722 | 11.7013 | 145.3694 | 0.9417 | 585->585 of 1590 MHz (LOW)
+real-time gate (p99 of the last attempt < EPOCH_MS):
+  slots 64: epoch_ms 200  p99_total_ms 1.1758  total PASS  p99_device_ms 0.9574  device PASS  unstable False
+  slots 1024: epoch_ms 200  p99_total_ms 2.6910  total PASS  p99_device_ms 1.1325  device PASS  unstable True
+  slots 4096: epoch_ms 200  p99_total_ms 28.1489  total PASS  p99_device_ms 1.6190  device PASS  unstable True
+  slots 16384: epoch_ms 200  p99_total_ms 56.6947  total PASS  p99_device_ms 2.9171  device PASS  unstable True
+  slots 65536: epoch_ms 200  p99_total_ms 199.4360  total PASS  p99_device_ms 11.7013  device PASS  unstable True
+
+== before the fix (M07): runs/20261011-215653_M07_pipeline
+git c40696b9c5d6d560f1ba9021ffd0f3e97b832f24  gpu_job 20261011-224124_M07  runner kaggle  session 20261011-213139
+device Tesla T4  cuda 12090  host cpu Intel(R) Xeon(R) CPU @ 2.00GHz x4  ram_gb 31.3  timer cupy.cuda.Event
+oracle mismatches 0  cv_limit 0.1  unstable configs 3 of 12: write_epoch@1024, write_epoch@4096, write_epoch@16384
+slots | attempt | stable | cv_total | median_total_ms | p99_total_ms | median_device_ms | p99_device_ms | median_host_ms | host_share | clock
+64 | 1 | True | 0.0821 | 0.8858 | 1.1208 | 0.6848 | 0.8987 | 0.1977 | 0.2232 | 585->585 of 1590 MHz (LOW)
+1024 | 1 | False | 0.5613 | 3.2618 | 5.7317 | 0.8203 | 1.1755 | 2.4230 | 0.7429 | 585->585 of 1590 MHz (LOW)
+1024 | 2 | False | 0.5738 | 3.2400 | 9.4708 | 0.8259 | 1.5919 | 2.3952 | 0.7393 | 585->585 of 1590 MHz (LOW)
+4096 | 1 | False | 0.3008 | 11.1325 | 32.4722 | 1.1723 | 1.5057 | 9.9398 | 0.8929 | 585->585 of 1590 MHz (LOW)
+4096 | 2 | False | 0.3201 | 11.1824 | 32.1359 | 1.1709 | 2.1702 | 9.9873 | 0.8931 | 585->585 of 1590 MHz (LOW)
+16384 | 1 | False | 0.1703 | 46.0368 | 72.9420 | 2.1353 | 3.0592 | 43.7888 | 0.9512 | 585->585 of 1590 MHz (LOW)
+16384 | 2 | False | 0.1780 | 45.5523 | 73.9208 | 2.1450 | 2.7880 | 43.3873 | 0.9525 | 585->585 of 1590 MHz (LOW)
+65536 | 1 | True | 0.0931 | 242.3974 | 279.5451 | 8.7638 | 11.0996 | 233.7088 | 0.9642 | 585->585 of 1590 MHz (LOW)
+real-time gate (p99 of the last attempt < EPOCH_MS):
+  slots 64: epoch_ms 200  p99_total_ms 1.1208  total PASS  p99_device_ms 0.8987  device PASS  unstable False
+  slots 1024: epoch_ms 200  p99_total_ms 9.4708  total PASS  p99_device_ms 1.5919  device PASS  unstable True
+  slots 4096: epoch_ms 200  p99_total_ms 32.1359  total PASS  p99_device_ms 2.1702  device PASS  unstable True
+  slots 16384: epoch_ms 200  p99_total_ms 73.9208  total PASS  p99_device_ms 2.7880  device PASS  unstable True
+  slots 65536: epoch_ms 200  p99_total_ms 279.5451  total FAIL  p99_device_ms 11.0996  device PASS  unstable False
+
+VERDICT at 65536 slots after the fix: NO VERDICT (UNSTABLE on every attempt: gpu-bench rule 10, the attempts above are not values)
+VERDICT at 65536 slots before the fix: whole call FAIL, device part PASS (stable)
+platform, after | before (ADR-024):
+  runner: kaggle | kaggle  same
+  cuda: 12090 | 12090  same
+  driver: 580.178.04 | 580.178.04  same
+  cupy: 14.0.1 | 14.0.1  same
+  python: 3.13.15 | 3.13.15  same
+  os: Linux-6.18.48+-x86_64-with-glibc2.39 | Linux-6.18.48+-x86_64-with-glibc2.39  same
+  cpu: Intel(R) Xeon(R) CPU @ 2.00GHz | Intel(R) Xeon(R) CPU @ 2.00GHz  same
+  cpu_count: 4 | 4  same
+Same platform and image in both runs: True.
+Before/after comparison of write_epoch at 65536 slots: NOT_MEASURED (one side is UNSTABLE or the platforms differ)
+stable configurations of the new run (8 of 12): write_epoch@64, read_window@64, read_window@128, read_window@256, read_window@512, read_window@1024, read_window@2048, read_window@4096
