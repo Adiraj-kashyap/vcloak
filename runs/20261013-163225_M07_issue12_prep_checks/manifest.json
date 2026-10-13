@@ -1,0 +1,40 @@
+{
+  "run_id": "20261013-163225_M07_issue12_prep_checks",
+  "module": "M07",
+  "step": "S5",
+  "owner": "Aditya",
+  "git_sha": "59d622f3405bd73555d81c1f7e80c67bd824d434",
+  "dirty": false,
+  "command": "pytest -q; ruff; check_metrics, check_oblivious, check_secrets; bench/run_pipeline.py --dev --full --seed 7 --quick on the simulator (correctness only)",
+  "seed": 0,
+  "quick": false,
+  "params": {},
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261013-163225",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U"
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791889345.6847453
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791889652.140482
+  },
+  "outputs": [
+    "check_metrics.txt",
+    "check_oblivious.txt",
+    "check_secrets.txt",
+    "g10_quick_rerun.txt",
+    "pytest_all.txt",
+    "ruff.txt"
+  ],
+  "status": "OK",
+  "notes": "ISSUE-12 prep: numpy backend, correctness only; no timing of this run is a result"
+}
