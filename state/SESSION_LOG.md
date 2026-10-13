@@ -976,6 +976,6 @@
 - Deviations from spec: "sampling noise" defined by this build (Amendments); the diagnostic is not in the module text
 - Not verified: S6; more than one seed, device replay or oracle main run; whether the oracle's chi-square has a small
   bias (10 tables cannot exclude it); the normal approximation behind the prediction intervals
-- Commit: b299525 (code), e25a24c and 689f418 (run, diagnostic script), records in the closing commit
+- Commit: b299525 (code), e25a24c and 689f418 (run, diagnostic script), records 2a6d14a
 - Next: M14 S6 (code first; GPU job or simulator per ISSUE-40) ; human action: decide ISSUE-40 and ISSUE-41; ISSUE-36
   is still undecided
