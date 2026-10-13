@@ -1,0 +1,30 @@
+{
+  "run_id": "20261013-172550_M16_export",
+  "module": "M16",
+  "step": "S1",
+  "owner": "Abhishek",
+  "git_sha": "28c0c406973fc891cfa3995965d6e3776ec84ddc",
+  "dirty": true,
+  "command": "python scripts/export_results.py",
+  "seed": 0,
+  "quick": false,
+  "params": {},
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261013-172550",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U",
+    "cpu_count": 12
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791892550.736976
+  },
+  "telemetry_end": null,
+  "outputs": [],
+  "status": "NOT_MEASURED",
+  "notes": "run started; not finalised"
+}

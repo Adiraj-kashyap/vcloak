@@ -1,0 +1,3 @@
+# held back: the write_epoch stage breakdown was measured before the row-id change (ISSUE-12);
+# the rerun on the platform of that measurement is pending. No row is exported until it is ingested.
+slots h2d tags sort compact d2h host

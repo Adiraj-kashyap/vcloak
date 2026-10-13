@@ -1,0 +1,24 @@
+{
+  "figure": "fig_window_ablation",
+  "files": [
+    "fig_window_ablation.png",
+    "fig_window_ablation.pdf"
+  ],
+  "run_dirs": [
+    "runs/20261013-054727_M14_security_e0e1"
+  ],
+  "metric_ids": [
+    "S-TURNACC-BASELINE",
+    "S-TURNACC-EPOCH",
+    "S-TURNACC-W1",
+    "S-TURNACC-W10",
+    "S-TURNACC-W60",
+    "S-TURNACC-W300",
+    "S-F-W1",
+    "S-F-W10",
+    "S-F-W60",
+    "S-F-W300"
+  ],
+  "session_id": "20261013-054610",
+  "generated_by": "python -m vcloak.bench.report_security"
+}

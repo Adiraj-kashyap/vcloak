@@ -1,0 +1,114 @@
+{
+ "copied": [
+  {
+   "figure": "fig_bandwidth_pct",
+   "from": "results/perf",
+   "sidecar": "fig_bandwidth_pct.json",
+   "files": [
+    "fig_bandwidth_pct.pdf",
+    "fig_bandwidth_pct.png"
+   ]
+  },
+  {
+   "figure": "fig_kernels_vs_n",
+   "from": "results/perf",
+   "sidecar": "fig_kernels_vs_n.json",
+   "files": [
+    "fig_kernels_vs_n.pdf",
+    "fig_kernels_vs_n.png"
+   ]
+  },
+  {
+   "figure": "fig_read_window",
+   "from": "results/perf",
+   "sidecar": "fig_read_window.json",
+   "files": [
+    "fig_read_window.pdf",
+    "fig_read_window.png"
+   ]
+  },
+  {
+   "figure": "fig_sort_gpu_vs_cpu",
+   "from": "results/perf",
+   "sidecar": "fig_sort_gpu_vs_cpu.json",
+   "files": [
+    "fig_sort_gpu_vs_cpu.pdf",
+    "fig_sort_gpu_vs_cpu.png"
+   ]
+  },
+  {
+   "figure": "fig_telemetry_kernel_sweep",
+   "from": "results/perf",
+   "sidecar": "fig_telemetry_kernel_sweep.json",
+   "files": [
+    "fig_telemetry_kernel_sweep.pdf",
+    "fig_telemetry_kernel_sweep.png"
+   ]
+  },
+  {
+   "figure": "fig_tau_histogram",
+   "from": "results/security",
+   "sidecar": "fig_tau_histogram.json",
+   "files": [
+    "fig_tau_histogram.pdf",
+    "fig_tau_histogram.png"
+   ]
+  },
+  {
+   "figure": "fig_window_ablation",
+   "from": "results/security",
+   "sidecar": "fig_window_ablation.json",
+   "files": [
+    "fig_window_ablation.pdf",
+    "fig_window_ablation.png"
+   ]
+  }
+ ],
+ "held_back": [
+  {
+   "figure": "fig_write_epoch_device_stages",
+   "from": "results/perf",
+   "reason": "ISSUE-12: measured before the row-id change; rerun pending"
+  },
+  {
+   "figure": "fig_write_epoch_host_device",
+   "from": "results/perf",
+   "reason": "ISSUE-12: measured before the row-id change; rerun pending"
+  },
+  {
+   "figure": "dudect_aead_conv",
+   "from": "results/oblivious",
+   "reason": "its .json names no run dir (ai/CONVENTIONS.md section 7): not traceable from the figure alone"
+  },
+  {
+   "figure": "dudect_aead_tag",
+   "from": "results/oblivious",
+   "reason": "its .json names no run dir (ai/CONVENTIONS.md section 7): not traceable from the figure alone"
+  },
+  {
+   "figure": "dudect_bitonic_equal",
+   "from": "results/oblivious",
+   "reason": "its .json names no run dir (ai/CONVENTIONS.md section 7): not traceable from the figure alone"
+  },
+  {
+   "figure": "dudect_bitonic_sorted",
+   "from": "results/oblivious",
+   "reason": "its .json names no run dir (ai/CONVENTIONS.md section 7): not traceable from the figure alone"
+  },
+  {
+   "figure": "dudect_control_leak",
+   "from": "results/oblivious",
+   "reason": "its .json names no run dir (ai/CONVENTIONS.md section 7): not traceable from the figure alone"
+  },
+  {
+   "figure": "dudect_control_null",
+   "from": "results/oblivious",
+   "reason": "its .json names no run dir (ai/CONVENTIONS.md section 7): not traceable from the figure alone"
+  },
+  {
+   "figure": "dudect_write_epoch",
+   "from": "results/oblivious",
+   "reason": "its .json names no run dir (ai/CONVENTIONS.md section 7): not traceable from the figure alone"
+  }
+ ]
+}

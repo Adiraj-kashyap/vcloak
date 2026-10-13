@@ -1,0 +1,25 @@
+{
+  "figure": "fig_telemetry_kernel_sweep",
+  "files": [
+    "fig_telemetry_kernel_sweep.png",
+    "fig_telemetry_kernel_sweep.pdf"
+  ],
+  "samples": 2625,
+  "metric_ids": [
+    "TEL-SMCLK-MEDIAN",
+    "TEL-POWER-W-MEDIAN"
+  ],
+  "what": "SM clock, power draw and temperature of the GPU over the kernel sweep, from telemetry.csv",
+  "run_dirs": [
+    "runs/20261011-213207_M07_kernel_sweep"
+  ],
+  "session_id": "20261011-213139",
+  "runner": "kaggle",
+  "gpu": "Tesla T4",
+  "cpu": "Intel(R) Xeon(R) CPU @ 2.00GHz x4",
+  "job_id": "20261011-224124_M07",
+  "git_sha": "c40696b9c5d6d560f1ba9021ffd0f3e97b832f24",
+  "quick": false,
+  "backend": "cupy",
+  "generated_by": "python -m vcloak.bench.report"
+}

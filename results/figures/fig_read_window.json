@@ -1,0 +1,36 @@
+{
+  "figure": "fig_read_window",
+  "files": [
+    "fig_read_window.png",
+    "fig_read_window.pdf"
+  ],
+  "metric_ids": [
+    "P-READ-WINDOW-P99-K64",
+    "P-READ-WINDOW-MS-K64",
+    "P-READ-WINDOW-P99-K128",
+    "P-READ-WINDOW-MS-K128",
+    "P-READ-WINDOW-P99-K256",
+    "P-READ-WINDOW-MS-K256",
+    "P-READ-WINDOW-P99-K512",
+    "P-READ-WINDOW-MS-K512",
+    "P-READ-WINDOW-P99-K1024",
+    "P-READ-WINDOW-MS-K1024",
+    "P-READ-WINDOW-P99-K2048",
+    "P-READ-WINDOW-MS-K2048",
+    "P-READ-WINDOW-P99-K4096",
+    "P-READ-WINDOW-MS-K4096"
+  ],
+  "what": "p99 and median of a whole read_window call against K",
+  "run_dirs": [
+    "runs/20261011-215653_M07_pipeline"
+  ],
+  "session_id": "20261011-213139",
+  "runner": "kaggle",
+  "gpu": "Tesla T4",
+  "cpu": "Intel(R) Xeon(R) CPU @ 2.00GHz x4",
+  "job_id": "20261011-224124_M07",
+  "git_sha": "c40696b9c5d6d560f1ba9021ffd0f3e97b832f24",
+  "quick": false,
+  "backend": "cupy",
+  "generated_by": "python -m vcloak.bench.report"
+}
