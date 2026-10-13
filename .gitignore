@@ -22,3 +22,9 @@ pc_runner/jobs/*.zip
 pc_runner/work/
 pc_runner/results/
 pc_runner/.venv/
+
+# PC runner (ADR-025): Nsight Compute installer and its extraction, pip cache and temp carried back with the kit folder
+nsight/
+nsight_dl/
+pc_runner/.pipcache/
+pc_runner/.piptmp/

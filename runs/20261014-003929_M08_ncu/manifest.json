@@ -1,0 +1,84 @@
+{
+  "run_id": "20261014-003929_M08_ncu",
+  "module": "M08",
+  "step": "S4",
+  "owner": "Aditya",
+  "git_sha": "072ee8ca96569a4f0cddbd55fea9de3e11ec50b1",
+  "dirty": false,
+  "command": "python bench/run_ncu.py --seed 8 --out runs",
+  "seed": 8,
+  "quick": false,
+  "params": {
+    "log2n": 16,
+    "kernels": [
+      "bitonic_pairs_global",
+      "bitonic_shared",
+      "bitonic_shared_full",
+      "aead_open_seq"
+    ],
+    "control": "planted_leak"
+  },
+  "env": {
+    "os": "Windows-11-10.0.26300-SP0",
+    "python": "3.12.10",
+    "backend": "cupy",
+    "runner": "pc-rtx3050laptopgpu",
+    "session_id": "20261014-003925",
+    "gpu": "NVIDIA GeForce RTX 3050 Laptop GPU",
+    "cc": "8.6",
+    "cuda": "12090",
+    "cupy": "14.2.0",
+    "driver": "610.88",
+    "cpu_count": 16
+  },
+  "telemetry_start": {
+    "available": true,
+    "gpu": "NVIDIA GeForce RTX 3050 Laptop GPU",
+    "driver": "610.88",
+    "clocks": "unlocked",
+    "sm_clock_max_mhz": 2100,
+    "ts": 1791918570.2077894,
+    "sm_clock_mhz": 1500,
+    "mem_clock_mhz": 6101,
+    "temperature_c": 42,
+    "power_w": 13.003,
+    "power_limit_w": 95.0,
+    "util_gpu_pct": 0,
+    "util_mem_pct": 0,
+    "throttle_reasons": 1,
+    "pstate": 0,
+    "mem_used_mb": 196.50390625
+  },
+  "telemetry_end": {
+    "available": true,
+    "gpu": "NVIDIA GeForce RTX 3050 Laptop GPU",
+    "driver": "610.88",
+    "clocks": "unlocked",
+    "sm_clock_max_mhz": 2100,
+    "ts": 1791918599.2165935,
+    "sm_clock_mhz": 210,
+    "mem_clock_mhz": 405,
+    "temperature_c": 41,
+    "power_w": 3.945,
+    "power_limit_w": 95.0,
+    "util_gpu_pct": 0,
+    "util_mem_pct": 0,
+    "throttle_reasons": 1,
+    "pstate": 8,
+    "mem_used_mb": 196.50390625
+  },
+  "outputs": [
+    "ncu_branches.csv",
+    "ncu_by_kernel.csv",
+    "ncu_profile_raw.txt",
+    "ncu_query_metrics.txt",
+    "summary.json"
+  ],
+  "status": "OK",
+  "notes": "",
+  "gpu_job": {
+    "job_id": "20261013-224820_M08_ncu",
+    "bundle_sha256": "0a8a2d59e7fa31ffe0afaea6bc96fdfceeab58c35bc81bcef51e0cc8771bb1ac",
+    "packed_from_git_sha": "072ee8ca96569a4f0cddbd55fea9de3e11ec50b1"
+  }
+}

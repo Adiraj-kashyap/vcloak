@@ -1,0 +1,80 @@
+{
+  "run_id": "20261014-001653_M00_gpu_probe",
+  "module": "M00",
+  "step": "S6",
+  "owner": "Aditya",
+  "git_sha": "072ee8ca96569a4f0cddbd55fea9de3e11ec50b1",
+  "dirty": false,
+  "command": "python bench/probe_gpu.py --seed 7 --out runs",
+  "seed": 7,
+  "quick": false,
+  "params": {
+    "vector_add_n": 1048576,
+    "d2d_bytes": 268435456,
+    "warmup": 10,
+    "runs": 30
+  },
+  "env": {
+    "os": "Windows-11-10.0.26300-SP0",
+    "python": "3.12.10",
+    "backend": "cupy",
+    "runner": "pc-rtx3050laptopgpu",
+    "session_id": "20261014-001649",
+    "gpu": "NVIDIA GeForce RTX 3050 Laptop GPU",
+    "cc": "8.6",
+    "cuda": "12090",
+    "cupy": "14.2.0",
+    "driver": "610.88",
+    "cpu_count": 16
+  },
+  "telemetry_start": {
+    "available": true,
+    "gpu": "NVIDIA GeForce RTX 3050 Laptop GPU",
+    "driver": "610.88",
+    "clocks": "unlocked",
+    "sm_clock_max_mhz": 2100,
+    "ts": 1791917214.0181916,
+    "sm_clock_mhz": 1500,
+    "mem_clock_mhz": 6101,
+    "temperature_c": 40,
+    "power_w": 12.953,
+    "power_limit_w": 71.873,
+    "util_gpu_pct": 0,
+    "util_mem_pct": 0,
+    "throttle_reasons": 1,
+    "pstate": 0,
+    "mem_used_mb": 196.50390625
+  },
+  "telemetry_end": {
+    "available": true,
+    "gpu": "NVIDIA GeForce RTX 3050 Laptop GPU",
+    "driver": "610.88",
+    "clocks": "unlocked",
+    "sm_clock_max_mhz": 2100,
+    "ts": 1791917215.1778035,
+    "sm_clock_mhz": 1500,
+    "mem_clock_mhz": 6101,
+    "temperature_c": 41,
+    "power_w": 12.465,
+    "power_limit_w": 73.353,
+    "util_gpu_pct": 0,
+    "util_mem_pct": 0,
+    "throttle_reasons": 0,
+    "pstate": 0,
+    "mem_used_mb": 722.50390625
+  },
+  "outputs": [
+    "d2d_times.csv",
+    "device.json",
+    "nvidia_smi.txt",
+    "summary.json",
+    "telemetry.csv"
+  ],
+  "status": "OK",
+  "notes": "",
+  "gpu_job": {
+    "job_id": "20261013-224820_M00",
+    "bundle_sha256": "0a8a2d59e7fa31ffe0afaea6bc96fdfceeab58c35bc81bcef51e0cc8771bb1ac",
+    "packed_from_git_sha": "072ee8ca96569a4f0cddbd55fea9de3e11ec50b1"
+  }
+}

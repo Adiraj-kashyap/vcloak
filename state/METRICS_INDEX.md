@@ -885,3 +885,15 @@ compact_kernel_null) in runs/20261013-022124_M08_dudect_i25k_s8 and runs/2026101
 | P-READ-WINDOW-DEVICE-MS-K4096 | 0.6184 | ms | median | M07 | runs/20261013-121512_M07_pipeline | python bench/run_pipeline.py --dev --full --seed 7 --out runs | 20261013 | no | cupy | kaggle |
 | P-READ-WINDOW-DEVICE-P99-K4096 | 0.7715 | ms | p99 | M07 | runs/20261013-121512_M07_pipeline | python bench/run_pipeline.py --dev --full --seed 7 --out runs | 20261013 | no | cupy | kaggle |
 | P-READ-WINDOW-HOST-MS-K4096 | 0.0325 | ms | median | M07 | runs/20261013-121512_M07_pipeline | python bench/run_pipeline.py --dev --full --seed 7 --out runs | 20261013 | no | cupy | kaggle |
+| ENV-PEAK-BW | 192.032 | GB/s | theoretical | M00 | runs/20261014-001653_M00_gpu_probe | python bench/probe_gpu.py --seed 7 --out runs | 20261014 | no | cupy | pc-rtx3050laptopgpu |
+| ENV-D2D-BW | 185.788 | GB/s | median | M00 | runs/20261014-001653_M00_gpu_probe | python bench/probe_gpu.py --seed 7 --out runs | 20261014 | no | cupy | pc-rtx3050laptopgpu |
+| ENV-MAX-LOG2N | 24 | log2(n) | value | M00 | runs/20261014-001653_M00_gpu_probe | python bench/probe_gpu.py --seed 7 --out runs | 20261014 | no | cupy | pc-rtx3050laptopgpu |
+| ENV-VRAM-FREE | 3.466 | GB | value | M00 | runs/20261014-001653_M00_gpu_probe | python bench/probe_gpu.py --seed 7 --out runs | 20261014 | no | cupy | pc-rtx3050laptopgpu |
+| T-NCU-DIVERGENT-BITONIC-PAIRS-GLOBAL | 0.0 | branches | sum | M08 | runs/20261014-003929_M08_ncu | python bench/run_ncu.py --seed 8 --out runs | 20261014 | no | cupy | pc-rtx3050laptopgpu |
+| T-NCU-BRANCHEFF-BITONIC-PAIRS-GLOBAL | NOT_MEASURED | % | ratio of sums | M08 | runs/20261014-003929_M08_ncu | python bench/run_ncu.py --seed 8 --out runs | 20261014 | no | cupy | pc-rtx3050laptopgpu |
+| T-NCU-DIVERGENT-BITONIC-SHARED | 0.0 | branches | sum | M08 | runs/20261014-003929_M08_ncu | python bench/run_ncu.py --seed 8 --out runs | 20261014 | no | cupy | pc-rtx3050laptopgpu |
+| T-NCU-BRANCHEFF-BITONIC-SHARED | 100.0 | % | ratio of sums | M08 | runs/20261014-003929_M08_ncu | python bench/run_ncu.py --seed 8 --out runs | 20261014 | no | cupy | pc-rtx3050laptopgpu |
+| T-NCU-DIVERGENT-BITONIC-SHARED-FULL | 0.0 | branches | sum | M08 | runs/20261014-003929_M08_ncu | python bench/run_ncu.py --seed 8 --out runs | 20261014 | no | cupy | pc-rtx3050laptopgpu |
+| T-NCU-BRANCHEFF-BITONIC-SHARED-FULL | 100.0 | % | ratio of sums | M08 | runs/20261014-003929_M08_ncu | python bench/run_ncu.py --seed 8 --out runs | 20261014 | no | cupy | pc-rtx3050laptopgpu |
+| T-NCU-DIVERGENT-AEAD-OPEN-SEQ | 0.0 | branches | sum | M08 | runs/20261014-003929_M08_ncu | python bench/run_ncu.py --seed 8 --out runs | 20261014 | no | cupy | pc-rtx3050laptopgpu |
+| T-NCU-BRANCHEFF-AEAD-OPEN-SEQ | 100.0 | % | ratio of sums | M08 | runs/20261014-003929_M08_ncu | python bench/run_ncu.py --seed 8 --out runs | 20261014 | no | cupy | pc-rtx3050laptopgpu |

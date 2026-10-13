@@ -1,0 +1,167 @@
+{
+  "metrics": [
+    {
+      "id": "T-NCU-DIVERGENT-BITONIC-PAIRS-GLOBAL",
+      "unit": "branches",
+      "stat": "sum",
+      "value": 0.0,
+      "note": "sm__sass_branch_targets_threads_divergent.avg over 44 profiled launch(es)"
+    },
+    {
+      "id": "T-NCU-BRANCHEFF-BITONIC-PAIRS-GLOBAL",
+      "unit": "%",
+      "stat": "ratio of sums",
+      "value": "NOT_MEASURED",
+      "note": "needs a uniform and a divergent counter with a non-zero total"
+    },
+    {
+      "id": "T-NCU-DIVERGENT-BITONIC-SHARED",
+      "unit": "branches",
+      "stat": "sum",
+      "value": 0.0,
+      "note": "sm__sass_branch_targets_threads_divergent.avg over 7 profiled launch(es)"
+    },
+    {
+      "id": "T-NCU-BRANCHEFF-BITONIC-SHARED",
+      "unit": "%",
+      "stat": "ratio of sums",
+      "value": 100.0,
+      "note": "100 * sm__sass_branch_targets_threads_uniform.avg / (uniform + divergent) over 7 profiled launch(es)"
+    },
+    {
+      "id": "T-NCU-DIVERGENT-BITONIC-SHARED-FULL",
+      "unit": "branches",
+      "stat": "sum",
+      "value": 0.0,
+      "note": "sm__sass_branch_targets_threads_divergent.avg over 1 profiled launch(es)"
+    },
+    {
+      "id": "T-NCU-BRANCHEFF-BITONIC-SHARED-FULL",
+      "unit": "%",
+      "stat": "ratio of sums",
+      "value": 100.0,
+      "note": "100 * sm__sass_branch_targets_threads_uniform.avg / (uniform + divergent) over 1 profiled launch(es)"
+    },
+    {
+      "id": "T-NCU-DIVERGENT-AEAD-OPEN-SEQ",
+      "unit": "branches",
+      "stat": "sum",
+      "value": 0.0,
+      "note": "sm__sass_branch_targets_threads_divergent.avg over 1 profiled launch(es)"
+    },
+    {
+      "id": "T-NCU-BRANCHEFF-AEAD-OPEN-SEQ",
+      "unit": "%",
+      "stat": "ratio of sums",
+      "value": 100.0,
+      "note": "100 * sm__sass_branch_targets_threads_uniform.avg / (uniform + divergent) over 1 profiled launch(es)"
+    }
+  ],
+  "reason": null,
+  "ncu_version": "NVIDIA (R) Nsight Compute Command Line Profiler\nCopyright (c) 2018-2026 NVIDIA Corporation\nVersion 2026.3.1.0 (build 38829034) (public-release)",
+  "branch_metrics_queried": [
+    "sm__sass_average_branch_targets_threads_uniform",
+    "sm__sass_branch_targets",
+    "sm__sass_branch_targets_threads_divergent",
+    "sm__sass_branch_targets_threads_uniform",
+    "sm__sass_inst_executed_op_branch",
+    "smsp__average_warp_latency_issue_stalled_branch_resolving",
+    "smsp__average_warps_issue_stalled_branch_resolving_per_issue_active",
+    "smsp__inst_executed_op_branch",
+    "smsp__sass_average_branch_targets_threads_uniform",
+    "smsp__sass_branch_targets",
+    "smsp__sass_branch_targets_threads_divergent",
+    "smsp__sass_branch_targets_threads_uniform",
+    "smsp__sass_inst_executed_op_branch",
+    "smsp__warp_issue_stalled_branch_resolving_per_warp_active",
+    "smsp__warps_issue_stalled_branch_resolving"
+  ],
+  "profile_command": "D:\\vclock\\nsight\\ProgramFiles64Folder\\NVIDIA Corporation\\Nsight Compute 2026.3.1\\target\\windows-desktop-win7-x64\\ncu.EXE --csv --metrics sm__sass_average_branch_targets_threads_uniform,sm__sass_branch_targets,sm__sass_branch_targets_threads_divergent,sm__sass_branch_targets_threads_uniform,sm__sass_inst_executed_op_branch,smsp__average_warp_latency_issue_stalled_branch_resolving,smsp__average_warps_issue_stalled_branch_resolving_per_issue_active,smsp__inst_executed_op_branch,smsp__sass_average_branch_targets_threads_uniform,smsp__sass_branch_targets,smsp__sass_branch_targets_threads_divergent,smsp__sass_branch_targets_threads_uniform,smsp__sass_inst_executed_op_branch,smsp__warp_issue_stalled_branch_resolving_per_warp_active,smsp__warps_issue_stalled_branch_resolving D:\\vclock\\pc_runner\\.venv\\Scripts\\python.exe D:\\vclock\\pc_runner\\work\\20261013-224820_M08_ncu\\bench\\ncu_workload.py --log2n 16 --seed 8",
+  "rows": 3080,
+  "per_kernel": {
+    "bitonic_shared_full": {
+      "divergent": 0.0,
+      "divergent_metric": "sm__sass_branch_targets_threads_divergent.avg",
+      "efficiency_pct": 100.0,
+      "uniform_metric": "sm__sass_branch_targets_threads_uniform.avg",
+      "launches": 1,
+      "uniform": 4096.0
+    },
+    "bitonic_pairs_global": {
+      "divergent": 0.0,
+      "divergent_metric": "sm__sass_branch_targets_threads_divergent.avg",
+      "efficiency_pct": null,
+      "uniform_metric": "sm__sass_branch_targets_threads_uniform.avg",
+      "launches": 44,
+      "uniform": 0.0
+    },
+    "bitonic_shared": {
+      "divergent": 0.0,
+      "divergent_metric": "sm__sass_branch_targets_threads_divergent.avg",
+      "efficiency_pct": 100.0,
+      "uniform_metric": "sm__sass_branch_targets_threads_uniform.avg",
+      "launches": 7,
+      "uniform": 4480.0
+    },
+    "derive_subkeys": {
+      "divergent": 0.0,
+      "divergent_metric": "sm__sass_branch_targets_threads_divergent.avg",
+      "efficiency_pct": 100.0,
+      "uniform_metric": "sm__sass_branch_targets_threads_uniform.avg",
+      "launches": 1,
+      "uniform": 0.62
+    },
+    "aead_seal_seq": {
+      "divergent": 0.0,
+      "divergent_metric": "sm__sass_branch_targets_threads_divergent.avg",
+      "efficiency_pct": 100.0,
+      "uniform_metric": "sm__sass_branch_targets_threads_uniform.avg",
+      "launches": 1,
+      "uniform": 2560.0
+    },
+    "aead_open_seq": {
+      "divergent": 0.0,
+      "divergent_metric": "sm__sass_branch_targets_threads_divergent.avg",
+      "efficiency_pct": 100.0,
+      "uniform_metric": "sm__sass_branch_targets_threads_uniform.avg",
+      "launches": 1,
+      "uniform": 2560.0
+    },
+    "planted_leak": {
+      "divergent": 128.0,
+      "divergent_metric": "sm__sass_branch_targets_threads_divergent.avg",
+      "efficiency_pct": 98.55072463768116,
+      "uniform_metric": "sm__sass_branch_targets_threads_uniform.avg",
+      "launches": 1,
+      "uniform": 8704.0
+    }
+  },
+  "control": {
+    "kernel": "planted_leak",
+    "divergent_seen": true,
+    "divergent": 128.0,
+    "divergent_metric": "sm__sass_branch_targets_threads_divergent.avg",
+    "efficiency_pct": 98.55072463768116,
+    "uniform_metric": "sm__sass_branch_targets_threads_uniform.avg",
+    "launches": 1,
+    "uniform": 8704.0
+  },
+  "device": {
+    "backend": "cupy",
+    "is_gpu": true,
+    "device": "NVIDIA GeForce RTX 3050 Laptop GPU",
+    "gpu": "NVIDIA GeForce RTX 3050 Laptop GPU",
+    "cc": "8.6",
+    "sm_count": 16,
+    "vram_total_bytes": 4294443008,
+    "vram_free_bytes": 3466277684,
+    "mem_clock_khz": 6001000,
+    "mem_bus_width_bits": 128,
+    "peak_bw_gbs": 192.032,
+    "max_log2n": 24,
+    "cuda": "12090",
+    "cupy": "14.2.0",
+    "os": "Windows-11-10.0.26300-SP0",
+    "python": "3.12.10"
+  }
+}

@@ -1,0 +1,34 @@
+job 20261013-224820_M00: overall exit 0
+  nvidia_smi: exit 0
+  probe: exit 0
+  unit_tests: exit 2 (optional)
+job 20261013-224820_M08_ncu: overall exit 0
+  nvidia_smi: exit 0
+  ncu: exit 0
+  nvidia_smi_after: exit 0
+20261014-001653_M00_gpu_probe: status OK git 072ee8c dirty False runner pc-rtx3050laptopgpu gpu NVIDIA GeForce RTX 3050 Laptop GPU cc 8.6 driver 610.88 cuda 12090 cupy 14.2.0 os Windows-11-10.0.26300-SP0 cpu_count 16
+20261014-003929_M08_ncu: status OK git 072ee8c dirty False runner pc-rtx3050laptopgpu gpu NVIDIA GeForce RTX 3050 Laptop GPU cc 8.6 driver 610.88 cuda 12090 cupy 14.2.0 os Windows-11-10.0.26300-SP0 cpu_count 16
+ncu: Version 2026.3.1.0 (build 38829034) (public-release); reason None; rows 3080; 15 branch metric names queried
+metrics measured: 7 of 8
+  T-NCU-DIVERGENT-BITONIC-PAIRS-GLOBAL: 0.0 branches (sm__sass_branch_targets_threads_divergent.avg over 44 profiled launch(es))
+  T-NCU-BRANCHEFF-BITONIC-PAIRS-GLOBAL: NOT_MEASURED % (needs a uniform and a divergent counter with a non-zero total)
+  T-NCU-DIVERGENT-BITONIC-SHARED: 0.0 branches (sm__sass_branch_targets_threads_divergent.avg over 7 profiled launch(es))
+  T-NCU-BRANCHEFF-BITONIC-SHARED: 100.0 % (100 * sm__sass_branch_targets_threads_uniform.avg / (uniform + divergent) over 7 profiled launch(es))
+  T-NCU-DIVERGENT-BITONIC-SHARED-FULL: 0.0 branches (sm__sass_branch_targets_threads_divergent.avg over 1 profiled launch(es))
+  T-NCU-BRANCHEFF-BITONIC-SHARED-FULL: 100.0 % (100 * sm__sass_branch_targets_threads_uniform.avg / (uniform + divergent) over 1 profiled launch(es))
+  T-NCU-DIVERGENT-AEAD-OPEN-SEQ: 0.0 branches (sm__sass_branch_targets_threads_divergent.avg over 1 profiled launch(es))
+  T-NCU-BRANCHEFF-AEAD-OPEN-SEQ: 100.0 % (100 * sm__sass_branch_targets_threads_uniform.avg / (uniform + divergent) over 1 profiled launch(es))
+control planted_leak: divergent 128.0 uniform 8704.0 efficiency 98.55072463768116 launches 1 divergent_seen True
+per kernel (divergent / uniform / launches):
+  bitonic_shared_full: 0.0 / 4096.0 / 1
+  bitonic_pairs_global: 0.0 / 0.0 / 44   <- no branch target counted at all
+  bitonic_shared: 0.0 / 4480.0 / 7
+  derive_subkeys: 0.0 / 0.62 / 1
+  aead_seal_seq: 0.0 / 2560.0 / 1
+  aead_open_seq: 0.0 / 2560.0 / 1
+  planted_leak: 128.0 / 8704.0 / 1
+GATE counters carry values: PASS
+GATE planted-leak control shows divergence: PASS
+GATE the four audited kernels report 0 divergent: PASS
+probe summary keys: d2d_copy, device, metrics, vector_add
+OVERALL: PASS

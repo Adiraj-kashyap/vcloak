@@ -1,0 +1,51 @@
+{
+  "run_id": "20261014-012623_M08_pc_ingest_checks",
+  "module": "M08",
+  "step": "S4",
+  "owner": "Aditya",
+  "git_sha": "459f5c5518abb6b3cba2e7730b3bf39633e33750",
+  "dirty": true,
+  "command": "python scripts/gpujob.py ingest --file <each of the two results zips>; gates.py (reading of runs/20261014-003929_M08_ncu and runs/20261014-001653_M00_gpu_probe); pytest -q; ruff check src tests bench scripts; check_metrics, check_oblivious, check_secrets; scripts/export_results.py --check",
+  "seed": 0,
+  "quick": false,
+  "params": {},
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261014-012623",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U",
+    "cpu_count": 12
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791921384.0400283
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791921769.548126
+  },
+  "outputs": [
+    "capture_terminal.json",
+    "check_metrics.txt",
+    "check_oblivious.txt",
+    "check_secrets.txt",
+    "export_check.txt",
+    "gates.py",
+    "gates.txt",
+    "job_M00_01_nvidia_smi.txt",
+    "job_M00_02_probe.txt",
+    "job_M00_03_unit_tests.txt",
+    "job_M08_ncu_01_nvidia_smi.txt",
+    "job_M08_ncu_02_ncu.txt",
+    "job_M08_ncu_03_nvidia_smi_after.txt",
+    "manifests_valid.txt",
+    "pytest_all.txt",
+    "ruff.txt"
+  ],
+  "status": "OK",
+  "notes": ""
+}

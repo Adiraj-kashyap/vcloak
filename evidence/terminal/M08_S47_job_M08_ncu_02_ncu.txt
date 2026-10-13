@@ -1,0 +1,11 @@
+run dir     D:\vclock\pc_runner\work\20261013-224820_M08_ncu\runs\20261014-003929_M08_ncu
+ncu         NVIDIA (R) Nsight Compute Command Line Profiler
+metrics     queried 15 branch metric(s), 3080 csv rows
+  bitonic_pairs_global   divergent 0.0  efficiency None  launches 44
+  bitonic_shared         divergent 0.0  efficiency 100.0  launches 7
+  bitonic_shared_full    divergent 0.0  efficiency 100.0  launches 1
+  aead_open_seq          divergent 0.0  efficiency 100.0  launches 1
+  planted_leak           divergent 128.0  efficiency 98.55072463768116  launches 1
+status      OK   
+D:\vclock\pc_runner\.venv\Lib\site-packages\cupy\_environment.py:286: UserWarning: CUDA path could not be detected. Set CUDA_PATH environment variable if CuPy fails to load.
+  warnings.warn(

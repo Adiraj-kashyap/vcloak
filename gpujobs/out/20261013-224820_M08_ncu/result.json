@@ -1,0 +1,64 @@
+{
+  "job_id": "20261013-224820_M08_ncu",
+  "module": "M08_ncu",
+  "step": "S4",
+  "quick": false,
+  "packed_from_git_sha": "072ee8ca96569a4f0cddbd55fea9de3e11ec50b1",
+  "bundle_sha256": "0a8a2d59e7fa31ffe0afaea6bc96fdfceeab58c35bc81bcef51e0cc8771bb1ac",
+  "finished_at": "2026-10-13T19:09:59.365633+00:00",
+  "env": {
+    "collected_at": "2026-10-13T19:09:25.769149+00:00",
+    "python": "3.12.10",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "backend": "cupy",
+    "runner": "pc-rtx3050laptopgpu",
+    "session_id": "20261014-003925",
+    "gpu": "NVIDIA GeForce RTX 3050 Laptop GPU",
+    "driver": "610.88",
+    "vram_total": "4096 MiB",
+    "compute_capability": "8.6",
+    "nvcc": "absent",
+    "ncu": "NVIDIA (R) Nsight Compute Command Line Profiler",
+    "cupy": "14.2.0",
+    "cuda_runtime": "12090",
+    "cpu": "AMD64 Family 25 Model 68 Stepping 1, AuthenticAMD",
+    "cpu_count": "16"
+  },
+  "requirements": {
+    "file": "requirements-gpu.txt",
+    "installed": [],
+    "skipped": [
+      "cupy-cuda12x",
+      "nvidia-ml-py",
+      "cryptography"
+    ],
+    "failed": []
+  },
+  "commands": [
+    {
+      "n": 1,
+      "name": "nvidia_smi",
+      "cmd": "nvidia-smi",
+      "exit_code": 0,
+      "log": "logs/01_nvidia_smi.txt",
+      "optional": false
+    },
+    {
+      "n": 2,
+      "name": "ncu",
+      "cmd": "python bench/run_ncu.py --seed 8 --out runs",
+      "exit_code": 0,
+      "log": "logs/02_ncu.txt",
+      "optional": false
+    },
+    {
+      "n": 3,
+      "name": "nvidia_smi_after",
+      "cmd": "nvidia-smi",
+      "exit_code": 0,
+      "log": "logs/03_nvidia_smi_after.txt",
+      "optional": false
+    }
+  ],
+  "overall_exit": 0
+}

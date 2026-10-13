@@ -1,0 +1,3 @@
+runs/20261014-001653_M00_gpu_probe: valid
+runs/20261014-003929_M08_ncu: valid
+runs/20261014-012623_M08_pc_ingest_checks: valid

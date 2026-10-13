@@ -1,0 +1,25 @@
+{
+ "module": "M08",
+ "run": "runs/20261014-012623_M08_pc_ingest_checks (git 459f5c5, dirty)",
+ "date": "2026-10-14",
+ "views": {},
+ "checks": {},
+ "ok": true,
+ "superseded": [],
+ "index_rows": [
+  "TERM-M08-S47-GATES",
+  "TERM-M08-S47-JOB-M00-01-NVIDIA-SMI",
+  "TERM-M08-S47-JOB-M00-02-PROBE",
+  "TERM-M08-S47-JOB-M08-NCU-02-NCU",
+  "TERM-M08-S47-PYTEST-ALL",
+  "TERM-M08-S47-EXPORT-CHECK"
+ ],
+ "files_written": [
+  "terminal/M08_S47_gates.txt",
+  "terminal/M08_S47_job_M00_01_nvidia_smi.txt",
+  "terminal/M08_S47_job_M00_02_probe.txt",
+  "terminal/M08_S47_job_M08_ncu_02_ncu.txt",
+  "terminal/M08_S47_pytest_all.txt",
+  "terminal/M08_S47_export_check.txt"
+ ]
+}

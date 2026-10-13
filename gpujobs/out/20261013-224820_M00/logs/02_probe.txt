@@ -1,0 +1,10 @@
+run dir     D:\vclock\pc_runner\work\20261013-224820_M00\runs\20261014-001653_M00_gpu_probe
+backend     cupy   device NVIDIA GeForce RTX 3050 Laptop GPU
+vector-add  n=1048576 mismatches=0 (cupy.RawModule (nvrtc))
+ENV-PEAK-BW    192.032 GB/s
+ENV-D2D-BW     185.788 GB/s
+ENV-MAX-LOG2N  24 log2(n)
+ENV-VRAM-FREE  3.466 GB
+status      OK
+D:\vclock\pc_runner\.venv\Lib\site-packages\cupy\_environment.py:286: UserWarning: CUDA path could not be detected. Set CUDA_PATH environment variable if CuPy fails to load.
+  warnings.warn(
