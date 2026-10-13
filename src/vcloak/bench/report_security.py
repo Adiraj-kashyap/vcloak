@@ -2,13 +2,15 @@
 
     python -m vcloak.bench.report_security --s1 runs/<security_s1> --attack runs/<security_e0e1> \
         --uniformity runs/<security_e2> --trace runs/<security_e3> --tests runs/<cuda_tests> \
-        --oblivious results/oblivious/oblivious_summary.json --out results/security --notes docs/REPORT_CH4_NOTES.md
+        --oblivious results/oblivious/oblivious_summary.json --oracle runs/<oracle_compare> \
+        --out results/security --notes docs/REPORT_CH4_NOTES.md
 
 Nothing here measures. Every table cell and plotted point is read from a run's summary.json or stage JSON, every
 gate is copied from the run that evaluated it, and every figure gets a sidecar JSON naming its run dir. The runs must
 be `cupy` runs of one runner session with a gpu_job block, and the traffic runs must say mode=vcloak, db=postgres,
 engine=gpu (audit A1); otherwise nothing is written. The dudect verdicts of M08 are quoted from the summary that
-`report_oblivious` wrote, never retyped.
+`report_oblivious` wrote, never retyped. The comparison with the CPU oracle (S7) is copied from the local run of
+`bench/run_oracle_compare.py`, which is accepted only if it compared exactly the device runs given here.
 """
 from __future__ import annotations
 
@@ -42,6 +44,7 @@ REAL_STACK = {"mode": "vcloak", "db": "postgres", "engine": "gpu"}  # audit A1
 STAGE_FILES = {"s1": ("s1_traffic.json",), "attack": ("e1_attack.json", "e0_restoration.json", "attack_table.csv"),
                "uniformity": ("e2_uniformity.json",), "trace": ("e3_trace.json",), "tests": ("cuda_tests.json",)}
 WINDOW_LAYOUTS = ("W1", "W10", "W60", "W300")
+ORACLE_FILES = ("oracle_comparison.json", "oracle_comparison.csv")
 
 
 def _stage(run: dict[str, Any], name: str) -> Any:
@@ -75,6 +78,52 @@ def check_inputs(runs: dict[str, dict[str, Any]]) -> dict[str, Any]:
     return {"session_id": env["session_id"], "runner": env["runner"], "gpu": env["gpu"], "driver": env.get("driver"),
             "cuda": env.get("cuda"), "cupy": env.get("cupy"), "git_sha": man["git_sha"],
             "job_id": man["gpu_job"]["job_id"], "seed": man["seed"], **REAL_STACK}
+
+
+def check_oracle(orun: dict[str, Any], runs: dict[str, dict[str, Any]]) -> None:
+    """The oracle comparison is reported only if it is a full, finished run over these very device runs."""
+    man = orun["manifest"]
+    if man.get("status") != "OK" or man.get("quick"):
+        raise ReportError(f"oracle run {orun['id']} has status {man.get('status')}, quick {man.get('quick')}")
+    want = {k: runs[k]["id"] for k in ("s1", "attack", "uniformity", "trace")}
+    got = man.get("params", {}).get("device_runs")
+    if got != want:
+        raise ReportError(f"oracle run {orun['id']} compared other device runs: {got}")
+
+
+def oracle_section(orun: dict[str, Any], cmp: dict[str, Any], runs: dict[str, dict[str, Any]], root: Path,
+                   issues: dict[str, str]) -> list[str]:
+    """The device values beside the oracle values, both tagged; intervals and verdicts copied from the run."""
+    def span(r: dict[str, Any]) -> str:
+        return "-" if r["lo"] is None else f"{r['lo']:.6g} to {r['hi']:.6g}"
+
+    def o(metric_id: str) -> str:
+        return tagged({"oracle": orun}, metric_id)
+
+    rows = [[r["experiment"], r["quantity"], tagged(runs, r["device_metric"]), o(r["oracle_metric"]), span(r),
+             r["verdict"]] for r in cmp["rows"]]
+    L = [f"- The oracle `{orun['manifest']['params']['oracle']}` ran unchanged on the laptop CPU with seed "
+         f"{cmp['seed']} and the sizes of the device runs (`{rel(orun['dir'], root)}`). It is the reference for the "
+         "logic: it is not a GPU run and none of its timings is used.",
+         "- The two sides use different keys (the oracle draws its keys from the OS), so a key-dependent number is "
+         "expected to come from the same distribution, not to be equal.",
+         f"- EQUAL: fixed by the traffic or the schedule, the values agree to 1e-9. WITHIN_NOISE: for E0 and E1 the "
+         f"device value lies inside the prediction interval of {cmp['oracle_reps']} repetitions of the oracle's attack "
+         f"with fresh keys on the same traffic (level {cmp['family_alpha']} shared over {cmp['spread_rows']} rows); "
+         "for E2 both values lie inside the interval that theory or the ideal-sampler calibration gives. "
+         "NOT_COMPARABLE: the two sides define the quantity differently.", "",
+         _md_table(["experiment", "quantity", "device (T4 + PostgreSQL)", "CPU oracle", "interval", "verdict"], rows),
+         "", f"- {len(cmp['rows'])} rows: {o('S-ORACLE-CMP-EQUAL')} EQUAL, {o('S-ORACLE-CMP-WITHIN-NOISE')} "
+         f"WITHIN_NOISE, {o('S-ORACLE-CMP-DIFFERS')} DIFFERS, {o('S-ORACLE-CMP-NOT-COMPARABLE')} NOT_COMPARABLE "
+         "(`results/security/oracle_comparison.csv`)."]
+    L += [f"- DIFFERS: {r['experiment']} / {r['quantity']} ({issues.get('oracle', 'no issue')})."
+          for r in cmp["rows"] if r["verdict"] == "DIFFERS"]
+    L += [f"- NOT_COMPARABLE: {r['quantity']} - {r['criterion']}." for r in cmp["rows"]
+          if r["verdict"] == "NOT_COMPARABLE"]
+    if cmp["counts"]["DIFFERS"] == 0:
+        L.append("- No row differs beyond the noise defined above. That is agreement of one device replay with one "
+                 "oracle run at one seed; it is not a proof that the two implementations are equivalent.")
+    return L
 
 
 def gate_rows(stages: dict[str, Any], runs: dict[str, dict[str, Any]], root: Path) -> list[dict[str, Any]]:
@@ -199,7 +248,8 @@ def oblivious_link(path: Path | None) -> list[str]:
 
 def build_section(runs: dict[str, dict[str, Any]], stages: dict[str, Any], prov: dict[str, Any], root: Path,
                   gates: list[dict[str, Any]], figures: list[dict[str, Any]], oblivious: Path | None,
-                  issues: dict[str, str]) -> str:
+                  issues: dict[str, str], orun: dict[str, Any] | None = None,
+                  cmp: dict[str, Any] | None = None) -> str:
     def t(metric_id: str) -> str:
         return tagged(runs, metric_id)
 
@@ -275,9 +325,13 @@ def build_section(runs: dict[str, dict[str, Any]], stages: dict[str, Any], prov:
     L += [f"- FAIL: {g['experiment']} / {g['scope']} / {g['gate']} (`{g['run_dir']}`)" for g in failed]
     L += ["", "## 4.S.8 Figures"]
     L += [f"- `results/security/{f['files'][0]}` from `{f['run_dirs'][0]}`" for f in figures]
-    L += ["", "## 4.S.9 Not in this section",
-          f"- The anonymity-set study (S6) and the comparison with the CPU oracle (S7): {NM} "
-          f"({issues.get('pending', 'no issue')}).", M14_END]
+    missing, last = "The anonymity-set study (S6)", "4.S.9"
+    if orun is not None and cmp is not None:
+        L += ["", "## 4.S.9 Comparison with the CPU oracle", *oracle_section(orun, cmp, runs, root, issues)]
+        last = "4.S.10"
+    else:
+        missing += " and the comparison with the CPU oracle (S7)"
+    L += ["", f"## {last} Not in this section", f"- {missing}: {NM} ({issues.get('pending', 'no issue')}).", M14_END]
     return "\n".join(L) + "\n"
 
 
@@ -294,13 +348,19 @@ def merge_notes(path: Path, section: str) -> None:
 
 def generate(s1: str | Path, attack: str | Path, uniformity: str | Path, trace: str | Path, out: str | Path,
              tests: str | Path | None = None, oblivious: str | Path | None = None, notes: str | Path | None = None,
-             issues: dict[str, str] | None = None, root: str | Path = ".") -> dict[str, Any]:
+             issues: dict[str, str] | None = None, root: str | Path = ".",
+             oracle: str | Path | None = None) -> dict[str, Any]:
     root, out, issues = Path(root), Path(out), issues or {}
     runs = {"s1": load_run(s1), "attack": load_run(attack), "uniformity": load_run(uniformity),
             "trace": load_run(trace)}
     if tests:
         runs["tests"] = load_run(tests)
     prov = check_inputs(runs)
+    orun = load_run(oracle) if oracle else None
+    cmp = None
+    if orun is not None:
+        check_oracle(orun, runs)
+        cmp = _stage(orun, ORACLE_FILES[0])
     stages = {"s1": _stage(runs["s1"], "s1_traffic.json"), "e1": _stage(runs["attack"], "e1_attack.json"),
               "e0": _stage(runs["attack"], "e0_restoration.json"),
               "e2": _stage(runs["uniformity"], "e2_uniformity.json"), "e3": _stage(runs["trace"], "e3_trace.json")}
@@ -314,6 +374,10 @@ def generate(s1: str | Path, attack: str | Path, uniformity: str | Path, trace: 
         for f in STAGE_FILES[name]:
             shutil.copyfile(run["dir"] / f, out / f)
             files.append(f)
+    if orun is not None:
+        for f in ORACLE_FILES:
+            shutil.copyfile(orun["dir"] / f, out / f)
+            files.append(f)
     write_csv(out / "gates.csv", ["experiment", "scope", "gate", "result", "run_dir"],
               [[g[k] for k in ("experiment", "scope", "gate", "result", "run_dir")] for g in gates])
     files.append("gates.csv")
@@ -326,11 +390,13 @@ def generate(s1: str | Path, attack: str | Path, uniformity: str | Path, trace: 
     summary = {"provenance": prov, "backend": "cupy", "run_dirs": {k: rel(r["dir"], root) for k, r in runs.items()},
                "gates": len(gates), "gates_failed": [g for g in gates if g["result"] != "PASS"],
                "oblivious_summary": obl.as_posix() if obl else None, "issues": issues, "files": sorted(files),
-               "not_measured": ["S6 anonymity set", "S7 comparison with the CPU oracle"],
+               "not_measured": ["S6 anonymity set"] + ([] if cmp else ["S7 comparison with the CPU oracle"]),
+               "oracle_comparison": {"run_dir": rel(orun["dir"], root), "counts": cmp["counts"],
+                                     "rows": len(cmp["rows"])} if orun is not None and cmp is not None else None,
                "generated_by": "python -m vcloak.bench.report_security"}
     (out / "security_summary.json").write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
     if notes:
-        merge_notes(Path(notes), build_section(runs, stages, prov, root, gates, figures, obl, issues))
+        merge_notes(Path(notes), build_section(runs, stages, prov, root, gates, figures, obl, issues, orun, cmp))
     return summary
 
 
@@ -340,14 +406,17 @@ def main(argv: list[str] | None = None) -> int:
         ap.add_argument(f"--{name}", required=True, help=f"run dir of the {name} stage")
     ap.add_argument("--tests", default=None, help="run dir of the tests marked gpu")
     ap.add_argument("--oblivious", default=None, help="oblivious_summary.json written by report_oblivious")
+    ap.add_argument("--oracle", default=None, help="run dir of bench/run_oracle_compare.py (S7)")
     ap.add_argument("--out", default="results/security")
     ap.add_argument("--notes", default=None, help="merge the M14 section into these notes")
     ap.add_argument("--issue-overflow", default="no issue", help="issue quoted for an occupancy above CAND_K")
+    ap.add_argument("--issue-oracle", default="no issue", help="issue quoted for a row that differs from the oracle")
     ap.add_argument("--issue-pending", default="no issue", help="issue quoted for the steps not measured yet")
     a = ap.parse_args(argv)
     try:
         s = generate(a.s1, a.attack, a.uniformity, a.trace, a.out, a.tests, a.oblivious, a.notes,
-                     {"overflow": a.issue_overflow, "pending": a.issue_pending})
+                     {"overflow": a.issue_overflow, "pending": a.issue_pending, "oracle": a.issue_oracle},
+                     oracle=a.oracle)
     except ReportError as e:
         print(f"report_security: {NM} - {e}")
         return 1

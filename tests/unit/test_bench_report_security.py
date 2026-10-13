@@ -149,3 +149,43 @@ def test_cli_prints_not_measured_on_refusal(tree: dict[str, Any], capsys: pytest
     rc = rs.main(["--s1", str(tree["s1"]), "--attack", str(tree["attack"]), "--uniformity", str(tree["uniformity"]),
                   "--trace", str(tree["trace"]), "--out", str(tree["out"])])
     assert rc == 1 and "NOT_MEASURED" in capsys.readouterr().out
+
+
+def _oracle_run(tree: dict[str, Any], device_runs: dict[str, str] | None = None, quick: bool = False) -> Path:
+    cmp = {"seed": 7, "oracle_reps": 5, "family_alpha": 0.01, "spread_rows": 1,
+           "counts": {"EQUAL": 1, "WITHIN_NOISE": 0, "DIFFERS": 1, "NOT_COMPARABLE": 1},
+           "rows": [
+               {"experiment": "S1", "quantity": "messages", "device_metric": "S-TRAFFIC-MSGS",
+                "oracle_metric": "S-ORACLE-TRAFFIC-MSGS", "lo": None, "hi": None, "verdict": "EQUAL", "criterion": "c"},
+               {"experiment": "E1", "quantity": "turn-order accuracy, W60", "device_metric": "S-TURNACC-W60",
+                "oracle_metric": "S-ORACLE-TURNACC-W60", "lo": 0.6, "hi": 0.7, "verdict": "DIFFERS", "criterion": "c"},
+               {"experiment": "E0", "quantity": "candidate set size K", "device_metric": "S-CANDK",
+                "oracle_metric": "S-ORACLE-CANDK", "lo": None, "hi": None, "verdict": "NOT_COMPARABLE",
+                "criterion": "defined differently"}]}
+    params = {"oracle": "seed/vcloak_oracle.py",
+              "device_runs": device_runs or {"s1": "s1", "attack": "atk", "uniformity": "uni", "trace": "trc"}}
+    metrics = [{"id": "S-ORACLE-TRAFFIC-MSGS", "value": 40}, {"id": "S-ORACLE-TURNACC-W60", "value": 0.65},
+               {"id": "S-ORACLE-CANDK", "value": 8}, {"id": "S-ORACLE-CMP-DIFFERS", "value": 1}]
+    return _run(tree["root"], "ora", {"oracle_comparison.json": cmp, "oracle_comparison.csv": "experiment\n"},
+                metrics, backend="numpy", params=params, quick=quick)
+
+
+def test_oracle_comparison_is_copied_and_both_sides_are_tagged(tree: dict[str, Any]) -> None:
+    notes = tree["root"] / "notes.md"
+    s = _generate(tree, notes=notes, oracle=_oracle_run(tree), issues={"oracle": "ISSUE-8", "pending": "ISSUE-9"})
+    text = notes.read_text(encoding="utf-8")
+    assert (tree["out"] / "oracle_comparison.csv").exists() and "oracle_comparison.json" in s["files"]
+    assert s["not_measured"] == ["S6 anonymity set"] and s["oracle_comparison"]["counts"]["DIFFERS"] == 1
+    assert "| S1 | messages | 40<!--M:S-TRAFFIC-MSGS--> | 40<!--M:S-ORACLE-TRAFFIC-MSGS--> | - | EQUAL |" in text
+    assert "0.56<!--M:S-TURNACC-W60--> | 0.65<!--M:S-ORACLE-TURNACC-W60--> | 0.6 to 0.7 | DIFFERS |" in text
+    assert "- DIFFERS: E1 / turn-order accuracy, W60 (ISSUE-8)." in text  # a difference is named with its issue
+    assert "No row differs" not in text
+    assert "## 4.S.10 Not in this section\n- The anonymity-set study (S6): NOT_MEASURED (ISSUE-9)." in text
+
+
+@pytest.mark.parametrize("kw", [{"device_runs": {"s1": "s1", "attack": "other", "uniformity": "uni", "trace": "trc"}},
+                                {"quick": True}])
+def test_refuses_an_oracle_run_over_other_device_runs_or_quick(tree: dict[str, Any], kw: dict[str, Any]) -> None:
+    with pytest.raises(ReportError):
+        _generate(tree, oracle=_oracle_run(tree, **kw))
+    assert not tree["out"].exists()
