@@ -40,6 +40,15 @@ runs/20261013-024742_M08_dudect_i25k_s10 (job 20261013-005946_M08_issue25k).
 - The `T-DUDECT-MAXT-CONTROL-NULL` rows of these runs have no per-measurement clock; their targets ran at 1065 to
   1125 MHz, not at the clock of the kernel-window targets.
 
+ANN-3 (2026-10-13, session 43; ISSUE-12, ISSUE-15). It covers the 60 rows of the run dir
+runs/20261013-111612_M07_pipeline (job 20261013-163732_M07_issue12, Colab, 2 vCPU, CUDA 13000).
+- All 60 are UNSTABLE: every one of the 12 configurations had a CV of the whole call above 0.1 on both attempts.
+  No value was kept, estimated or carried over from the rows of runs/20261011-215653_M07_pipeline, which have the same
+  metric IDs and stay as they are (Kaggle, 4 vCPU, CUDA 12090): the two runs are two runner sessions on two CPU
+  counts, and an ID that occurs twice names two measurements, never a before and an after.
+- The attempts and the real-time gate of both runs are in summary.json and raw.csv of each; the reading is
+  runs/20261013-165216_M07_issue12_ingest_checks/gates.txt. The gate fails for the whole call at 65536 slots in both.
+
 | Metric ID | Value | Unit | Stat | Module | Run dir | Command | Date | Quick | Backend | Runner |
 |---|---|---|---|---|---|---|---|---|---|---|
 | ENV-PEAK-BW | 320.064 | GB/s | theoretical | M00 | runs/20261011-110031_M00_gpu_probe | python bench/probe_gpu.py --seed 7 --out runs | 20261011 | no | cupy | kaggle |

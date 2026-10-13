@@ -1049,3 +1049,22 @@
 - Next: ingest of 20261013-163732_M07_issue12, then M15 S1 ; human action: ISSUE-44 (run the job)
 
 - GPU-JOB 20261013-163732_M07_issue12 ingested 2026-10-13 16:50: runner colab, gpu Tesla T4, session 20261013-111455, overall exit 0, runs 20261013-111612_M07_pipeline, 60 metrics indexed.
+
+## Session 43 — 2026-10-13 — ISSUE-12: the host path of write_epoch, ingest half — owner:Aditya
+- Steps: ISSUE-12 ingest and gate (status after: M15 NOT_STARTED, no pending job; next_unit M15)
+- Did: ingested job 20261013-163732_M07_issue12 (Colab T4, 2 vCPU; 5 of 5 commands exit 0). Read the real-time gate from the
+  summary.json of the new run and of the M07 run (gates.txt, generated). ANN-3 in METRICS_INDEX. No code changed.
+- Result: the gate still FAILS for the whole call at 65536 slots and the measurement is UNSTABLE; the device part
+  passes; the gate passes at 64 to 16384 slots on UNSTABLE measurements. 12 of 12 configurations UNSTABLE, so the 60
+  indexed rows carry no value. On the device: 154 engine tests pass, 0 oracle mismatches, no `uuid.py` in the host
+  profile. The attempt values are in ISSUE-12 and gates.txt; none is a reportable metric.
+- Evidence: runs/20261013-111612_M07_pipeline (device run); runs/20261013-165216_M07_issue12_ingest_checks (gates.txt, pytest_all.txt
+  2128 passed 675 skipped, check_*.txt, ruff.txt, g10_quick_rerun.txt, job_log_*.txt); evidence/terminal/M07_ISSUE12_*
+- Metrics added: 60 rows P-WRITE-EPOCH-* and the read_window rows of the run, all UNSTABLE (backend cupy, runner colab)
+- Decisions: none new (ADR)
+- Issues: ISSUE-12 updated (OPEN, BLOCKS none: a measured limitation); ISSUE-15 updated; closed ISSUE-44
+- Deviations from spec: the M07 notes were not regenerated (`vcloak.bench.report` takes four runs of one session)
+- Not verified: a before/after speed-up (Kaggle 4 vCPU against Colab 2 vCPU); the cause of the tail; a stable
+  measurement of any pipeline row on this runner
+- Commit: 698dff2 (ingest), records PENDING
+- Next: M15 S1 ; human action: none required; ISSUE-12 has three options open for a decision of the owner

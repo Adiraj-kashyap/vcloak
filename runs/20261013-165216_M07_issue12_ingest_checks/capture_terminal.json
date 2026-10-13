@@ -1,0 +1,25 @@
+{
+ "module": "M07",
+ "run": "runs/20261013-165216_M07_issue12_ingest_checks (git 698dff2, dirty)",
+ "date": "2026-10-13",
+ "views": {},
+ "checks": {},
+ "ok": true,
+ "superseded": [],
+ "index_rows": [
+  "TERM-M07-ISSUE12-GATES",
+  "TERM-M07-ISSUE12-JOB-LOG-04-PIPELINE",
+  "TERM-M07-ISSUE12-JOB-LOG-03-PYTEST-ENGINE-REGRESSION",
+  "TERM-M07-ISSUE12-JOB-LOG-01-NVIDIA-SMI",
+  "TERM-M07-ISSUE12-JOB-LOG-02-CPU-INFO",
+  "TERM-M07-ISSUE12-PYTEST-ALL"
+ ],
+ "files_written": [
+  "terminal/M07_ISSUE12_gates.txt",
+  "terminal/M07_ISSUE12_job_log_04_pipeline.txt",
+  "terminal/M07_ISSUE12_job_log_03_pytest_engine_regression.txt",
+  "terminal/M07_ISSUE12_job_log_01_nvidia_smi.txt",
+  "terminal/M07_ISSUE12_job_log_02_cpu_info.txt",
+  "terminal/M07_ISSUE12_pytest_all.txt"
+ ]
+}

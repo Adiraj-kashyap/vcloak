@@ -237,7 +237,7 @@ pipeline run, as in the smoke run; it is recorded with every P-* metric. The fiv
 the index as history and are not results.
 
 ### ISSUE-12 [OPEN] write_epoch is dominated by host work; at SLOTS 65536 the p99 is above EPOCH_MS
-BLOCKS: M15   SEVERITY: high   OPENED: 2026-10-11 session 12
+BLOCKS: none (was M15 until the ingest of session 43; now a measured limitation)   SEVERITY: high   OPENED: 2026-10-11 session 12
 Symptom: in runs/20261011-163049_M06_pipeline_smoke_quick the `host` stage is 199.78 ms of a 208.11 ms median total
 at SLOTS 65536 (9.64 of 10.84 ms at 4096; 0.51 of 1.57 ms at 64). The device stages together are about 8 ms at
 65536 (d2h 5.7 ms, sort 0.88, compact 0.77, h2d 0.57). EPOCH_MS is 200.
@@ -270,6 +270,31 @@ What was NOT done: the rows are still one `StoredRow` object per message (the in
 repository, ADR-014, returns a list of them), so the host stage still grows with the batch. No timing exists yet: the
 laptop has no GPU and a simulator time is not a result. Whether p99 < EPOCH_MS now holds at 65536 slots is what job
 20261013-163732_M07_issue12 measures (ISSUE-44). Stays OPEN, and keeps blocking M15, until that job is ingested.
+Update session 43 (ingest, 698dff2; runs/20261013-111612_M07_pipeline, job 20261013-163732_M07_issue12, 5 of 5 commands exit 0;
+every value below is read from its summary.json by runs/20261013-165216_M07_issue12_ingest_checks/gates.txt):
+- The real-time gate still FAILS for the whole call at SLOTS 65536, and the measurement is UNSTABLE: p99 of the whole
+  call 333.3035 ms (attempt 1) and 329.9052 ms (attempt 2) against EPOCH_MS 200; CV of the whole call 0.2842 and 0.2707
+  against the limit 0.1. The device part passes (p99 10.7982 and 9.1214 ms). The gate passes at 64 to 16384 slots, on
+  UNSTABLE measurements. All 12 configurations of this run are UNSTABLE, so all 60 rows it indexed carry UNSTABLE and
+  no value (ANN-3 in METRICS_INDEX): none of the numbers of this update is a reportable metric.
+- What the fix did, as far as this run shows: `uuid.py __init__` is no longer in host_profile.txt (196608 calls in
+  the M07 profile), the engine tests pass on the device (154 passed) and write_epoch equals the oracle at every size
+  (0 mismatches). The median of the host stage at 65536 is 157.4747 and 158.0399 ms, the median of the whole call
+  163.6934 and 164.3661 ms: the median is under EPOCH_MS, the tail is not (p95 290.9970 and 292.8551 ms).
+- What this run does NOT show: a before/after speed-up. The M07 numbers (host median 233.7088 ms, p99 279.5451 ms)
+  came from Kaggle with 4 vCPU and CUDA 12090; this job ran on Colab with 2 vCPU and CUDA 13000 (ISSUE-3). The host
+  stage is Python on the CPU of the runner, so the two runs differ in the thing being measured. Never write "the fix
+  made the host stage N % faster" from these two runs.
+- Cause of the tail: not profiled. The host stage is still 96 % of the median call (one `StoredRow` object per
+  message), and the telemetry thread of the bench shares 2 vCPU with it; which of the two makes the tail is unknown.
+- Standing after this ingest (as ISSUE-44 announced): a measured limitation, no longer a blocker. M15 starts and must
+  say that on the free runner a full epoch of 2^16 slots does not meet EPOCH_MS because of the host path, and must
+  not use 65536 slots as a size that "fits"; M16/M20 quote the gate from both runs with their runners. The generated
+  M07 section of docs/REPORT_CH4_NOTES.md still describes the M07 session (uuid per row) and was not regenerated:
+  `vcloak.bench.report` takes four runs of one runner session, and this run is a session of its own.
+- Open for a decision of the owner (Aditya), none of it done: (a) run the same job on Kaggle (4 vCPU) for numbers
+  comparable with M07; (b) column arrays instead of `StoredRow` objects, which changes ARCHITECTURE §4 and ADR-014
+  and needs its own unit and job; (c) accept the limitation as it stands.
 
 ### ISSUE-13 [CLOSED 9ae9ba5] HUMAN ACTION REQUIRED — GPU JOB READY: M07 performance sweeps (job 20261011-224124_M07)
 BLOCKS: M07   SEVERITY: high   OPENED: 2026-10-11 session 13
@@ -351,6 +376,10 @@ it is worth a GPU session before M16): time batches of launches for any kernel w
 and divide; run the large-n configurations after a load that has brought the clock to its power-limited steady
 state, so that the clock no longer moves inside the timed runs; label that state in the metric note as now. Keep
 this session's numbers; index the new session separately and never merge the two in one figure.
+Update session 43: the pipeline run of job 20261013-163732_M07_issue12 (Colab, 2 vCPU, runs/20261013-111612_M07_pipeline) is UNSTABLE in
+12 of 12 configurations (write_epoch at all five sizes, read_window at all seven K), CV of the whole call 0.137 to
+1.793 after two attempts, SM clock steady at 585 MHz (LOW), throttle-reasons mask 0 at 65536 slots. Its 60 rows
+are UNSTABLE in the index (ANN-3). A free 2-vCPU runner did not give one stable pipeline row.
 
 ### ISSUE-16 [CLOSED 7c31c24] HUMAN ACTION REQUIRED — GPU JOB READY: M08 obliviousness audit (job 20261012-041010_M08)
 BLOCKS: M08   SEVERITY: high   OPENED: 2026-10-12 session 15
@@ -1280,7 +1309,7 @@ Options for the owner: (a) document as a sizing limit (the state now); (b) a siz
 expected rows per window, as a design note or ADR, checked by one more S6-type run; (c) raise CAND_K or the bucket count
 for the 1000-user point in M15 and record the parameters beside every number.
 
-### ISSUE-44 [OPEN] HUMAN ACTION REQUIRED — GPU JOB READY: write_epoch re-measured after the ISSUE-12 fix (job 20261013-163732_M07_issue12)
+### ISSUE-44 [CLOSED 698dff2] HUMAN ACTION REQUIRED — GPU JOB READY: write_epoch re-measured after the ISSUE-12 fix (job 20261013-163732_M07_issue12)
 BLOCKS: M15   SEVERITY: high   OPENED: 2026-10-13 session 42
 Why: ISSUE-12 blocks M15. The host path of `write_epoch` was changed (59d622f); only a run on the T4 can say whether
 the whole call now fits EPOCH_MS at 65536 slots. M15 does not start before that number is in.
@@ -1312,3 +1341,5 @@ M07 only as far as the two runner CPUs are (lscpu is in both bundles; ISSUE-3 fo
 recorded as measured: if the gate still fails at 65536 slots, ISSUE-12 stays a limitation and M15 says so.
 Confirm by running: `ls gpujobs/inbox/` shows results_20261013-163732_M07_issue12.zip
 Then type: continue
+Closed session 43: the human ran the job on Colab (T4, 2 vCPU; session 20261013-111455) and the bundle was ingested
+(698dff2): 5 of 5 commands exit 0, run dir runs/20261013-111612_M07_pipeline. The result is in ISSUE-12.

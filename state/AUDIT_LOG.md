@@ -1288,3 +1288,36 @@ Notes:
   still failing, that is the next step and needs a decision of the owner.
 - `row_ids` writes the two slots of `uuid.UUID` (`int`, `is_safe`) directly. That relies on the layout of the standard
   library class; the tests compare with the constructor, so a change of that layout fails a test rather than an id.
+
+## Audit M07 (ISSUE-12) — 2026-10-13 — session 43 — result: PASS for the ingest (the real-time gate itself FAILS at 65536 slots and is recorded as a limitation; ISSUE-12 stays OPEN)
+| Item | Result | Evidence |
+|---|---|---|
+| The bundle is the job that was packed | PASS | `gpujob.py ingest`: job id, bundle sha e57edb14 and git sha 36c8b35 verified; 698dff2 |
+| Every command of the job exits 0 | PASS | gpujobs/out/20261013-163732_M07_issue12/result.json (5 of 5) |
+| The engine still equals the oracle, on the device | PASS | RUN/job_log_03_pytest_engine_regression.txt (154 passed); runs/20261013-111612_M07_pipeline/summary.json (mismatches 0 at 64 to 65536 slots and K 64 to 4096) |
+| The fix removes the per-row uuid constructor, on the device | PASS | runs/20261013-111612_M07_pipeline/host_profile.txt has no `uuid.py` line (the M07 profile has 196608 calls) |
+| The real-time gate at 65536 slots, whole call | FAIL (measured; UNSTABLE) | RUN/gates.txt: p99 above EPOCH_MS on both attempts, CV above the limit; device part PASS |
+| A before/after speed-up of the host stage | NOT_MEASURED | the two runs are Kaggle 4 vCPU and Colab 2 vCPU (RUN/gates.txt, last line; RUN/job_log_02_cpu_info.txt) |
+| G1 | PASS | RUN/pytest_all.txt (2128 passed, 675 skipped, the counts of session 42: no database skip) |
+| G2 | PASS | RUN/check_metrics.txt (757 rows, 0 problems); the 60 new rows are UNSTABLE, written by the ingest; ANN-3 added |
+| G2b | PASS | the manifest of runs/20261013-111612_M07_pipeline has backend cupy and a gpu_job block; the simulator rerun is NOT_MEASURED and outside the repository |
+| G3 | PASS | RUN/check_oblivious.txt (11 files, 0 findings); no kernel changed |
+| G4 | PASS | RUN/check_secrets.txt (0 key-like runs) after one entry in the allow-list: the evidence file name `M07_ISSUE12_job_log_03_pytest_engine_regression`, flagged as base64url in evidence/INDEX.md and capture_terminal.json |
+| G5 | N/A | no GPU twin was written |
+| G6 | N/A | a fix unit: no module deliverable |
+| G7 | PASS | checked after the closing commit |
+| G8 | PASS | STATE: M15 NOT_STARTED at S1, gpu_job.pending null, last_ingested 20261013-163732_M07_issue12, next_unit M15 |
+| G9 | PASS | SESSION_LOG session 43, this entry, ISSUE-12 and ISSUE-15 updated, ISSUE-44 closed |
+| G10 | PASS | RUN/manifests_valid.txt (the ingested run is valid: git 36c8b35, seed 7, command, env); RUN/g10_quick_rerun.txt (quick, simulator: exit 0, 0 mismatches in 12 configurations; correctness only, it cannot reproduce a timing gate) |
+Notes:
+- RUN is runs/20261013-165216_M07_issue12_ingest_checks.
+- The PASS is for the ingest and its records. The thing ISSUE-12 is about did not pass: the whole call misses
+  EPOCH_MS at 65536 slots, on a run in which 12 of 12 configurations are UNSTABLE. No value of that run is in the index.
+- ISSUE-12 no longer blocks M15. That follows what ISSUE-44 announced before the job ran ("if the gate still fails,
+  ISSUE-12 stays a limitation and M15 says so"); it was not decided again by the owner after seeing the result. The
+  three options left to the owner are listed in ISSUE-12.
+- The generated M07 section of docs/REPORT_CH4_NOTES.md was not regenerated and still names the uuid constructor as the
+  cause. It describes the M07 session correctly; M16/M20 must add the run of this session beside it.
+- The cause of the tail (p95 far above the median) is not profiled. The cProfile in host_profile.txt also contains the
+  telemetry thread of the bench, so its totals are not the host stage alone.
+- G10 on the timing gate: the laptop has no GPU, so the FAIL of the gate itself cannot be reproduced here.

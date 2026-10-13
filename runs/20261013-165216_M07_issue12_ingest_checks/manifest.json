@@ -1,0 +1,47 @@
+{
+  "run_id": "20261013-165216_M07_issue12_ingest_checks",
+  "module": "M07",
+  "step": "S5",
+  "owner": "Aditya",
+  "git_sha": "698dff261e6fcc5959e2ae6dc8500077f24a6fc1",
+  "dirty": true,
+  "command": "pytest -q; ruff; check_metrics, check_oblivious, check_secrets; gate reading of runs/20261013-111612_M07_pipeline (gates.txt); bench/run_pipeline.py --dev --full --seed 7 --quick on the simulator (correctness only)",
+  "seed": 0,
+  "quick": false,
+  "params": {},
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261013-165214",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U"
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791890536.2269347
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791890895.5343606
+  },
+  "outputs": [
+    "check_metrics.txt",
+    "check_oblivious.txt",
+    "check_secrets.txt",
+    "g10_quick_rerun.txt",
+    "gates.py",
+    "gates.txt",
+    "job_log_01_nvidia_smi.txt",
+    "job_log_02_cpu_info.txt",
+    "job_log_03_pytest_engine_regression.txt",
+    "job_log_04_pipeline.txt",
+    "manifests_valid.txt",
+    "pytest_all.txt",
+    "ruff.txt"
+  ],
+  "status": "OK",
+  "notes": "ISSUE-12 ingest checks: numpy backend, correctness only; gates.txt is read from the summary.json of the two ingested pipeline runs; no timing of this run is a result"
+}
