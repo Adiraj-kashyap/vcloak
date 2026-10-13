@@ -27,7 +27,6 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path[:0] = [str(ROOT / "src"), str(ROOT / "bench")]
 
 from run_oracle_compare import load_oracle  # noqa: E402
-
 from vcloak import runs  # noqa: E402
 from vcloak.gpu.runtime import get_backend  # noqa: E402
 
@@ -68,9 +67,9 @@ def main(argv: list[str] | None = None) -> int:
            "p_below_0_01": below}
     (run_dir / "oracle_chi2_repeat.json").write_text(json.dumps(doc, indent=2) + "\n", encoding="utf-8")
     at = f"over {a.reps} fresh keys, n {n}, {epochs} epochs, dof {dof}"
-    metrics = [{"id": "S-ORACLE-CHI2-REP-MIN", "value": doc["chi2_min"], "unit": "-", "stat": f"smallest statistic {at}"},
+    metrics = [{"id": "S-ORACLE-CHI2-REP-MIN", "value": doc["chi2_min"], "unit": "-", "stat": f"smallest {at}"},
                {"id": "S-ORACLE-CHI2-REP-MEDIAN", "value": doc["chi2_median"], "unit": "-", "stat": f"median {at}"},
-               {"id": "S-ORACLE-CHI2-REP-MAX", "value": doc["chi2_max"], "unit": "-", "stat": f"largest statistic {at}"},
+               {"id": "S-ORACLE-CHI2-REP-MAX", "value": doc["chi2_max"], "unit": "-", "stat": f"largest {at}"},
                {"id": "S-ORACLE-CHI2-REP-PBELOW", "value": below, "unit": "tables",
                 "stat": f"tables with p below 0.01, {at}"},
                {"id": "S-ORACLE-CHI2-REP-N", "value": a.reps, "unit": "tables", "stat": "fresh keys"}]
