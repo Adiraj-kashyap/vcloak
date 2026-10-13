@@ -1122,5 +1122,5 @@
   The 26 session-table outcomes are tied to SEC-E5-PASS instead of the amendment (their run is local).
   The first answer of the owner arrived in the field of the ISSUE-12 question; both questions were asked again.
 - Not verified: Overleaf compilation; the cause of the instability; anything about 65536 slots on the current code
-- Commit: 99987e6 (ingest), c3d4e26 (M16)
+- Commit: 99987e6 (ingest), c3d4e26 (M16), records a90039b
 - Next: M19 S1 ; human action: none to start M19 (it has human gates of its own: guide approval, the submission)
