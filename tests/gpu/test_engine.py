@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import pickle
 import re
+import uuid
 from pathlib import Path
 from typing import Any
 
@@ -22,7 +23,7 @@ from testkeys import TEST_K_MASTER, dev_keystore
 from vcloak.crypto import chacha_ref
 from vcloak.gpu import engine as engine_mod
 from vcloak.gpu import keystore as keystore_mod
-from vcloak.gpu.engine import ROW_ENTROPY, STAGES, TIMER_GPU, TIMER_SIM, GpuEngine, StoredRow, Submission
+from vcloak.gpu.engine import ROW_ENTROPY, STAGES, TIMER_GPU, TIMER_SIM, GpuEngine, StoredRow, Submission, row_ids
 from vcloak.gpu.keystore import DeviceKeyStore, KeyStoreError
 from vcloak.gpu.runtime import Backend, get_backend
 
@@ -256,3 +257,48 @@ def test_the_entropy_contract_is_one_call_of_28_bytes_per_row() -> None:
     for p, row in enumerate(rows):
         assert row.seq_enc[:12] == bytes(range(28 * p + 16, 28 * p + 28)), "the nonce is bytes 16..27 of the row"
         assert row.row_id.version == 4 and len(row.seq_enc) == 44
+
+
+# ── ISSUE-12: the row ids of an epoch are built in one pass, not one `uuid.UUID(...)` call per row ──────────
+
+@pytest.mark.parametrize("n", [0, 1, 2, 257])
+def test_row_ids_equal_the_uuid4_constructor_of_the_standard_library(n: int) -> None:
+    raw = np.random.default_rng([12, n]).integers(0, 256, (n, 16), dtype=np.uint8)
+    before = raw.copy()
+    got = row_ids(raw)
+    want = [uuid.UUID(bytes=raw[i].tobytes(), version=4) for i in range(n)]
+    assert got == want and all(type(u) is uuid.UUID for u in got)
+    assert np.array_equal(raw, before)  # the entropy matrix is not written
+    for g, w in zip(got, want, strict=True):
+        for attr in ("bytes", "int", "hex", "version", "variant", "is_safe"):
+            assert getattr(g, attr) == getattr(w, attr), attr
+        assert (str(g), hash(g)) == (str(w), hash(w))
+        assert pickle.loads(pickle.dumps(g)) == w
+
+
+def test_row_ids_set_the_version_and_variant_bits_at_the_extremes() -> None:
+    for fill in (0x00, 0xFF):
+        raw = np.full((3, 16), fill, dtype=np.uint8)
+        assert row_ids(raw) == [uuid.UUID(bytes=bytes([fill]) * 16, version=4)] * 3
+
+
+def test_row_ids_accept_a_view_of_the_entropy_buffer() -> None:
+    ent = bytes(range(256)) * 7  # 64 rows of ROW_ENTROPY bytes, read-only and not contiguous per column
+    per_row = np.frombuffer(ent, dtype=np.uint8).reshape(-1, ROW_ENTROPY)
+    assert row_ids(per_row[:, :16]) == [uuid.UUID(bytes=ent[ROW_ENTROPY * p:ROW_ENTROPY * p + 16], version=4)
+                                        for p in range(len(per_row))]
+
+
+def test_write_epoch_builds_no_uuid_through_the_constructor(monkeypatch: pytest.MonkeyPatch) -> None:
+    engine = GpuEngine(dev_keystore(get_backend("numpy")), slots=64, entropy=lambda n: bytes(n))
+    want = engine.write_epoch(3, batch_of(40))
+    calls: list[int] = []
+    real_init = uuid.UUID.__init__
+
+    def counting(self: uuid.UUID, *args: Any, **kwargs: Any) -> None:
+        calls.append(1)
+        real_init(self, *args, **kwargs)
+
+    monkeypatch.setattr(uuid.UUID, "__init__", counting)
+    got = engine.write_epoch(3, batch_of(40))
+    assert not calls and got == want and len(got) == 40

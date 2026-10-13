@@ -25,6 +25,7 @@ import time
 import uuid
 from collections.abc import Callable
 from dataclasses import dataclass
+from itertools import repeat
 from typing import Any
 
 import numpy as np
@@ -53,6 +54,25 @@ ROW_ENTROPY = UUID_LEN + NONCE_LEN  # per stored row: the uuid4 bytes, then the 
 STAGES = ("h2d", "tags", "sort", "compact", "d2h", "seal", "bucket", "open", "host")
 TIMER_GPU = "cupy.cuda.Event"
 TIMER_SIM = "time.perf_counter (numpy simulator: not a performance result)"
+
+
+def row_ids(raw: np.ndarray) -> list[uuid.UUID]:
+    """The uuid4 of every row of an (n, 16) uint8 matrix: equal to `uuid.UUID(bytes=row, version=4)`.
+
+    The version and variant bits are set for all rows at once and the objects are filled through their two
+    slots, because `UUID.__init__` once per row was most of the host stage of `write_epoch` (ISSUE-12)."""
+    ids = np.array(raw, dtype=np.uint8)
+    ids[:, 6] = (ids[:, 6] & 0x0F) | 0x40
+    ids[:, 8] = (ids[:, 8] & 0x3F) | 0x80
+    words = ids.view(">u8")
+    new, put, unknown = object.__new__, object.__setattr__, uuid.SafeUUID.unknown
+    out = []
+    for hi, lo in zip(words[:, 0].tolist(), words[:, 1].tolist(), strict=True):
+        u = new(uuid.UUID)
+        put(u, "int", (hi << 64) | lo)
+        put(u, "is_safe", unknown)
+        out.append(u)
+    return out
 
 
 @dataclass
@@ -237,9 +257,9 @@ class GpuEngine:
             clock.mark("d2h")
 
             win = self.window_of(epoch)
-            rows = [StoredRow(uuid.UUID(bytes=ent[ROW_ENTROPY * p:ROW_ENTROPY * p + UUID_LEN], version=4), bkt[p], win,
-                              sealed[SEQ_ENC_LEN * p:SEQ_ENC_LEN * (p + 1)], sub.payload)
-                    for p, sub in enumerate(subs)]
+            blobs = [sealed[i:i + SEQ_ENC_LEN] for i in range(0, SEQ_ENC_LEN * n_real, SEQ_ENC_LEN)]
+            rows = list(map(StoredRow, row_ids(per_row[:, :UUID_LEN]), bkt, repeat(win), blobs,
+                            [s.payload for s in subs]))
             clock.mark("host")
             return self._done(clock, rows)
 

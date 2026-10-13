@@ -1,0 +1,14 @@
+{
+  "title": "ISSUE-12 (write_epoch misses EPOCH_MS at 2^16 slots because of the host stage): the pipeline stage breakdown and the real-time gate again, after the row ids of an epoch are built in one pass instead of one uuid constructor call per row; engine regression against the oracle on the device first, cProfile of the host stage at 65536 slots",
+  "step": "S5",
+  "seed": 7,
+  "commands": [
+    {"name": "nvidia_smi", "cmd": "nvidia-smi", "timeout": 120},
+    {"name": "cpu_info", "cmd": "lscpu", "timeout": 60, "stop_on_fail": false},
+    {"name": "pytest_engine_regression", "cmd": "python -m pytest -p no:cacheprovider -rs -q -m \"not slow\" tests/gpu/test_engine.py tests/integration/test_engine_vs_oracle.py",
+     "timeout": 1800, "stop_on_fail": false},
+    {"name": "pipeline", "cmd": "python bench/run_pipeline.py --dev --full --seed 7 {quick} --out runs",
+     "timeout": 3600, "stop_on_fail": false},
+    {"name": "nvidia_smi_after", "cmd": "nvidia-smi", "timeout": 120, "stop_on_fail": false}
+  ]
+}
