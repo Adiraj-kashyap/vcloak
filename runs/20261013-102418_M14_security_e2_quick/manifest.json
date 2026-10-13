@@ -1,0 +1,44 @@
+{
+  "run_id": "20261013-102418_M14_security_e2_quick",
+  "module": "M14",
+  "step": "S4",
+  "owner": "Abhishek",
+  "git_sha": "8b66d5fc19703ddeb1c40568e2a269b855584d62",
+  "dirty": true,
+  "command": "python bench/run_security_eval.py --stage uniformity --quick --backend numpy",
+  "seed": 2026,
+  "quick": true,
+  "params": {
+    "n_conv": 40,
+    "duration_s": 120,
+    "buckets": 16,
+    "rate": 0.05,
+    "mode": "vcloak",
+    "clock": "sim",
+    "engine": "numpy-simulator"
+  },
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261013-102417",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U"
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791867259.0982573
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791867271.559401
+  },
+  "outputs": [
+    "e2_uniformity.json",
+    "summary.json"
+  ],
+  "status": "OK",
+  "notes": "S4 uniformity of the permutations from device tags; numpy simulator behind the API: kernel semantics only, not evidence about a GPU (M14 A1 not met by this run)."
+}

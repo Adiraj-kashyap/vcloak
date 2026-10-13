@@ -1,0 +1,8 @@
+ok   layout BASELINE: 608 rows, turn-order accuracy 1.0000
+ok   layout EPOCH: 608 rows, turn-order accuracy 0.9789
+ok   layout W10: 608 rows, turn-order accuracy 0.6901
+ok   layout W60: 608 rows, turn-order accuracy 0.5299
+E0: 15 of 15 conversations in exact order (228 messages, 45 reads)
+engine numpy-simulator, db postgres
+run dir: C:\Users\HP\AppData\Local\Temp\claude\d--PJT-vcloak\16e61912-61d9-4da1-b8c0-fbae8d97d405\scratchpad\g10\20261013-105404_M14_security_e0e1_quick
+g10 exit 0

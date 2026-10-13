@@ -12,6 +12,7 @@ Device arrays (CuPy) run the kernels in `kernels/*.cu`; NumPy arrays run their t
 """
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
@@ -125,9 +126,22 @@ def _check_columns(cols: tuple[Any, ...]) -> int:
     return n
 
 
+_launch_hook: Callable[[int, Launch], None] | None = None
+
+
+def set_launch_hook(hook: Callable[[int, Launch], None] | None) -> Callable[[int, Launch], None] | None:
+    """Debug hook (M14 S5): `hook(n, launch)` is called for every bitonic launch the driver issues, before
+    it is issued. Both arguments are public; the hook never sees a record. Returns the hook it replaces."""
+    global _launch_hook
+    previous, _launch_hook = _launch_hook, hook
+    return previous
+
+
 def run_launch(cols: tuple[Any, ...], launch: Launch) -> None:
     """Execute one launch in place: the CUDA kernel for device arrays, its NumPy twin for host arrays."""
     n = int(cols[0].shape[0])
+    if _launch_hook is not None:
+        _launch_hook(n, launch)
     if launch.kernel == "bitonic_pairs_global":
         scalars = (launch.k, launch.j, n // 2)
     elif launch.kernel == "bitonic_shared":

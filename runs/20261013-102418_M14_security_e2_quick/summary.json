@@ -1,0 +1,34 @@
+{
+  "metrics": [
+    {
+      "id": "S-CHI2",
+      "value": 4034.7090000000003,
+      "unit": "-",
+      "stat": "corrected statistic, dof 3969, n 64, 2000 epochs"
+    },
+    {
+      "id": "S-CHI2-P",
+      "value": 0.22936076055872714,
+      "unit": "-",
+      "stat": "p-value, n 64, 2000 epochs"
+    },
+    {
+      "id": "S-CHI2-P-IDEAL",
+      "value": 0.12359345056262915,
+      "unit": "-",
+      "stat": "p-value of the first of 200 ideal-sampler tables, seed 2026, n 64, 2000 epochs"
+    },
+    {
+      "id": "S-TAUBAND-PCT",
+      "value": 100.0,
+      "unit": "%",
+      "stat": "epochs with abs(tau) below 3 sigma, n 4096, 100 epochs"
+    },
+    {
+      "id": "S-TAU-SIGMA-MEAS",
+      "value": 0.011491748329276477,
+      "unit": "-",
+      "stat": "sample standard deviation of tau, n 4096, 100 epochs"
+    }
+  ]
+}

@@ -56,3 +56,19 @@ paper-ready figures into `evidence/figures/`, plus the terminal output of the at
     replay (`autorun=False`): with the free-running sim clock an arrival time could not be placed in its epoch.
   - The run of S1 used the numpy simulator behind the engine (no local GPU). A1 (engine=gpu) is open: ISSUE-38.
   - The message count is recorded as `S-TRAFFIC-MSGS`, a metric id the list above does not name.
+- 2026-10-13 (session 37): S2 to S5 as built, and the GPU job the human allowed (ISSUE-38).
+  - S2 and S3 are one stage (`run_security_eval.py --stage attack`): the traffic is replayed into every layout, and
+    E0 reads 60 conversations back on the W = 60 layout of S3 (every window is asked for, the empty ones too).
+  - The epoch layout is dumped a hundred rounds per statement (the same physical order as `ORDER BY win, ctid`): one
+    statement over its ~4500 partitions needs more locks than a default PostgreSQL allows.
+  - S4 gates as implemented: "the range of the ideal-sampler calibration" is the smallest to the largest statistic of
+    200 ideal-sampler tables; the tau band passes when the count inside 3 sigma lies in the central 99% interval of
+    Binomial(epochs, 0.9973). The permutations come from the development key (public), epochs 0.. and 10^6.. .
+  - S5 records the launches through `kernels.set_launch_hook` (public arguments only). It is the logical trace; the
+    link to the M08 dudect verdicts is written at the ingest, from results/oblivious (not in the bundle).
+  - Figures (window ablation, tau histogram) are drawn at the ingest from the JSON of the run dirs, not in the job.
+  - Metric ids the list above does not name: `S-OCC-MEAN`, `S-TRACE-DISTINCT-DEVICE`, `S-TRACE-DISTINCT-MERGESORT`,
+    `S-CUDA-TESTS-PASSED|FAILED|ERRORS|SKIPPED`.
+  - The job `bench/jobs/M14.json` installs and starts PostgreSQL in the runner (`scripts/runner_stack.py`) and, at the
+    request of the human, also runs every test marked `gpu` (`bench/run_gpu_tests.py`).
+  - S6 (anonymity set) and S7 (comparison with the oracle) are not written and are not in that job.

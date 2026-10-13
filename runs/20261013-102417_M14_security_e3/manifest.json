@@ -1,0 +1,44 @@
+{
+  "run_id": "20261013-102417_M14_security_e3",
+  "module": "M14",
+  "step": "S5",
+  "owner": "Abhishek",
+  "git_sha": "8b66d5fc19703ddeb1c40568e2a269b855584d62",
+  "dirty": true,
+  "command": "python bench/run_security_eval.py --stage trace --backend numpy",
+  "seed": 2026,
+  "quick": false,
+  "params": {
+    "n_conv": 200,
+    "duration_s": 900,
+    "buckets": 64,
+    "rate": 0.05,
+    "mode": "vcloak",
+    "clock": "sim",
+    "engine": "numpy-simulator"
+  },
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261013-102415",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U"
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791867257.3295646
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791867257.4434252
+  },
+  "outputs": [
+    "e3_trace.json",
+    "summary.json"
+  ],
+  "status": "OK",
+  "notes": "S5 comparator trace of the device sort and of write_epoch; numpy simulator behind the API: kernel semantics only, not evidence about a GPU (M14 A1 not met by this run)."
+}

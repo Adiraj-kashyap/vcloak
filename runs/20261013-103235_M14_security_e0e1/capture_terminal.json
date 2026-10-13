@@ -1,0 +1,19 @@
+{
+ "module": "M14",
+ "run": "runs/20261013-103235_M14_security_e0e1 (git 8b66d5f, dirty)",
+ "date": "2026-10-13",
+ "views": {},
+ "checks": {},
+ "ok": true,
+ "superseded": [],
+ "index_rows": [
+  "TERM-M14-S2S5-ATTACK-TABLE",
+  "TERM-M14-S2S5-E0-RESTORATION",
+  "TERM-M14-S2S5-RUNNER-STACK-CONTAINER-REHEARSAL"
+ ],
+ "files_written": [
+  "terminal/M14_S2S5_attack_table.csv",
+  "terminal/M14_S2S5_e0_restoration.json",
+  "terminal/M14_S2S5_runner_stack_container_rehearsal.txt"
+ ]
+}

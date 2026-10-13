@@ -1,0 +1,24 @@
+{
+  "title": "M14 on the full stack (ISSUE-38): PostgreSQL installed and started in the runner, the service with the GPU engine behind it, the traffic replayed through the API into every layout, the dump attacked (E0, E1), uniformity of the device permutations (E2), the comparator trace (E3 logical); and every test marked gpu, which skips on the laptop",
+  "step": "S5",
+  "seed": 2026,
+  "commands": [
+    {"name": "nvidia_smi", "cmd": "nvidia-smi", "timeout": 120},
+    {"name": "whoami", "cmd": "id", "timeout": 60, "stop_on_fail": false},
+    {"name": "stack_up", "cmd": "python scripts/runner_stack.py up", "timeout": 2700, "stop_on_fail": false},
+    {"name": "check_oblivious", "cmd": "python scripts/check_oblivious.py kernels/", "timeout": 300,
+     "stop_on_fail": false},
+    {"name": "security_s1", "cmd": "python bench/run_security_eval.py --stage s1 --backend cupy --seed 2026 {quick} --out runs",
+     "timeout": 1800, "stop_on_fail": false},
+    {"name": "security_e0e1", "cmd": "python bench/run_security_eval.py --stage attack --backend cupy --seed 2026 {quick} --out runs",
+     "timeout": 7200, "stop_on_fail": false},
+    {"name": "security_e2", "cmd": "python bench/run_security_eval.py --stage uniformity --backend cupy --seed 2026 {quick} --out runs",
+     "timeout": 3600, "stop_on_fail": false},
+    {"name": "security_e3", "cmd": "python bench/run_security_eval.py --stage trace --backend cupy --seed 2026 {quick} --out runs",
+     "timeout": 900, "stop_on_fail": false},
+    {"name": "cuda_tests", "cmd": "python bench/run_gpu_tests.py --expect 674 --out runs", "timeout": 7200,
+     "stop_on_fail": false},
+    {"name": "stack_status", "cmd": "python scripts/runner_stack.py status", "timeout": 120, "stop_on_fail": false},
+    {"name": "nvidia_smi_after", "cmd": "nvidia-smi", "timeout": 120, "stop_on_fail": false}
+  ]
+}

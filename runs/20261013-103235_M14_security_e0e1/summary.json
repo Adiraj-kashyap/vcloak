@@ -1,0 +1,172 @@
+{
+  "metrics": [
+    {
+      "id": "S-TAU-GLOBAL-BASELINE",
+      "value": 1.0,
+      "unit": "-",
+      "stat": "seed 2026, one replay"
+    },
+    {
+      "id": "S-TAU-WITHIN-BASELINE",
+      "value": 0.9999999999999999,
+      "unit": "-",
+      "stat": "size-weighted over rounds of 3 rows or more, seed 2026, one replay"
+    },
+    {
+      "id": "S-TURNACC-BASELINE",
+      "value": 1.0,
+      "unit": "fraction",
+      "stat": "seed 2026, one replay"
+    },
+    {
+      "id": "S-F-BASELINE",
+      "value": 0.8894142583459015,
+      "unit": "fraction",
+      "stat": "seed 2026, one replay"
+    },
+    {
+      "id": "S-TAU-GLOBAL-EPOCH",
+      "value": 0.999775424597944,
+      "unit": "-",
+      "stat": "seed 2026, one replay"
+    },
+    {
+      "id": "S-TAU-WITHIN-EPOCH",
+      "value": 0.0003798655037083861,
+      "unit": "-",
+      "stat": "size-weighted over rounds of 3 rows or more, seed 2026, one replay"
+    },
+    {
+      "id": "S-TURNACC-EPOCH",
+      "value": 0.9819834508621041,
+      "unit": "fraction",
+      "stat": "seed 2026, one replay"
+    },
+    {
+      "id": "S-F-EPOCH",
+      "value": 0.036236905392736316,
+      "unit": "fraction",
+      "stat": "seed 2026, one replay"
+    },
+    {
+      "id": "S-TAU-GLOBAL-W1",
+      "value": 0.9988783458182493,
+      "unit": "-",
+      "stat": "seed 2026, one replay"
+    },
+    {
+      "id": "S-TAU-WITHIN-W1",
+      "value": 0.000682980809796884,
+      "unit": "-",
+      "stat": "size-weighted over rounds of 3 rows or more, seed 2026, one replay"
+    },
+    {
+      "id": "S-TURNACC-W1",
+      "value": 0.9202298944279135,
+      "unit": "fraction",
+      "stat": "seed 2026, one replay"
+    },
+    {
+      "id": "S-F-W1",
+      "value": 0.15880650552317288,
+      "unit": "fraction",
+      "stat": "seed 2026, one replay"
+    },
+    {
+      "id": "S-TAU-GLOBAL-W10",
+      "value": 0.9888125575779767,
+      "unit": "-",
+      "stat": "seed 2026, one replay"
+    },
+    {
+      "id": "S-TAU-WITHIN-W10",
+      "value": -0.00044834259819898493,
+      "unit": "-",
+      "stat": "size-weighted over rounds of 3 rows or more, seed 2026, one replay"
+    },
+    {
+      "id": "S-TURNACC-W10",
+      "value": 0.6867484612562671,
+      "unit": "fraction",
+      "stat": "seed 2026, one replay"
+    },
+    {
+      "id": "S-F-W10",
+      "value": 0.6287857171972445,
+      "unit": "fraction",
+      "stat": "seed 2026, one replay"
+    },
+    {
+      "id": "S-TAU-GLOBAL-W60",
+      "value": 0.9328739656987705,
+      "unit": "-",
+      "stat": "seed 2026, one replay"
+    },
+    {
+      "id": "S-TAU-WITHIN-W60",
+      "value": -0.005945015707058048,
+      "unit": "-",
+      "stat": "size-weighted over rounds of 3 rows or more, seed 2026, one replay"
+    },
+    {
+      "id": "S-TURNACC-W60",
+      "value": 0.5560265764480495,
+      "unit": "fraction",
+      "stat": "seed 2026, one replay"
+    },
+    {
+      "id": "S-F-W60",
+      "value": 0.8894142583459015,
+      "unit": "fraction",
+      "stat": "seed 2026, one replay"
+    },
+    {
+      "id": "S-E0-RESTORE",
+      "value": 60,
+      "unit": "conversations",
+      "stat": "of 60 conversations, layout W60, seed 2026, one replay"
+    },
+    {
+      "id": "S-CANDK",
+      "value": 128,
+      "unit": "rows",
+      "stat": "public parameter"
+    },
+    {
+      "id": "S-OCC-PEAK",
+      "value": 91,
+      "unit": "rows",
+      "stat": "max over 923 bucket-windows, layout W60, seed 2026, one replay"
+    },
+    {
+      "id": "S-OCC-MEAN",
+      "value": 26.796316359696643,
+      "unit": "rows",
+      "stat": "mean over 923 bucket-windows, layout W60, seed 2026, one replay"
+    },
+    {
+      "id": "S-TAU-GLOBAL-W300",
+      "value": 0.6659023334439046,
+      "unit": "-",
+      "stat": "seed 2026, one replay"
+    },
+    {
+      "id": "S-TAU-WITHIN-W300",
+      "value": -0.0006598790092191928,
+      "unit": "-",
+      "stat": "size-weighted over rounds of 3 rows or more, seed 2026, one replay"
+    },
+    {
+      "id": "S-TURNACC-W300",
+      "value": 0.5067867769942527,
+      "unit": "fraction",
+      "stat": "seed 2026, one replay"
+    },
+    {
+      "id": "S-F-W300",
+      "value": 0.9836954306444381,
+      "unit": "fraction",
+      "stat": "seed 2026, one replay"
+    }
+  ]
+}

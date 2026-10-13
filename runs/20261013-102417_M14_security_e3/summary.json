@@ -1,0 +1,16 @@
+{
+  "metrics": [
+    {
+      "id": "S-TRACE-DISTINCT-DEVICE",
+      "value": 1,
+      "unit": "traces",
+      "stat": "over 5 inputs, n 1024"
+    },
+    {
+      "id": "S-TRACE-DISTINCT-MERGESORT",
+      "value": 4,
+      "unit": "traces",
+      "stat": "over 5 inputs, n 1024"
+    }
+  ]
+}

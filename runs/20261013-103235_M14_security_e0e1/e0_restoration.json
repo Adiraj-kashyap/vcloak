@@ -1,0 +1,14 @@
+{
+  "conversations_checked": 60,
+  "exact_order": 60,
+  "messages_checked": 7683,
+  "conversations_wrong": [],
+  "reads_failed": [],
+  "reads": 960,
+  "cand_k": 128,
+  "checks": {
+    "every_conversation_in_exact_order": true,
+    "no_read_failed": true,
+    "cand_k_above_peak_occupancy": true
+  }
+}

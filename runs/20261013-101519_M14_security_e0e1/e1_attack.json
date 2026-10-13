@@ -1,0 +1,278 @@
+{
+  "stage": "S2+S3",
+  "seed": 2026,
+  "db_server_version": "16.15 (Debian 16.15-1.pgdg13+2)",
+  "layouts": [
+    {
+      "layout": "BASELINE",
+      "mode": "baseline",
+      "visible_round": "window",
+      "window_s": 60,
+      "messages": 24733,
+      "rows_stored": 24733,
+      "epochs_passed": 4501,
+      "scheduler": {},
+      "checks": {
+        "every_post_accepted": true,
+        "row_count_equals_message_count": true,
+        "stored_ciphertexts_are_the_sent_ones": true
+      },
+      "attack": {
+        "tau_global": 1.0,
+        "tau_within_round": 0.9999999999999999,
+        "rounds_with_3plus": 15,
+        "adjacent_pair_accuracy": 1.0,
+        "turn_order_accuracy": 1.0,
+        "turns_same_round_frac": 0.8894142583459015,
+        "turn_accuracy_same_round": 1.0,
+        "rows": 24733,
+        "visible_rounds": 15,
+        "predicted_turn_accuracy": 0.5552928708270493
+      },
+      "ok": true
+    },
+    {
+      "layout": "EPOCH",
+      "mode": "vcloak",
+      "visible_round": "epoch",
+      "window_s": 60,
+      "rows_stored": null,
+      "attack": null,
+      "ok": false,
+      "checks": {
+        "layout_completed": false
+      },
+      "error": "OutOfMemory: out of shared memory\nHINT:  You might need to increase max_locks_per_transaction."
+    },
+    {
+      "layout": "W1",
+      "mode": "vcloak",
+      "visible_round": "window",
+      "window_s": 1,
+      "messages": 24733,
+      "rows_stored": 24733,
+      "epochs_passed": 4501,
+      "scheduler": {
+        "epochs_written": 4501,
+        "epoch_errors": 0,
+        "overflow": 0,
+        "missed": 0,
+        "queued": 0,
+        "windows_rewritten": 900,
+        "max_rewrites_of_a_window": 1,
+        "compute": {
+          "backend": "numpy",
+          "runner": "local",
+          "is_gpu": false,
+          "device": "12th Gen Intel(R) Core(TM) i7-1255U"
+        }
+      },
+      "checks": {
+        "every_post_accepted": true,
+        "row_count_equals_message_count": true,
+        "stored_ciphertexts_are_the_sent_ones": true,
+        "no_epoch_failed": true,
+        "nothing_left_queued": true,
+        "no_window_left_unshuffled": true,
+        "each_window_rewritten_once": true
+      },
+      "attack": {
+        "tau_global": 0.9988783458182493,
+        "tau_within_round": 0.000682980809796884,
+        "rounds_with_3plus": 900,
+        "adjacent_pair_accuracy": 0.5183567847323306,
+        "turn_order_accuracy": 0.9202298944279135,
+        "turns_same_round_frac": 0.15880650552317288,
+        "turn_accuracy_same_round": 0.4976899383983573,
+        "rows": 24733,
+        "visible_rounds": 900,
+        "predicted_turn_accuracy": 0.9205967472384136
+      },
+      "occupancy": {
+        "bucket_windows": 17453,
+        "peak": 7,
+        "mean": 1.4171202658568727
+      },
+      "ok": true
+    },
+    {
+      "layout": "W10",
+      "mode": "vcloak",
+      "visible_round": "window",
+      "window_s": 10,
+      "messages": 24733,
+      "rows_stored": 24733,
+      "epochs_passed": 4501,
+      "scheduler": {
+        "epochs_written": 4501,
+        "epoch_errors": 0,
+        "overflow": 0,
+        "missed": 0,
+        "queued": 0,
+        "windows_rewritten": 90,
+        "max_rewrites_of_a_window": 1,
+        "compute": {
+          "backend": "numpy",
+          "runner": "local",
+          "is_gpu": false,
+          "device": "12th Gen Intel(R) Core(TM) i7-1255U"
+        }
+      },
+      "checks": {
+        "every_post_accepted": true,
+        "row_count_equals_message_count": true,
+        "stored_ciphertexts_are_the_sent_ones": true,
+        "no_epoch_failed": true,
+        "nothing_left_queued": true,
+        "no_window_left_unshuffled": true,
+        "each_window_rewritten_once": true
+      },
+      "attack": {
+        "tau_global": 0.9888125575779767,
+        "tau_within_round": -0.00044834259819898493,
+        "rounds_with_3plus": 90,
+        "adjacent_pair_accuracy": 0.5018599385411613,
+        "turn_order_accuracy": 0.6867484612562671,
+        "turns_same_round_frac": 0.6287857171972445,
+        "turn_accuracy_same_round": 0.5018151173343706,
+        "rows": 24733,
+        "visible_rounds": 90,
+        "predicted_turn_accuracy": 0.6856071414013778
+      },
+      "occupancy": {
+        "bucket_windows": 4595,
+        "peak": 28,
+        "mean": 5.382589771490751
+      },
+      "ok": true
+    },
+    {
+      "layout": "W60",
+      "mode": "vcloak",
+      "visible_round": "window",
+      "window_s": 60,
+      "messages": 24733,
+      "rows_stored": 24733,
+      "epochs_passed": 4501,
+      "scheduler": {
+        "epochs_written": 4501,
+        "epoch_errors": 0,
+        "overflow": 0,
+        "missed": 0,
+        "queued": 0,
+        "windows_rewritten": 15,
+        "max_rewrites_of_a_window": 1,
+        "compute": {
+          "backend": "numpy",
+          "runner": "local",
+          "is_gpu": false,
+          "device": "12th Gen Intel(R) Core(TM) i7-1255U"
+        }
+      },
+      "checks": {
+        "every_post_accepted": true,
+        "row_count_equals_message_count": true,
+        "stored_ciphertexts_are_the_sent_ones": true,
+        "no_epoch_failed": true,
+        "nothing_left_queued": true,
+        "no_window_left_unshuffled": true,
+        "each_window_rewritten_once": true,
+        "e0_every_conversation_in_exact_order": true,
+        "e0_no_read_failed": true,
+        "e0_cand_k_above_peak_occupancy": true
+      },
+      "attack": {
+        "tau_global": 0.9328739656987705,
+        "tau_within_round": -0.005945015707058048,
+        "rounds_with_3plus": 15,
+        "adjacent_pair_accuracy": 0.500121300339641,
+        "turn_order_accuracy": 0.5560265764480495,
+        "turns_same_round_frac": 0.8894142583459015,
+        "turn_accuracy_same_round": 0.5008249312557287,
+        "rows": 24733,
+        "visible_rounds": 15,
+        "predicted_turn_accuracy": 0.5552928708270493
+      },
+      "occupancy": {
+        "bucket_windows": 923,
+        "peak": 91,
+        "mean": 26.796316359696643
+      },
+      "e0": {
+        "conversations_checked": 60,
+        "exact_order": 60,
+        "messages_checked": 7683,
+        "conversations_wrong": [],
+        "reads_failed": [],
+        "reads": 960,
+        "cand_k": 128,
+        "checks": {
+          "every_conversation_in_exact_order": true,
+          "no_read_failed": true,
+          "cand_k_above_peak_occupancy": true
+        }
+      },
+      "ok": true
+    },
+    {
+      "layout": "W300",
+      "mode": "vcloak",
+      "visible_round": "window",
+      "window_s": 300,
+      "messages": 24733,
+      "rows_stored": 24733,
+      "epochs_passed": 4501,
+      "scheduler": {
+        "epochs_written": 4501,
+        "epoch_errors": 0,
+        "overflow": 0,
+        "missed": 0,
+        "queued": 0,
+        "windows_rewritten": 3,
+        "max_rewrites_of_a_window": 1,
+        "compute": {
+          "backend": "numpy",
+          "runner": "local",
+          "is_gpu": false,
+          "device": "12th Gen Intel(R) Core(TM) i7-1255U"
+        }
+      },
+      "checks": {
+        "every_post_accepted": true,
+        "row_count_equals_message_count": true,
+        "stored_ciphertexts_are_the_sent_ones": true,
+        "no_epoch_failed": true,
+        "nothing_left_queued": true,
+        "no_window_left_unshuffled": true,
+        "each_window_rewritten_once": true
+      },
+      "attack": {
+        "tau_global": 0.6659023334439046,
+        "tau_within_round": -0.0006598790092191928,
+        "rounds_with_3plus": 3,
+        "adjacent_pair_accuracy": 0.4960375222383956,
+        "turn_order_accuracy": 0.5067867769942527,
+        "turns_same_round_frac": 0.9836954306444381,
+        "turn_accuracy_same_round": 0.4986118592798243,
+        "rows": 24733,
+        "visible_rounds": 3,
+        "predicted_turn_accuracy": 0.508152284677781
+      },
+      "occupancy": {
+        "bucket_windows": 186,
+        "peak": 345,
+        "mean": 132.9731182795699
+      },
+      "ok": true
+    }
+  ],
+  "params": {
+    "n_conv": 200,
+    "duration_s": 900,
+    "buckets": 64,
+    "rate": 0.05,
+    "slots": 64,
+    "epoch_ms": 200,
+    "cand_k": 128
+  }
+}

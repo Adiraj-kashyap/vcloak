@@ -1,0 +1,71 @@
+# scripts/runner_stack.py rehearsed in a root ubuntu:22.04 container on the laptop (no GPU, numpy backend).
+# The docker image pull lines above the first command were removed (they hold an image digest).
+
++ export DEBIAN_FRONTEND=noninteractive
++ DEBIAN_FRONTEND=noninteractive
++ apt-get update -qq
++ apt-get install -y -qq python3 python3-pip
++ python3 --version
+Python 3.10.12
++ python3 -m pip install -q numpy
++ tail -1
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
++ cp -r /w/src /w/scripts /w/bench /w/pyproject.toml /job/
++ mkdir -p /job
++ cp -r /w/src /w/scripts /w/bench /w/pyproject.toml /job/
++ cd /job
++ export PYTHONPATH=/job/src VCLOAK_RUNNER=colab VCLOAK_BACKEND=numpy
++ PYTHONPATH=/job/src
++ VCLOAK_RUNNER=colab
++ VCLOAK_BACKEND=numpy
++ id
+uid=0(root) gid=0(root) groups=0(root)
++ python3 scripts/runner_stack.py up
+python: psycopg[binary] installed
+python: fastapi installed
+python: uvicorn installed
+python: httpx installed
+python: websockets installed
+python: argon2-cffi installed
+python: cryptography installed
+python: scipy installed
+python: pytest installed
+postgres: binaries in /usr/lib/postgresql/14/bin
+{
+ "server_version": "14.24 (Ubuntu 14.24-0ubuntu0.22.04.1)",
+ "endpoint": "127.0.0.1:54329/vcloak",
+ "settings": {
+  "log_statement": "none",
+  "log_min_duration_statement": "-1",
+  "log_duration": "off",
+  "log_connections": "off",
+  "log_disconnections": "off",
+  "track_commit_timestamp": "off",
+  "wal_level": "minimal",
+  "max_wal_senders": "0",
+  "archive_mode": "off",
+  "wal_keep_size": "0",
+  "min_wal_size": "32MB",
+  "max_wal_size": "32MB",
+  "checkpoint_timeout": "30s",
+  "wal_recycle": "off",
+  "max_locks_per_transaction": "1024"
+ },
+ "hygiene_as_required": true
+}
+STACK_UP_EXIT 0
++ echo 'STACK_UP_EXIT 0'
++ python3 bench/run_security_eval.py --stage attack --quick --backend numpy --out /job/runs
++ tail -8
+ok   layout BASELINE: 608 rows, turn-order accuracy 1.0000
+ok   layout EPOCH: 608 rows, turn-order accuracy 0.9789
+ok   layout W10: 608 rows, turn-order accuracy 0.6901
+ok   layout W60: 608 rows, turn-order accuracy 0.5299
+E0: 15 of 15 conversations in exact order (228 messages, 45 reads)
+engine numpy-simulator, db postgres
+run dir: /job/runs/20261013-045306_M14_security_e0e1_quick
+ATTACK_EXIT 0
++ echo 'ATTACK_EXIT 0'
++ python3 scripts/runner_stack.py down
++ echo 'STACK_DOWN_EXIT 0'
+STACK_DOWN_EXIT 0
