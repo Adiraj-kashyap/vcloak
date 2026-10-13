@@ -1066,5 +1066,5 @@
 - Deviations from spec: the M07 notes were not regenerated (`vcloak.bench.report` takes four runs of one session)
 - Not verified: a before/after speed-up (Kaggle 4 vCPU against Colab 2 vCPU); the cause of the tail; a stable
   measurement of any pipeline row on this runner
-- Commit: 698dff2 (ingest), records PENDING
+- Commit: 698dff2 (ingest), records c50fe95
 - Next: M15 S1 ; human action: none required; ISSUE-12 has three options open for a decision of the owner
