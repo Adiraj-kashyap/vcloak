@@ -92,3 +92,19 @@ paper-ready figures into `evidence/figures/`, plus the terminal output of the at
   - Metric ids the list above does not name: `S-ORACLE-<the device id without S->`, `S-ORACLE-CMP-<verdict>`,
     `S-ORACLE-REPS`. They are backend numpy / runner local: reference values of the logic, never GPU results.
   - The table reaches `results/security` and section 4.S.9 of the notes through `report_security --oracle`.
+- 2026-10-13 (session 40): S6 as built (prep half; the numbers come with the ingest of the job packed from `bench/jobs/M14_s6.json`).
+  - The text does not say how users map to conversations. As built (`src/vcloak/eval/anonymity.py`): users are
+    paired, every user in exactly one two-party conversation (10, 100, 1000 users = 5, 50, 500 conversations), the
+    mapping M15 S1 states for its load generator. Everything else is S1: 900 simulated seconds, rate 0.05, the
+    burst model, seed 2026, 64 buckets, the default layout W = 60.
+  - "Per window" and "per bucket-window" are counted over every cell of the run (15 windows, 15 x 64 bucket-windows),
+    the empty ones as 0; the number of empty cells is recorded beside each distribution, and so is the same count as
+    a real row sees it (`msg_median`, `msg_p5`). p5 is `numpy.percentile` with linear interpolation.
+  - S6 has no acceptance gate in TESTING §4. The checks of the stage are those of a layout in S3 (row count, the
+    stored ciphertexts, no failed epoch). Whether the peak bucket-window is above CAND_K is recorded, not gated.
+  - S6 is a stage of `run_security_eval.py` (`--stage anonymity`), outputs `s6_anonymity.json` and
+    `anonymity_table.csv`. Metric ids the list above does not name: `S-ANON-MSGS-U<users>`, `S-ANON-P5-U<users>`,
+    `S-ANON-BW-MED-U<users>`, `S-ANON-BW-P5-U<users>`, `S-ANON-BW-PEAK-U<users>`, `S-TURNACC-W60-U<users>`,
+    `S-F-W60-U<users>`. `S-ANON-MED-U<users>` is the median per window.
+  - The S6 job runs in a runner session of its own: `report_security` (one session only) has to take the S6 run as a
+    separate input at the ingest, with its own provenance line.

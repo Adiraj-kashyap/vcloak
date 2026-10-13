@@ -1,0 +1,16 @@
+{
+  "title": "M14 S6 on the full stack (ISSUE-40): PostgreSQL installed and started in the runner, the service with the GPU engine behind it, the traffic of 10, 100 and 1000 users (two per conversation) replayed through the API into the W = 60 layout, the real messages per window and per bucket-window counted on the dump, the order-recovery attack on each dump",
+  "step": "S6",
+  "seed": 2026,
+  "commands": [
+    {"name": "nvidia_smi", "cmd": "nvidia-smi", "timeout": 120},
+    {"name": "whoami", "cmd": "id", "timeout": 60, "stop_on_fail": false},
+    {"name": "stack_up", "cmd": "python scripts/runner_stack.py up", "timeout": 2700, "stop_on_fail": false},
+    {"name": "check_oblivious", "cmd": "python scripts/check_oblivious.py kernels/", "timeout": 300,
+     "stop_on_fail": false},
+    {"name": "security_anon", "cmd": "python bench/run_security_eval.py --stage anonymity --backend cupy --seed 2026 {quick} --out runs",
+     "timeout": 7200, "stop_on_fail": false},
+    {"name": "stack_status", "cmd": "python scripts/runner_stack.py status", "timeout": 120, "stop_on_fail": false},
+    {"name": "nvidia_smi_after", "cmd": "nvidia-smi", "timeout": 120, "stop_on_fail": false}
+  ]
+}

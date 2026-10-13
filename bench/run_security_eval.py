@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""M14: the security evaluation on the real stack (E0 to E3).
+"""M14: the security evaluation on the real stack (E0 to E3, anonymity set).
 
-    python bench/run_security_eval.py --stage s1|attack|uniformity|trace [--quick] [--seed 2026]
+    python bench/run_security_eval.py --stage s1|attack|uniformity|trace|anonymity [--quick] [--seed 2026]
                                       [--store pg|sqlite] [--schema m14_eval] [--backend auto|cupy|numpy] [--out runs]
 
 s1          Replays the bursty traffic of the seed oracle (200 conversations, 900 simulated seconds, rate 0.05/s;
@@ -15,6 +15,9 @@ uniformity  S4. Permutations from the device tags and the device sort: chi-squar
             against 200 tables of the ideal sampler, Kendall tau band at n = 2^16 over 1,000 epochs.
 trace       S5. The comparator trace of the device sort (the launches the driver issued) for five key
             vectors, against the oracle's trace and a merge sort; the launches of `write_epoch`.
+anonymity   S6. The traffic of 10, 100 and 1000 users (`--quick`: 10 and 100), two users per conversation,
+            replayed into the W = 60 layout, each in a schema of its own. From the dump: the real messages
+            per window and per bucket-window (median, 5th percentile, empty cells counted) and the attack.
 
 The app runs in-process with the objects `vcloak serve --dev --clock sim` builds, except that the scheduler
 is stepped by the replay (`autorun=False`), so that every arrival falls into the epoch of its simulated time.
@@ -23,7 +26,8 @@ the store and the backend that executed the kernels. A run on the numpy simulato
 of the device and is no evidence about a GPU: audit A1 of M14 asks for engine=gpu.
 
 Outputs in the run dir: summary.json and s1_traffic.json | e1_attack.json, attack_table.csv,
-e0_restoration.json | e2_uniformity.json | e3_trace.json. Figures are drawn from these files, not here.
+e0_restoration.json | e2_uniformity.json | e3_trace.json | s6_anonymity.json, anonymity_table.csv.
+Figures are drawn from these files, not here.
 """
 from __future__ import annotations
 
@@ -45,7 +49,7 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from vcloak import config, runs  # noqa: E402
 from vcloak.crypto.client import PAYLOAD_LEN, decrypt_content  # noqa: E402
-from vcloak.eval import attack, trace, traffic, uniformity  # noqa: E402
+from vcloak.eval import anonymity, attack, trace, traffic, uniformity  # noqa: E402
 from vcloak.gpu.engine import GpuEngine, StoredRow  # noqa: E402
 from vcloak.gpu.keystore import DeviceKeyStore  # noqa: E402
 from vcloak.gpu.runtime import get_backend  # noqa: E402
@@ -67,6 +71,7 @@ READ_CONVS, READ_CONVS_QUICK = 60, 15
 UNIFORMITY_FULL = {"n": 64, "reps": 20_000, "calibration": 200, "n_tau": 1 << 16, "epochs_tau": 1000}
 UNIFORMITY_QUICK = {"n": 64, "reps": 2000, "calibration": 200, "n_tau": 1 << 12, "epochs_tau": 100}
 TRACE_N = 1024
+USERS, USERS_QUICK = (10, 100, 1000), (10, 100)  # S6: two users per conversation
 DROP_BATCH = 100
 DUMP_COLS = "row_id, bucket, win, seq_enc, payload"  # the fields of StoredRow, in order
 
@@ -206,9 +211,10 @@ async def read_back(client: httpx.AsyncClient, sent: traffic.Replay, convs: list
 
 def run_layout(store: Any, gpu: Any, layout: dict[str, Any], *, seed: int, n_conv: int, duration_s: int,
                buckets: int, read_convs: int = 0, slots: int = config.SLOTS, epoch_ms: int = config.EPOCH_MS,
-               cand_k: int = config.CAND_K) -> dict[str, Any]:
+               cand_k: int = config.CAND_K, inspect: Any = None) -> dict[str, Any]:
     """Replay the traffic of `seed` into one layout, dump the store and run the attack on the dump.
-    With `read_convs`, that many conversations are first read back through the service (E0)."""
+    With `read_convs`, that many conversations are first read back through the service (E0).
+    `inspect(rows)` may add results computed from the dump."""
     events = traffic.burst_events(np.random.default_rng(seed), n_conv, duration_s, RATE)
     clock = SimClock()
     window_s = layout["window_s"]
@@ -260,6 +266,8 @@ def run_layout(store: Any, gpu: Any, layout: dict[str, Any], *, seed: int, n_con
     }
     if layout["mode"] == "vcloak":
         res["occupancy"] = attack.occupancy(rows)
+    if inspect is not None and intact:
+        res.update(inspect(rows))
     if e0 is not None:
         e0["cand_k"] = cand_k
         e0["checks"] = {"every_conversation_in_exact_order": e0["exact_order"] == e0["conversations_checked"],
@@ -409,8 +417,114 @@ def stage_trace(a: argparse.Namespace, gpu: Any, run_dir: Path, sizes: dict[str,
     return all(gates.values()), metrics, "S5 comparator trace of the device sort and of write_epoch"
 
 
+# ── S6: anonymity set ────────────────────────────────────────────────────────
+
+ANON_COLUMNS = ("users", "conversations", "messages", "window_median", "window_p5", "window_empty", "windows",
+                "bucket_window_median", "bucket_window_p5", "bucket_window_empty", "bucket_windows",
+                "bucket_window_peak", "turn_order_accuracy", "turns_same_round_frac", "predicted_turn_accuracy")
+
+
+def run_users(store: Any, gpu: Any, users: int, *, seed: int, duration_s: int, buckets: int,
+              window_s: int = config.WINDOW_S, **kw: Any) -> dict[str, Any]:
+    """S6 for one population: `users` users in pairs, replayed into the layout with `window_s` as the
+    visible round. The traffic of every population is drawn from a fresh generator of `seed`."""
+    if duration_s % window_s:
+        raise ValueError("the duration must be a whole number of windows")
+    n_conv, n_windows = anonymity.conversations(users), duration_s // window_s
+    layout = {"id": f"W{window_s}", "mode": "vcloak", "visible_round": "window", "window_s": window_s}
+    res = run_layout(store, gpu, layout, seed=seed, n_conv=n_conv, duration_s=duration_s, buckets=buckets,
+                     inspect=lambda rows: {"anonymity": anonymity.anonymity(rows, n_windows, buckets)}, **kw)
+    res.setdefault("anonymity", None)
+    res.update({"users": users, "conversations": n_conv})
+    return res
+
+
+def anon_row(r: dict[str, Any]) -> dict[str, Any]:
+    w, b, a = r["anonymity"]["per_window"], r["anonymity"]["per_bucket_window"], r["attack"]
+    return {"users": r["users"], "conversations": r["conversations"], "messages": r["messages"],
+            "window_median": w["median"], "window_p5": w["p5"], "window_empty": w["empty"], "windows": w["cells"],
+            "bucket_window_median": b["median"], "bucket_window_p5": b["p5"], "bucket_window_empty": b["empty"],
+            "bucket_windows": b["cells"], "bucket_window_peak": b["max"],
+            "turn_order_accuracy": a["turn_order_accuracy"], "turns_same_round_frac": a["turns_same_round_frac"],
+            "predicted_turn_accuracy": a["predicted_turn_accuracy"]}
+
+
+def anon_metrics(results: list[dict[str, Any]], seed: int) -> list[dict[str, Any]]:
+    out: list[dict[str, Any]] = []
+    for r in results:
+        if r.get("anonymity") is None or r["attack"] is None:
+            continue
+        u, lay = r["users"], r["layout"]
+        w, b = r["anonymity"]["per_window"], r["anonymity"]["per_bucket_window"]
+        stat = f"{u} users in {r['conversations']} conversations, layout {lay}, seed {seed}, one replay"
+        over_w = f"over {w['cells']} windows ({w['empty']} empty), {stat}"
+        over_b = f"over {b['cells']} bucket-windows ({b['empty']} empty), {stat}"
+        out += [{"id": f"S-ANON-MSGS-U{u}", "value": r["messages"], "unit": "messages", "stat": f"count, {stat}"},
+                {"id": f"S-ANON-MED-U{u}", "value": w["median"], "unit": "rows", "stat": f"median real rows {over_w}"},
+                {"id": f"S-ANON-P5-U{u}", "value": w["p5"], "unit": "rows",
+                 "stat": f"5th percentile (linear) of real rows {over_w}"},
+                {"id": f"S-ANON-BW-MED-U{u}", "value": b["median"], "unit": "rows",
+                 "stat": f"median real rows {over_b}"},
+                {"id": f"S-ANON-BW-P5-U{u}", "value": b["p5"], "unit": "rows",
+                 "stat": f"5th percentile (linear) of real rows {over_b}"},
+                {"id": f"S-ANON-BW-PEAK-U{u}", "value": b["max"], "unit": "rows", "stat": f"max real rows {over_b}"},
+                {"id": f"S-TURNACC-{lay}-U{u}", "value": r["attack"]["turn_order_accuracy"], "unit": "fraction",
+                 "stat": stat},
+                {"id": f"S-F-{lay}-U{u}", "value": r["attack"]["turns_same_round_frac"], "unit": "fraction",
+                 "stat": stat}]
+    return out
+
+
+def stage_anonymity(a: argparse.Namespace, gpu: Any, run_dir: Path, sizes: dict[str, int]) -> tuple[bool, list, str]:
+    results, server = [], None
+    for users in (USERS_QUICK if a.quick else USERS):
+        store = open_store({"id": f"u{users}", "mode": "vcloak"}, a.store, a.dsn, a.schema)
+        try:
+            if a.store == "pg" and server is None:
+                server = str(store.execute("SHOW server_version")[0][0])
+            res = run_users(store, gpu, users, seed=a.seed, duration_s=sizes["duration_s"], buckets=sizes["buckets"])
+            res["cand_k"] = config.CAND_K
+            if res["anonymity"] is not None:
+                # Not a gate: above CAND_K a read of the fullest bucket-window answers candidate_overflow.
+                peak = res["anonymity"]["per_bucket_window"]["max"]
+                res["peak_bucket_window_above_cand_k"] = bool(peak > config.CAND_K)
+        except Exception as e:  # noqa: BLE001 - a population that breaks is recorded; the others still run
+            res = {"users": users, "layout": f"W{config.WINDOW_S}", "rows_stored": None, "attack": None,
+                   "anonymity": None, "ok": False, "checks": {"population_completed": False},
+                   "error": f"{type(e).__name__}: {e}"[:400]}
+        finally:
+            store.close()
+        results.append(res)
+        if res["anonymity"] is not None and res["attack"] is not None:
+            row = anon_row(res)
+            print(f"{'ok  ' if res['ok'] else 'FAIL'} {users} users: {row['messages']} messages, per window median "
+                  f"{row['window_median']:g} p5 {row['window_p5']:g}, per bucket-window median "
+                  f"{row['bucket_window_median']:g} p5 {row['bucket_window_p5']:g} peak {row['bucket_window_peak']}, "
+                  f"turn-order accuracy {row['turn_order_accuracy']:.4f}", flush=True)
+        else:
+            print(f"FAIL {users} users: {res.get('error', 'the store does not hold what was sent')}", flush=True)
+        for name, passed in res["checks"].items():
+            if not passed:
+                print(f"     FAIL {name}")
+    doc = {"stage": "S6", "seed": a.seed, "db_server_version": server,
+           "mapping": "two users per conversation, every user in exactly one (conversations = users / 2)",
+           "populations": results,
+           "params": {"duration_s": sizes["duration_s"], "buckets": sizes["buckets"], "rate": RATE,
+                      "window_s": config.WINDOW_S, "slots": config.SLOTS, "epoch_ms": config.EPOCH_MS,
+                      "cand_k": config.CAND_K}}
+    (run_dir / "s6_anonymity.json").write_text(json.dumps(doc, indent=2) + "\n", encoding="utf-8")
+    with (run_dir / "anonymity_table.csv").open("w", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=ANON_COLUMNS)
+        w.writeheader()
+        for r in results:
+            if r["anonymity"] is not None and r["attack"] is not None:
+                w.writerow(anon_row(r))
+    ok = all(r["ok"] for r in results)
+    return ok, anon_metrics(results, a.seed), "S6 anonymity set: real messages per window and per bucket-window"
+
+
 STAGES = {"attack": ("security_e0e1", "S3", stage_attack), "uniformity": ("security_e2", "S4", stage_uniformity),
-          "trace": ("security_e3", "S5", stage_trace)}
+          "trace": ("security_e3", "S5", stage_trace), "anonymity": ("security_anon", "S6", stage_anonymity)}
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -440,12 +554,16 @@ def main(argv: list[str] | None = None) -> int:
         if a.stage == "attack":
             params.update({"db": db, "schema": a.schema, "layouts": [x["id"] for x in layouts(a.quick)],
                            "read_convs": a.read_convs})
+        if a.stage == "anonymity":
+            del params["n_conv"]  # set by the number of users, not by the sizes of the other stages
+            params.update({"db": db, "schema": a.schema, "users": list(USERS_QUICK if a.quick else USERS),
+                           "users_per_conversation": 2, "layout": f"W{config.WINDOW_S}"})
         run_dir = runs.new_run("M14", name, step=step, owner="Abhishek", command=command.strip(), seed=a.seed,
                                quick=a.quick, root=ROOT, runs_dir=a.out, backend=gpu, params=params)
         ok, metrics, what = fn(a, gpu, run_dir, sizes)
         (run_dir / "summary.json").write_text(json.dumps({"metrics": metrics}, indent=2) + "\n", encoding="utf-8")
         runs.finish_run(run_dir, status="OK" if ok else "FAIL", notes=f"{what}; {engine_note}")
-        print(f"engine {engine}" + (f", db {db}" if a.stage == "attack" else ""))
+        print(f"engine {engine}" + (f", db {db}" if a.stage in ("attack", "anonymity") else ""))
         print("run dir:", run_dir)
         return 0 if ok else 1
     run_dir = runs.new_run("M14", "security_s1", step="S1", owner="Abhishek", command=command.strip(),
