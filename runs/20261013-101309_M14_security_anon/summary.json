@@ -1,0 +1,148 @@
+{
+  "metrics": [
+    {
+      "id": "S-ANON-MSGS-U10",
+      "value": 555,
+      "unit": "messages",
+      "stat": "count, 10 users in 5 conversations, layout W60, seed 2026, one replay"
+    },
+    {
+      "id": "S-ANON-MED-U10",
+      "value": 32.0,
+      "unit": "rows",
+      "stat": "median real rows over 15 windows (0 empty), 10 users in 5 conversations, layout W60, seed 2026, one replay"
+    },
+    {
+      "id": "S-ANON-P5-U10",
+      "value": 23.5,
+      "unit": "rows",
+      "stat": "5th percentile (linear) of real rows over 15 windows (0 empty), 10 users in 5 conversations, layout W60, seed 2026, one replay"
+    },
+    {
+      "id": "S-ANON-BW-MED-U10",
+      "value": 0.0,
+      "unit": "rows",
+      "stat": "median real rows over 960 bucket-windows (900 empty), 10 users in 5 conversations, layout W60, seed 2026, one replay"
+    },
+    {
+      "id": "S-ANON-BW-P5-U10",
+      "value": 0.0,
+      "unit": "rows",
+      "stat": "5th percentile (linear) of real rows over 960 bucket-windows (900 empty), 10 users in 5 conversations, layout W60, seed 2026, one replay"
+    },
+    {
+      "id": "S-ANON-BW-PEAK-U10",
+      "value": 26,
+      "unit": "rows",
+      "stat": "max real rows over 960 bucket-windows (900 empty), 10 users in 5 conversations, layout W60, seed 2026, one replay"
+    },
+    {
+      "id": "S-TURNACC-W60-U10",
+      "value": 0.5690909090909091,
+      "unit": "fraction",
+      "stat": "10 users in 5 conversations, layout W60, seed 2026, one replay"
+    },
+    {
+      "id": "S-F-W60-U10",
+      "value": 0.8745454545454545,
+      "unit": "fraction",
+      "stat": "10 users in 5 conversations, layout W60, seed 2026, one replay"
+    },
+    {
+      "id": "S-ANON-MSGS-U100",
+      "value": 5855,
+      "unit": "messages",
+      "stat": "count, 100 users in 50 conversations, layout W60, seed 2026, one replay"
+    },
+    {
+      "id": "S-ANON-MED-U100",
+      "value": 384.0,
+      "unit": "rows",
+      "stat": "median real rows over 15 windows (0 empty), 100 users in 50 conversations, layout W60, seed 2026, one replay"
+    },
+    {
+      "id": "S-ANON-P5-U100",
+      "value": 331.0,
+      "unit": "rows",
+      "stat": "5th percentile (linear) of real rows over 15 windows (0 empty), 100 users in 50 conversations, layout W60, seed 2026, one replay"
+    },
+    {
+      "id": "S-ANON-BW-MED-U100",
+      "value": 0.0,
+      "unit": "rows",
+      "stat": "median real rows over 960 bucket-windows (520 empty), 100 users in 50 conversations, layout W60, seed 2026, one replay"
+    },
+    {
+      "id": "S-ANON-BW-P5-U100",
+      "value": 0.0,
+      "unit": "rows",
+      "stat": "5th percentile (linear) of real rows over 960 bucket-windows (520 empty), 100 users in 50 conversations, layout W60, seed 2026, one replay"
+    },
+    {
+      "id": "S-ANON-BW-PEAK-U100",
+      "value": 42,
+      "unit": "rows",
+      "stat": "max real rows over 960 bucket-windows (520 empty), 100 users in 50 conversations, layout W60, seed 2026, one replay"
+    },
+    {
+      "id": "S-TURNACC-W60-U100",
+      "value": 0.5583118001722653,
+      "unit": "fraction",
+      "stat": "100 users in 50 conversations, layout W60, seed 2026, one replay"
+    },
+    {
+      "id": "S-F-W60-U100",
+      "value": 0.882687338501292,
+      "unit": "fraction",
+      "stat": "100 users in 50 conversations, layout W60, seed 2026, one replay"
+    },
+    {
+      "id": "S-ANON-MSGS-U1000",
+      "value": 61383,
+      "unit": "messages",
+      "stat": "count, 1000 users in 500 conversations, layout W60, seed 2026, one replay"
+    },
+    {
+      "id": "S-ANON-MED-U1000",
+      "value": 4098.0,
+      "unit": "rows",
+      "stat": "median real rows over 15 windows (0 empty), 1000 users in 500 conversations, layout W60, seed 2026, one replay"
+    },
+    {
+      "id": "S-ANON-P5-U1000",
+      "value": 3960.8,
+      "unit": "rows",
+      "stat": "5th percentile (linear) of real rows over 15 windows (0 empty), 1000 users in 500 conversations, layout W60, seed 2026, one replay"
+    },
+    {
+      "id": "S-ANON-BW-MED-U1000",
+      "value": 62.0,
+      "unit": "rows",
+      "stat": "median real rows over 960 bucket-windows (0 empty), 1000 users in 500 conversations, layout W60, seed 2026, one replay"
+    },
+    {
+      "id": "S-ANON-BW-P5-U1000",
+      "value": 26.0,
+      "unit": "rows",
+      "stat": "5th percentile (linear) of real rows over 960 bucket-windows (0 empty), 1000 users in 500 conversations, layout W60, seed 2026, one replay"
+    },
+    {
+      "id": "S-ANON-BW-PEAK-U1000",
+      "value": 172,
+      "unit": "rows",
+      "stat": "max real rows over 960 bucket-windows (0 empty), 1000 users in 500 conversations, layout W60, seed 2026, one replay"
+    },
+    {
+      "id": "S-TURNACC-W60-U1000",
+      "value": 0.5558694545275364,
+      "unit": "fraction",
+      "stat": "1000 users in 500 conversations, layout W60, seed 2026, one replay"
+    },
+    {
+      "id": "S-F-W60-U1000",
+      "value": 0.8893944122333,
+      "unit": "fraction",
+      "stat": "1000 users in 500 conversations, layout W60, seed 2026, one replay"
+    }
+  ]
+}

@@ -3,14 +3,16 @@
     python -m vcloak.bench.report_security --s1 runs/<security_s1> --attack runs/<security_e0e1> \
         --uniformity runs/<security_e2> --trace runs/<security_e3> --tests runs/<cuda_tests> \
         --oblivious results/oblivious/oblivious_summary.json --oracle runs/<oracle_compare> \
-        --out results/security --notes docs/REPORT_CH4_NOTES.md
+        --anonymity runs/<security_anon> --out results/security --notes docs/REPORT_CH4_NOTES.md
 
 Nothing here measures. Every table cell and plotted point is read from a run's summary.json or stage JSON, every
 gate is copied from the run that evaluated it, and every figure gets a sidecar JSON naming its run dir. The runs must
 be `cupy` runs of one runner session with a gpu_job block, and the traffic runs must say mode=vcloak, db=postgres,
 engine=gpu (audit A1); otherwise nothing is written. The dudect verdicts of M08 are quoted from the summary that
 `report_oblivious` wrote, never retyped. The comparison with the CPU oracle (S7) is copied from the local run of
-`bench/run_oracle_compare.py`, which is accepted only if it compared exactly the device runs given here.
+`bench/run_oracle_compare.py`, which is accepted only if it compared exactly the device runs given here. The
+anonymity-set run (S6) may come from a runner session of its own: it passes the same checks and is reported with its
+own provenance line, and none of its values is merged into a table of the other session.
 """
 from __future__ import annotations
 
@@ -42,7 +44,9 @@ from vcloak.bench.report import (
 
 REAL_STACK = {"mode": "vcloak", "db": "postgres", "engine": "gpu"}  # audit A1
 STAGE_FILES = {"s1": ("s1_traffic.json",), "attack": ("e1_attack.json", "e0_restoration.json", "attack_table.csv"),
-               "uniformity": ("e2_uniformity.json",), "trace": ("e3_trace.json",), "tests": ("cuda_tests.json",)}
+               "uniformity": ("e2_uniformity.json",), "trace": ("e3_trace.json",), "tests": ("cuda_tests.json",),
+               "anonymity": ("s6_anonymity.json", "anonymity_table.csv")}
+OWN_SESSION = ("anonymity",)  # stages that may come from a runner session of their own
 WINDOW_LAYOUTS = ("W1", "W10", "W60", "W300")
 ORACLE_FILES = ("oracle_comparison.json", "oracle_comparison.csv")
 
@@ -54,8 +58,18 @@ def _stage(run: dict[str, Any], name: str) -> Any:
         raise ReportError(f"{run['id']}: {name} missing") from e
 
 
+def _provenance(run: dict[str, Any]) -> dict[str, Any]:
+    man = run["manifest"]
+    env = man["env"]
+    return {"session_id": env["session_id"], "runner": env["runner"], "gpu": env["gpu"], "driver": env.get("driver"),
+            "cuda": env.get("cuda"), "cupy": env.get("cupy"), "git_sha": man["git_sha"],
+            "job_id": man["gpu_job"]["job_id"], "seed": man["seed"], **REAL_STACK}
+
+
 def check_inputs(runs: dict[str, dict[str, Any]]) -> dict[str, Any]:
-    """Refuse anything that is not one cupy session of an ingested job on the real stack; return its provenance."""
+    """Refuse anything that is not one cupy session of an ingested job on the real stack; return its provenance.
+
+    The stages of OWN_SESSION pass every check but the one-session one."""
     for name, r in runs.items():
         man = r["manifest"]
         if man["env"].get("backend") != "cupy" or "gpu_job" not in man:
@@ -65,19 +79,15 @@ def check_inputs(runs: dict[str, dict[str, Any]]) -> dict[str, Any]:
             raise ReportError(f"{name} run {r['id']} is a quick run: not reported")
         if man.get("status") != "OK":
             raise ReportError(f"{name} run {r['id']} has status {man.get('status')}")
-    sessions = {r["manifest"]["env"].get("session_id") for r in runs.values()}
+    sessions = {r["manifest"]["env"].get("session_id") for name, r in runs.items() if name not in OWN_SESSION}
     if len(sessions) != 1:
         raise ReportError(f"runs come from different runner sessions {sorted(map(str, sessions))}: not merged")
-    for name in ("s1", "attack"):
+    for name in ("s1", "attack", *(n for n in OWN_SESSION if n in runs)):
         params = runs[name]["manifest"]["params"]
         got = {k: params.get(k) for k in REAL_STACK}
         if got != REAL_STACK:
             raise ReportError(f"{name} run {runs[name]['id']} did not run on the real stack: {got}")
-    man = runs["attack"]["manifest"]
-    env = man["env"]
-    return {"session_id": env["session_id"], "runner": env["runner"], "gpu": env["gpu"], "driver": env.get("driver"),
-            "cuda": env.get("cuda"), "cupy": env.get("cupy"), "git_sha": man["git_sha"],
-            "job_id": man["gpu_job"]["job_id"], "seed": man["seed"], **REAL_STACK}
+    return _provenance(runs["attack"])
 
 
 def check_oracle(orun: dict[str, Any], runs: dict[str, dict[str, Any]]) -> None:
@@ -146,7 +156,57 @@ def gate_rows(stages: dict[str, Any], runs: dict[str, dict[str, Any]], root: Pat
     add("E3", "write_epoch", stages["e3"]["write_epoch"]["gates"], "trace")
     if "tests" in stages:
         add("tests", "pytest -m gpu", stages["tests"]["checks"], "tests")
+    if "s6" in stages:
+        for pop in stages["s6"]["populations"]:
+            add("S6", f"{pop['users']} users", pop["checks"], "anonymity")
     return rows
+
+
+def anonymity_section(run: dict[str, Any], s6: dict[str, Any], prov: dict[str, Any],
+                      issues: dict[str, str]) -> list[str]:
+    """S6: the counts of real rows per window and per bucket-window, tagged, with the provenance of its own run."""
+    def t(metric_id: str) -> str:
+        return tagged({"anonymity": run}, metric_id)
+
+    own = _provenance(run)
+    par = s6["params"]
+    where = ("the runner session of the sections above" if own["session_id"] == prov["session_id"] else
+             "a runner session of its own, not the one of the sections above")
+    L = [f"- Runner: {own['runner']}, {own['gpu']}, driver {own['driver']}, CUDA runtime {own['cuda']}, CuPy "
+         f"{own['cupy']}; runner session {own['session_id']} ({where}), GPU job {own['job_id']}, packed from commit "
+         f"`{own['git_sha'][:7]}`.",
+         f"- Stack: mode={own['mode']}, db={own['db']} (PostgreSQL {s6.get('db_server_version', NM)}, in the "
+         f"runner), engine={own['engine']}.",
+         f"- Traffic: {s6['mapping']}; {par['duration_s']} simulated seconds, seed {own['seed']}, "
+         f"{par['buckets']} buckets, layout W = {par['window_s']} s. One replay per population, one seed: no "
+         "confidence interval is given.", ""]
+    rows, seen = [], []
+    for pop in s6["populations"]:
+        u, an = pop["users"], pop["anonymity"]
+        w, bw = an["per_window"], an["per_bucket_window"]
+        rows.append([str(u), str(pop["conversations"]), t(f"S-ANON-MSGS-U{u}"), t(f"S-ANON-MED-U{u}"),
+                     t(f"S-ANON-P5-U{u}"), t(f"S-ANON-BW-MED-U{u}"), t(f"S-ANON-BW-P5-U{u}"),
+                     f"{bw['empty']} of {bw['cells']}", t(f"S-ANON-BW-PEAK-U{u}"), t(f"S-TURNACC-W60-U{u}"),
+                     t(f"S-F-W60-U{u}"), f"{pop['attack']['predicted_turn_accuracy']:.4f}"])
+        seen.append(f"{u} users: {w['msg_median']:g} / {w['msg_p5']:g} per window, {bw['msg_median']:g} / "
+                    f"{bw['msg_p5']:g} per bucket-window")
+    L += [_md_table(["users", "conversations", "messages", "per window: median", "per window: p5",
+                     "per bucket-window: median", "per bucket-window: p5", "empty bucket-windows",
+                     "fullest bucket-window", "turn-order accuracy", "f (turns inside one round)",
+                     "predicted 1 − f/2"], rows), "",
+          "- A cell is a window, or one bucket of one window; the values are real rows in a cell, counted over every "
+          "cell of the run, the empty ones as 0. p5 is the 5th percentile with linear interpolation.",
+          "- The same count as a real row sees it (median / p5 of the size of the cell the row is stored in, from "
+          f"`s6_anonymity.json`): {'; '.join(seen)}.",
+          "- The attack is the one of 4.S.3 on the dump of each population. S6 has no acceptance gate of its own; "
+          "the checks of the stage are in the gate table."]
+    for pop in s6["populations"]:
+        if pop["peak_bucket_window_above_cand_k"]:
+            L.append(f"- Limit: at {pop['users']} users the fullest bucket-window holds "
+                     f"{pop['occupancy']['peak']} real rows, above CAND_K {pop['cand_k']}, so a read of that "
+                     f"bucket-window would answer `candidate_overflow`. This population was dumped and counted, "
+                     f"never read ({issues.get('overflow', 'no issue')}).")
+    return L
 
 
 def _sidecar(out: Path, name: str, files: list[str], run: dict[str, Any], root: Path, metric_ids: list[str],
@@ -327,13 +387,22 @@ def build_section(runs: dict[str, dict[str, Any]], stages: dict[str, Any], prov:
     L += [f"- FAIL: {g['experiment']} / {g['scope']} / {g['gate']} (`{g['run_dir']}`)" for g in failed]
     L += ["", "## 4.S.8 Figures"]
     L += [f"- `results/security/{f['files'][0]}` from `{f['run_dirs'][0]}`" for f in figures]
-    missing, last = "The anonymity-set study (S6)", "4.S.9"
+    missing, n = [], 9
     if orun is not None and cmp is not None:
-        L += ["", "## 4.S.9 Comparison with the CPU oracle", *oracle_section(orun, cmp, runs, root, issues)]
-        last = "4.S.10"
+        L += ["", f"## 4.S.{n} Comparison with the CPU oracle", *oracle_section(orun, cmp, runs, root, issues)]
+        n += 1
     else:
-        missing += " and the comparison with the CPU oracle (S7)"
-    L += ["", f"## {last} Not in this section", f"- {missing}: {NM} ({issues.get('pending', 'no issue')}).", M14_END]
+        missing.append("the comparison with the CPU oracle (S7)")
+    if "s6" in stages:
+        L += ["", f"## 4.S.{n} S6: anonymity set", *anonymity_section(runs["anonymity"], stages["s6"], prov, issues)]
+        n += 1
+    else:
+        missing.insert(0, "the anonymity-set study (S6)")
+    if missing:
+        text = " and ".join(missing)
+        L += ["", f"## 4.S.{n} Not in this section",
+              f"- {text[0].upper()}{text[1:]}: {NM} ({issues.get('pending', 'no issue')})."]
+    L.append(M14_END)
     return "\n".join(L) + "\n"
 
 
@@ -351,12 +420,14 @@ def merge_notes(path: Path, section: str) -> None:
 def generate(s1: str | Path, attack: str | Path, uniformity: str | Path, trace: str | Path, out: str | Path,
              tests: str | Path | None = None, oblivious: str | Path | None = None, notes: str | Path | None = None,
              issues: dict[str, str] | None = None, root: str | Path = ".",
-             oracle: str | Path | None = None) -> dict[str, Any]:
+             oracle: str | Path | None = None, anonymity: str | Path | None = None) -> dict[str, Any]:
     root, out, issues = Path(root), Path(out), issues or {}
     runs = {"s1": load_run(s1), "attack": load_run(attack), "uniformity": load_run(uniformity),
             "trace": load_run(trace)}
     if tests:
         runs["tests"] = load_run(tests)
+    if anonymity:
+        runs["anonymity"] = load_run(anonymity)
     prov = check_inputs(runs)
     orun = load_run(oracle) if oracle else None
     cmp = None
@@ -368,6 +439,8 @@ def generate(s1: str | Path, attack: str | Path, uniformity: str | Path, trace: 
               "e2": _stage(runs["uniformity"], "e2_uniformity.json"), "e3": _stage(runs["trace"], "e3_trace.json")}
     if tests:
         stages["tests"] = _stage(runs["tests"], "cuda_tests.json")
+    if anonymity:
+        stages["s6"] = _stage(runs["anonymity"], "s6_anonymity.json")
     stages["e1"]["layouts"] = {v["layout"]: v for v in stages["e1"]["layouts"]}
     gates = gate_rows(stages, runs, root)
     out.mkdir(parents=True, exist_ok=True)
@@ -392,7 +465,9 @@ def generate(s1: str | Path, attack: str | Path, uniformity: str | Path, trace: 
     summary = {"provenance": prov, "backend": "cupy", "run_dirs": {k: rel(r["dir"], root) for k, r in runs.items()},
                "gates": len(gates), "gates_failed": [g for g in gates if g["result"] != "PASS"],
                "oblivious_summary": obl.as_posix() if obl else None, "issues": issues, "files": sorted(files),
-               "not_measured": ["S6 anonymity set"] + ([] if cmp else ["S7 comparison with the CPU oracle"]),
+               "not_measured": ([] if anonymity else ["S6 anonymity set"])
+               + ([] if cmp else ["S7 comparison with the CPU oracle"]),
+               "anonymity_provenance": _provenance(runs["anonymity"]) if anonymity else None,
                "oracle_comparison": {"run_dir": rel(orun["dir"], root), "counts": cmp["counts"],
                                      "rows": len(cmp["rows"])} if orun is not None and cmp is not None else None,
                "generated_by": "python -m vcloak.bench.report_security"}
@@ -409,6 +484,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--tests", default=None, help="run dir of the tests marked gpu")
     ap.add_argument("--oblivious", default=None, help="oblivious_summary.json written by report_oblivious")
     ap.add_argument("--oracle", default=None, help="run dir of bench/run_oracle_compare.py (S7)")
+    ap.add_argument("--anonymity", default=None, help="run dir of the anonymity stage (S6), own session allowed")
     ap.add_argument("--out", default="results/security")
     ap.add_argument("--notes", default=None, help="merge the M14 section into these notes")
     ap.add_argument("--issue-overflow", default="no issue", help="issue quoted for an occupancy above CAND_K")
@@ -418,7 +494,7 @@ def main(argv: list[str] | None = None) -> int:
     try:
         s = generate(a.s1, a.attack, a.uniformity, a.trace, a.out, a.tests, a.oblivious, a.notes,
                      {"overflow": a.issue_overflow, "pending": a.issue_pending, "oracle": a.issue_oracle},
-                     oracle=a.oracle)
+                     oracle=a.oracle, anonymity=a.anonymity)
     except ReportError as e:
         print(f"report_security: {NM} - {e}")
         return 1

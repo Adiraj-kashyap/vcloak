@@ -1,0 +1,5 @@
+ok   10 users: 555 messages, per window median 32 p5 23.5, per bucket-window median 0 p5 0 peak 26, turn-order accuracy 0.5691
+ok   100 users: 5855 messages, per window median 384 p5 331, per bucket-window median 0 p5 0 peak 42, turn-order accuracy 0.5583
+ok   1000 users: 61383 messages, per window median 4098 p5 3960.8, per bucket-window median 62 p5 26 peak 172, turn-order accuracy 0.5559
+engine gpu, db postgres
+run dir: /content/vcloak_job/runs/20261013-101309_M14_security_anon

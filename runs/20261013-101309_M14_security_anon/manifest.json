@@ -1,0 +1,88 @@
+{
+  "run_id": "20261013-101309_M14_security_anon",
+  "module": "M14",
+  "step": "S6",
+  "owner": "Abhishek",
+  "git_sha": "b042dc8fcec44ab0ed078435e38e6ce0c536b2f5",
+  "dirty": false,
+  "command": "python bench/run_security_eval.py --stage anonymity --backend cupy --seed 2026 --out runs",
+  "seed": 2026,
+  "quick": false,
+  "params": {
+    "duration_s": 900,
+    "buckets": 64,
+    "rate": 0.05,
+    "mode": "vcloak",
+    "clock": "sim",
+    "engine": "gpu",
+    "db": "postgres",
+    "schema": "m14_eval",
+    "users": [
+      10,
+      100,
+      1000
+    ],
+    "users_per_conversation": 2,
+    "layout": "W60"
+  },
+  "env": {
+    "os": "Linux-6.6.122+-x86_64-with-glibc2.39",
+    "python": "3.13.15",
+    "backend": "cupy",
+    "runner": "colab",
+    "session_id": "20261013-101235",
+    "gpu": "Tesla T4",
+    "cc": "7.5",
+    "cuda": "13000",
+    "cupy": "14.0.1",
+    "driver": "580.82.07"
+  },
+  "telemetry_start": {
+    "available": true,
+    "gpu": "Tesla T4",
+    "driver": "580.82.07",
+    "clocks": "unlocked",
+    "sm_clock_max_mhz": 1590,
+    "ts": 1791886389.567371,
+    "sm_clock_mhz": 675,
+    "mem_clock_mhz": 5000,
+    "temperature_c": 42,
+    "power_w": 26.347,
+    "power_limit_w": 70.0,
+    "util_gpu_pct": 0,
+    "util_mem_pct": 0,
+    "throttle_reasons": 0,
+    "pstate": 0,
+    "mem_used_mb": 654.1875
+  },
+  "telemetry_end": {
+    "available": true,
+    "gpu": "Tesla T4",
+    "driver": "580.82.07",
+    "clocks": "unlocked",
+    "sm_clock_max_mhz": 1590,
+    "ts": 1791886491.4574313,
+    "sm_clock_mhz": 585,
+    "mem_clock_mhz": 5000,
+    "temperature_c": 44,
+    "power_w": 26.347,
+    "power_limit_w": 70.0,
+    "util_gpu_pct": 0,
+    "util_mem_pct": 0,
+    "throttle_reasons": 0,
+    "pstate": 0,
+    "mem_used_mb": 658.1875
+  },
+  "outputs": [
+    "anonymity_table.csv",
+    "s6_anonymity.json",
+    "summary.json"
+  ],
+  "status": "OK",
+  "notes": "S6 anonymity set: real messages per window and per bucket-window; CUDA device.",
+  "gpu_job": {
+    "job_id": "20261013-125843_M14_s6",
+    "bundle_sha256": "6f791e6c1a96453782c1119633f85e89e9f6b4b5fe18008f5ba9ac4e08d113f8",
+    "packed_from_git_sha": "b042dc8fcec44ab0ed078435e38e6ce0c536b2f5"
+  }
+}

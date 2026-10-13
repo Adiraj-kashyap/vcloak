@@ -191,3 +191,59 @@ def test_refuses_an_oracle_run_over_other_device_runs_or_quick(tree: dict[str, A
     with pytest.raises(ReportError):
         _generate(tree, oracle=_oracle_run(tree, **kw))
     assert not tree["out"].exists()
+
+
+def _pop(users: int, peak: int, cand_k: int = 16) -> dict[str, Any]:
+    cells = {"cells": 6, "empty": 2, "median": 3.0, "p5": 0.5, "msg_median": 5.0, "msg_p5": 2.0}
+    return {"users": users, "conversations": users // 2, "cand_k": cand_k, "occupancy": {"peak": peak},
+            "peak_bucket_window_above_cand_k": peak > cand_k,
+            "checks": {"row_count_equals_message_count": True, "no_epoch_failed": True},
+            "attack": {"predicted_turn_accuracy": 0.56}, "anonymity": {"per_window": cells, "per_bucket_window": cells}}
+
+
+def _anon_run(tree: dict[str, Any], name: str = "anon", pops: list[dict[str, Any]] | None = None,
+              **kw: Any) -> Path:
+    s6 = {"mapping": "two users per conversation", "db_server_version": "16",
+          "params": {"duration_s": 9, "buckets": 2, "window_s": 60}, "populations": pops or [_pop(4, 9), _pop(8, 30)]}
+    metrics = [{"id": "S-ANON-MED-U4", "value": 3.0}, {"id": "S-ANON-BW-PEAK-U8", "value": 30}]
+    return _run(tree["root"], name, {"s6_anonymity.json": s6, "anonymity_table.csv": "users\n"}, metrics,
+                **{"session": "s9", **kw})
+
+
+def test_anonymity_run_of_another_session_gets_its_own_provenance(tree: dict[str, Any]) -> None:
+    notes = tree["root"] / "notes.md"
+    s = _generate(tree, notes=notes, anonymity=_anon_run(tree), issues={"overflow": "ISSUE-9"})
+    assert s["not_measured"] == ["S7 comparison with the CPU oracle"]
+    assert s["provenance"]["session_id"] == "s1" and s["anonymity_provenance"]["session_id"] == "s9"
+    assert s["run_dirs"]["anonymity"] == "runs/anon" and (tree["out"] / "anonymity_table.csv").is_file()
+    assert s["gates"] == 1 + len(LAYOUTS) + 1 + 2 + 2 + 2 * 2
+    text = notes.read_text(encoding="utf-8")
+    assert "## 4.S.9 S6: anonymity set" in text and "## 4.S.10 Not in this section" in text
+    assert "runner session s9 (a runner session of its own, not the one of the sections above)" in text
+    assert "3.0<!--M:S-ANON-MED-U4-->" in text and "30<!--M:S-ANON-BW-PEAK-U8-->" in text
+    assert "NOT_MEASURED<!--M:S-ANON-P5-U4-->" in text  # a metric the run does not list is never guessed
+    assert "at 8 users the fullest bucket-window holds 30 real rows, above CAND_K 16" in text and "ISSUE-9" in text
+    assert "at 4 users the fullest" not in text and "anonymity-set study (S6)" not in text
+
+
+def test_a_failed_anonymity_check_is_a_failed_gate(tree: dict[str, Any]) -> None:
+    bad = _pop(4, 9)
+    bad["checks"]["no_epoch_failed"] = False
+    s = _generate(tree, anonymity=_anon_run(tree, pops=[bad]))
+    failed = [(g["experiment"], g["scope"], g["gate"]) for g in s["gates_failed"]]
+    assert failed == [("S6", "4 users", "no_epoch_failed")]
+
+
+def test_nothing_is_left_unmeasured_with_oracle_and_anonymity(tree: dict[str, Any]) -> None:
+    notes = tree["root"] / "notes.md"
+    s = _generate(tree, notes=notes, oracle=_oracle_run(tree), anonymity=_anon_run(tree))
+    text = notes.read_text(encoding="utf-8")
+    assert s["not_measured"] == [] and "## 4.S.10 S6: anonymity set" in text and "Not in this section" not in text
+
+
+@pytest.mark.parametrize("change", [{"backend": "numpy"}, {"quick": True}, {"params": {**STACK, "db": "sqlite"}},
+                                    {"params": {**STACK, "engine": "numpy"}}])
+def test_refuses_an_anonymity_run_that_is_not_the_real_stack(tree: dict[str, Any], change: dict[str, Any]) -> None:
+    with pytest.raises(ReportError):
+        _generate(tree, anonymity=_anon_run(tree, **change))
+    assert not tree["out"].exists()

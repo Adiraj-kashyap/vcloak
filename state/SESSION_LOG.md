@@ -1005,3 +1005,5 @@
 - Commit: 9c0e7f6 (code), b042dc8 (simulator run, checks), records 966e0ab
 - Next: M14 ingest of 20261013-125843_M14_s6, then the S6 section and the module audit ; human action: ISSUE-42 (run the
   job, or say "S6 on the simulator"); ISSUE-41 and ISSUE-36 are still undecided
+
+- GPU-JOB 20261013-125843_M14_s6 ingested 2026-10-13 15:49: runner colab, gpu Tesla T4, session 20261013-101235, overall exit 0, runs 20261013-101309_M14_security_anon, 24 metrics indexed.
