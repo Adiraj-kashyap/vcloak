@@ -635,7 +635,7 @@ Then open a new session and type: continue
 Closed 2026-10-12 session 21: the human ran the job on Kaggle (session 20261012-061138, Tesla T4) and the results zip
 was ingested; all 7 commands exit 0, git sha and bundle sha match (runs/20261012-150500_M08_issue17_ingest/gates.txt).
 
-### ISSUE-25 [CLOSED HASH34] M08 dudect: two device-stage series of the write_epoch diagnostics FAIL at seed 8 (write_epoch_age, write_epoch_fresh)
+### ISSUE-25 [CLOSED 9a6936f] M08 dudect: two device-stage series of the write_epoch diagnostics FAIL at seed 8 (write_epoch_age, write_epoch_fresh)
 BLOCKS: M14   SEVERITY: high   OPENED: 2026-10-12 session 21
 Finding (job 20261012-113437_M08_issue17, seed 8, Tesla T4, N = 100000 per class, threshold 4.5; values from
 runs/20261012-061420_M08_dudect_issue17_s8, recomputed in runs/20261012-150500_M08_issue17_ingest/gates.txt and device_series_detail.txt).
@@ -1026,7 +1026,7 @@ Then type: continue
 Closed 2026-10-13 session 31: the human ran the job on Kaggle (session 20261012-135251, Tesla T4) and the results zip
 was ingested; all 9 commands exit 0, git sha and bundle sha match (runs/20261013-000602_M08_i25_ingest/gates.txt).
 
-### ISSUE-35 [CLOSED HASH34] HUMAN ACTION REQUIRED — GPU JOB READY: ISSUE-25 kernel-only dudect of tags and compact (job 20261013-005946_M08_issue25k)
+### ISSUE-35 [CLOSED 9a6936f] HUMAN ACTION REQUIRED — GPU JOB READY: ISSUE-25 kernel-only dudect of tags and compact (job 20261013-005946_M08_issue25k)
 BLOCKS: M14   SEVERITY: high   OPENED: 2026-10-13 session 32
 Why: the kernel-level timing claim can only be measured on the GPU, and this laptop has none. This is the last job
 for ISSUE-25 (timebox): whatever comes back, the next session closes the question and M14 starts after it.

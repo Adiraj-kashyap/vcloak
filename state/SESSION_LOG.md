@@ -850,6 +850,6 @@
   number of section 4.O.7 (the queued-only t) is generated from a raw file and has no index row.
 - Not verified: the kernel-window result on a second session, GPU or size; a full-N positive control of the queued
   window; anything about the AEAD kernels or the whole write path. The 1 skipped test was not looked into.
-- Commit: HASH34
+- Commit: 9a6936f
 - Next: `fix ISSUE-17` point 1 (the report table shows the diagnostics; local, no GPU), then M14 S1 ; human action:
   none required. Optional: decide ISSUE-36 (keep the result with its limits, or NOT_MEASURED)
