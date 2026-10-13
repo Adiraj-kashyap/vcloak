@@ -925,6 +925,6 @@
 - Not verified: anything on a CUDA device; scripts/runner_stack.py on Colab itself (rehearsed in an ubuntu:22.04
   container as root); the service's engine thread with CuPy; that `-m gpu` selects 674 tests on the runner; the
   job's runtime (about 1 hour is an estimate)
-- Commit: e5a82fc (code, packed from it); records in the following commit
+- Commit: e5a82fc (code; the job is packed from it), a74eea2 (records)
 - Next: ingest job 20261013-105517_M14 ; human action: ISSUE-39 (run the job on Colab); decide ISSUE-36 and ISSUE-40
 
