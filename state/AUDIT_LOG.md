@@ -1163,3 +1163,36 @@ Notes:
 - Not checked on the device: S6 and S7. scripts/runner_stack.py worked on Colab (stack_up exit 0, hygiene as required).
 - ruff: src, tests, scripts, bench (RUN/ruff.txt, clean). The simulator evidence of session 37 for the attack table and
   E0 was moved to evidence/superseded/.
+
+## Audit M14 — 2026-10-13 — session 39 — result: PASS for S7 (checkpoint; module IN_PROGRESS, S6 open; 2 rows differ, ISSUE-41)
+| Item | Result | Evidence |
+|---|---|---|
+| S7 check (table device against oracle; differences open an issue) | PASS | runs/20261013-121247_M14_oracle_compare/oracle_comparison.json and .csv: 35 rows, 12 EQUAL, 19 WITHIN_NOISE, 2 DIFFERS, 2 NOT_COMPARABLE; the 2 DIFFERS rows are ISSUE-41 |
+| A1 real stack | PASS for S1 to S5; N/A for S7 | the device side of the table is read from the four ingested cupy runs (manifest params.device_runs and device_stack: backend cupy, engine gpu, db postgres); the oracle side is a CPU reference by definition; S6 open (ISSUE-40) |
+| A2 acceptance gates recorded | PASS for S1 to S5 | results/security/gates.csv unchanged (61 of 61); the oracle's chi-square outside the gate is recorded as DIFFERS, not omitted |
+| A3 GPU-vs-oracle table | PASS | results/security/oracle_comparison.csv, docs/REPORT_CH4_NOTES.md section 4.S.9 (both sides tagged) |
+| A4 dudect FAIL reflected | PASS | section 4.S.5 unchanged by the regeneration |
+| G1 | PASS | RUN/pytest_all.txt (2101 passed, 675 skipped: 674 need a CUDA device and passed on the T4 in runs/20261013-055445_M14_cuda_tests, 1 deliberate; no database skip) |
+| G2 | PASS | RUN/check_metrics.txt (649 rows, 0 problems); 45 rows added (40 from the comparison, 5 from the diagnostic) |
+| G2b | PASS | the 45 new rows are backend numpy / runner local with the prefix S-ORACLE-: reference values of the logic, none a timing or a GPU metric; the oracle's own CPU timings are not indexed and not reported |
+| G3 | PASS | RUN/check_oblivious.txt (11 files, 0 findings); no kernel changed |
+| G4 | PASS | RUN/check_secrets.txt (0 key-like runs, the oracle's output files included); the oracle's keys are drawn in memory and never written |
+| G5 | N/A | no GPU twin was written this session |
+| G6 | PARTIAL | the S7 deliverable exists; src/vcloak/eval/anonymity.py does not (S6) |
+| G7 | PASS | checked after the closing commit |
+| G8 | PASS | STATE: M14 IN_PROGRESS at S6, 4 sessions, pending null |
+| G9 | PASS | SESSION_LOG session 39, this entry, ISSUE-41 opened, ISSUE-40 updated |
+| G10 | PASS with a limit | RUN/manifests_valid.txt (both run dirs valid, git b299525 and 689f418, not dirty); RUN/g10_quick_rerun.txt (quick sizes against quick simulator runs in scratch: exit 0, status OK, 0 DIFFERS) |
+Notes:
+- RUN is runs/20261013-122548_M14_oracle_report.
+- G10 limit: the oracle draws its keys from the OS, so a re-run gives other key-dependent numbers. The quick re-run
+  reproduces the run completing and the EQUAL rows; it does not, and cannot, reproduce the two DIFFERS rows.
+- The noise criteria were written and committed (b299525) before the full oracle run; the chi-square diagnostic was
+  chosen afterwards and is labelled so everywhere it is quoted.
+- One device replay, one oracle run, one seed. Agreement of 31 rows is not a proof of equivalence; the notes say so.
+- The prediction interval treats 20 repetitions as normal; for the peak occupancy it is very wide (41.6 to 146.5), so
+  that row could hardly have differed. For W60 it may be narrow (see ISSUE-41).
+- report_security redrew the two figure PDFs with new metadata only; they were restored from git so the files of
+  session 38 stay byte-identical. The PNGs were unchanged.
+- ruff: src, tests, scripts, bench (RUN/ruff.txt, clean). An intermediate commit (e25a24c) went in with three lint
+  errors in bench/oracle_chi2_repeat.py; fixed in 689f418 before that script produced its run.

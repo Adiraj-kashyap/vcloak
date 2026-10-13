@@ -1,0 +1,52 @@
+{
+  "provenance": {
+    "session_id": "20261013-054610",
+    "runner": "colab",
+    "gpu": "Tesla T4",
+    "driver": "580.82.07",
+    "cuda": "13000",
+    "cupy": "14.0.1",
+    "git_sha": "e5a82fc8bc29174ab06aba0f9d7d394ac9ba719c",
+    "job_id": "20261013-105517_M14",
+    "seed": 2026,
+    "mode": "vcloak",
+    "db": "postgres",
+    "engine": "gpu"
+  },
+  "backend": "cupy",
+  "run_dirs": {
+    "s1": "runs/20261013-054644_M14_security_s1",
+    "attack": "runs/20261013-054727_M14_security_e0e1",
+    "uniformity": "runs/20261013-055417_M14_security_e2",
+    "trace": "runs/20261013-055444_M14_security_e3",
+    "tests": "runs/20261013-055445_M14_cuda_tests"
+  },
+  "gates": 61,
+  "gates_failed": [],
+  "oblivious_summary": "results/oblivious/oblivious_summary.json",
+  "issues": {
+    "overflow": "ISSUE-40",
+    "pending": "ISSUE-40"
+  },
+  "files": [
+    "attack_table.csv",
+    "cuda_tests.json",
+    "e0_restoration.json",
+    "e1_attack.json",
+    "e2_uniformity.json",
+    "e3_trace.json",
+    "fig_tau_histogram.json",
+    "fig_tau_histogram.pdf",
+    "fig_tau_histogram.png",
+    "fig_window_ablation.json",
+    "fig_window_ablation.pdf",
+    "fig_window_ablation.png",
+    "gates.csv",
+    "s1_traffic.json"
+  ],
+  "not_measured": [
+    "S6 anonymity set",
+    "S7 comparison with the CPU oracle"
+  ],
+  "generated_by": "python -m vcloak.bench.report_security"
+}

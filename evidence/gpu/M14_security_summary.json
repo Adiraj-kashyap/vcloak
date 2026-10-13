@@ -26,7 +26,8 @@
   "oblivious_summary": "results/oblivious/oblivious_summary.json",
   "issues": {
     "overflow": "ISSUE-40",
-    "pending": "ISSUE-40"
+    "pending": "ISSUE-40",
+    "oracle": "ISSUE-41"
   },
   "files": [
     "attack_table.csv",
@@ -42,11 +43,22 @@
     "fig_window_ablation.pdf",
     "fig_window_ablation.png",
     "gates.csv",
+    "oracle_comparison.csv",
+    "oracle_comparison.json",
     "s1_traffic.json"
   ],
   "not_measured": [
-    "S6 anonymity set",
-    "S7 comparison with the CPU oracle"
+    "S6 anonymity set"
   ],
+  "oracle_comparison": {
+    "run_dir": "runs/20261013-121247_M14_oracle_compare",
+    "counts": {
+      "EQUAL": 12,
+      "WITHIN_NOISE": 19,
+      "DIFFERS": 2,
+      "NOT_COMPARABLE": 2
+    },
+    "rows": 35
+  },
   "generated_by": "python -m vcloak.bench.report_security"
 }

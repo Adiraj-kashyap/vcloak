@@ -1,0 +1,60 @@
+oracle run: 24733 messages, 249 s
+oracle repetition 1 of 20: 20.8 s
+oracle repetition 2 of 20: 21.9 s
+oracle repetition 3 of 20: 21.4 s
+oracle repetition 4 of 20: 21.6 s
+oracle repetition 5 of 20: 20.9 s
+oracle repetition 6 of 20: 20.5 s
+oracle repetition 7 of 20: 19.9 s
+oracle repetition 8 of 20: 19.0 s
+oracle repetition 9 of 20: 18.9 s
+oracle repetition 10 of 20: 18.8 s
+oracle repetition 11 of 20: 18.7 s
+oracle repetition 12 of 20: 18.6 s
+oracle repetition 13 of 20: 18.6 s
+oracle repetition 14 of 20: 18.7 s
+oracle repetition 15 of 20: 18.6 s
+oracle repetition 16 of 20: 18.7 s
+oracle repetition 17 of 20: 18.7 s
+oracle repetition 18 of 20: 18.6 s
+oracle repetition 19 of 20: 18.6 s
+oracle repetition 20 of 20: 18.6 s
+EQUAL          S1  messages: device 24733, oracle 24733
+EQUAL          E0  conversations read back in exact order: device 60, oracle 60
+NOT_COMPARABLE E0  candidate set size K: device 128, oracle 128
+EQUAL          E1  global tau, BASELINE: device 1.0, oracle 1.0
+EQUAL          E1  tau within a round, BASELINE: device 0.9999999999999999, oracle 1.0
+EQUAL          E1  turn-order accuracy, BASELINE: device 1.0, oracle 1.0
+NOT_COMPARABLE E1  f (turns inside one visible round), BASELINE: device 0.8894142583459015, oracle 0.15880650552317288
+EQUAL          E1  f (turns inside one visible round), EPOCH: device 0.036236905392736316, oracle 0.036236905392736316
+EQUAL          E1  f (turns inside one visible round), W1: device 0.15880650552317288, oracle 0.15880650552317288
+EQUAL          E1  f (turns inside one visible round), W10: device 0.6287857171972445, oracle 0.6287857171972445
+EQUAL          E1  f (turns inside one visible round), W60: device 0.8894142583459015, oracle 0.8894142583459015
+EQUAL          E1  f (turns inside one visible round), W300: device 0.9836954306444381, oracle 0.9836954306444381
+WITHIN_NOISE   E1  global tau, EPOCH: device 0.999775424597944, oracle 0.9997747576005644
+WITHIN_NOISE   E1  tau within a round, EPOCH: device 0.0003798655037083861, oracle 0.0018786724271720378
+WITHIN_NOISE   E1  turn-order accuracy, EPOCH: device 0.9819834508621041, oracle 0.9823095422492153
+WITHIN_NOISE   E1  global tau, W1: device 0.9988783458182493, oracle 0.9988811838267078
+WITHIN_NOISE   E1  tau within a round, W1: device 0.000682980809796884, oracle 0.0022154813205719093
+WITHIN_NOISE   E1  turn-order accuracy, W1: device 0.9202298944279135, oracle 0.9188032446093017
+WITHIN_NOISE   E1  global tau, W10: device 0.9888125575779767, oracle 0.9888297425692881
+WITHIN_NOISE   E1  tau within a round, W10: device -0.00044834259819898493, oracle 0.0023822103686713205
+WITHIN_NOISE   E1  turn-order accuracy, W10: device 0.6867484612562671, oracle 0.6855663799779889
+WITHIN_NOISE   E1  global tau, W60: device 0.9328739656987705, oracle 0.9340391381899492
+WITHIN_NOISE   E1  tau within a round, W60: device -0.005945015707058048, oracle 0.012066514500218091
+WITHIN_NOISE   E1  turn-order accuracy, W60: device 0.5560265764480495, oracle 0.5596951045530509
+WITHIN_NOISE   E1  global tau, W300: device 0.6659023334439046, oracle 0.6662616815517922
+WITHIN_NOISE   E1  tau within a round, W300: device -0.0006598790092191928, oracle 0.00014861688623078517
+WITHIN_NOISE   E1  turn-order accuracy, W300: device 0.5067867769942527, oracle 0.5071536298047528
+WITHIN_NOISE   E0  peak bucket-window occupancy, W60: device 91, oracle 82
+WITHIN_NOISE   E0  mean bucket-window occupancy, W60: device 26.796316359696643, oracle 26.767316017316016
+DIFFERS        E2  chi-square statistic, n 64: device 3854.5856999999996, oracle 4222.7766
+DIFFERS        E2  chi-square p-value: device 0.9013404415190159, oracle 0.0025768101260514333
+WITHIN_NOISE   E2  tau inside 3 sigma (%), n 65536: device 99.7, oracle 99.7
+WITHIN_NOISE   E2  standard deviation of tau: device 0.0026536221504245908, oracle 0.0025133295025381135
+EQUAL          E3  distinct comparator traces, bitonic sort: device 1, oracle 1
+EQUAL          E3  distinct comparator traces, merge sort: device 4, oracle 4
+35 rows: 12 EQUAL, 19 WITHIN_NOISE, 2 DIFFERS, 2 NOT_COMPARABLE
+device stack: backend ['cupy'], engine gpu, db postgres
+run dir: D:\PJT\vcloak\runs\20261013-121247_M14_oracle_compare
+exit 0

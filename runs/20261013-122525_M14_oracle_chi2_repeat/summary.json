@@ -1,0 +1,34 @@
+{
+  "metrics": [
+    {
+      "id": "S-ORACLE-CHI2-REP-MIN",
+      "value": 3735.9693,
+      "unit": "-",
+      "stat": "smallest over 10 fresh keys, n 64, 20000 epochs, dof 3969"
+    },
+    {
+      "id": "S-ORACLE-CHI2-REP-MEDIAN",
+      "value": 3952.8909000000003,
+      "unit": "-",
+      "stat": "median over 10 fresh keys, n 64, 20000 epochs, dof 3969"
+    },
+    {
+      "id": "S-ORACLE-CHI2-REP-MAX",
+      "value": 4067.947800000001,
+      "unit": "-",
+      "stat": "largest over 10 fresh keys, n 64, 20000 epochs, dof 3969"
+    },
+    {
+      "id": "S-ORACLE-CHI2-REP-PBELOW",
+      "value": 0,
+      "unit": "tables",
+      "stat": "tables with p below 0.01, over 10 fresh keys, n 64, 20000 epochs, dof 3969"
+    },
+    {
+      "id": "S-ORACLE-CHI2-REP-N",
+      "value": 10,
+      "unit": "tables",
+      "stat": "fresh keys"
+    }
+  ]
+}

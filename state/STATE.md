@@ -3,13 +3,13 @@
 ```yaml
 project: v-cloak
 kit_version: 1.0
-last_session: 38
+last_session: 39
 last_session_date: 2026-10-13
 current_module: M14
 current_step: S6
 status: IN_PROGRESS          # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
 next_unit: M14
-last_checkpoint: 2026-10-13 session 38: job 20261013-105517_M14 ingested, S2-S5 complete on the real stack (61 of 61 gates PASS), results/security and notes 4.S generated; next: S7 (no device needed), S6 after the decision of ISSUE-40
+last_checkpoint: 2026-10-13 session 39: S7 done (35 rows against the CPU oracle, 2 DIFFERS on the oracle side, ISSUE-41); next: S6 (code first; GPU job or simulator per ISSUE-40)
 quick_mode_default: false
 local:                      # the laptop (no GPU) — filled by M00 S7
   os: "Windows-11-10.0.26200-SP0"
@@ -55,7 +55,7 @@ gpu_job:                    # set by the gpu-job skill
 | M11 | Session security (E5) | Divyansh | M10 | no | DONE | S7 | 2 |
 | M12 | Client SDK & CLI | Abhishek | M11 | no | DONE | S4 | 1 |
 | M13 | Frontend: chat + server view | Abhishek | M12 | no | DONE | S6 | 5 |
-| M14 | Security evaluation (E0–E2, anon set) | Abhishek | M08, M10 | no | IN_PROGRESS | S6 | 3 |
+| M14 | Security evaluation (E0–E2, anon set) | Abhishek | M08, M10 | no | IN_PROGRESS | S6 |4 |
 | M15 | End-to-end performance (E6) | Divyansh | M10, M11 | no | NOT_STARTED | S1 | 0 |
 | M16 | Results export | Abhishek | M07, M08, M14 | no | NOT_STARTED | S1 | 0 |
 | M18 | Frontend: dashboard, experiments, logs | Abhishek | M13, M14 | no | NOT_STARTED | S1 | 0 |
@@ -112,5 +112,7 @@ Keep this file under 120 lines: one or two lines per note, the detail lives in t
   GPU result. S1-S5 are measured on the real stack (job 20261013-105517_M14, Colab session 20261013-054610: T4 +
   PostgreSQL in the runner). results/security and section 4.S of the notes are generated: never edit them by hand,
   re-run runs/20261013-115636_M14_security_ingest_report/report_command.txt (`vcloak.bench.report_security`).
-  Left: S7 (oracle run locally against the ingested numbers) and S6 (decision of ISSUE-40 first). W300 is dumped
-  only: its peak occupancy is above CAND_K. The runner stack job shape is `bench/jobs/M14.json`.
+  S7 is done: `bench/run_oracle_compare.py` (20261013-121247_M14_oracle_compare), into the notes by `--oracle`
+  (command in runs/20261013-122548_M14_oracle_report/report_command.txt, which replaces the one above). Never
+  write "the GPU matches the oracle": 31 of 35 rows agree, 2 differ on the oracle side (ISSUE-41). Left: S6
+  (ISSUE-40). W300 is dumped only (peak occupancy above CAND_K). Runner stack job shape: `bench/jobs/M14.json`.

@@ -1185,4 +1185,27 @@ Decision for the human at the ingest: a second job for S6, or S6 on the simulato
 Session 38 (ingest): point 3 is the same on the device (runs/20261013-054727_M14_security_e0e1/e1_attack.json: W300 peak
 occupancy 345, mean 132.97, CAND_K 128; W60 peak 91) and is stated in section 4.S.3 of the notes. S6 and S7 are still
 not written; the decision for S6 was asked again in the handoff of session 38. S7 can be done without it.
+Session 39: S7 is done (runs/20261013-121247_M14_oracle_compare, section 4.S.9 of the notes; its two differing rows are ISSUE-41). What is left
+of this issue is S6 only. The decision is still the human's: a second small GPU job (A1 met), or S6 on the numpy
+simulator with A1 recorded as not met for S6. The S6 code is needed either way and is the next unit; if no
+decision is recorded by then, that session packs a GPU job (the option that meets A1) and stops at its gate.
 
+### ISSUE-41 [OPEN] M14 S7: the CPU oracle's own chi-square run is outside the acceptance gate (p 0.0026); the device passes
+BLOCKS: none   SEVERITY: medium   OPENED: 2026-10-13 session 39
+What: in the device-against-oracle table (runs/20261013-121247_M14_oracle_compare/oracle_comparison.csv) 2 of 35 rows are DIFFERS, both from
+the same chi-square test at n 64 over 20000 epochs. The side that is outside is the oracle: statistic 4222.7766
+(S-ORACLE-CHI2) at 3969 degrees of freedom, p 0.0025768 (S-ORACLE-CHI2-P), above the largest of the 200 ideal-sampler
+tables of the device run (4209.04) and below the gate p > 0.01. The device values pass (S-CHI2 3854.59, S-CHI2-P 0.9013).
+The oracle draws its key for this test from the OS at every run, so the run cannot be repeated with the same key.
+Diagnostic (chosen after the table was read, so it changes no verdict): the oracle's chi-square computation repeated
+for 10 fresh keys (runs/20261013-122525_M14_oracle_chi2_repeat): statistics from 3735.97 to 4067.95, median 3952.89,
+0 of 10 below p 0.01. That is what a tail draw of the main run would look like; 10 tables cannot exclude a small bias.
+Also seen, no verdict attached: the oracle's main run lies outside the prediction interval of its own 20 repetitions
+for two W60 rows (global tau and tau within a round, one event: they move together), while the device lies inside.
+So the interval from 20 repetitions is on the narrow side for W60, or that oracle run is an unusual draw there too.
+Not affected: every device gate (61 of 61 PASS) and the 31 EQUAL and WITHIN_NOISE rows.
+Options for the human / the owner: (a) keep the two rows as DIFFERS with this issue named beside them (the state of
+section 4.S.9 now) and close this issue as a documented tail draw; (b) one more full oracle run with a fixed, recorded
+test key for the chi-square, so that the oracle side becomes repeatable (this needs a wrapper: seed/ is read-only).
+Until decided, M20 and M22 quote the comparison as "31 of 35 rows agree, 2 are defined differently, 2 differ on the
+oracle side (ISSUE-41)", never as "the GPU matches the oracle".

@@ -434,6 +434,55 @@ The attacker reads the table in physical order (`ORDER BY ctid`) and guesses tha
 - `results/security/fig_window_ablation.png` from `runs/20261013-054727_M14_security_e0e1`
 - `results/security/fig_tau_histogram.png` from `runs/20261013-055417_M14_security_e2`
 
-## 4.S.9 Not in this section
-- The anonymity-set study (S6) and the comparison with the CPU oracle (S7): NOT_MEASURED (ISSUE-40).
+## 4.S.9 Comparison with the CPU oracle
+- The oracle `seed/vcloak_oracle.py` ran unchanged on the laptop CPU with seed 2026 and the sizes of the device runs (`runs/20261013-121247_M14_oracle_compare`). It is the reference for the logic: it is not a GPU run and none of its timings is used.
+- The two sides use different keys (the oracle draws its keys from the OS), so a key-dependent number is expected to come from the same distribution, not to be equal.
+- EQUAL: fixed by the traffic or the schedule, the values agree to 1e-9. WITHIN_NOISE: for E0 and E1 the device value lies inside the prediction interval of 20 repetitions of the oracle's attack with fresh keys on the same traffic (level 0.01 shared over 17 rows); for E2 both values lie inside the interval that theory or the ideal-sampler calibration gives. NOT_COMPARABLE: the two sides define the quantity differently.
+
+| experiment | quantity | device (T4 + PostgreSQL) | CPU oracle | interval | verdict |
+|---|---|---|---|---|---|
+| S1 | messages | 24733<!--M:S-TRAFFIC-MSGS--> | 24733<!--M:S-ORACLE-TRAFFIC-MSGS--> | - | EQUAL |
+| E0 | conversations read back in exact order | 60<!--M:S-E0-RESTORE--> | 60<!--M:S-ORACLE-E0-RESTORE--> | - | EQUAL |
+| E0 | candidate set size K | 128<!--M:S-CANDK--> | 128<!--M:S-ORACLE-CANDK--> | - | NOT_COMPARABLE |
+| E1 | global tau, BASELINE | 1.0<!--M:S-TAU-GLOBAL-BASELINE--> | 1.0<!--M:S-ORACLE-TAU-GLOBAL-BASELINE--> | - | EQUAL |
+| E1 | tau within a round, BASELINE | 0.9999999999999999<!--M:S-TAU-WITHIN-BASELINE--> | 1.0<!--M:S-ORACLE-TAU-WITHIN-BASELINE--> | - | EQUAL |
+| E1 | turn-order accuracy, BASELINE | 1.0<!--M:S-TURNACC-BASELINE--> | 1.0<!--M:S-ORACLE-TURNACC-BASELINE--> | - | EQUAL |
+| E1 | f (turns inside one visible round), BASELINE | 0.8894142583459015<!--M:S-F-BASELINE--> | 0.15880650552317288<!--M:S-ORACLE-F-BASELINE--> | - | NOT_COMPARABLE |
+| E1 | f (turns inside one visible round), EPOCH | 0.036236905392736316<!--M:S-F-EPOCH--> | 0.036236905392736316<!--M:S-ORACLE-F-EPOCH--> | - | EQUAL |
+| E1 | f (turns inside one visible round), W1 | 0.15880650552317288<!--M:S-F-W1--> | 0.15880650552317288<!--M:S-ORACLE-F-W1--> | - | EQUAL |
+| E1 | f (turns inside one visible round), W10 | 0.6287857171972445<!--M:S-F-W10--> | 0.6287857171972445<!--M:S-ORACLE-F-W10--> | - | EQUAL |
+| E1 | f (turns inside one visible round), W60 | 0.8894142583459015<!--M:S-F-W60--> | 0.8894142583459015<!--M:S-ORACLE-F-W60--> | - | EQUAL |
+| E1 | f (turns inside one visible round), W300 | 0.9836954306444381<!--M:S-F-W300--> | 0.9836954306444381<!--M:S-ORACLE-F-W300--> | - | EQUAL |
+| E1 | global tau, EPOCH | 0.999775424597944<!--M:S-TAU-GLOBAL-EPOCH--> | 0.9997747576005644<!--M:S-ORACLE-TAU-GLOBAL-EPOCH--> | 0.999768 to 0.999781 | WITHIN_NOISE |
+| E1 | tau within a round, EPOCH | 0.0003798655037083861<!--M:S-TAU-WITHIN-EPOCH--> | 0.0018786724271720378<!--M:S-ORACLE-TAU-WITHIN-EPOCH--> | -0.0255824 to 0.0259861 | WITHIN_NOISE |
+| E1 | turn-order accuracy, EPOCH | 0.9819834508621041<!--M:S-TURNACC-EPOCH--> | 0.9823095422492153<!--M:S-ORACLE-TURNACC-EPOCH--> | 0.979742 to 0.984653 | WITHIN_NOISE |
+| E1 | global tau, W1 | 0.9988783458182493<!--M:S-TAU-GLOBAL-W1--> | 0.9988811838267078<!--M:S-ORACLE-TAU-GLOBAL-W1--> | 0.99885 to 0.998907 | WITHIN_NOISE |
+| E1 | tau within a round, W1 | 0.000682980809796884<!--M:S-TAU-WITHIN-W1--> | 0.0022154813205719093<!--M:S-ORACLE-TAU-WITHIN-W1--> | -0.0256354 to 0.0271749 | WITHIN_NOISE |
+| E1 | turn-order accuracy, W1 | 0.9202298944279135<!--M:S-TURNACC-W1--> | 0.9188032446093017<!--M:S-ORACLE-TURNACC-W1--> | 0.916562 to 0.925316 | WITHIN_NOISE |
+| E1 | global tau, W10 | 0.9888125575779767<!--M:S-TAU-GLOBAL-W10--> | 0.9888297425692881<!--M:S-ORACLE-TAU-GLOBAL-W10--> | 0.988542 to 0.989092 | WITHIN_NOISE |
+| E1 | tau within a round, W10 | -0.00044834259819898493<!--M:S-TAU-WITHIN-W10--> | 0.0023822103686713205<!--M:S-ORACLE-TAU-WITHIN-W10--> | -0.0243496 to 0.025157 | WITHIN_NOISE |
+| E1 | turn-order accuracy, W10 | 0.6867484612562671<!--M:S-TURNACC-W10--> | 0.6855663799779889<!--M:S-ORACLE-TURNACC-W10--> | 0.676112 to 0.695987 | WITHIN_NOISE |
+| E1 | global tau, W60 | 0.9328739656987705<!--M:S-TAU-GLOBAL-W60--> | 0.9340391381899492<!--M:S-ORACLE-TAU-GLOBAL-W60--> | 0.932327 to 0.93399 | WITHIN_NOISE |
+| E1 | tau within a round, W60 | -0.005945015707058048<!--M:S-TAU-WITHIN-W60--> | 0.012066514500218091<!--M:S-ORACLE-TAU-WITHIN-W60--> | -0.0139466 to 0.0112193 | WITHIN_NOISE |
+| E1 | turn-order accuracy, W60 | 0.5560265764480495<!--M:S-TURNACC-W60--> | 0.5596951045530509<!--M:S-ORACLE-TURNACC-W60--> | 0.544167 to 0.56553 | WITHIN_NOISE |
+| E1 | global tau, W300 | 0.6659023334439046<!--M:S-TAU-GLOBAL-W300--> | 0.6662616815517922<!--M:S-ORACLE-TAU-GLOBAL-W300--> | 0.662582 to 0.669944 | WITHIN_NOISE |
+| E1 | tau within a round, W300 | -0.0006598790092191928<!--M:S-TAU-WITHIN-W300--> | 0.00014861688623078517<!--M:S-ORACLE-TAU-WITHIN-W300--> | -0.0111709 to 0.0113153 | WITHIN_NOISE |
+| E1 | turn-order accuracy, W300 | 0.5067867769942527<!--M:S-TURNACC-W300--> | 0.5071536298047528<!--M:S-ORACLE-TURNACC-W300--> | 0.501293 to 0.513064 | WITHIN_NOISE |
+| E0 | peak bucket-window occupancy, W60 | 91<!--M:S-OCC-PEAK--> | 82<!--M:S-ORACLE-OCC-PEAK--> | 41.616 to 146.484 | WITHIN_NOISE |
+| E0 | mean bucket-window occupancy, W60 | 26.796316359696643<!--M:S-OCC-MEAN--> | 26.767316017316016<!--M:S-ORACLE-OCC-MEAN--> | 24.1755 to 30.128 | WITHIN_NOISE |
+| E2 | chi-square statistic, n 64 | 3854.5856999999996<!--M:S-CHI2--> | 4222.7766<!--M:S-ORACLE-CHI2--> | 3658.55 to 4209.04 | DIFFERS |
+| E2 | chi-square p-value | 0.9013404415190159<!--M:S-CHI2-P--> | 0.0025768101260514333<!--M:S-ORACLE-CHI2-P--> | 0.01 to 1 | DIFFERS |
+| E2 | tau inside 3 sigma (%), n 65536 | 99.7<!--M:S-TAUBAND-PCT--> | 99.7<!--M:S-ORACLE-TAUBAND-PCT--> | 99.2 to 100 | WITHIN_NOISE |
+| E2 | standard deviation of tau | 0.0026536221504245908<!--M:S-TAU-SIGMA-MEAS--> | 0.0025133295025381135<!--M:S-ORACLE-TAU-SIGMA-MEAS--> | 0.00245477 to 0.00275485 | WITHIN_NOISE |
+| E3 | distinct comparator traces, bitonic sort | 1<!--M:S-TRACE-DISTINCT-DEVICE--> | 1<!--M:S-ORACLE-TRACE-DISTINCT-DEVICE--> | - | EQUAL |
+| E3 | distinct comparator traces, merge sort | 4<!--M:S-TRACE-DISTINCT-MERGESORT--> | 4<!--M:S-ORACLE-TRACE-DISTINCT-MERGESORT--> | - | EQUAL |
+
+- 35 rows: 12<!--M:S-ORACLE-CMP-EQUAL--> EQUAL, 19<!--M:S-ORACLE-CMP-WITHIN-NOISE--> WITHIN_NOISE, 2<!--M:S-ORACLE-CMP-DIFFERS--> DIFFERS, 2<!--M:S-ORACLE-CMP-NOT-COMPARABLE--> NOT_COMPARABLE (`results/security/oracle_comparison.csv`).
+- DIFFERS: E2 / chi-square statistic, n 64; outside the interval: the oracle value (ISSUE-41).
+- DIFFERS: E2 / chi-square p-value; outside the interval: the oracle value (ISSUE-41).
+- NOT_COMPARABLE: candidate set size K - the device uses the public parameter CAND_K; the oracle derives K from the peak occupancy of its own run (next power of two).
+- NOT_COMPARABLE: f (turns inside one visible round), BASELINE - the baseline service stores the window as the visible round; the oracle's conventional layout stores the second of arrival.
+
+## 4.S.10 Not in this section
+- The anonymity-set study (S6): NOT_MEASURED (ISSUE-40).
 <!-- END M14 SECURITY -->

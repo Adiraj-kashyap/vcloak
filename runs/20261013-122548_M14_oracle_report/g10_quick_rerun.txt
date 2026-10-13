@@ -1,0 +1,35 @@
+oracle run: 608 messages, 3 s
+oracle repetition 1 of 3: 0.8 s
+oracle repetition 2 of 3: 1.0 s
+oracle repetition 3 of 3: 0.9 s
+EQUAL          S1  messages: device 608, oracle 608
+EQUAL          E0  conversations read back in exact order: device 15, oracle 15
+NOT_COMPARABLE E0  candidate set size K: device 128, oracle 64
+EQUAL          E1  global tau, BASELINE: device 1.0, oracle 1.0
+EQUAL          E1  tau within a round, BASELINE: device 1.0, oracle 1.0
+EQUAL          E1  turn-order accuracy, BASELINE: device 1.0, oracle 1.0
+NOT_COMPARABLE E1  f (turns inside one visible round), BASELINE: device 0.9366197183098591, oracle 0.15140845070422534
+EQUAL          E1  f (turns inside one visible round), EPOCH: device 0.04401408450704225, oracle 0.04401408450704225
+EQUAL          E1  f (turns inside one visible round), W10: device 0.6566901408450704, oracle 0.6566901408450704
+EQUAL          E1  f (turns inside one visible round), W60: device 0.9366197183098591, oracle 0.9366197183098591
+WITHIN_NOISE   E1  global tau, EPOCH: device 0.997929853463973, oracle 0.9981249458076824
+WITHIN_NOISE   E1  tau within a round, EPOCH: device -0.018242122719734643, oracle 0.03814262023217246
+WITHIN_NOISE   E1  turn-order accuracy, EPOCH: device 0.9788732394366197, oracle 0.9841549295774648
+WITHIN_NOISE   E1  global tau, W10: device 0.9160452614237407, oracle 0.9173783924390879
+WITHIN_NOISE   E1  tau within a round, W10: device 0.022109023769090675, oracle 0.023709534955329188
+WITHIN_NOISE   E1  turn-order accuracy, W10: device 0.6901408450704225, oracle 0.676056338028169
+WITHIN_NOISE   E1  global tau, W60: device 0.48044741177490685, oracle 0.4773150958120177
+WITHIN_NOISE   E1  tau within a round, W60: device -0.0335387645398393, oracle -0.03925280672332899
+WITHIN_NOISE   E1  turn-order accuracy, W60: device 0.5299295774647887, oracle 0.5299295774647887
+WITHIN_NOISE   E0  peak bucket-window occupancy, W60: device 57, oracle 46
+WITHIN_NOISE   E0  mean bucket-window occupancy, W60: device 22.51851851851852, oracle 23.384615384615383
+WITHIN_NOISE   E2  chi-square statistic, n 64: device 4034.7090000000003, oracle 3970.008
+WITHIN_NOISE   E2  chi-square p-value: device 0.22936076055872714, oracle 0.49250220371642695
+WITHIN_NOISE   E2  tau inside 3 sigma (%), n 4096: device 100.0, oracle 100.0
+WITHIN_NOISE   E2  standard deviation of tau: device 0.011491748329276477, oracle 0.009661128838798856
+EQUAL          E3  distinct comparator traces, bitonic sort: device 1, oracle 1
+EQUAL          E3  distinct comparator traces, merge sort: device 4, oracle 4
+27 rows: 10 EQUAL, 15 WITHIN_NOISE, 0 DIFFERS, 2 NOT_COMPARABLE
+device stack: backend ['numpy'], engine numpy-simulator, db sqlite
+run dir: C:\Users\HP\AppData\Local\Temp\claude\d--PJT-vcloak\4468230b-0172-46ca-b0f6-b0902dee9ed5\scratchpad\qo2\20261013-122549_M14_oracle_compare_quick
+quick exit 0

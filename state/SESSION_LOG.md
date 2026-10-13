@@ -955,3 +955,27 @@
 - Commit: 6bc85b8
 - Next: M14 S7, then S6 ; human action: decide ISSUE-40 (a second small GPU job for S6, or S6 on the simulator with A1
   recorded as not met for it); ISSUE-36 is still undecided
+
+## Session 39 — 2026-10-13 — M14 Security evaluation, S7 comparison with the CPU oracle — owner:Abhishek
+- Steps: S7 complete (status after: IN_PROGRESS, current_step S6)
+- Did: wrote src/vcloak/eval/oracle_compare.py (verdict rules), bench/run_oracle_compare.py (runs seed/vcloak_oracle.py
+  unchanged, output redirected into the run dir, plus 20 repetitions of its attack with fresh keys),
+  bench/oracle_chi2_repeat.py (diagnostic), tests/unit/test_eval_oracle_compare.py (12 cases), 3 cases more in
+  tests/unit/test_bench_report_security.py; report_security takes --oracle and writes section 4.S.9.
+- Result: 35 rows device (T4 + PostgreSQL, job 20261013-105517_M14) against oracle (laptop CPU, seed 2026): 12 EQUAL,
+  19 WITHIN_NOISE, 2 NOT_COMPARABLE, 2 DIFFERS. Same traffic on both sides (24733 messages; f equal in every shuffled
+  layout). The 2 DIFFERS rows are the oracle's chi-square (4222.8, p 0.0026: the oracle fails the gate, the device
+  passes). Diagnostic with 10 fresh keys: median 3952.9, none below p 0.01.
+- Evidence: runs/20261013-121247_M14_oracle_compare (oracle/, oracle_reps.json, oracle_comparison.*),
+  runs/20261013-122525_M14_oracle_chi2_repeat, runs/20261013-122548_M14_oracle_report (pytest_all.txt 2101 passed
+  675 skipped, check_*.txt, g10_quick_rerun.txt, report_command.txt); results/security/oracle_comparison.*;
+  evidence/terminal/M14_S7_*
+- Metrics added: 45 rows S-ORACLE-* (backend numpy, runner local: CPU reference values, never GPU results)
+- Decisions: none new (ADR); the noise criteria are in the Amendments of the module file
+- Issues: opened ISSUE-41 (the two differing rows); ISSUE-40 updated (S7 done, S6 left), stays OPEN
+- Deviations from spec: "sampling noise" defined by this build (Amendments); the diagnostic is not in the module text
+- Not verified: S6; more than one seed, device replay or oracle main run; whether the oracle's chi-square has a small
+  bias (10 tables cannot exclude it); the normal approximation behind the prediction intervals
+- Commit: b299525 (code), e25a24c and 689f418 (run, diagnostic script), records in the closing commit
+- Next: M14 S6 (code first; GPU job or simulator per ISSUE-40) ; human action: decide ISSUE-40 and ISSUE-41; ISSUE-36
+  is still undecided

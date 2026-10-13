@@ -1,0 +1,19 @@
+{
+ "module": "M14",
+ "run": "runs/20261013-122548_M14_oracle_report (git 689f418, dirty)",
+ "date": "2026-10-13",
+ "views": {},
+ "checks": {},
+ "ok": true,
+ "superseded": [],
+ "index_rows": [
+  "TERM-M14-S7-ORACLE-COMPARISON",
+  "TERM-M14-S7-ORACLE-COMPARE-STDOUT",
+  "TERM-M14-S7-ORACLE-CHI2-REPEAT-STDOUT"
+ ],
+ "files_written": [
+  "terminal/M14_S7_oracle_comparison.csv",
+  "terminal/M14_S7_oracle_compare_stdout.txt",
+  "terminal/M14_S7_oracle_chi2_repeat_stdout.txt"
+ ]
+}

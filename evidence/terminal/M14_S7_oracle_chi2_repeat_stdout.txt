@@ -1,0 +1,13 @@
+repetition 1 of 10: chi2 3964.0, p 0.5193 (8 s)
+repetition 2 of 10: chi2 3887.8, p 0.8187 (8 s)
+repetition 3 of 10: chi2 3931.3, p 0.6615 (8 s)
+repetition 4 of 10: chi2 3927.9, p 0.6754 (9 s)
+repetition 5 of 10: chi2 3988.6, p 0.4101 (8 s)
+repetition 6 of 10: chi2 3959.6, p 0.5389 (8 s)
+repetition 7 of 10: chi2 4067.9, p 0.1337 (8 s)
+repetition 8 of 10: chi2 3736.0, p 0.9961 (8 s)
+repetition 9 of 10: chi2 3951.6, p 0.5747 (8 s)
+repetition 10 of 10: chi2 3954.2, p 0.5631 (8 s)
+median 3952.9 (dof 3969), range 3736.0 to 4067.9, 0 of 10 below p 0.01
+run dir: D:\PJT\vcloak\runs\20261013-122525_M14_oracle_chi2_repeat
+exit 0

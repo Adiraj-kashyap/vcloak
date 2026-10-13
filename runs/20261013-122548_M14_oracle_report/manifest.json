@@ -1,0 +1,46 @@
+{
+  "run_id": "20261013-122548_M14_oracle_report",
+  "module": "M14",
+  "step": "S7",
+  "owner": "Abhishek",
+  "git_sha": "689f41889babb48a0d20a9dc68e4fcc25765d751",
+  "dirty": true,
+  "command": "python -m vcloak.bench.report_security ... --oracle runs/20261013-121247_M14_oracle_compare (report_command.txt); pytest -q; global checks",
+  "seed": 0,
+  "quick": false,
+  "params": {},
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261013-122548",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U"
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791874548.608904
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791874696.61569
+  },
+  "outputs": [
+    "capture_terminal.json",
+    "check_metrics.txt",
+    "check_oblivious.txt",
+    "check_secrets.txt",
+    "g10_quick_rerun.txt",
+    "manifests_valid.txt",
+    "oracle_chi2_repeat_stdout.txt",
+    "oracle_compare_stdout.txt",
+    "oracle_comparison.csv",
+    "pytest_all.txt",
+    "report_command.txt",
+    "ruff.txt"
+  ],
+  "status": "OK",
+  "notes": "M14 S7 session: report_security with --oracle from the ingested device runs and runs/20261013-121247_M14_oracle_compare (no measurement here), local pytest on the numpy backend, global checks, quick rerun of the comparison on simulator runs in scratch"
+}

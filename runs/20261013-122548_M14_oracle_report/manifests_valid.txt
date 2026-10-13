@@ -1,0 +1,2 @@
+runs/20261013-121247_M14_oracle_compare: valid
+runs/20261013-122525_M14_oracle_chi2_repeat: valid
