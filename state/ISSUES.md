@@ -1115,7 +1115,7 @@ Until then: M14, M20 and M22 quote the AEAD result only in the wording of the IS
 issue; section 4.O.6 points to ISSUE-17 only (generated text, not edited by hand), so the limitations chapter of the
 report (M20) must list this issue explicitly.
 
-### ISSUE-38 [CLOSED HASHTBD] M14 A1 asks for engine=gpu: the service and PostgreSQL have never run on the runner
+### ISSUE-38 [CLOSED 6bc85b8] M14 A1 asks for engine=gpu: the service and PostgreSQL have never run on the runner
 BLOCKS: M14   SEVERITY: medium   OPENED: 2026-10-13 session 36
 M14 S1 ran on the laptop: service API, sim clock, PostgreSQL, numpy simulator behind the engine
 (runs/20261013-094044_M14_security_s1, manifest engine "numpy-simulator"). Audit A1 wants mode=vcloak, db=postgres,
@@ -1136,7 +1136,7 @@ Closed (session 38, 2026-10-13): the job is ingested. The manifests of runs/2026
 runs/20261013-054727_M14_security_e0e1 say mode=vcloak, db=postgres, engine=gpu, backend cupy, runner colab, with the
 gpu_job block; `vcloak.bench.report_security` refuses any other input. A1 is met for S1 to S5; S6 is ISSUE-40.
 
-### ISSUE-39 [CLOSED HASHTBD] HUMAN ACTION REQUIRED — GPU JOB READY: M14 on the full stack, and the tests marked gpu (job 20261013-105517_M14)
+### ISSUE-39 [CLOSED 6bc85b8] HUMAN ACTION REQUIRED — GPU JOB READY: M14 on the full stack, and the tests marked gpu (job 20261013-105517_M14)
 BLOCKS: M14   SEVERITY: high   OPENED: 2026-10-13 session 37
 Why: M14 needs its numbers from the T4 with PostgreSQL behind the service (ISSUE-38), and the 674 tests that skip locally need a run.
 Do this:

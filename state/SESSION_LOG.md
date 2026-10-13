@@ -952,6 +952,6 @@
   uniformity figure
 - Not verified: S6 (anonymity set) and S7 (comparison with the oracle), both not written; E2 parity with the simulator
   at full size; more than one seed or replay
-- Commit: HASHTBD
+- Commit: 6bc85b8
 - Next: M14 S7, then S6 ; human action: decide ISSUE-40 (a second small GPU job for S6, or S6 on the simulator with A1
   recorded as not met for it); ISSUE-36 is still undecided
