@@ -979,3 +979,29 @@
 - Commit: b299525 (code), e25a24c and 689f418 (run, diagnostic script), records 2a6d14a
 - Next: M14 S6 (code first; GPU job or simulator per ISSUE-40) ; human action: decide ISSUE-40 and ISSUE-41; ISSUE-36
   is still undecided
+
+## Session 40 — 2026-10-13 — M14 Security evaluation, S6 anonymity set (prep half) — owner:Abhishek
+- Steps: S6 code and GPU job (status after: BLOCKED_HUMAN, current_step S6, pending 20261013-125843_M14_s6)
+- Did: wrote src/vcloak/eval/anonymity.py (real rows per window and per bucket-window, empty cells counted as 0, the
+  same count as a row sees it), the stage `--stage anonymity` of bench/run_security_eval.py (10, 100, 1000 users in
+  pairs into the W = 60 layout, counted and attacked on the dump), bench/jobs/M14_s6.json,
+  tests/unit/test_eval_anonymity.py (13 cases). ISSUE-40 had no decision recorded: the job was packed, as it says.
+- Result: no device result yet. Local check on the numpy simulator with PostgreSQL, full size: 3 of 3 populations ok
+  (555, 5855 and 61383 messages; every check of the stage passed). Simulator only: at 1000 users the fullest
+  bucket-window is above CAND_K. pytest 2114 passed, 675 skipped (674 need a CUDA device, 1 deliberate).
+- Evidence: runs/20261013-124943_M14_security_anon (s6_anonymity.json, anonymity_table.csv; backend numpy: correctness only);
+  runs/20261013-125258_M14_s6_prep_checks (pytest_all.txt, check_*.txt, ruff.txt, g10_quick_rerun.txt, manifests_valid.txt);
+  evidence/terminal/M14_S6prep_pytest_all.txt; gpujobs/out/20261013-125843_M14_s6/job.zip (packed from b042dc8)
+- Metrics added: 24 rows S-ANON-*, S-TURNACC-W60-U*, S-F-W60-U* (backend numpy, runner local: simulator values,
+  never GPU-stack results; the cupy rows come with the ingest)
+- Decisions: none new (ADR); the users-to-conversations mapping and the cell counting are in the Amendments of the
+  module file
+- Issues: opened ISSUE-42 (GPU JOB READY); ISSUE-40 updated, stays OPEN until the ingest
+- Deviations from spec: the mapping of users to conversations is this build's (pairs, as M15 S1); metric ids beyond
+  S-ANON-MED-U<users>; an intermediate simulator run made on an uncommitted tree was removed and repeated on 9c0e7f6
+  (same output)
+- Not verified: S6 on the device; report_security does not yet take the S6 run (a second runner session), so the
+  notes still say NOT_MEASURED for S6; one seed, one replay per population; the runner time of the job
+- Commit: 9c0e7f6 (code), b042dc8 (simulator run, checks), records PENDING_HASH
+- Next: M14 ingest of 20261013-125843_M14_s6, then the S6 section and the module audit ; human action: ISSUE-42 (run the
+  job, or say "S6 on the simulator"); ISSUE-41 and ISSUE-36 are still undecided

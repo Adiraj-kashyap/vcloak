@@ -1196,3 +1196,35 @@ Notes:
   session 38 stay byte-identical. The PNGs were unchanged.
 - ruff: src, tests, scripts, bench (RUN/ruff.txt, clean). An intermediate commit (e25a24c) went in with three lint
   errors in bench/oracle_chi2_repeat.py; fixed in 689f418 before that script produced its run.
+
+## Audit M14 — 2026-10-13 — session 40 — result: PASS for the prep of S6 (checkpoint; module BLOCKED_HUMAN on job 20261013-125843_M14_s6, A1 open for S6)
+| Item | Result | Evidence |
+|---|---|---|
+| S6 code runs at full size on the simulator | PASS | runs/20261013-124943_M14_security_anon: status OK, 3 of 3 populations ok (manifest: backend numpy, db postgres, engine numpy-simulator); tests/unit/test_eval_anonymity.py 13 cases in RUN/pytest_all.txt |
+| A1 real stack | PASS for S1 to S5 (unchanged); OPEN for S6 | no device number for S6 exists; job 20261013-125843_M14_s6 is packed with `--backend cupy` and PostgreSQL (gpujobs/out/20261013-125843_M14_s6/job.json) |
+| A2 acceptance gates recorded | PASS for S1 to S5 (unchanged); N/A for S6 | TESTING §4 has no gate for S6; the stage records its checks and whether the peak bucket-window is above CAND_K (not gated; Amendments) |
+| A3 GPU-vs-oracle table | PASS | unchanged: results/security/oracle_comparison.csv |
+| A4 dudect FAIL reflected | PASS | unchanged: section 4.S.5 of docs/REPORT_CH4_NOTES.md (not regenerated this session) |
+| G1 | PASS | RUN/pytest_all.txt (2114 passed, 675 skipped: 674 need a CUDA device, 1 deliberate; no database skip) |
+| G2 | PASS | RUN/check_metrics.txt (649 rows, 0 problems) before the 24 new rows; 673 rows, 0 problems after (re-run at the close, output not kept) |
+| G2b | PASS | the 24 new rows are backend numpy / runner local, prefix S-: counts and attack accuracies of the simulator, none a timing or a GPU metric, none in results/ or the notes |
+| G3 | PASS | RUN/check_oblivious.txt (11 files, 0 findings); no kernel changed |
+| G4 | PASS | RUN/check_secrets.txt and RUN/check_secrets_after_pack.txt (0 key-like runs; the bundle sha allow-listed by the pack) |
+| G5 | N/A | no GPU twin was written this session |
+| G6 | PARTIAL | src/vcloak/eval/anonymity.py now exists, so every code deliverable does; the S6 part of results/security and of the notes waits for the ingest |
+| G7 | PASS | checked after the closing commit |
+| G8 | PASS | STATE: M14 BLOCKED_HUMAN at S6, 5 sessions, pending 20261013-125843_M14_s6 |
+| G9 | PASS | SESSION_LOG session 40, this entry, ISSUE-42 opened, ISSUE-40 updated |
+| G10 | PASS | RUN/manifests_valid.txt (runs/20261013-124943_M14_security_anon valid, git 9c0e7f6); RUN/g10_quick_rerun.txt (quick sizes, SQLite, simulator: exit 0, both populations ok); the full-size run was made twice (once on an uncommitted tree, removed) with the same printed output |
+Notes:
+- RUN is runs/20261013-125258_M14_s6_prep_checks.
+- Nothing was measured on a GPU this session. The simulator numbers are in METRICS_INDEX as numpy / local and must not
+  be quoted as results of the system; the notes and results/security are untouched and still say NOT_MEASURED for S6.
+- The mapping of users to conversations (pairs) is a choice of this build, taken from M15 S1; with another mapping
+  the three populations would be other sizes.
+- The empty cells are counted as 0, so the median per bucket-window can be 0 for a small population. The row view
+  (`msg_median`, `msg_p5`) is in s6_anonymity.json beside it; which of the two the report quotes is open.
+- The first full-size simulator run carried the sha of a commit that did not contain the stage; it was untracked,
+  was removed, and the run was repeated after the code commit.
+- The evidence row of the pytest output says "dirty": the simulator run dir was still untracked when it was written.
+- The job's runtime on the runner is an estimate.

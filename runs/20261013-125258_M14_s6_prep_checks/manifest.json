@@ -25,18 +25,19 @@
   "telemetry_end": {
     "available": false,
     "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
-    "ts": 1791876522.6665184
+    "ts": 1791876547.165767
   },
   "outputs": [
     "capture_terminal.json",
     "check_metrics.txt",
     "check_oblivious.txt",
     "check_secrets.txt",
+    "check_secrets_after_pack.txt",
     "g10_quick_rerun.txt",
     "manifests_valid.txt",
     "pytest_all.txt",
     "ruff.txt"
   ],
   "status": "OK",
-  "notes": "M14 S6 prep session: no measurement here. Local pytest on the numpy backend (2114 passed, 675 skipped), global checks, ruff, quick rerun of --stage anonymity on the simulator in scratch (exit 0), manifest of runs/20261013-124943_M14_security_anon valid (full-size simulator run with PostgreSQL: kernel semantics only, not evidence about a GPU)"
+  "notes": ""
 }

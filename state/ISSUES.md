@@ -1189,6 +1189,11 @@ Session 39: S7 is done (runs/20261013-121247_M14_oracle_compare, section 4.S.9 o
 of this issue is S6 only. The decision is still the human's: a second small GPU job (A1 met), or S6 on the numpy
 simulator with A1 recorded as not met for S6. The S6 code is needed either way and is the next unit; if no
 decision is recorded by then, that session packs a GPU job (the option that meets A1) and stops at its gate.
+Session 40: no decision was recorded, so the S6 code was written (users in pairs; Amendments of the module file) and
+the GPU job 20261013-125843_M14_s6 was packed (ISSUE-42). This issue closes with the ingest of that job, when S6 is in the notes.
+Point 3 has a sibling, seen on the simulator only (runs/20261013-124943_M14_security_anon/s6_anonymity.json): at 1000 users the
+fullest bucket-window of the default layout W = 60 holds more real rows than CAND_K (S-ANON-BW-PEAK-U1000, backend
+numpy), so a read there would answer `candidate_overflow`. To be re-read on the device numbers at the ingest.
 
 ### ISSUE-41 [OPEN] M14 S7: the CPU oracle's own chi-square run is outside the acceptance gate (p 0.0026); the device passes
 BLOCKS: none   SEVERITY: medium   OPENED: 2026-10-13 session 39
@@ -1209,3 +1214,37 @@ section 4.S.9 now) and close this issue as a documented tail draw; (b) one more 
 test key for the chi-square, so that the oracle side becomes repeatable (this needs a wrapper: seed/ is read-only).
 Until decided, M20 and M22 quote the comparison as "31 of 35 rows agree, 2 are defined differently, 2 differ on the
 oracle side (ISSUE-41)", never as "the GPU matches the oracle".
+
+### ISSUE-42 [OPEN] HUMAN ACTION REQUIRED — GPU JOB READY: M14 S6, the anonymity set on the full stack (job 20261013-125843_M14_s6)
+BLOCKS: M14   SEVERITY: high   OPENED: 2026-10-13 session 40
+Why: S6 is the last open step of M14, and audit A1 wants its numbers from the T4 with PostgreSQL behind the service
+(ISSUE-40). No decision for the simulator was recorded, so the job was packed, as ISSUE-40 said it would be.
+Do this:
+```
+GPU JOB READY — 20261013-125843_M14_s6              (runtime not measured; plan for about 20 minutes)
+
+1. Open https://colab.research.google.com  ->  File > Upload notebook
+   Pick:  colab/VCloak_GPU_Runner.ipynb
+2. Runtime > Change runtime type > T4 GPU > Save        <- easy to miss
+3. Run Cell 1. It must print a GPU name (e.g. Tesla T4).
+4. Run Cell 2, upload:  gpujobs/out/20261013-125843_M14_s6/job.zip
+5. Run Cell 3 (keep the tab open), then Cell 4 to download results_20261013-125843_M14_s6.zip
+6. Put that file in:  gpujobs/inbox/
+7. New session, type: continue
+
+Use Colab for this job, not Kaggle: command 3 installs PostgreSQL with apt-get and needs the internet, which is
+on by default in Colab. (On Kaggle it works only with Settings > Internet switched on; Kaggle unpacks the
+uploaded zip into a folder and Cell 2 finds it by itself.)
+If Cell 3 shows "stack_up: exit 1", the PostgreSQL install failed: the job still finishes the other commands,
+download the results anyway and say so.
+Full detail: YOUR_CHECKLIST.md
+```
+What the job runs: nvidia-smi; `scripts/runner_stack.py up` (the same stack as job 20261013-105517_M14); check_oblivious;
+`run_security_eval.py --stage anonymity --backend cupy --seed 2026` (10, 100 and 1000 users in pairs, 900 simulated
+seconds each, layout W = 60, PostgreSQL; the dump is counted and attacked); the PostgreSQL settings; nvidia-smi.
+The same command with `--backend numpy` took about 3 minutes on the laptop with PostgreSQL (runs/20261013-124943_M14_security_anon); the
+time on the runner is an estimate, most of it the install of the stack.
+Alternative, if you do not want to run a job: say "S6 on the simulator". Then the numbers of runs/20261013-124943_M14_security_anon
+are reported as simulator values and A1 is recorded as not met for S6.
+Confirm by running: `ls gpujobs/inbox/` shows results_20261013-125843_M14_s6.zip
+Then type: continue
