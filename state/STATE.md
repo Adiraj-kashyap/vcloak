@@ -115,6 +115,5 @@ Keep this file under 120 lines: one or two lines per note, the detail lives in t
   S7 is done: `bench/run_oracle_compare.py` (20261013-121247_M14_oracle_compare), into the notes by `--oracle`
   (command in runs/20261013-122548_M14_oracle_report/report_command.txt, which replaces the one above). Never
   write "the GPU matches the oracle": 31 of 35 rows agree, 2 differ on the oracle side (ISSUE-41). W300 is dumped
-  only (peak occupancy above CAND_K). S6 (users in pairs) is a second runner session (20261013-101235),
-  in the notes by `--anonymity` (command in runs/20261013-155229_M14_s6_ingest_report/report_command.txt, which replaces
-  the two above). At 1000 users the fullest bucket-window is above CAND_K (ISSUE-43): M15 must read that first.
+  only (peak occupancy above CAND_K). S6 (pairs) is a second runner session, in by `--anonymity`: the command is now
+  runs/20261013-155229_M14_s6_ingest_report/report_command.txt. Occupancy above CAND_K at 1000 users: ISSUE-43 (M15).

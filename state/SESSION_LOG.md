@@ -1026,6 +1026,6 @@
 - Deviations from spec: S6 from a runner session of its own; stage checks counted in the gate table; no S6 figure
 - Not verified: more than one seed or replay; a read on a layout above CAND_K (only dumped); how many bucket-windows
   are above CAND_K at 1000 users; another mapping of users to conversations
-- Commit: ce8de77 (ingest, generator), d08aa1a (results, notes, evidence), records in the next commit
+- Commit: ce8de77 (ingest, generator), d08aa1a (results, notes, evidence), records 492c599
 - Next: M15 (ISSUE-12 BLOCKS M15 and comes first) ; human action: none required; ISSUE-41, ISSUE-36 and ISSUE-43 are
   open for a decision of the owner
