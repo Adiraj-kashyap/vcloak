@@ -162,3 +162,89 @@ def test_a_missing_target_refuses(tree: dict[str, Path]) -> None:
     (tree["dudect"] / "summary.json").write_text(json.dumps(summ), encoding="utf-8")
     with pytest.raises(ReportError, match="aead_tag"):
         _generate(tree)
+
+
+# ---------------------------------------------------------------- kernel-only window (ISSUE-25), synthetic
+
+def _kw_target(name: str, t: float, verdict: str, flagged: int | None = 30, median_ms: float = 0.04,
+               expected: str = "PASS") -> dict[str, Any]:
+    s = {**_series(t, verdict), "summary_class0": {"median_ms": median_ms}}
+    out = {**_target(name, {"ms": s}, expected), "class0": "fixed", "class1": "random", "raw": f"dudect_{name}_raw.npz",
+           "params": {"window": "queued behind a blocker", "kernel": "k_one", "slots": 64}, "n_per_class": 50}
+    if flagged is not None:
+        s["unflagged"] = {"max_abs_t": t / 2, "verdict": "PASS"}
+        out["per_sample"] = {"measurements": 1000, "unqueued": flagged, "off_clock": 0, "flagged": flagged,
+                             "steady_clock_mhz": 1590}
+    return out
+
+
+def _kw_tree(tree: dict[str, Path], tags_verdicts: tuple[str, str] = ("PASS", "PASS"), null_verdict: str = "PASS",
+             queued: int = 40, session: str = "k1") -> dict[str, Any]:
+    import numpy as np
+
+    root = tree["root"]
+    lock = {"attempted": True, "accepted": False, "command": "nvidia-smi -lgc", "returncode": 4,
+            "output": "no permission\n"}
+    leakq = _kw_target("control_leak_q", 300.0, "FAIL", flagged=1000 - queued, expected="FAIL")
+    st = _run(root, "kst", {"metrics": _metrics([leakq]), "targets": [leakq], "clock_lock": lock}, quick=True,
+              session=session)
+    q = np.zeros(1000, dtype=bool)
+    q[:queued] = True
+    classes = np.arange(1000) % 2
+    np.savez(st / "dudect_control_leak_q_raw.npz", times_ms=(1.0 + classes + 0.01 * (np.arange(1000) % 7))[:, None],
+             classes=classes.astype(np.uint8), queued=q, clocks_mhz=np.full(1000, 585, dtype=np.int32))
+    seeds = []
+    for seed, tv in zip((8, 10), tags_verdicts, strict=True):
+        targets = [_kw_target("control_null", 2.0, "PASS", flagged=None, median_ms=0.5),
+                   _kw_target("tags_kernel_null", 1.0, null_verdict),
+                   _kw_target("tags_kernel", 6.0 if tv == "FAIL" else 2.0, tv),
+                   _kw_target("compact_kernel_null", 1.0, "PASS", median_ms=0.08),
+                   _kw_target("compact_kernel", 1.5, "PASS", median_ms=0.08)]
+        d = _run(root, f"k{seed}", {"metrics": _metrics(targets), "targets": targets, "clock_lock": lock},
+                 session=session)
+        man = json.loads((d / "manifest.json").read_text(encoding="utf-8"))
+        man["seed"] = seed
+        (d / "manifest.json").write_text(json.dumps(man), encoding="utf-8")
+        seeds.append(d)
+    stage_t = [_target("write_epoch_age_st", {"tags_ms": _series(9.0, "FAIL"), "core_ms": _series(1.0, "PASS")})]
+    stage = _run(root, "stage", {"metrics": [], "targets": stage_t}, session="other")
+    return {"selftest": st, "seeds": seeds, "stage_runs": [stage], "issue": "ISSUE-K"}
+
+
+def test_kernel_window_section_copies_verdicts_and_names_the_weak_control(tree: dict[str, Path]) -> None:
+    notes = tree["root"] / "notes.md"
+    s = _generate(tree, notes=notes, kernel_window=_kw_tree(tree))
+    text = notes.read_text(encoding="utf-8")
+    assert text.count(M08_BEGIN) == 1 and text.rstrip().endswith(M08_END)
+    assert "## 4.O.7" in text and "ISSUE-K" in text
+    assert "- tags: no dependence detected at this N, on this device (rule g)" in text
+    assert "2.0<!--M:T-DUDECT-MAXT-TAGS-KERNEL-->" in text
+    assert "960 of its 1000 measurements were not queued" in text and "on 20 and 20 measurements per class" in text
+    assert "`tags_kernel`, `tags_kernel_null`" in text
+    assert "`compact_kernel`" not in text.split("Windows with a median")[1]
+    assert "2 series, 1 FAIL and 1 PASS" in text and "ANN-1" in text
+    assert "constant time" not in text.split("## 4.O.7")[1]
+    assert "kernel_window.csv" in s["files"] and s["kernel_window"]["issue"] == "ISSUE-K"
+    csv_text = (tree["root"] / "out" / "kernel_window.csv").read_text(encoding="utf-8")
+    assert "8,tags_kernel,50,2.0,PASS,PASS,1.0,30,30,0,1590,40.0,1,0,T-DUDECT-MAXT-TAGS-KERNEL" in csv_text
+
+
+@pytest.mark.parametrize(("tags", "null", "expect"), [
+    (("FAIL", "FAIL"), "PASS", "rule i"), (("FAIL", "PASS"), "PASS", "rule j"), (("FAIL", "FAIL"), "FAIL", "rule h")])
+def test_kernel_window_fail_is_read_by_the_rules_never_softened(tree: dict[str, Path], tags: tuple[str, str], null: str,
+                                                                expect: str) -> None:
+    notes = tree["root"] / "notes.md"
+    _generate(tree, notes=notes, kernel_window=_kw_tree(tree, tags_verdicts=tags, null_verdict=null))
+    text = notes.read_text(encoding="utf-8").split("## 4.O.7")[1]
+    line = next(x for x in text.splitlines() if x.startswith("- tags:"))
+    assert expect in line and "rule g" not in line
+    assert "**FAIL**" in text
+
+
+def test_kernel_window_refuses_a_numpy_run(tree: dict[str, Path]) -> None:
+    kw = _kw_tree(tree)
+    man = json.loads((kw["seeds"][1] / "manifest.json").read_text(encoding="utf-8"))
+    man["env"]["backend"] = "numpy"
+    (kw["seeds"][1] / "manifest.json").write_text(json.dumps(man), encoding="utf-8")
+    with pytest.raises(ReportError, match="not an ingested cupy run"):
+        _generate(tree, kernel_window=kw)

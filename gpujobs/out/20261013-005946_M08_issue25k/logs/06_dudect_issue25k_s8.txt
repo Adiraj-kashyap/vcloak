@@ -1,0 +1,64 @@
+target control_null
+  control_null: 20000/200000  max|t| ms 1.352
+  control_null: 40000/200000  max|t| ms 1.759
+  control_null: 60000/200000  max|t| ms 1.160
+  control_null: 80000/200000  max|t| ms 1.784
+  control_null: 100000/200000  max|t| ms 1.918
+  control_null: 120000/200000  max|t| ms 2.796
+  control_null: 140000/200000  max|t| ms 2.727
+  control_null: 160000/200000  max|t| ms 2.733
+  control_null: 180000/200000  max|t| ms 2.722
+  control_null: 200000/200000  max|t| ms 2.945
+target tags_kernel_null
+  tags_kernel_null: 20000/200000  max|t| ms 1.276
+  tags_kernel_null: 40000/200000  max|t| ms 0.675
+  tags_kernel_null: 60000/200000  max|t| ms 0.945
+  tags_kernel_null: 80000/200000  max|t| ms 0.916
+  tags_kernel_null: 100000/200000  max|t| ms 0.994
+  tags_kernel_null: 120000/200000  max|t| ms 0.680
+  tags_kernel_null: 140000/200000  max|t| ms 0.881
+  tags_kernel_null: 160000/200000  max|t| ms 0.812
+  tags_kernel_null: 180000/200000  max|t| ms 0.502
+  tags_kernel_null: 200000/200000  max|t| ms 1.132
+target tags_kernel
+  tags_kernel: 20000/200000  max|t| ms 2.611
+  tags_kernel: 40000/200000  max|t| ms 1.548
+  tags_kernel: 60000/200000  max|t| ms 1.157
+  tags_kernel: 80000/200000  max|t| ms 2.060
+  tags_kernel: 100000/200000  max|t| ms 1.728
+  tags_kernel: 120000/200000  max|t| ms 1.799
+  tags_kernel: 140000/200000  max|t| ms 1.895
+  tags_kernel: 160000/200000  max|t| ms 1.698
+  tags_kernel: 180000/200000  max|t| ms 1.918
+  tags_kernel: 200000/200000  max|t| ms 2.108
+target compact_kernel_null
+  compact_kernel_null: 20000/200000  max|t| ms 0.744
+  compact_kernel_null: 40000/200000  max|t| ms 1.705
+  compact_kernel_null: 60000/200000  max|t| ms 0.965
+  compact_kernel_null: 80000/200000  max|t| ms 0.551
+  compact_kernel_null: 100000/200000  max|t| ms 0.981
+  compact_kernel_null: 120000/200000  max|t| ms 1.061
+  compact_kernel_null: 140000/200000  max|t| ms 1.395
+  compact_kernel_null: 160000/200000  max|t| ms 1.582
+  compact_kernel_null: 180000/200000  max|t| ms 0.916
+  compact_kernel_null: 200000/200000  max|t| ms 0.753
+target compact_kernel
+  compact_kernel: 20000/200000  max|t| ms 1.769
+  compact_kernel: 40000/200000  max|t| ms 1.917
+  compact_kernel: 60000/200000  max|t| ms 0.893
+  compact_kernel: 80000/200000  max|t| ms 1.444
+  compact_kernel: 100000/200000  max|t| ms 1.383
+  compact_kernel: 120000/200000  max|t| ms 1.236
+  compact_kernel: 140000/200000  max|t| ms 0.854
+  compact_kernel: 160000/200000  max|t| ms 0.742
+  compact_kernel: 180000/200000  max|t| ms 0.738
+  compact_kernel: 200000/200000  max|t| ms 0.948
+run dir     /kaggle/working/vcloak_job/runs/20261013-022124_M08_dudect_i25k_s8
+backend     cupy   N per class 100000   quick False
+  control_null    ms         max|t|      2.945  PASS  (expected PASS)  r=1
+  tags_kernel_null ms         max|t|      1.132  PASS  (expected PASS)  r=4
+  tags_kernel     ms         max|t|      2.108  PASS  (expected PASS)  r=4
+  compact_kernel_null ms         max|t|      0.753  PASS  (expected PASS)  r=1
+  compact_kernel  ms         max|t|      0.948  PASS  (expected PASS)  r=1
+metrics     22
+status      OK

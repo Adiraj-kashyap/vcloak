@@ -1,0 +1,4 @@
+runs/20261013-084838_M08_i25k_ingest: valid
+runs/20261013-022000_M08_i25k_selftest_quick: valid
+runs/20261013-022124_M08_dudect_i25k_s8: valid
+runs/20261013-024742_M08_dudect_i25k_s10: valid

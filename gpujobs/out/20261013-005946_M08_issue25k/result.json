@@ -1,0 +1,112 @@
+{
+  "job_id": "20261013-005946_M08_issue25k",
+  "module": "M08_issue25k",
+  "step": "S2",
+  "quick": false,
+  "packed_from_git_sha": "c510682cd2e9b51e6393ab2a469ef448485d94e7",
+  "bundle_sha256": "633360aa1b791d18cfbc5d3f3d3d14c3f0c288255386ddfca438dd59024e31b6",
+  "finished_at": "2026-10-13T03:14:14.107681+00:00",
+  "env": {
+    "collected_at": "2026-10-13T02:19:03.938702+00:00",
+    "python": "3.13.15",
+    "platform": "Linux-6.18.48+-x86_64-with-glibc2.39",
+    "backend": "cupy",
+    "runner": "kaggle",
+    "session_id": "20261013-021903",
+    "gpu": "Tesla T4",
+    "driver": "580.178.04",
+    "vram_total": "15360 MiB",
+    "compute_capability": "7.5",
+    "nvcc": "Build cuda_12.8.r12.8/compiler.35583870_0",
+    "ncu": "NVIDIA (R) Nsight Compute Command Line Profiler",
+    "cupy": "14.0.1",
+    "cuda_runtime": "12090",
+    "cpu": "Intel(R) Xeon(R) CPU @ 2.00GHz",
+    "cpu_count": "4"
+  },
+  "requirements": {
+    "file": "requirements-gpu.txt",
+    "installed": [],
+    "skipped": [
+      "cupy-cuda12x",
+      "nvidia-ml-py",
+      "cryptography"
+    ],
+    "failed": []
+  },
+  "commands": [
+    {
+      "n": 1,
+      "name": "nvidia_smi",
+      "cmd": "nvidia-smi",
+      "exit_code": 0,
+      "log": "logs/01_nvidia_smi.txt",
+      "optional": false
+    },
+    {
+      "n": 2,
+      "name": "whoami",
+      "cmd": "id",
+      "exit_code": 0,
+      "log": "logs/02_whoami.txt",
+      "optional": false
+    },
+    {
+      "n": 3,
+      "name": "check_oblivious",
+      "cmd": "python scripts/check_oblivious.py kernels/",
+      "exit_code": 0,
+      "log": "logs/03_check_oblivious.txt",
+      "optional": false
+    },
+    {
+      "n": 4,
+      "name": "pytest_issue25k",
+      "cmd": "python -m pytest -p no:cacheprovider -rs -q tests/unit/test_run_dudect.py tests/gpu/test_engine.py",
+      "exit_code": 0,
+      "log": "logs/04_pytest_issue25k.txt",
+      "optional": false
+    },
+    {
+      "n": 5,
+      "name": "dudect_selftest",
+      "cmd": "python bench/run_dudect.py --targets control_leak,control_leak_q,control_null --seed 8 --quick --lock-clock --name i25k_selftest --out runs",
+      "exit_code": 0,
+      "log": "logs/05_dudect_selftest.txt",
+      "optional": false
+    },
+    {
+      "n": 6,
+      "name": "dudect_issue25k_s8",
+      "cmd": "python bench/run_dudect.py --targets control_null,issue25k --seed 8 --lock-clock --name dudect_i25k_s8 --out runs",
+      "exit_code": 0,
+      "log": "logs/06_dudect_issue25k_s8.txt",
+      "optional": false
+    },
+    {
+      "n": 7,
+      "name": "dudect_issue25k_s10",
+      "cmd": "python bench/run_dudect.py --targets control_null,issue25k --seed 10 --lock-clock --name dudect_i25k_s10 --out runs",
+      "exit_code": 0,
+      "log": "logs/07_dudect_issue25k_s10.txt",
+      "optional": false
+    },
+    {
+      "n": 8,
+      "name": "clock_reset",
+      "cmd": "nvidia-smi -rgc",
+      "exit_code": 4,
+      "log": "logs/08_clock_reset.txt",
+      "optional": false
+    },
+    {
+      "n": 9,
+      "name": "nvidia_smi_after",
+      "cmd": "nvidia-smi",
+      "exit_code": 0,
+      "log": "logs/09_nvidia_smi_after.txt",
+      "optional": false
+    }
+  ],
+  "overall_exit": 1
+}

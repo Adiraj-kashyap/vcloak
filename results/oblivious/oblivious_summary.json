@@ -46,6 +46,7 @@
     "dudect_write_epoch.json",
     "dudect_write_epoch.png",
     "dudect_write_epoch_call_ms.png",
+    "kernel_window.csv",
     "ncu_divergence.csv",
     "ncu_profile_raw.txt",
     "ncu_query_metrics.txt",
@@ -60,5 +61,19 @@
     "sass_control_planted_leak_branches.txt",
     "summary_table.csv"
   ],
-  "generated_by": "python -m vcloak.bench.report_oblivious"
+  "generated_by": "python -m vcloak.bench.report_oblivious",
+  "kernel_window": {
+    "issue": "ISSUE-25",
+    "selftest": "runs/20261013-022000_M08_i25k_selftest_quick",
+    "seeds": [
+      "runs/20261013-022124_M08_dudect_i25k_s8",
+      "runs/20261013-024742_M08_dudect_i25k_s10"
+    ],
+    "stage_runs": [
+      "runs/20261012-135427_M08_dudect_i25_s8",
+      "runs/20261012-145303_M08_dudect_i25_s10",
+      "runs/20261012-155223_M08_dudect_i25_s11",
+      "runs/20261012-165055_M08_dudect_i25_s12"
+    ]
+  }
 }

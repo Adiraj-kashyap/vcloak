@@ -470,6 +470,9 @@ Update 2026-10-13 session 32: point 2 is decided by the human and recorded as AD
 orchestration is outside the threat model (a dump carries no timing; a live compromised server is excluded by
 PROJECT_BRIEF §3) and P3 is claimed for the kernels only. The whole-call FAIL stays in every table as measured and is
 listed as a limitation; it does not block M14 by itself any more. Points 1 and 3 are still open, so the issue is.
+Update 2026-10-13 session 34: point 3 is closed (ISSUE-25 closed by the kernel-only job, see its result). Point 1
+is the only open point: the summary table and section 4.O.3 must show the ISSUE-17 diagnostics beside the S2
+targets. It is a local unit (no GPU job) and it still BLOCKS M14: `fix ISSUE-17` comes before M14 S1.
 
 ### ISSUE-18 [OPEN] M08 ncu: the runner refuses the GPU performance counters (ERR_NVGPUCTRPERM); divergence is NOT_MEASURED
 BLOCKS: none   SEVERITY: medium   OPENED: 2026-10-12 session 16
@@ -632,7 +635,7 @@ Then open a new session and type: continue
 Closed 2026-10-12 session 21: the human ran the job on Kaggle (session 20261012-061138, Tesla T4) and the results zip
 was ingested; all 7 commands exit 0, git sha and bundle sha match (runs/20261012-150500_M08_issue17_ingest/gates.txt).
 
-### ISSUE-25 [OPEN] M08 dudect: two device-stage series of the write_epoch diagnostics FAIL at seed 8 (write_epoch_age, write_epoch_fresh)
+### ISSUE-25 [CLOSED HASH34] M08 dudect: two device-stage series of the write_epoch diagnostics FAIL at seed 8 (write_epoch_age, write_epoch_fresh)
 BLOCKS: M14   SEVERITY: high   OPENED: 2026-10-12 session 21
 Finding (job 20261012-113437_M08_issue17, seed 8, Tesla T4, N = 100000 per class, threshold 4.5; values from
 runs/20261012-061420_M08_dudect_issue17_s8, recomputed in runs/20261012-150500_M08_issue17_ingest/gates.txt and device_series_detail.txt).
@@ -797,6 +800,45 @@ Update 2026-10-13 session 33 (the human's decision on the session-31 rows; nothi
 - Fallback (the human, session 33): with ISSUE-18 NOT_MEASURED an unusable result leaves two legs, the SASS reading
   and E3. If ISSUE-18 is cheap, it is to be considered before M14 so the fallback has a second independent
   measurement. See the note of the same date in ISSUE-18: it is not cheap from this repository alone.
+Result, session 34 (job 20261013-005946_M08_issue25k, runner session 20261013-021903, Kaggle Tesla T4, driver 580.178.04,
+N = 100000 per class, threshold 4.5; runs/20261013-022124_M08_dudect_i25k_s8, runs/20261013-024742_M08_dudect_i25k_s10,
+self-test runs/20261013-022000_M08_i25k_selftest_quick; every max abs(t) and every flag count recomputed from the raw npz in
+runs/20261013-084838_M08_i25k_ingest/gates.txt, 55 gates PASS, 0 FAIL). Values in the order seed 8, seed 10. CLOSED by this result.
+- Integrity: job id, bundle sha and git sha (c510682) match the pack; 0 mismatches; the tests of the targets passed
+  on the GPU. One command exited non-zero: clock_reset (`nvidia-smi -rgc`, exit 4), the same refusal as the lock.
+- Rule k: the lock was refused in all three runs ("The current user does not have permission to change clocks"),
+  although the job ran as root. Not a failure of the run. The per-measurement clock was nevertheless steady: the
+  mode is 1590 MHz in all eight kernel-window targets, at least 99.959% of the measurements at it, 0 to 3 off the clock.
+- Rule f, as written: control_leak_q FAILS (386.2011, quick), control_null PASSES (2.9446, 2.7444), 0 mismatches,
+  flagged 3.09% to 4.12% in the eight kernel-window targets (all unqueued; balanced between the classes). USABLE.
+- Rule g, tags (chacha_tags, one fixed key vs random keys, 4096 slots, r 4): null PASS 1.1320, 1.4622; target PASS
+  2.1075, 1.9069; without the flagged measurements 0.8310, 1.1041 and 0.1330, 0.2106.
+- Rule g, compact (the sort network as gpu_compact runs it, one fixed permutation vs random ones, 4096 slots,
+  n_real 1024, r 1): null PASS 0.7532, 2.2966; target PASS 0.9475, 1.9613; without flagged 0.1302, 0.7618 and 0.8438, 0.6893.
+  Reading for both kernels: no dependence of the kernel time on its data detected at this N, on this device.
+- Rules h, i, j: not met (no null and no target FAILS). Rule l: no locked run exists; both seeds are unlocked runs at
+  a steady clock (1590 MHz, not the 585 MHz the rule expected), so the rule's preference is met by construction.
+- What weakens the result (recorded as ISSUE-36, none of it foreseen by the rules):
+  1. The positive control of the queued window is weak. Only 251 of the 20000 measurements of control_leak_q were
+     queued (its blocker was fitted at 585 MHz, the measuring ran at 1590 MHz), so its FAIL is mostly that of an
+     open window. The 251 queued ones alone give a raw Welch t of -24.4826 (119 and 132 per class, clocks 585 to
+     1590 MHz): the queued window does detect the planted leak, on few measurements and not at the clock of the targets.
+     Read strictly ("in each target fewer than 5% flagged", the control included) rule f would NOT hold.
+  2. All eight windows are below the 50 us of ai/GPU_GUIDE.md section 7 (medians about 22 us for tags, 41 us for
+     compact): r was fitted from the single-launch time before the clock rose (14.8 us x 4, 73.4 us x 1).
+  3. Sensitivity, from the measured spread: a raw mean difference of about 200 ns per window (tags, 4 launches) or
+     230 ns (compact, 1 launch) would give abs(t) = 4.5; smaller differences are not excluded.
+- H7 and H8 (session 31): H8 was excluded in session 32; with the host code out of the window neither kernel
+  separates its classes, which is what H7 predicts. H7 is supported, not proven.
+- What M14 may write: for the tags kernel (key) and the compaction sort network (permutation), measured in a
+  kernel-only window at 4096 slots, N = 100000 per class, two seeds, one T4 session, no timing dependence on the
+  data was detected and the same-contents controls pass; with the three limits above and ADR-023 beside it. It must
+  not write "constant time", must not extend this to other sizes, to the AEAD kernels (ISSUE-17) or to the whole
+  write path, and must keep the 56 FAILs of session 31 in the tables with ANN-1.
+- Done with it: ANN-2 in state/METRICS_INDEX.md; section 4.O.7 and the ANN-1 note in the generator
+  (`python -m vcloak.bench.report_oblivious --kernel-window ...`, results/oblivious/kernel_window.csv).
+- Timebox: this was the last job. No new job is proposed; the decision whether the weak control is acceptable for
+  the report is the human's (ISSUE-36), and it does not block M14.
 
 ### ISSUE-26 [OPEN] M11: accounts and sessions live in memory; a restart forgets every account and logs every client out
 BLOCKS: none   SEVERITY: medium   OPENED: 2026-10-12 session 22
@@ -984,7 +1026,7 @@ Then type: continue
 Closed 2026-10-13 session 31: the human ran the job on Kaggle (session 20261012-135251, Tesla T4) and the results zip
 was ingested; all 9 commands exit 0, git sha and bundle sha match (runs/20261013-000602_M08_i25_ingest/gates.txt).
 
-### ISSUE-35 [OPEN] HUMAN ACTION REQUIRED — GPU JOB READY: ISSUE-25 kernel-only dudect of tags and compact (job 20261013-005946_M08_issue25k)
+### ISSUE-35 [CLOSED HASH34] HUMAN ACTION REQUIRED — GPU JOB READY: ISSUE-25 kernel-only dudect of tags and compact (job 20261013-005946_M08_issue25k)
 BLOCKS: M14   SEVERITY: high   OPENED: 2026-10-13 session 32
 Why: the kernel-level timing claim can only be measured on the GPU, and this laptop has none. This is the last job
 for ISSUE-25 (timebox): whatever comes back, the next session closes the question and M14 starts after it.
@@ -1021,3 +1063,23 @@ Update 2026-10-13 session 33: the decision on the session-31 rows was given and 
   job is still valid, do not re-pack it.
 Confirm by running: ls gpujobs/inbox/      (it must list results_20261013-005946_M08_issue25k.zip)
 Then type: continue
+Update 2026-10-13 session 34: the results zip was in gpujobs/inbox/ and is ingested (runs/20261013-084838_M08_i25k_ingest/ingest.txt;
+  the bundle is in gpujobs/done/). CLOSED. Nothing further is needed from the human for this job.
+
+### ISSUE-36 [OPEN] M08 kernel-only window: the positive control was mostly unqueued, and all windows are below 50 us
+BLOCKS: none   SEVERITY: medium   OPENED: 2026-10-13 session 34
+Found at the ingest of job 20261013-005946_M08_issue25k (runs/20261013-084838_M08_i25k_ingest/gates.txt).
+1. control_leak_q: 19749 of 20000 measurements unqueued. `run_dudect.py` fits the blocker of a target once, before
+   the measuring; the self-test fitted it while the SM clock was 585 MHz and measured at 1590 MHz, where the same
+   blocker is too short. The kernel targets were fitted late enough (3.09% to 4.12% unqueued). The power of the
+   queued window rests on 251 measurements (raw Welch t -24.4826), not on a full control.
+2. r is fitted from the single-launch time at the clock of the calibration; at 1590 MHz the windows of all eight
+   kernel targets have medians of 22 us and 41 us, below the 50 us rule of ai/GPU_GUIDE.md section 7.
+3. bench/jobs/M08_issue25k.json lists clock_reset as a required command; when the lock is refused it fails too and
+   the job reports overall exit 1 although every measuring command passed.
+Decision for the human (not made by the agent): accept the kernel-window result with these limits stated (what
+section 4.O.7 and ISSUE-25 do today), or record the eight series as NOT_MEASURED under the timebox. The timebox of
+session 32 excludes a further job, so no fix job is proposed. If a job is ever allowed again: re-fit the blocker and
+r after the warm-up at the measuring clock, re-fit when the unqueued share of a chunk exceeds 5%, and mark
+clock_reset optional.
+Until decided: M14 and M20 quote the result only together with limits 1 and 2.

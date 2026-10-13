@@ -1,0 +1,323 @@
+===== 01_nvidia_smi.txt =====
+Tue Oct 13 02:19:06 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.178.04             Driver Version: 580.178.04     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  Tesla T4                       Off |   00000000:00:04.0 Off |                    0 |
+| N/A   50C    P0             28W /   70W |     105MiB /  15360MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+|   1  Tesla T4                       Off |   00000000:00:05.0 Off |                    0 |
+| N/A   44C    P8             14W /   70W |       3MiB /  15360MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|    0   N/A  N/A              49      C   /usr/bin/python3                        102MiB |
++-----------------------------------------------------------------------------------------+
+
+===== 02_whoami.txt =====
+uid=0(root) gid=0(root) groups=0(root)
+
+===== 03_check_oblivious.txt =====
+check_oblivious: 11 file(s), 0 finding(s) - PASS
+
+===== 04_pytest_issue25k.txt =====
+........................................................................ [ 58%]
+....................................................                     [100%]
+=============================== warnings summary ===============================
+tests/unit/test_run_dudect.py::test_the_planted_leak_is_detected_on_the_fake_device
+  /usr/local/lib/python3.13/dist-packages/matplotlib/_fontconfig_pattern.py:64: PyparsingDeprecationWarning: 'oneOf' deprecated - use 'one_of'
+    prop = Group((name + Suppress("=") + comma_separated(value)) | oneOf(_CONSTANTS))
+
+tests/unit/test_run_dudect.py: 31 warnings
+  /usr/local/lib/python3.13/dist-packages/matplotlib/_fontconfig_pattern.py:85: PyparsingDeprecationWarning: 'parseString' deprecated - use 'parse_string'
+    parse = parser.parseString(pattern)
+
+tests/unit/test_run_dudect.py: 31 warnings
+  /usr/local/lib/python3.13/dist-packages/matplotlib/_fontconfig_pattern.py:89: PyparsingDeprecationWarning: 'resetCache' deprecated - use 'reset_cache'
+    parser.resetCache()
+
+tests/unit/test_run_dudect.py::test_the_planted_leak_is_detected_on_the_fake_device
+  /usr/local/lib/python3.13/dist-packages/matplotlib/_mathtext.py:45: PyparsingDeprecationWarning: 'enablePackrat' deprecated - use 'enable_packrat'
+    ParserElement.enablePackrat()
+
+tests/unit/test_run_dudect.py::test_the_planted_leak_is_detected_on_the_fake_device
+  /usr/local/lib/python3.13/dist-packages/matplotlib/_mathtext.py:2010: PyparsingDeprecationWarning: 'oneOf' deprecated - use 'one_of'
+    p.space          = oneOf(self._space_widths)("space")
+
+tests/unit/test_run_dudect.py::test_the_planted_leak_is_detected_on_the_fake_device
+  /usr/local/lib/python3.13/dist-packages/matplotlib/_mathtext.py:2012: PyparsingDeprecationWarning: 'oneOf' deprecated - use 'one_of'
+    p.style_literal  = oneOf(
+
+tests/unit/test_run_dudect.py::test_the_planted_leak_is_detected_on_the_fake_device
+  /usr/local/lib/python3.13/dist-packages/matplotlib/_mathtext.py:2020: PyparsingDeprecationWarning: 'leaveWhitespace' deprecated - use 'leave_whitespace'
+    )("sym").leaveWhitespace()
+
+tests/unit/test_run_dudect.py::test_the_planted_leak_is_detected_on_the_fake_device
+  /usr/local/lib/python3.13/dist-packages/matplotlib/_mathtext.py:2024: PyparsingDeprecationWarning: 'oneOf' deprecated - use 'one_of'
+    p.start_group    = Optional(r"\math" + oneOf(self._fontnames)("font")) + "{"
+
+tests/unit/test_run_dudect.py::test_the_planted_leak_is_detected_on_the_fake_device
+  /usr/local/lib/python3.13/dist-packages/matplotlib/_mathtext.py:2027: PyparsingDeprecationWarning: 'oneOf' deprecated - use 'one_of'
+    p.delim          = oneOf(self._delims)
+
+tests/unit/test_run_dudect.py: 47 warnings
+  /usr/local/lib/python3.13/dist-packages/matplotlib/_mathtext.py:1984: PyparsingDeprecationWarning: 'setName' deprecated - use 'set_name'
+    val.setName(key)
+
+tests/unit/test_run_dudect.py: 44 warnings
+  /usr/local/lib/python3.13/dist-packages/matplotlib/_mathtext.py:1987: PyparsingDeprecationWarning: 'setParseAction' deprecated - use 'set_parse_action'
+    val.setParseAction(getattr(self, key))
+
+tests/unit/test_run_dudect.py: 16 warnings
+  /usr/local/lib/python3.13/dist-packages/matplotlib/_mathtext.py:1748: PyparsingDeprecationWarning: 'setParseAction' deprecated - use 'set_parse_action'
+    return Empty().setParseAction(raise_error)
+
+tests/unit/test_run_dudect.py::test_the_planted_leak_is_detected_on_the_fake_device
+  /usr/local/lib/python3.13/dist-packages/matplotlib/_mathtext.py:2088: PyparsingDeprecationWarning: 'endQuoteChar' argument is deprecated, use 'end_quote_char'
+    p.text = cmd(r"\text", QuotedString('{', '\\', endQuoteChar="}"))
+
+tests/unit/test_run_dudect.py::test_the_planted_leak_is_detected_on_the_fake_device
+  /usr/local/lib/python3.13/dist-packages/matplotlib/_mathtext.py:2097: PyparsingDeprecationWarning: 'oneOf' deprecated - use 'one_of'
+    + OneOrMore(oneOf(["_", "^"]) - p.placeable)("subsuper")
+
+tests/unit/test_run_dudect.py::test_the_planted_leak_is_detected_on_the_fake_device
+  /usr/local/lib/python3.13/dist-packages/matplotlib/_mathtext.py:2146: PyparsingDeprecationWarning: 'unquoteResults' argument is deprecated, use 'unquote_results'
+    p.math_string   = QuotedString('$', '\\', unquoteResults=False)
+
+tests/unit/test_run_dudect.py::test_the_planted_leak_is_detected_on_the_fake_device
+  /usr/local/lib/python3.13/dist-packages/matplotlib/_mathtext.py:2147: PyparsingDeprecationWarning: 'leaveWhitespace' deprecated - use 'leave_whitespace'
+    p.non_math      = Regex(r"(?:(?:\\[$])|[^$])*").leaveWhitespace()
+
+tests/unit/test_run_dudect.py: 336 warnings
+  /usr/local/lib/python3.13/dist-packages/matplotlib/_mathtext.py:2170: PyparsingDeprecationWarning: 'parseString' deprecated - use 'parse_string'
+    result = self._expression.parseString(s)
+
+tests/unit/test_run_dudect.py: 336 warnings
+  /usr/local/lib/python3.13/dist-packages/matplotlib/_mathtext.py:2197: PyparsingDeprecationWarning: 'parseString' deprecated - use 'parse_string'
+    return self._math_expression.parseString(toks[0][1:-1], parseAll=True)
+
+tests/unit/test_run_dudect.py: 336 warnings
+  /usr/local/lib/python3.13/dist-packages/pyparsing/util.py:466: PyparsingDeprecationWarning: 'parseAll' argument is deprecated, use 'parse_all'
+    return fn(self, *args, **kwargs)
+
+tests/unit/test_run_dudect.py: 336 warnings
+  /usr/local/lib/python3.13/dist-packages/matplotlib/_mathtext.py:2178: PyparsingDeprecationWarning: 'resetCache' deprecated - use 'reset_cache'
+    ParserElement.resetCache()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+124 passed, 1524 warnings in 50.84s
+
+===== 05_dudect_selftest.txt =====
+target control_leak
+  control_leak: 2000/20000  max|t| ms 118.173
+  control_leak: 4000/20000  max|t| ms 163.009
+  control_leak: 6000/20000  max|t| ms 210.156
+  control_leak: 8000/20000  max|t| ms 244.635
+  control_leak: 10000/20000  max|t| ms 273.094
+  control_leak: 12000/20000  max|t| ms 302.382
+  control_leak: 14000/20000  max|t| ms 330.260
+  control_leak: 16000/20000  max|t| ms 354.946
+  control_leak: 18000/20000  max|t| ms 380.027
+  control_leak: 20000/20000  max|t| ms 403.474
+target control_leak_q
+  control_leak_q: 2000/20000  max|t| ms 97.213
+  control_leak_q: 4000/20000  max|t| ms 157.176
+  control_leak_q: 6000/20000  max|t| ms 205.665
+  control_leak_q: 8000/20000  max|t| ms 231.291
+  control_leak_q: 10000/20000  max|t| ms 261.957
+  control_leak_q: 12000/20000  max|t| ms 289.430
+  control_leak_q: 14000/20000  max|t| ms 311.843
+  control_leak_q: 16000/20000  max|t| ms 340.368
+  control_leak_q: 18000/20000  max|t| ms 363.671
+  control_leak_q: 20000/20000  max|t| ms 386.201
+target control_null
+  control_null: 2000/20000  max|t| ms 1.702
+  control_null: 4000/20000  max|t| ms 2.258
+  control_null: 6000/20000  max|t| ms 1.046
+  control_null: 8000/20000  max|t| ms 1.352
+  control_null: 10000/20000  max|t| ms 1.427
+  control_null: 12000/20000  max|t| ms 1.470
+  control_null: 14000/20000  max|t| ms 1.512
+  control_null: 16000/20000  max|t| ms 1.628
+  control_null: 18000/20000  max|t| ms 1.623
+  control_null: 20000/20000  max|t| ms 1.625
+run dir     /kaggle/working/vcloak_job/runs/20261013-022000_M08_i25k_selftest_quick
+backend     cupy   N per class 10000   quick True
+  control_leak    ms         max|t|    403.474  FAIL  (expected FAIL)  r=2
+  control_leak_q  ms         max|t|    386.201  FAIL  (expected FAIL)  r=4
+  control_null    ms         max|t|      1.625  PASS  (expected PASS)  r=1
+metrics     9
+status      OK
+
+===== 06_dudect_issue25k_s8.txt =====
+target control_null
+  control_null: 20000/200000  max|t| ms 1.352
+  control_null: 40000/200000  max|t| ms 1.759
+  control_null: 60000/200000  max|t| ms 1.160
+  control_null: 80000/200000  max|t| ms 1.784
+  control_null: 100000/200000  max|t| ms 1.918
+  control_null: 120000/200000  max|t| ms 2.796
+  control_null: 140000/200000  max|t| ms 2.727
+  control_null: 160000/200000  max|t| ms 2.733
+  control_null: 180000/200000  max|t| ms 2.722
+  control_null: 200000/200000  max|t| ms 2.945
+target tags_kernel_null
+  tags_kernel_null: 20000/200000  max|t| ms 1.276
+  tags_kernel_null: 40000/200000  max|t| ms 0.675
+  tags_kernel_null: 60000/200000  max|t| ms 0.945
+  tags_kernel_null: 80000/200000  max|t| ms 0.916
+  tags_kernel_null: 100000/200000  max|t| ms 0.994
+  tags_kernel_null: 120000/200000  max|t| ms 0.680
+  tags_kernel_null: 140000/200000  max|t| ms 0.881
+  tags_kernel_null: 160000/200000  max|t| ms 0.812
+  tags_kernel_null: 180000/200000  max|t| ms 0.502
+  tags_kernel_null: 200000/200000  max|t| ms 1.132
+target tags_kernel
+  tags_kernel: 20000/200000  max|t| ms 2.611
+  tags_kernel: 40000/200000  max|t| ms 1.548
+  tags_kernel: 60000/200000  max|t| ms 1.157
+  tags_kernel: 80000/200000  max|t| ms 2.060
+  tags_kernel: 100000/200000  max|t| ms 1.728
+  tags_kernel: 120000/200000  max|t| ms 1.799
+  tags_kernel: 140000/200000  max|t| ms 1.895
+  tags_kernel: 160000/200000  max|t| ms 1.698
+  tags_kernel: 180000/200000  max|t| ms 1.918
+  tags_kernel: 200000/200000  max|t| ms 2.108
+target compact_kernel_null
+  compact_kernel_null: 20000/200000  max|t| ms 0.744
+  compact_kernel_null: 40000/200000  max|t| ms 1.705
+  compact_kernel_null: 60000/200000  max|t| ms 0.965
+  compact_kernel_null: 80000/200000  max|t| ms 0.551
+  compact_kernel_null: 100000/200000  max|t| ms 0.981
+  compact_kernel_null: 120000/200000  max|t| ms 1.061
+  compact_kernel_null: 140000/200000  max|t| ms 1.395
+  compact_kernel_null: 160000/200000  max|t| ms 1.582
+  compact_kernel_null: 180000/200000  max|t| ms 0.916
+  compact_kernel_null: 200000/200000  max|t| ms 0.753
+target compact_kernel
+  compact_kernel: 20000/200000  max|t| ms 1.769
+  compact_kernel: 40000/200000  max|t| ms 1.917
+  compact_kernel: 60000/200000  max|t| ms 0.893
+  compact_kernel: 80000/200000  max|t| ms 1.444
+  compact_kernel: 100000/200000  max|t| ms 1.383
+  compact_kernel: 120000/200000  max|t| ms 1.236
+  compact_kernel: 140000/200000  max|t| ms 0.854
+  compact_kernel: 160000/200000  max|t| ms 0.742
+  compact_kernel: 180000/200000  max|t| ms 0.738
+  compact_kernel: 200000/200000  max|t| ms 0.948
+run dir     /kaggle/working/vcloak_job/runs/20261013-022124_M08_dudect_i25k_s8
+backend     cupy   N per class 100000   quick False
+  control_null    ms         max|t|      2.945  PASS  (expected PASS)  r=1
+  tags_kernel_null ms         max|t|      1.132  PASS  (expected PASS)  r=4
+  tags_kernel     ms         max|t|      2.108  PASS  (expected PASS)  r=4
+  compact_kernel_null ms         max|t|      0.753  PASS  (expected PASS)  r=1
+  compact_kernel  ms         max|t|      0.948  PASS  (expected PASS)  r=1
+metrics     22
+status      OK
+
+===== 07_dudect_issue25k_s10.txt =====
+target control_null
+  control_null: 20000/200000  max|t| ms 1.367
+  control_null: 40000/200000  max|t| ms 1.102
+  control_null: 60000/200000  max|t| ms 1.024
+  control_null: 80000/200000  max|t| ms 1.610
+  control_null: 100000/200000  max|t| ms 2.054
+  control_null: 120000/200000  max|t| ms 2.279
+  control_null: 140000/200000  max|t| ms 1.849
+  control_null: 160000/200000  max|t| ms 2.461
+  control_null: 180000/200000  max|t| ms 2.637
+  control_null: 200000/200000  max|t| ms 2.744
+target tags_kernel_null
+  tags_kernel_null: 20000/200000  max|t| ms 1.806
+  tags_kernel_null: 40000/200000  max|t| ms 2.207
+  tags_kernel_null: 60000/200000  max|t| ms 1.677
+  tags_kernel_null: 80000/200000  max|t| ms 1.375
+  tags_kernel_null: 100000/200000  max|t| ms 1.371
+  tags_kernel_null: 120000/200000  max|t| ms 1.355
+  tags_kernel_null: 140000/200000  max|t| ms 1.535
+  tags_kernel_null: 160000/200000  max|t| ms 1.363
+  tags_kernel_null: 180000/200000  max|t| ms 1.518
+  tags_kernel_null: 200000/200000  max|t| ms 1.462
+target tags_kernel
+  tags_kernel: 20000/200000  max|t| ms 1.743
+  tags_kernel: 40000/200000  max|t| ms 1.959
+  tags_kernel: 60000/200000  max|t| ms 2.052
+  tags_kernel: 80000/200000  max|t| ms 2.472
+  tags_kernel: 100000/200000  max|t| ms 2.126
+  tags_kernel: 120000/200000  max|t| ms 1.767
+  tags_kernel: 140000/200000  max|t| ms 1.669
+  tags_kernel: 160000/200000  max|t| ms 1.502
+  tags_kernel: 180000/200000  max|t| ms 1.982
+  tags_kernel: 200000/200000  max|t| ms 1.907
+target compact_kernel_null
+  compact_kernel_null: 20000/200000  max|t| ms 2.515
+  compact_kernel_null: 40000/200000  max|t| ms 2.206
+  compact_kernel_null: 60000/200000  max|t| ms 2.438
+  compact_kernel_null: 80000/200000  max|t| ms 2.263
+  compact_kernel_null: 100000/200000  max|t| ms 2.239
+  compact_kernel_null: 120000/200000  max|t| ms 1.987
+  compact_kernel_null: 140000/200000  max|t| ms 1.863
+  compact_kernel_null: 160000/200000  max|t| ms 2.361
+  compact_kernel_null: 180000/200000  max|t| ms 2.264
+  compact_kernel_null: 200000/200000  max|t| ms 2.297
+target compact_kernel
+  compact_kernel: 20000/200000  max|t| ms 1.419
+  compact_kernel: 40000/200000  max|t| ms 1.498
+  compact_kernel: 60000/200000  max|t| ms 1.915
+  compact_kernel: 80000/200000  max|t| ms 1.682
+  compact_kernel: 100000/200000  max|t| ms 2.053
+  compact_kernel: 120000/200000  max|t| ms 1.376
+  compact_kernel: 140000/200000  max|t| ms 1.003
+  compact_kernel: 160000/200000  max|t| ms 1.636
+  compact_kernel: 180000/200000  max|t| ms 1.558
+  compact_kernel: 200000/200000  max|t| ms 1.961
+run dir     /kaggle/working/vcloak_job/runs/20261013-024742_M08_dudect_i25k_s10
+backend     cupy   N per class 100000   quick False
+  control_null    ms         max|t|      2.744  PASS  (expected PASS)  r=1
+  tags_kernel_null ms         max|t|      1.462  PASS  (expected PASS)  r=4
+  tags_kernel     ms         max|t|      1.907  PASS  (expected PASS)  r=4
+  compact_kernel_null ms         max|t|      2.297  PASS  (expected PASS)  r=1
+  compact_kernel  ms         max|t|      1.961  PASS  (expected PASS)  r=1
+metrics     22
+status      OK
+
+===== 08_clock_reset.txt =====
+The current user does not have permission to change clocks for GPU 00000000:00:04.0.
+Terminating early due to previous errors.
+
+===== 09_nvidia_smi_after.txt =====
+Tue Oct 13 03:14:13 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.178.04             Driver Version: 580.178.04     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  Tesla T4                       Off |   00000000:00:04.0 Off |                    0 |
+| N/A   64C    P0             42W /   70W |     105MiB /  15360MiB |      2%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+|   1  Tesla T4                       Off |   00000000:00:05.0 Off |                    0 |
+| N/A   31C    P8             10W /   70W |       3MiB /  15360MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|    0   N/A  N/A              49      C   /usr/bin/python3                        102MiB |
++-----------------------------------------------------------------------------------------+
+

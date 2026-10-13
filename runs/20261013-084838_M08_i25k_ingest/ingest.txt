@@ -1,0 +1,15 @@
+job 20261013-005946_M08_issue25k  module M08_issue25k  quick False
+runner kaggle  gpu Tesla T4  driver 580.178.04  cupy 14.0.1  session 20261013-021903
+  [1] nvidia_smi: exit 0 ok
+  [2] whoami: exit 0 ok
+  [3] check_oblivious: exit 0 ok
+  [4] pytest_issue25k: exit 0 ok
+  [5] dudect_selftest: exit 0 ok
+  [6] dudect_issue25k_s8: exit 0 ok
+  [7] dudect_issue25k_s10: exit 0 ok
+  [8] clock_reset: exit 4 FAILED
+  [9] nvidia_smi_after: exit 0 ok
+overall exit 1
+ingested 3 run dir(s): 20261013-022000_M08_i25k_selftest_quick, 20261013-022124_M08_dudect_i25k_s8, 20261013-024742_M08_dudect_i25k_s10
+indexed 53 metric(s); bundle moved to gpujobs/done/results_20261013-005946_M08_issue25k.zip
+!! the job reported a failed required command - read gpujobs/out/20261013-005946_M08_issue25k/logs/ before using any number

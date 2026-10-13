@@ -265,4 +265,54 @@ branch-efficiency and divergent-branch metrics of the four profiled kernels are 
 - dudect can show a dependence, not its absence; N is 100000<!--M:T-DUDECT-N-BITONIC-EQUAL--> per class.
 - Three target series FAIL and are open (ISSUE-17).
 - No dynamic divergence measurement (ISSUE-18); no listing of the executed nvrtc code (ISSUE-19).
+- P3 is a claim about the kernels. The host code that issues the launches (Python) is not constant time and is
+  not claimed to be: timing can be observed only on a live server, which the threat model excludes (ADR-023).
+  A whole-call or per-stage series that FAILS with equal contents stays in the tables as measured.
+## 4.O.7 Kernel-only window: tags and compaction against their own data (ISSUE-25)
+Job `20261013-005946_M08_issue25k`, runner session 20261013-021903 (Tesla T4, driver 580.178.04),
+run dirs `runs/20261013-022000_M08_i25k_selftest_quick`, `runs/20261013-022124_M08_dudect_i25k_s8`, `runs/20261013-024742_M08_dudect_i25k_s10`. This is another runner session than the tables above; values are not pooled. Window:
+queued behind a blocker: device execution only (a blocker launch of public size, then the start event, the launches
+and the end event are enqueued while the device is busy). A measurement whose start event had already been reached
+when the end event was enqueued is flagged unqueued; the SM clock is read after every measurement.
+
+- `compact_kernel`: the fixed permutation, from a device pool whose buffers all hold it vs one of a device pool of random permutations (the same number of dummies) (the launch plan of gpu_bitonic_sort, as gpu_compact runs it, 4096 slots); `compact_kernel_null` has the same contents in both classes.
+- `tags_kernel`: the fixed key, from a device pool whose buffers all hold it vs one of a device pool of random keys (chacha_tags, 4096 slots); `tags_kernel_null` has the same contents in both classes.
+
+| seed | target | N / class | max \|t\| | verdict | max \|t\| without flagged | flagged | SM clock MHz (mode) | window median | r |
+|---|---|---|---|---|---|---|---|---|---|
+| 8 | `control_null` | 100000 | 2.9446<!--M:T-DUDECT-MAXT-CONTROL-NULL--> | PASS | - | - | 1065-1125 | 483.8 us | 1 |
+| 8 | `tags_kernel_null` | 100000 | 1.132<!--M:T-DUDECT-MAXT-TAGS-KERNEL-NULL--> | PASS | 0.8310 | 6870 (3.44%) | 1590 | 22.2 us (below 50 us) | 4 |
+| 8 | `tags_kernel` | 100000 | 2.1075<!--M:T-DUDECT-MAXT-TAGS-KERNEL--> | PASS | 0.1330 | 6894 (3.45%) | 1590 | 22.0 us (below 50 us) | 4 |
+| 8 | `compact_kernel_null` | 100000 | 0.7532<!--M:T-DUDECT-MAXT-COMPACT-KERNEL-NULL--> | PASS | 0.1302 | 6179 (3.09%) | 1590 | 41.1 us (below 50 us) | 1 |
+| 8 | `compact_kernel` | 100000 | 0.9475<!--M:T-DUDECT-MAXT-COMPACT-KERNEL--> | PASS | 0.8438 | 6933 (3.47%) | 1590 | 41.3 us (below 50 us) | 1 |
+| 10 | `control_null` | 100000 | 2.7444<!--M:T-DUDECT-MAXT-CONTROL-NULL--> | PASS | - | - | 1095-1095 | 517.2 us | 1 |
+| 10 | `tags_kernel_null` | 100000 | 1.4622<!--M:T-DUDECT-MAXT-TAGS-KERNEL-NULL--> | PASS | 1.1041 | 8238 (4.12%) | 1590 | 22.0 us (below 50 us) | 4 |
+| 10 | `tags_kernel` | 100000 | 1.9069<!--M:T-DUDECT-MAXT-TAGS-KERNEL--> | PASS | 0.2106 | 7329 (3.66%) | 1590 | 22.1 us (below 50 us) | 4 |
+| 10 | `compact_kernel_null` | 100000 | 2.2966<!--M:T-DUDECT-MAXT-COMPACT-KERNEL-NULL--> | PASS | 0.7618 | 6868 (3.43%) | 1590 | 41.0 us (below 50 us) | 1 |
+| 10 | `compact_kernel` | 100000 | 1.9613<!--M:T-DUDECT-MAXT-COMPACT-KERNEL--> | PASS | 0.6893 | 6618 (3.31%) | 1590 | 41.3 us (below 50 us) | 1 |
+
+- Rule f of ISSUE-25 (usable run): `control_leak_q` FAILS, every `control_null` PASSES, 0 output
+  mismatches, fewer than 5% of the measurements flagged in every kernel-window target:
+  met.
+- Positive control of the queued window, as measured: `control_leak_q` max |t|
+  386.2011<!--M:T-DUDECT-MAXT-CONTROL-LEAK-Q--> (quick, N 10000), but
+  19749 of its 20000 measurements were not queued behind the blocker
+  (its blocker was fitted before the SM clock rose). Its queued measurements alone:
+  Welch t -24.48 on 119 and 132 measurements per class, taken at SM clocks 585, 1080, 1320, 1590 MHz.
+  The power of the queued window therefore rests on these few measurements, not on the full series; the clock of
+  the targets is in the table.
+- Clock: the lock was attempted and refused (`nvidia-smi -i 0 -lgc 1590,1590`: The current user does not have permission to change clocks for GPU 00000000:00:04.0.)
+  The mode of the per-measurement clock is in the table.
+- compact: no dependence detected at this N, on this device (rule g): the null and the target PASS in 2 of 2 seeds.
+- tags: no dependence detected at this N, on this device (rule g): the null and the target PASS in 2 of 2 seeds.
+- Limits: one runner session, one GPU model, one size; N is 100000 per class. dudect can show a
+  dependence, not its absence. Windows with a median below the 50 us of the measurement rule:
+  `compact_kernel`, `compact_kernel_null`, `tags_kernel`, `tags_kernel_null`.
+
+Note on the per-stage series of job `20261012-191630_M08_issue25` (annotation ANN-1 of `state/METRICS_INDEX.md`; every value is kept):
+120 series, 56 FAIL and 64 PASS.
+In `write_epoch` the stages tags, sort and compact never receive the submissions, so the device inputs of these
+36 series were byte-identical in both classes: a FAIL among them is not a dependence of a kernel on its
+data, and a PASS among them is not evidence of independence. The table above is the test of the tags and
+compaction kernels against their own data.
 <!-- END M08 OBLIVIOUS -->

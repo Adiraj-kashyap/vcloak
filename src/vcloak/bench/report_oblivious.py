@@ -19,6 +19,9 @@ import sys
 from pathlib import Path
 from typing import Any
 
+import numpy as np
+
+from vcloak.bench import dudect
 from vcloak.bench.derive import NM
 from vcloak.bench.report import M08_BEGIN, M08_END, ReportError, _md_table, load_run, rel, tagged
 
@@ -262,6 +265,157 @@ branch-efficiency and divergent-branch metrics of the four profiled kernels are 
 """
 
 
+# ---------------------------------------------------------------- kernel-only window (ISSUE-25)
+
+MIN_WINDOW_MS = 0.050  # ai/GPU_GUIDE.md section 7
+MAX_FLAGGED = 0.05     # reading rule f of ISSUE-25
+SAME_INPUT_STAGES = ("tags_ms", "sort_ms", "compact_ms")
+
+
+def _queued_only_t(run: dict[str, Any], target: dict[str, Any]) -> dict[str, Any]:
+    """Raw Welch t over the measurements of a kernel-window target that were queued behind the blocker."""
+    raw = np.load(run["dir"] / target["raw"])
+    x, c, q = raw["times_ms"][:, 0], raw["classes"], raw["queued"]
+    a, b = x[q & (c == 0)], x[q & (c == 1)]
+    if min(a.size, b.size) < 2:
+        return {"n0": int(a.size), "n1": int(b.size), "t": None, "clocks": []}
+    t = float(dudect.welch_t(a.size, a.mean(), ((a - a.mean()) ** 2).sum(),
+                             b.size, b.mean(), ((b - b.mean()) ** 2).sum()))
+    return {"n0": int(a.size), "n1": int(b.size), "t": t, "clocks": sorted({int(v) for v in raw["clocks_mhz"][q]})}
+
+
+def kernel_window_rows(seeds: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    rows = []
+    for r in seeds:
+        for t in r["summary"]["targets"]:
+            st = t["series"]["ms"]
+            p = t.get("per_sample")
+            rows.append({
+                "run": r, "seed": r["manifest"]["seed"], "target": t["target"], "n_per_class": st["n_class0"],
+                "max_abs_t": st["max_abs_t"], "verdict": st["verdict"], "expected": t["expected_verdict"],
+                "metric": metric_id("T-DUDECT-MAXT", t["target"]), "r": t["r"], "mismatches": t["mismatches"],
+                "median_us": st["summary_class0"]["median_ms"] * 1e3,
+                "below": st["summary_class0"]["median_ms"] < MIN_WINDOW_MS,
+                "unflagged": st["unflagged"]["max_abs_t"] if p else None,
+                "flagged": p["flagged"] if p else None, "unqueued": p["unqueued"] if p else None,
+                "off_clock": p["off_clock"] if p else None,
+                "flagged_share": p["flagged"] / p["measurements"] if p else None,
+                "clock_mhz": p["steady_clock_mhz"] if p else f"{t['clock']['before_mhz']}-{t['clock']['after_mhz']}",
+            })
+    return rows
+
+
+def kernel_window_reading(rows: list[dict[str, Any]], kernel: str) -> str:
+    """Reading rules g to j of ISSUE-25, applied to the copied verdicts of one kernel."""
+    nul = [r for r in rows if r["target"] == f"{kernel}_kernel_null"]
+    tgt = [r for r in rows if r["target"] == f"{kernel}_kernel"]
+    if not nul or not tgt:
+        return f"{NM} (no series)"
+    if any(r["verdict"] == "FAIL" for r in nul):
+        return "unusable: the same-contents null FAILS in a seed, so the target is not readable (rule h)"
+    fails = [r for r in tgt if r["verdict"] == "FAIL"]
+    if len(fails) == len(tgt):
+        return "**a dependence of the kernel time on its data is the reading** (rule i): the target FAILS in every seed"
+    if fails:
+        return "not decided (rule j): the target FAILS in one seed only; reported as measured"
+    return (f"no dependence detected at this N, on this device (rule g): the null and the target PASS in "
+            f"{len(tgt)} of {len(tgt)} seeds")
+
+
+def build_kernel_window(selftest: dict[str, Any], seeds: list[dict[str, Any]], stage_runs: list[dict[str, Any]],
+                        root: Path, issue: str) -> tuple[str, list[dict[str, Any]]]:
+    """Section 4.O.7 and its rows. Verdicts are copied; the reading of a kernel is the rule applied to them."""
+    runs = [selftest, *seeds]
+    first = seeds[0]["manifest"]
+    for r in runs:
+        m = r["manifest"]
+        if m["env"]["backend"] != "cupy" or "gpu_job" not in m:
+            raise ReportError(f"{r['id']}: not an ingested cupy run")
+        if m["env"]["session_id"] != first["env"]["session_id"] or m["gpu_job"]["job_id"] != first["gpu_job"]["job_id"]:
+            raise ReportError(f"{r['id']}: session or job differs (never merge two sessions)")
+    if any(r["manifest"]["quick"] for r in seeds):
+        raise ReportError("a kernel-window run is a quick run")
+    rows = kernel_window_rows(seeds)
+    kern = [r for r in rows if r["flagged"] is not None]
+    kernels = sorted({r["target"].split("_kernel")[0] for r in kern})
+    env = first["env"]
+
+    def t(r: dict[str, Any]) -> str:
+        return tagged({"x": r["run"]}, r["metric"])
+
+    table = _md_table(
+        ["seed", "target", "N / class", "max \\|t\\|", "verdict", "max \\|t\\| without flagged", "flagged",
+         "SM clock MHz (mode)", "window median", "r"],
+        [[str(r["seed"]), f"`{r['target']}`", str(r["n_per_class"]), t(r),
+          f"**{r['verdict']}**" if r["verdict"] != r["expected"] else r["verdict"],
+          "-" if r["unflagged"] is None else f"{r['unflagged']:.4f}",
+          "-" if r["flagged"] is None else f"{r['flagged']} ({100 * r['flagged_share']:.2f}%)", str(r["clock_mhz"]),
+          f"{r['median_us']:.1f} us" + (" (below 50 us)" if r["below"] else ""), str(r["r"])] for r in rows])
+
+    st = {x["target"]: x for x in selftest["summary"]["targets"]}
+    leakq = st["control_leak_q"]
+    pq, leakq_verdict = leakq["per_sample"], leakq["series"]["ms"]["verdict"]
+    qo = _queued_only_t(selftest, leakq)
+    qo_text = (f"Welch t {qo['t']:.2f} on {qo['n0']} and {qo['n1']} measurements per class, taken at SM clocks "
+               f"{', '.join(str(c) for c in qo['clocks'])} MHz" if qo["t"] is not None else f"{NM} (too few)")
+    lock = seeds[0]["summary"]["clock_lock"]
+    lock_out = lock["output"].strip().splitlines()[0] if lock["output"].strip() else ""
+    usable = (leakq_verdict == "FAIL" and all(r["verdict"] == "PASS" for r in rows if r["target"] == "control_null")
+              and all(r["mismatches"] == 0 for r in rows) and all(r["flagged_share"] < MAX_FLAGGED for r in kern))
+    below = sorted({r["target"] for r in kern if r["below"]})
+    par = {x["target"]: x for x in seeds[0]["summary"]["targets"]}
+    classes = "\n".join(f"- `{k}_kernel`: {par[f'{k}_kernel']['class0']} vs {par[f'{k}_kernel']['class1']} "
+                        f"({par[f'{k}_kernel']['params']['kernel']}, {par[f'{k}_kernel']['params']['slots']} slots); "
+                        f"`{k}_kernel_null` has the same contents in both classes." for k in kernels)
+    readings = "\n".join(f"- {k}: {kernel_window_reading(rows, k)}." for k in kernels)
+    run_list = ", ".join(f"`{rel(r['dir'], root)}`" for r in runs)
+
+    stage = [(x["target"], s, v["verdict"]) for r in stage_runs for x in r["summary"]["targets"]
+             if x["target"].endswith("_st") for s, v in x["series"].items()]
+    same = [x for x in stage if x[1] in SAME_INPUT_STAGES]
+    stage_note = ""
+    if stage:
+        job = stage_runs[0]["manifest"]["gpu_job"]["job_id"]
+        stage_note = f"""
+Note on the per-stage series of job `{job}` (annotation ANN-1 of `state/METRICS_INDEX.md`; every value is kept):
+{len(stage)} series, {sum(1 for x in stage if x[2] == 'FAIL')} FAIL and {sum(1 for x in stage if x[2] == 'PASS')} PASS.
+In `write_epoch` the stages tags, sort and compact never receive the submissions, so the device inputs of these
+{len(same)} series were byte-identical in both classes: a FAIL among them is not a dependence of a kernel on its
+data, and a PASS among them is not evidence of independence. The table above is the test of the tags and
+compaction kernels against their own data.
+"""
+    section = f"""
+## 4.O.7 Kernel-only window: tags and compaction against their own data ({issue})
+Job `{first['gpu_job']['job_id']}`, runner session {env['session_id']} ({env['gpu']}, driver {env.get('driver', NM)}),
+run dirs {run_list}. This is another runner session than the tables above; values are not pooled. Window:
+{par[f'{kernels[0]}_kernel']['params']['window']} (a blocker launch of public size, then the start event, the launches
+and the end event are enqueued while the device is busy). A measurement whose start event had already been reached
+when the end event was enqueued is flagged unqueued; the SM clock is read after every measurement.
+
+{classes}
+
+{table}
+
+- Rule f of {issue} (usable run): `control_leak_q` {leakq_verdict}S, every `control_null` PASSES, 0 output
+  mismatches, fewer than 5% of the measurements flagged in every kernel-window target:
+  {'met' if usable else '**not met**'}.
+- Positive control of the queued window, as measured: `control_leak_q` max |t|
+  {tagged({'x': selftest}, 'T-DUDECT-MAXT-CONTROL-LEAK-Q')} (quick, N {leakq['n_per_class']}), but
+  {pq['unqueued']} of its {pq['measurements']} measurements were not queued behind the blocker
+  (its blocker was fitted before the SM clock rose). Its queued measurements alone:
+  {qo_text}.
+  The power of the queued window therefore rests on these few measurements, not on the full series; the clock of
+  the targets is in the table.
+- Clock: the lock was attempted and {'accepted' if lock['accepted'] else 'refused'} (`{lock['command']}`: {lock_out})
+  The mode of the per-measurement clock is in the table.
+{readings}
+- Limits: one runner session, one GPU model, one size; N is {rows[0]['n_per_class']} per class. dudect can show a
+  dependence, not its absence. Windows with a median below the 50 us of the measurement rule:
+  {', '.join(f'`{b}`' for b in below) or 'none'}.
+{stage_note}"""
+    return section, rows
+
+
 def merge_notes(path: Path, section: str) -> None:
     """Replace the M08 block of the notes, or append it; the rest of the file is left as it is."""
     old = path.read_text(encoding="utf-8") if path.exists() else ""
@@ -275,7 +429,7 @@ def merge_notes(path: Path, section: str) -> None:
 
 def generate(selftest: str | Path, dudect: str | Path, sass: str | Path, ncu: str | Path, out: str | Path,
              explained: str | Path, issues: dict[str, str], notes: str | Path | None = None,
-             root: str | Path = ".") -> dict[str, Any]:
+             root: str | Path = ".", kernel_window: dict[str, Any] | None = None) -> dict[str, Any]:
     root, out = Path(root), Path(out)
     runs = {"selftest": load_run(selftest), "dudect": load_run(dudect), "sass": load_run(sass), "ncu": load_run(ncu)}
     prov = check_inputs(runs)
@@ -317,17 +471,40 @@ def generate(selftest: str | Path, dudect: str | Path, sass: str | Path, ncu: st
               [[m["id"], m["value"], m["unit"], m["stat"], m["note"], run_dirs["ncu"]]
                for m in runs["ncu"]["summary"]["metrics"]])
 
+    extra, kw_files, kw_dirs = "", [], {}
+    if kernel_window:
+        kw_seeds = [load_run(d) for d in kernel_window["seeds"]]
+        kw_self = load_run(kernel_window["selftest"])
+        kw_stage = [load_run(d) for d in kernel_window.get("stage_runs", [])]
+        extra, kw_rows = build_kernel_window(kw_self, kw_seeds, kw_stage, root, kernel_window.get("issue", "no issue"))
+        write_csv(out / "kernel_window.csv",
+                  ["seed", "target", "n_per_class", "max_abs_t", "verdict", "expected_verdict", "max_abs_t_unflagged",
+                   "flagged", "unqueued", "off_clock", "sm_clock_mhz", "window_median_us", "r", "output_mismatches",
+                   "metric_id", "run_dir"],
+                  [[r["seed"], r["target"], r["n_per_class"], r["max_abs_t"], r["verdict"], r["expected"],
+                    "" if r["unflagged"] is None else r["unflagged"], "" if r["flagged"] is None else r["flagged"],
+                    "" if r["unqueued"] is None else r["unqueued"], "" if r["off_clock"] is None else r["off_clock"],
+                    r["clock_mhz"], round(r["median_us"], 3), r["r"], r["mismatches"], r["metric"],
+                    rel(r["run"]["dir"], root)] for r in kw_rows])
+        kw_files = ["kernel_window.csv"]
+        kw_dirs = {"issue": kernel_window.get("issue", "no issue"), "selftest": rel(kw_self["dir"], root),
+                   "seeds": [rel(r["dir"], root) for r in kw_seeds],
+                   "stage_runs": [rel(r["dir"], root) for r in kw_stage]}
+
     fails = [f"{r['target']}:{r['series']}" for r in rows if r["verdict"] == "FAIL" and r["expected"] == "PASS"]
     controls_ok = all(r["verdict"] == r["expected"] for r in rows if r["target"].startswith("control_"))
     summary = {"provenance": prov, "backend": "cupy", "run_dirs": run_dirs, "controls_ok": controls_ok,
                "fails": fails, "sass_conditional_branches": len(branches), "sass_explained_public": len(branches),
                "ncu_reason": runs["ncu"]["summary"]["reason"], "issues": issues,
                "files": sorted(set(copied) | {"summary_table.csv", "sass_branches_explained.csv",
-                                              "ncu_divergence.csv"}),
+                                              "ncu_divergence.csv"} | set(kw_files)),
                "generated_by": "python -m vcloak.bench.report_oblivious"}
+    if kw_dirs:
+        summary["kernel_window"] = kw_dirs
     (out / "oblivious_summary.json").write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
     if notes:
-        merge_notes(Path(notes), build_section(runs, prov, root, rows, branches, issues))
+        section = build_section(runs, prov, root, rows, branches, issues)
+        merge_notes(Path(notes), section.replace(END, extra.strip("\n") + "\n" + END) if extra else section)
     return summary
 
 
@@ -340,10 +517,20 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--notes", default=None, help="merge the M08 section into these notes")
     for key in ("fail", "ncu", "sass"):
         ap.add_argument(f"--issue-{key}", default="no issue", help=f"issue id quoted for the {key} finding")
+    ap.add_argument("--kernel-selftest", default=None, help="self-test run dir of the kernel-only window job")
+    ap.add_argument("--kernel-window", nargs="*", default=[], help="full-N run dirs of the kernel-only window job")
+    ap.add_argument("--stage-runs", nargs="*", default=[], help="per-stage run dirs counted by the ANN-1 note")
+    ap.add_argument("--issue-kernel-window", default="no issue")
     a = ap.parse_args(argv)
     issues = {"fail": a.issue_fail, "ncu": a.issue_ncu, "sass": a.issue_sass}
+    kw = None
+    if a.kernel_window:
+        if not a.kernel_selftest:
+            ap.error("--kernel-window needs --kernel-selftest")
+        kw = {"selftest": a.kernel_selftest, "seeds": a.kernel_window, "stage_runs": a.stage_runs,
+              "issue": a.issue_kernel_window}
     try:
-        s = generate(a.selftest, a.dudect, a.sass, a.ncu, a.out, a.explained, issues, a.notes)
+        s = generate(a.selftest, a.dudect, a.sass, a.ncu, a.out, a.explained, issues, a.notes, kernel_window=kw)
     except ReportError as e:
         print(f"report_oblivious: {NM} - {e}")
         return 1

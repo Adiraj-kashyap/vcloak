@@ -995,3 +995,39 @@ Notes:
   lock is accepted; that case goes back to the human and is not decided by the agent.
 - capture-evidence: terminal proof only (the check of the annotation). No value changed, so the dashboard data
   and the figures are the same; no screenshot was taken.
+
+## Audit M08 (fix ISSUE-25, ingest of the last job) — 2026-10-13 — session 34 — result: PASS for the ingest (ISSUE-25 CLOSED with a kernel-level result and stated limits; M08 stays DONE)
+| Check | Result | Evidence |
+|---|---|---|
+| A1 planted leak detected | PASS, with a limit | runs/20261013-084838_M08_i25k_ingest/gates.txt: control_leak 403.4739 (open window), control_leak_q 386.2011; but 19749 of 20000 measurements of control_leak_q were unqueued; the 251 queued ones give t -24.4826 (ISSUE-36) |
+| A2 verdicts at full N | PASS | runs/20261013-022124_M08_dudect_i25k_s8, runs/20261013-024742_M08_dudect_i25k_s10: control_null and four kernel-window targets each, N 100000 per class, 10 of 10 PASS; the five S2 targets are unchanged |
+| A3 SASS branches explained | N/A | no kernel changed; results/oblivious regenerated, 16 of 16 as before (runs/20261013-084838_M08_i25k_ingest/report.txt) |
+| A4 ncu | N/A | NOT_MEASURED as before (ISSUE-18) |
+| A5 a FAIL blocks M14, never softened | PASS | no target FAILS in this job; the 56 FAILs of session 31 and the three of S2 stay in the index and in the tables; ISSUE-17 stays OPEN, high, BLOCKS M14 (point 1) |
+| G1 | PASS | runs/20261013-084838_M08_i25k_ingest/pytest_all.txt (2031 passed, 1 skipped, 674 deselected; numpy) |
+| G2 | PASS | runs/20261013-084838_M08_i25k_ingest/check_metrics.txt (528 rows, 0 problems), check_metrics_final.txt after the records |
+| G2b | PASS | manifests of the three ingested runs: backend cupy, gpu_job block, session 20261013-021903 (runs/20261013-084838_M08_i25k_ingest/gates.txt, validate.txt) |
+| G3 | PASS | runs/20261013-084838_M08_i25k_ingest/check_oblivious.txt (11 files, 0 findings); the same check passed on the runner (logs/03_check_oblivious.txt) |
+| G4 | PASS | runs/20261013-084838_M08_i25k_ingest/check_secrets.txt (fixed TEST keys only in the job) |
+| G5 | N/A | no kernel or twin added; 0 output mismatches in every target |
+| G6 | PASS | results/oblivious/kernel_window.csv, docs/REPORT_CH4_NOTES.md 4.O.7, evidence/terminal/M08_issue25k_*.txt, evidence/figures/M08_issue25k_* exist |
+| G7 | PASS | checked after the closing commit |
+| G8 | PASS | STATE: gpu_job.pending null, last_ingested 20261013-005946_M08_issue25k, M08 DONE, next_unit M14 with ISSUE-17 point 1 before it |
+| G9 | PASS | SESSION_LOG session 34, this entry, ISSUE-25 and ISSUE-35 closed, ISSUE-17 updated, ISSUE-36 opened |
+| G10 | PASS | runs/20261013-084838_M08_i25k_ingest/validate.txt: the four manifests valid; the generator was run twice with the same output (git diff identical) |
+Notes:
+- The job reported overall exit 1. The only non-zero command is clock_reset (exit 4): the runner refuses every
+  clock change, the lock was never set, so there was nothing to reset. The measuring commands all exited 0. The
+  numbers were used after reading the logs, as the ingest warning asks.
+- Rule f was applied as written (the 5% bound on the eight kernel-window targets). Applied to the control as well
+  it would not hold: control_leak_q was almost entirely unqueued. This was not decided silently: it is in
+  gates.txt, in section 4.O.7, in ANN-2 and in ISSUE-36, and the choice between "result with limits" and
+  NOT_MEASURED is left to the human.
+- The wording everywhere is "no dependence detected at this N, on this device". No file of this session claims
+  timing independence beyond the two measured kernels, one size, one session.
+- The queued-only Welch t of control_leak_q (-24.4826) is derived from the raw npz of an ingested cupy run by the
+  gates script and by the report generator. It is NOT a row of the index: check_metrics refuses a row that the
+  run's summary.json does not list, and an ingested summary is never edited. It appears in gates.txt and, untagged,
+  in section 4.O.7. Nothing was measured locally.
+- capture-evidence: terminal proofs and the runner's figures (measured; the self-test figure is quick). web/ did
+  not change and M18 has not built the dashboard data yet, so no screenshot was taken.

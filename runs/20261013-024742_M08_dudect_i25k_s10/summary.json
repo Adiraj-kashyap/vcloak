@@ -1,0 +1,1064 @@
+{
+  "metrics": [
+    {
+      "id": "T-DUDECT-MAXT-CONTROL-NULL",
+      "value": 2.7444,
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "PASS at threshold 4.5; max at crop 2 (below 0.481375992); Welch t, raw + 100 crops; series ms; r 1"
+    },
+    {
+      "id": "T-DUDECT-N-CONTROL-NULL",
+      "value": 100000,
+      "unit": "measurements",
+      "stat": "per class",
+      "note": "exactly this many of each class, randomly interleaved"
+    },
+    {
+      "id": "T-DUDECT-MAXT-TAGS-KERNEL-NULL",
+      "value": 1.4622,
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "PASS at threshold 4.5; max at crop 96 (below 0.0594156492); Welch t, raw + 100 crops; series ms; r 4"
+    },
+    {
+      "id": "T-DUDECT-MAXT-TAGS-KERNEL-NULL-UNFLAGGED",
+      "value": 1.1041,
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "PASS at threshold 4.5; the measurements without a flag (unqueued or off the clock): 95885 and 95877 per class"
+    },
+    {
+      "id": "T-DUDECT-FLAGGED-TAGS-KERNEL-NULL",
+      "value": 8238,
+      "unit": "measurements",
+      "stat": "count",
+      "note": "of 200000: unqueued 8236, off the clock 2 (more than 15% from the modal SM clock)"
+    },
+    {
+      "id": "T-DUDECT-CLOCK-TAGS-KERNEL-NULL",
+      "value": 1590,
+      "unit": "MHz",
+      "stat": "mode",
+      "note": "SM clock read after every measurement"
+    },
+    {
+      "id": "T-DUDECT-N-TAGS-KERNEL-NULL",
+      "value": 100000,
+      "unit": "measurements",
+      "stat": "per class",
+      "note": "exactly this many of each class, randomly interleaved"
+    },
+    {
+      "id": "T-DUDECT-MAXT-TAGS-KERNEL",
+      "value": 1.9069,
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "PASS at threshold 4.5; max at raw; Welch t, raw + 100 crops; series ms; r 4"
+    },
+    {
+      "id": "T-DUDECT-MAXT-TAGS-KERNEL-UNFLAGGED",
+      "value": 0.2106,
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "PASS at threshold 4.5; the measurements without a flag (unqueued or off the clock): 96294 and 96377 per class"
+    },
+    {
+      "id": "T-DUDECT-FLAGGED-TAGS-KERNEL",
+      "value": 7329,
+      "unit": "measurements",
+      "stat": "count",
+      "note": "of 200000: unqueued 7329, off the clock 0 (more than 15% from the modal SM clock)"
+    },
+    {
+      "id": "T-DUDECT-CLOCK-TAGS-KERNEL",
+      "value": 1590,
+      "unit": "MHz",
+      "stat": "mode",
+      "note": "SM clock read after every measurement"
+    },
+    {
+      "id": "T-DUDECT-N-TAGS-KERNEL",
+      "value": 100000,
+      "unit": "measurements",
+      "stat": "per class",
+      "note": "exactly this many of each class, randomly interleaved"
+    },
+    {
+      "id": "T-DUDECT-MAXT-COMPACT-KERNEL-NULL",
+      "value": 2.2966,
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "PASS at threshold 4.5; max at raw; Welch t, raw + 100 crops; series ms; r 1"
+    },
+    {
+      "id": "T-DUDECT-MAXT-COMPACT-KERNEL-NULL-UNFLAGGED",
+      "value": 0.7618,
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "PASS at threshold 4.5; the measurements without a flag (unqueued or off the clock): 96530 and 96602 per class"
+    },
+    {
+      "id": "T-DUDECT-FLAGGED-COMPACT-KERNEL-NULL",
+      "value": 6868,
+      "unit": "measurements",
+      "stat": "count",
+      "note": "of 200000: unqueued 6868, off the clock 0 (more than 15% from the modal SM clock)"
+    },
+    {
+      "id": "T-DUDECT-CLOCK-COMPACT-KERNEL-NULL",
+      "value": 1590,
+      "unit": "MHz",
+      "stat": "mode",
+      "note": "SM clock read after every measurement"
+    },
+    {
+      "id": "T-DUDECT-N-COMPACT-KERNEL-NULL",
+      "value": 100000,
+      "unit": "measurements",
+      "stat": "per class",
+      "note": "exactly this many of each class, randomly interleaved"
+    },
+    {
+      "id": "T-DUDECT-MAXT-COMPACT-KERNEL",
+      "value": 1.9613,
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "PASS at threshold 4.5; max at crop 91 (below 0.0797392214); Welch t, raw + 100 crops; series ms; r 1"
+    },
+    {
+      "id": "T-DUDECT-MAXT-COMPACT-KERNEL-UNFLAGGED",
+      "value": 0.6893,
+      "unit": "-",
+      "stat": "max |t|",
+      "note": "PASS at threshold 4.5; the measurements without a flag (unqueued or off the clock): 96709 and 96673 per class"
+    },
+    {
+      "id": "T-DUDECT-FLAGGED-COMPACT-KERNEL",
+      "value": 6618,
+      "unit": "measurements",
+      "stat": "count",
+      "note": "of 200000: unqueued 6618, off the clock 0 (more than 15% from the modal SM clock)"
+    },
+    {
+      "id": "T-DUDECT-CLOCK-COMPACT-KERNEL",
+      "value": 1590,
+      "unit": "MHz",
+      "stat": "mode",
+      "note": "SM clock read after every measurement"
+    },
+    {
+      "id": "T-DUDECT-N-COMPACT-KERNEL",
+      "value": 100000,
+      "unit": "measurements",
+      "stat": "per class",
+      "note": "exactly this many of each class, randomly interleaved"
+    }
+  ],
+  "timer": "cupy.cuda.Event",
+  "executed_by": "cupy.RawModule (nvrtc)",
+  "t_threshold": 4.5,
+  "n_per_class": 100000,
+  "quick": false,
+  "caveat": "Free Colab/Kaggle GPUs are shared: a PASS says that no dependence was detected with this many measurements on this device in this session, not that none exists.",
+  "errors": [],
+  "device": {
+    "backend": "cupy",
+    "is_gpu": true,
+    "device": "Tesla T4",
+    "gpu": "Tesla T4",
+    "cc": "7.5",
+    "sm_count": 40,
+    "vram_total_bytes": 15636037632,
+    "vram_free_bytes": 15387656192,
+    "mem_clock_khz": 5001000,
+    "mem_bus_width_bits": 256,
+    "peak_bw_gbs": 320.064,
+    "max_log2n": 24,
+    "cuda": "12090",
+    "cupy": "14.0.1",
+    "os": "Linux-6.18.48+-x86_64-with-glibc2.39",
+    "python": "3.13.15"
+  },
+  "clock_lock": {
+    "attempted": true,
+    "accepted": false,
+    "mhz": 1590,
+    "command": "nvidia-smi -i 0 -lgc 1590,1590",
+    "returncode": 4,
+    "output": "The current user does not have permission to change clocks for GPU 00000000:00:04.0.\nTerminating early due to previous errors."
+  },
+  "targets": [
+    {
+      "target": "control_null",
+      "title": "null control: fused bitonic sort, the same fixed input in both classes",
+      "class0": "fixed sorted tags",
+      "class1": "the same fixed sorted tags",
+      "params": {
+        "n": 65536,
+        "kernel": "gpu_bitonic_sort (fused launch plan)"
+      },
+      "n_per_class": 100000,
+      "calibration_per_class": 500,
+      "chunk": 1000,
+      "r": 1,
+      "r_note": "",
+      "single_launch_median_ms": 0.5010240077972412,
+      "measure_seconds": 299.1146774990002,
+      "mismatches": 0,
+      "expected_verdict": "PASS",
+      "warmup": {
+        "calls": 634,
+        "seconds": 1.0238582080000924,
+        "clocks_mhz": [
+          1125,
+          1080,
+          1065
+        ]
+      },
+      "clock": {
+        "before_mhz": 1095,
+        "after_mhz": 1095,
+        "max_mhz": 1590,
+        "relative_change": 0.0,
+        "fraction_of_max": 0.6886792452830188,
+        "status": "LOW"
+      },
+      "timer": "cupy.cuda.Event",
+      "raw": "dudect_control_null_raw.npz",
+      "plots": [
+        "dudect_control_null.png"
+      ],
+      "max_abs_t": 2.7443966732918286,
+      "verdict": "PASS",
+      "series": {
+        "ms": {
+          "n_class0": 100000,
+          "n_class1": 100000,
+          "mean_class0": 0.5297354653593895,
+          "mean_class1": 0.5301153377676007,
+          "std_class0": 0.06296557511099982,
+          "std_class1": 0.06397586402278575,
+          "t_raw": -1.338244836475085,
+          "max_abs_t": 2.7443966732918286,
+          "max_at_test": 3,
+          "max_at": "crop 2 (below 0.481375992)",
+          "threshold": 4.5,
+          "verdict": "PASS",
+          "tests": 101,
+          "summary_class0": {
+            "runs": 100000,
+            "median_ms": 0.5172479748725891,
+            "p5_ms": 0.47577598690986633,
+            "p95_ms": 0.6183056145906445,
+            "p99_ms": 0.7695372980833047,
+            "min_ms": 0.4625599980354309,
+            "max_ms": 1.7834240198135376,
+            "mean_ms": 0.5297354653593898,
+            "std_ms": 0.06296557511099983,
+            "cv": 0.11886229869144581
+          },
+          "summary_class1": {
+            "runs": 100000,
+            "median_ms": 0.5171200037002563,
+            "p5_ms": 0.4759039878845215,
+            "p95_ms": 0.6191040277481079,
+            "p99_ms": 0.7798787200450862,
+            "min_ms": 0.4644480049610138,
+            "max_ms": 1.6274880170822144,
+            "mean_ms": 0.530115337767601,
+            "std_ms": 0.06397586402278574,
+            "cv": 0.12068291457515294
+          }
+        }
+      }
+    },
+    {
+      "target": "tags_kernel_null",
+      "title": "ISSUE-25 kernel-only, control: chacha_tags, the same key in both classes",
+      "class0": "the fixed key, from a device pool whose buffers all hold it",
+      "class1": "the same fixed key, from a second device pool of the same size",
+      "params": {
+        "window": "queued behind a blocker: device execution only",
+        "blocker": "chacha_blocks, zero key",
+        "blocker_blocks": 131072,
+        "slots": 4096,
+        "epoch": 1,
+        "kernel": "chacha_tags",
+        "pool_per_class": 64,
+        "staging": "device pools, device-to-device copy"
+      },
+      "n_per_class": 100000,
+      "calibration_per_class": 500,
+      "chunk": 1000,
+      "r": 4,
+      "r_note": "",
+      "single_launch_median_ms": 0.014896000269800425,
+      "measure_seconds": 295.1162373809998,
+      "mismatches": 0,
+      "expected_verdict": "PASS",
+      "warmup": {
+        "calls": 81135,
+        "seconds": 10.027292962000047,
+        "clocks_mhz": [
+          705,
+          690,
+          660,
+          645,
+          630,
+          630,
+          615,
+          600,
+          585,
+          585,
+          585,
+          585,
+          585,
+          585,
+          585,
+          585,
+          585,
+          585,
+          585,
+          585,
+          585,
+          585,
+          585,
+          585,
+          585,
+          585,
+          585,
+          585,
+          585,
+          585,
+          585,
+          585,
+          585,
+          585,
+          585,
+          585,
+          585,
+          585,
+          585
+        ]
+      },
+      "clock": {
+        "before_mhz": 1065,
+        "after_mhz": 1590,
+        "max_mhz": 1590,
+        "relative_change": 0.49295774647887325,
+        "fraction_of_max": 0.6698113207547169,
+        "status": "UNSTABLE"
+      },
+      "timer": "cupy.cuda.Event",
+      "raw": "dudect_tags_kernel_null_raw.npz",
+      "plots": [
+        "dudect_tags_kernel_null.png"
+      ],
+      "per_sample": {
+        "measurements": 200000,
+        "unqueued": 8236,
+        "clock_limit": 0.15,
+        "steady_clock_mhz": 1590,
+        "off_clock": 2,
+        "not_at_modal_clock": 68,
+        "clock_missing": 0,
+        "clock_histogram_mhz": {
+          "1065": 2,
+          "1545": 6,
+          "1560": 11,
+          "1575": 49,
+          "1590": 199932
+        },
+        "mean_clock_mhz_class0": 1589.98395,
+        "mean_clock_mhz_class1": 1589.9922,
+        "flagged": 8238,
+        "blocker_steps": [
+          {
+            "blocks": 1024,
+            "r": 1,
+            "unqueued": 30
+          },
+          {
+            "blocks": 2048,
+            "r": 1,
+            "unqueued": 30
+          },
+          {
+            "blocks": 4096,
+            "r": 1,
+            "unqueued": 30
+          },
+          {
+            "blocks": 8192,
+            "r": 1,
+            "unqueued": 3
+          },
+          {
+            "blocks": 16384,
+            "r": 1,
+            "unqueued": 0
+          },
+          {
+            "blocks": 32768,
+            "r": 4,
+            "unqueued": 3
+          },
+          {
+            "blocks": 65536,
+            "r": 4,
+            "unqueued": 0
+          }
+        ]
+      },
+      "max_abs_t": 1.4622452693718515,
+      "verdict": "PASS",
+      "series": {
+        "ms": {
+          "n_class0": 100000,
+          "n_class1": 100000,
+          "mean_class0": 0.023307987192999563,
+          "mean_class1": 0.023308401915393774,
+          "std_class0": 0.01022812379771212,
+          "std_class1": 0.010233436414105809,
+          "t_raw": -0.009064288591781171,
+          "max_abs_t": 1.4622452693718515,
+          "max_at_test": 97,
+          "max_at": "crop 96 (below 0.0594156492)",
+          "threshold": 4.5,
+          "verdict": "PASS",
+          "tests": 101,
+          "summary_class0": {
+            "runs": 100000,
+            "median_ms": 0.021983999758958817,
+            "p5_ms": 0.02099199965596199,
+            "p95_ms": 0.02252800017595291,
+            "p99_ms": 0.07337727993726663,
+            "min_ms": 0.020800000056624413,
+            "max_ms": 0.32025599479675293,
+            "mean_ms": 0.02330798719299957,
+            "std_ms": 0.010228123797712122,
+            "cv": 0.4388248420174216
+          },
+          "summary_class1": {
+            "runs": 100000,
+            "median_ms": 0.021983999758958817,
+            "p5_ms": 0.02099199965596199,
+            "p95_ms": 0.02252800017595291,
+            "p99_ms": 0.07372800260782242,
+            "min_ms": 0.020800000056624413,
+            "max_ms": 0.2879999876022339,
+            "mean_ms": 0.02330840191539377,
+            "std_ms": 0.010233436414105812,
+            "cv": 0.439044961179739
+          },
+          "unflagged": {
+            "max_abs_t": 1.1041292761591883,
+            "verdict": "PASS",
+            "max_at": "crop 0 (below 0.0311648021)",
+            "n_class0": 95885,
+            "n_class1": 95877
+          }
+        }
+      }
+    },
+    {
+      "target": "tags_kernel",
+      "title": "ISSUE-25 kernel-only: chacha_tags, one fixed key vs fresh random keys",
+      "class0": "the fixed key, from a device pool whose buffers all hold it",
+      "class1": "one of a device pool of random keys",
+      "params": {
+        "window": "queued behind a blocker: device execution only",
+        "blocker": "chacha_blocks, zero key",
+        "blocker_blocks": 131072,
+        "slots": 4096,
+        "epoch": 1,
+        "kernel": "chacha_tags",
+        "pool_per_class": 64,
+        "staging": "device pools, device-to-device copy"
+      },
+      "n_per_class": 100000,
+      "calibration_per_class": 500,
+      "chunk": 1000,
+      "r": 4,
+      "r_note": "",
+      "single_launch_median_ms": 0.015072000212967396,
+      "measure_seconds": 292.72396495400017,
+      "mismatches": 0,
+      "expected_verdict": "PASS",
+      "warmup": {
+        "calls": 85203,
+        "seconds": 10.027969473000212,
+        "clocks_mhz": [
+          1590,
+          1590,
+          1590,
+          1590,
+          945,
+          900,
+          855,
+          840,
+          810,
+          795,
+          765,
+          735,
+          720,
+          705,
+          690,
+          675,
+          660,
+          645,
+          630,
+          615,
+          600,
+          600,
+          585,
+          585,
+          585,
+          585,
+          585,
+          585,
+          585,
+          585,
+          585,
+          585,
+          585,
+          585,
+          585,
+          585,
+          585,
+          585,
+          585
+        ]
+      },
+      "clock": {
+        "before_mhz": 1500,
+        "after_mhz": 1590,
+        "max_mhz": 1590,
+        "relative_change": 0.06,
+        "fraction_of_max": 0.9433962264150944,
+        "status": "OK"
+      },
+      "timer": "cupy.cuda.Event",
+      "raw": "dudect_tags_kernel_raw.npz",
+      "plots": [
+        "dudect_tags_kernel.png"
+      ],
+      "per_sample": {
+        "measurements": 200000,
+        "unqueued": 7329,
+        "clock_limit": 0.15,
+        "steady_clock_mhz": 1590,
+        "off_clock": 0,
+        "not_at_modal_clock": 75,
+        "clock_missing": 0,
+        "clock_histogram_mhz": {
+          "1500": 3,
+          "1545": 11,
+          "1560": 10,
+          "1575": 51,
+          "1590": 199925
+        },
+        "mean_clock_mhz_class0": 1589.9895,
+        "mean_clock_mhz_class1": 1589.9922,
+        "flagged": 7329,
+        "blocker_steps": [
+          {
+            "blocks": 1024,
+            "r": 1,
+            "unqueued": 29
+          },
+          {
+            "blocks": 2048,
+            "r": 1,
+            "unqueued": 30
+          },
+          {
+            "blocks": 4096,
+            "r": 1,
+            "unqueued": 29
+          },
+          {
+            "blocks": 8192,
+            "r": 1,
+            "unqueued": 0
+          },
+          {
+            "blocks": 16384,
+            "r": 4,
+            "unqueued": 30
+          },
+          {
+            "blocks": 32768,
+            "r": 4,
+            "unqueued": 4
+          },
+          {
+            "blocks": 65536,
+            "r": 4,
+            "unqueued": 0
+          }
+        ]
+      },
+      "max_abs_t": 1.9068625255624614,
+      "verdict": "PASS",
+      "series": {
+        "ms": {
+          "n_class0": 100000,
+          "n_class1": 100000,
+          "mean_class0": 0.023250011558625838,
+          "mean_class1": 0.023167051241714507,
+          "std_class0": 0.010384596065355188,
+          "std_class1": 0.009024355492315285,
+          "t_raw": 1.9068625255624614,
+          "max_abs_t": 1.9068625255624614,
+          "max_at_test": 0,
+          "max_at": "raw",
+          "threshold": 4.5,
+          "verdict": "PASS",
+          "tests": 101,
+          "summary_class0": {
+            "runs": 100000,
+            "median_ms": 0.02208000048995018,
+            "p5_ms": 0.021088000386953354,
+            "p95_ms": 0.02252800017595291,
+            "p99_ms": 0.06963200122117996,
+            "min_ms": 0.020800000056624413,
+            "max_ms": 1.087839961051941,
+            "mean_ms": 0.023250011558625848,
+            "std_ms": 0.010384596065355179,
+            "cv": 0.44664907108411533
+          },
+          "summary_class1": {
+            "runs": 100000,
+            "median_ms": 0.02208000048995018,
+            "p5_ms": 0.021088000386953354,
+            "p95_ms": 0.02252800017595291,
+            "p99_ms": 0.06758400052785873,
+            "min_ms": 0.020800000056624413,
+            "max_ms": 0.43212801218032837,
+            "mean_ms": 0.023167051241714507,
+            "std_ms": 0.009024355492315284,
+            "cv": 0.389534058441847
+          },
+          "unflagged": {
+            "max_abs_t": 0.2106451401028979,
+            "verdict": "PASS",
+            "max_at": "raw",
+            "n_class0": 96294,
+            "n_class1": 96377
+          }
+        }
+      }
+    },
+    {
+      "target": "compact_kernel_null",
+      "title": "ISSUE-25 kernel-only, control: the sort network of gpu_compact, the same permutation in both classes",
+      "class0": "the fixed permutation, from a device pool whose buffers all hold it",
+      "class1": "the same fixed permutation, from a second device pool of the same size",
+      "params": {
+        "window": "queued behind a blocker: device execution only",
+        "blocker": "chacha_blocks, zero key",
+        "blocker_blocks": 262144,
+        "slots": 4096,
+        "n_real": 1024,
+        "kernel": "the launch plan of gpu_bitonic_sort, as gpu_compact runs it",
+        "pool_per_class": 64,
+        "staging": "device pools, device-to-device copy"
+      },
+      "n_per_class": 100000,
+      "calibration_per_class": 500,
+      "chunk": 1000,
+      "r": 1,
+      "r_note": "",
+      "single_launch_median_ms": 0.07398399710655212,
+      "measure_seconds": 325.1927262099998,
+      "mismatches": 0,
+      "expected_verdict": "PASS",
+      "warmup": {
+        "calls": 43392,
+        "seconds": 12.809167195999635,
+        "clocks_mhz": [
+          1590,
+          1590,
+          1590,
+          1590,
+          1050,
+          1020,
+          990,
+          975,
+          960,
+          930,
+          915,
+          900,
+          900,
+          885,
+          870,
+          870,
+          855,
+          840,
+          840,
+          825,
+          825,
+          810,
+          825,
+          825,
+          825,
+          825,
+          825,
+          825,
+          825,
+          795,
+          810,
+          810,
+          810,
+          810,
+          840,
+          840,
+          840,
+          840,
+          855,
+          855,
+          855,
+          855,
+          885,
+          885,
+          885,
+          885,
+          885,
+          885,
+          885,
+          885,
+          870
+        ]
+      },
+      "clock": {
+        "before_mhz": 1515,
+        "after_mhz": 1590,
+        "max_mhz": 1590,
+        "relative_change": 0.04950495049504951,
+        "fraction_of_max": 0.9528301886792453,
+        "status": "OK"
+      },
+      "timer": "cupy.cuda.Event",
+      "raw": "dudect_compact_kernel_null_raw.npz",
+      "plots": [
+        "dudect_compact_kernel_null.png"
+      ],
+      "per_sample": {
+        "measurements": 200000,
+        "unqueued": 6868,
+        "clock_limit": 0.15,
+        "steady_clock_mhz": 1590,
+        "off_clock": 0,
+        "not_at_modal_clock": 66,
+        "clock_missing": 0,
+        "clock_histogram_mhz": {
+          "1515": 5,
+          "1545": 9,
+          "1560": 10,
+          "1575": 42,
+          "1590": 199934
+        },
+        "mean_clock_mhz_class0": 1589.9913,
+        "mean_clock_mhz_class1": 1589.9916,
+        "flagged": 6868,
+        "blocker_steps": [
+          {
+            "blocks": 1024,
+            "r": 1,
+            "unqueued": 30
+          },
+          {
+            "blocks": 2048,
+            "r": 1,
+            "unqueued": 30
+          },
+          {
+            "blocks": 4096,
+            "r": 1,
+            "unqueued": 30
+          },
+          {
+            "blocks": 8192,
+            "r": 1,
+            "unqueued": 30
+          },
+          {
+            "blocks": 16384,
+            "r": 1,
+            "unqueued": 30
+          },
+          {
+            "blocks": 32768,
+            "r": 1,
+            "unqueued": 30
+          },
+          {
+            "blocks": 65536,
+            "r": 1,
+            "unqueued": 30
+          },
+          {
+            "blocks": 131072,
+            "r": 1,
+            "unqueued": 0
+          }
+        ]
+      },
+      "max_abs_t": 2.2966274588142497,
+      "verdict": "PASS",
+      "series": {
+        "ms": {
+          "n_class0": 100000,
+          "n_class1": 100000,
+          "mean_class0": 0.04244930826243013,
+          "mean_class1": 0.04233161097936333,
+          "std_class0": 0.012377461022543597,
+          "std_class1": 0.010461020754250159,
+          "t_raw": 2.2966274588142497,
+          "max_abs_t": 2.2966274588142497,
+          "max_at_test": 0,
+          "max_at": "raw",
+          "threshold": 4.5,
+          "verdict": "PASS",
+          "tests": 101,
+          "summary_class0": {
+            "runs": 100000,
+            "median_ms": 0.04095999896526337,
+            "p5_ms": 0.04092799872159958,
+            "p95_ms": 0.042080000042915344,
+            "p99_ms": 0.10419296354055355,
+            "min_ms": 0.0398080013692379,
+            "max_ms": 1.662816047668457,
+            "mean_ms": 0.04244930826243013,
+            "std_ms": 0.012377461022543607,
+            "cv": 0.2915821606803028
+          },
+          "summary_class1": {
+            "runs": 100000,
+            "median_ms": 0.04095999896526337,
+            "p5_ms": 0.04092799872159958,
+            "p95_ms": 0.042080000042915344,
+            "p99_ms": 0.1010572820901864,
+            "min_ms": 0.0398080013692379,
+            "max_ms": 0.30720001459121704,
+            "mean_ms": 0.042331610979363325,
+            "std_ms": 0.010461020754250159,
+            "cv": 0.24712078071750943
+          },
+          "unflagged": {
+            "max_abs_t": 0.7618303251815668,
+            "verdict": "PASS",
+            "max_at": "crop 2 (below 0.0446400009)",
+            "n_class0": 96530,
+            "n_class1": 96602
+          }
+        }
+      }
+    },
+    {
+      "target": "compact_kernel",
+      "title": "ISSUE-25 kernel-only: the sort network of gpu_compact, one fixed permutation vs fresh random ones",
+      "class0": "the fixed permutation, from a device pool whose buffers all hold it",
+      "class1": "one of a device pool of random permutations (the same number of dummies)",
+      "params": {
+        "window": "queued behind a blocker: device execution only",
+        "blocker": "chacha_blocks, zero key",
+        "blocker_blocks": 262144,
+        "slots": 4096,
+        "n_real": 1024,
+        "kernel": "the launch plan of gpu_bitonic_sort, as gpu_compact runs it",
+        "pool_per_class": 64,
+        "staging": "device pools, device-to-device copy"
+      },
+      "n_per_class": 100000,
+      "calibration_per_class": 500,
+      "chunk": 1000,
+      "r": 1,
+      "r_note": "",
+      "single_launch_median_ms": 0.07782399654388428,
+      "measure_seconds": 326.0480636550001,
+      "mismatches": 0,
+      "expected_verdict": "PASS",
+      "warmup": {
+        "calls": 40171,
+        "seconds": 11.809934723999959,
+        "clocks_mhz": [
+          1590,
+          1590,
+          1590,
+          1590,
+          1035,
+          1020,
+          990,
+          960,
+          945,
+          930,
+          915,
+          900,
+          885,
+          870,
+          870,
+          855,
+          855,
+          840,
+          870,
+          870,
+          870,
+          870,
+          870,
+          870,
+          870,
+          870,
+          825,
+          825,
+          825,
+          825,
+          855,
+          855,
+          855,
+          855,
+          855,
+          855,
+          855,
+          855,
+          870,
+          870,
+          870,
+          870,
+          870,
+          870,
+          870,
+          870,
+          825
+        ]
+      },
+      "clock": {
+        "before_mhz": 1425,
+        "after_mhz": 1590,
+        "max_mhz": 1590,
+        "relative_change": 0.11578947368421053,
+        "fraction_of_max": 0.8962264150943396,
+        "status": "OK"
+      },
+      "timer": "cupy.cuda.Event",
+      "raw": "dudect_compact_kernel_raw.npz",
+      "plots": [
+        "dudect_compact_kernel.png"
+      ],
+      "per_sample": {
+        "measurements": 200000,
+        "unqueued": 6618,
+        "clock_limit": 0.15,
+        "steady_clock_mhz": 1590,
+        "off_clock": 0,
+        "not_at_modal_clock": 74,
+        "clock_missing": 0,
+        "clock_histogram_mhz": {
+          "1425": 1,
+          "1500": 9,
+          "1545": 10,
+          "1560": 8,
+          "1575": 46,
+          "1590": 199926
+        },
+        "mean_clock_mhz_class0": 1589.9883,
+        "mean_clock_mhz_class1": 1589.98815,
+        "flagged": 6618,
+        "blocker_steps": [
+          {
+            "blocks": 1024,
+            "r": 1,
+            "unqueued": 30
+          },
+          {
+            "blocks": 2048,
+            "r": 1,
+            "unqueued": 30
+          },
+          {
+            "blocks": 4096,
+            "r": 1,
+            "unqueued": 30
+          },
+          {
+            "blocks": 8192,
+            "r": 1,
+            "unqueued": 30
+          },
+          {
+            "blocks": 16384,
+            "r": 1,
+            "unqueued": 30
+          },
+          {
+            "blocks": 32768,
+            "r": 1,
+            "unqueued": 30
+          },
+          {
+            "blocks": 65536,
+            "r": 1,
+            "unqueued": 30
+          },
+          {
+            "blocks": 131072,
+            "r": 1,
+            "unqueued": 0
+          }
+        ]
+      },
+      "max_abs_t": 1.9612571990018741,
+      "verdict": "PASS",
+      "series": {
+        "ms": {
+          "n_class0": 100000,
+          "n_class1": 100000,
+          "mean_class0": 0.04255712029632181,
+          "mean_class1": 0.04257944446194916,
+          "std_class0": 0.009848943097303609,
+          "std_class1": 0.009898821585917924,
+          "t_raw": -0.5055579044685167,
+          "max_abs_t": 1.9612571990018741,
+          "max_at_test": 92,
+          "max_at": "crop 91 (below 0.0797392214)",
+          "threshold": 4.5,
+          "verdict": "PASS",
+          "tests": 101,
+          "summary_class0": {
+            "runs": 100000,
+            "median_ms": 0.04134399816393852,
+            "p5_ms": 0.04095999896526337,
+            "p95_ms": 0.0424639992415905,
+            "p99_ms": 0.09011200070381165,
+            "min_ms": 0.039903998374938965,
+            "max_ms": 0.3420160114765167,
+            "mean_ms": 0.04255712029632181,
+            "std_ms": 0.009848943097303603,
+            "cv": 0.23142879566864966
+          },
+          "summary_class1": {
+            "runs": 100000,
+            "median_ms": 0.04134399816393852,
+            "p5_ms": 0.04095999896526337,
+            "p95_ms": 0.0424639992415905,
+            "p99_ms": 0.09363231770694239,
+            "min_ms": 0.04092799872159958,
+            "max_ms": 0.3543039858341217,
+            "mean_ms": 0.04257944446194917,
+            "std_ms": 0.009898821585917924,
+            "cv": 0.23247888061958955
+          },
+          "unflagged": {
+            "max_abs_t": 0.6893010873435876,
+            "verdict": "PASS",
+            "max_at": "crop 5 (below 0.0462719984)",
+            "n_class0": 96709,
+            "n_class1": 96673
+          }
+        }
+      }
+    }
+  ]
+}

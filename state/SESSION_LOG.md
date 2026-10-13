@@ -824,3 +824,32 @@
 - Commit: 1dea96e (records)
 - Next: ingest 20261013-005946_M08_issue25k, close ISSUE-25 by rules f to l, add ANN-1 to report_oblivious, then M14 S1 ;
   human action: ISSUE-35 (run the job on Kaggle, put the results zip into gpujobs/inbox/). Do not change the repo before that
+
+- GPU-JOB 20261013-005946_M08_issue25k ingested 2026-10-13 08:47: runner kaggle, gpu Tesla T4, session 20261013-021903, overall exit 1, runs 20261013-022000_M08_i25k_selftest_quick, 20261013-022124_M08_dudect_i25k_s8, 20261013-024742_M08_dudect_i25k_s10, 53 metrics indexed.
+
+## Session 34 — 2026-10-13 09:40 — fix ISSUE-25 (M08 GPU obliviousness audit), ingest of the last job — owner:Aditya
+- Steps: none new (M08 stays DONE). Ingested job 20261013-005946_M08_issue25k (status after: NOT_STARTED for M14, no job pending)
+- Did: `gpujob.py ingest` (job id, bundle sha, git sha verified; 53 rows indexed); gates script recomputing every
+  max abs(t) and flag count from the raw npz and applying rules f to l; `report_oblivious` extended with section
+  4.O.7 (kernel-only window) and the ANN-1 note, 5 new test cases; results/oblivious and the notes regenerated.
+- Result: tags (fixed key vs random keys) and compact (fixed vs random permutation): null and target PASS in both
+  seeds (tags 1.1320, 1.4622 / 2.1075, 1.9069; compact 0.7532, 2.2966 / 0.9475, 1.9613). Rule g: no dependence
+  detected at this N, on this device. Lock refused (rule k); modal clock 1590 MHz; flagged 3.09% to 4.12%.
+- Limits found: control_leak_q was unqueued in 19749 of 20000 measurements (its 251 queued ones: t -24.4826); all
+  eight windows are below 50 us (22 us, 41 us); clock_reset exit 4 made the job report exit 1.
+- Evidence: runs/20261013-084838_M08_i25k_ingest (gates.txt 55 PASS 0 FAIL, ingest.txt, report.txt, pytest_all.txt 2031 passed
+  1 skipped, check_metrics.txt, check_secrets.txt, check_oblivious.txt, ruff.txt, validate.txt);
+  runs/20261013-022000_M08_i25k_selftest_quick, runs/20261013-022124_M08_dudect_i25k_s8, runs/20261013-024742_M08_dudect_i25k_s10;
+  evidence/terminal/M08_issue25k_gates.txt, _gpu_run_output.txt, _kernel_window.csv; evidence/figures/M08_issue25k_*
+- Metrics added: 53 by the ingest (cupy, kaggle), annotated by ANN-2. The queued-only t of control_leak_q is a
+  derived quantity in gates.txt and section 4.O.7, not an index row (check_metrics accepts only what a summary lists)
+- Decisions: none new
+- Issues: ISSUE-25 CLOSED, ISSUE-35 CLOSED; ISSUE-17 updated (point 1 is the only open point, still BLOCKS M14);
+  opened ISSUE-36 (medium, BLOCKS none: weak positive control, windows below 50 us; a decision for the human)
+- Deviations from spec: rule f was read with the 5% bound on the kernel-window targets, not on the control. One
+  number of section 4.O.7 (the queued-only t) is generated from a raw file and has no index row.
+- Not verified: the kernel-window result on a second session, GPU or size; a full-N positive control of the queued
+  window; anything about the AEAD kernels or the whole write path. The 1 skipped test was not looked into.
+- Commit: HASH34
+- Next: `fix ISSUE-17` point 1 (the report table shows the diagnostics; local, no GPU), then M14 S1 ; human action:
+  none required. Optional: decide ISSUE-36 (keep the result with its limits, or NOT_MEASURED)

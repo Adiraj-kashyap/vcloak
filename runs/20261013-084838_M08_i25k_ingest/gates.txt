@@ -1,0 +1,82 @@
+job 20261013-005946_M08_issue25k session 20261013-021903 runner kaggle gpu Tesla T4 driver 580.178.04 cupy 14.0.1 cuda_runtime 12090
+    COMMANDS nvidia_smi=0, whoami=0, check_oblivious=0, pytest_issue25k=0, dudect_selftest=0, dudect_issue25k_s8=0, dudect_issue25k_s10=0, clock_reset=4, nvidia_smi_after=0
+    PASS every command exits 0 except clock_reset - 9 commands, non-zero: clock_reset 4
+    PASS git sha matches pack - c510682
+    PASS bundle sha matches pack
+    PASS backend cupy
+    PASS tests of the kernel-only targets on the GPU - 124 passed, 1524 warnings in 50.84s
+    PASS manifest 20261013-022000_M08_i25k_selftest_quick: cupy, this job, this session - status OK
+    PASS manifest 20261013-022124_M08_dudect_i25k_s8: cupy, this job, this session - status OK
+    PASS manifest 20261013-024742_M08_dudect_i25k_s10: cupy, this job, this session - status OK
+    NOTE selftest: clock lock attempted True accepted False (nvidia-smi -i 0 -lgc 1590,1590, returncode 4: The current user does not have permission to change clocks for GPU 00000000:00:04.0.)
+    NOTE s8: clock lock attempted True accepted False (nvidia-smi -i 0 -lgc 1590,1590, returncode 4: The current user does not have permission to change clocks for GPU 00000000:00:04.0.)
+    NOTE s10: clock lock attempted True accepted False (nvidia-smi -i 0 -lgc 1590,1590, returncode 4: The current user does not have permission to change clocks for GPU 00000000:00:04.0.)
+    PASS rule k: the lock was refused in every run, so clock_reset had nothing to reset; its exit 4 is the same refusal - The current user does not have permission to change clocks for GPU 00000000:00:04.0.
+    PASS planted leak detected, open window (control_leak) - max |t| 403.4739 at N 10000 (quick)
+    PASS rule f(1): control_leak_q FAILS - max |t| 386.2011 at N 10000 (quick), r 4
+    PASS self-test control_null PASS - max |t| 1.6250
+    NOTE control_leak_q: 251 of 20000 measurements were queued behind the blocker (19749 unqueued, 312 off the clock, 19999 flagged = 100.00%); blocker 32768 blocks, fitted while the SM clock was 585 MHz, the measuring ran at 1590 MHz (clock histogram {'585': 101, '1080': 106, '1320': 105, '1590': 19688})
+    NOTE so the FAIL of control_leak_q is that of a window that was NOT queued in almost every measurement: by itself it does not show that the queued window detects the planted leak
+    PASS the queued measurements of control_leak_q alone detect the planted leak (raw Welch t, no crops) - t -24.4826, 119 and 132 per class, means 17.217 and 52.920 us (unqueued: 12.781 and 30.245 us), clocks of the queued ones: {585: 99, 1080: 95, 1320: 56, 1590: 1}, positions 0 to 312 of 20000
+    NOTE planted difference of the whole control_leak_q series: 17711 ns per window of r 4
+    PASS s8: no target error, full N, CUDA events - 5 targets: control_null, tags_kernel_null, tags_kernel, compact_kernel_null, compact_kernel
+    PASS s8 control_null: 100000 measurements per class, outputs correct - r 1, 286 s
+    PASS s8 control_null: max |t| recomputed from raw.npz equals the summary - 2.9446 PASS
+    PASS s8 tags_kernel_null: 100000 measurements per class, outputs correct - r 4, 294 s
+    PASS s8 tags_kernel_null: max |t| recomputed from raw.npz equals the summary - 1.1320 PASS
+    PASS s8 tags_kernel_null: flag counts recomputed from raw.npz equal the summary - unqueued 6870, off clock 0, flagged 6870, modal clock 1590 MHz
+    PASS s8 tags_kernel_null: max |t| without the flagged measurements recomputed - 0.8310
+    PASS s8 tags_kernel: 100000 measurements per class, outputs correct - r 4, 293 s
+    PASS s8 tags_kernel: max |t| recomputed from raw.npz equals the summary - 2.1075 PASS
+    PASS s8 tags_kernel: flag counts recomputed from raw.npz equal the summary - unqueued 6894, off clock 0, flagged 6894, modal clock 1590 MHz
+    PASS s8 tags_kernel: max |t| without the flagged measurements recomputed - 0.1330
+    PASS s8 compact_kernel_null: 100000 measurements per class, outputs correct - r 1, 327 s
+    PASS s8 compact_kernel_null: max |t| recomputed from raw.npz equals the summary - 0.7532 PASS
+    PASS s8 compact_kernel_null: flag counts recomputed from raw.npz equal the summary - unqueued 6177, off clock 2, flagged 6179, modal clock 1590 MHz
+    PASS s8 compact_kernel_null: max |t| without the flagged measurements recomputed - 0.1302
+    PASS s8 compact_kernel: 100000 measurements per class, outputs correct - r 1, 327 s
+    PASS s8 compact_kernel: max |t| recomputed from raw.npz equals the summary - 0.9475 PASS
+    PASS s8 compact_kernel: flag counts recomputed from raw.npz equal the summary - unqueued 6930, off clock 3, flagged 6933, modal clock 1590 MHz
+    PASS s8 compact_kernel: max |t| without the flagged measurements recomputed - 0.8438
+    PASS s10: no target error, full N, CUDA events - 5 targets: control_null, tags_kernel_null, tags_kernel, compact_kernel_null, compact_kernel
+    PASS s10 control_null: 100000 measurements per class, outputs correct - r 1, 299 s
+    PASS s10 control_null: max |t| recomputed from raw.npz equals the summary - 2.7444 PASS
+    PASS s10 tags_kernel_null: 100000 measurements per class, outputs correct - r 4, 295 s
+    PASS s10 tags_kernel_null: max |t| recomputed from raw.npz equals the summary - 1.4622 PASS
+    PASS s10 tags_kernel_null: flag counts recomputed from raw.npz equal the summary - unqueued 8236, off clock 2, flagged 8238, modal clock 1590 MHz
+    PASS s10 tags_kernel_null: max |t| without the flagged measurements recomputed - 1.1041
+    PASS s10 tags_kernel: 100000 measurements per class, outputs correct - r 4, 293 s
+    PASS s10 tags_kernel: max |t| recomputed from raw.npz equals the summary - 1.9069 PASS
+    PASS s10 tags_kernel: flag counts recomputed from raw.npz equal the summary - unqueued 7329, off clock 0, flagged 7329, modal clock 1590 MHz
+    PASS s10 tags_kernel: max |t| without the flagged measurements recomputed - 0.2106
+    PASS s10 compact_kernel_null: 100000 measurements per class, outputs correct - r 1, 325 s
+    PASS s10 compact_kernel_null: max |t| recomputed from raw.npz equals the summary - 2.2966 PASS
+    PASS s10 compact_kernel_null: flag counts recomputed from raw.npz equal the summary - unqueued 6868, off clock 0, flagged 6868, modal clock 1590 MHz
+    PASS s10 compact_kernel_null: max |t| without the flagged measurements recomputed - 0.7618
+    PASS s10 compact_kernel: 100000 measurements per class, outputs correct - r 1, 326 s
+    PASS s10 compact_kernel: max |t| recomputed from raw.npz equals the summary - 1.9613 PASS
+    PASS s10 compact_kernel: flag counts recomputed from raw.npz equal the summary - unqueued 6618, off clock 0, flagged 6618, modal clock 1590 MHz
+    PASS s10 compact_kernel: max |t| without the flagged measurements recomputed - 0.6893
+    TABLE seed target verdict max|t| sign_at_max t_raw tests_over first_half second_half max|t|_unflagged flagged% unqueued off_clock flagged_class0/1 modal_MHz share_at_modal r blocker_blocks window_median_us diff_mean_ns detectable_ns clock_before->after(status) rule_50us [max_at]
+    ROW s8 control_null PASS 2.9446 + 0.297 0 1.9177 2.9334 - - - - - - - 1 - 483.78 -74.0 1120 1065->1125(LOW) ok [crop 0 (below 0.478396796)]
+    ROW s8 tags_kernel_null PASS 1.1320 + 1.132 0 0.9944 1.0312 0.8310 3.44 6870 0 3439/3431 1590 0.99967 4 131072 22.18 -50.3 200 1530->1590(OK) BELOW_50US [raw]
+    ROW s8 tags_kernel PASS 2.1075 + -0.113 0 1.7282 1.4861 0.1330 3.45 6894 0 3437/3457 1590 0.99962 4 131072 21.98 4.6 185 1395->1590(OK) BELOW_50US [crop 15 (below 0.0368960015)]
+    ROW s8 compact_kernel_null PASS 0.7532 + 0.753 0 0.9812 1.3249 0.1302 3.09 6177 2 3151/3028 1590 0.99965 1 262144 41.12 -36.9 220 1335->1590(UNSTABLE) BELOW_50US [raw]
+    ROW s8 compact_kernel PASS 0.9475 - 0.119 0 1.3834 2.0188 0.8438 3.47 6930 3 3457/3476 1590 0.99959 1 262144 41.28 -6.2 232 1305->1590(UNSTABLE) BELOW_50US [crop 0 (below 0.0486368029)]
+    ROW s10 control_null PASS 2.7444 - -1.338 0 2.0545 2.6332 - - - - - - - 1 - 517.18 379.9 1277 1095->1095(LOW) ok [crop 2 (below 0.481375992)]
+    ROW s10 tags_kernel_null PASS 1.4622 + -0.009 0 1.3708 1.1091 1.1041 4.12 8236 2 4115/4123 1590 0.99966 4 131072 21.98 0.4 206 1065->1590(UNSTABLE) BELOW_50US [crop 96 (below 0.0594156492)]
+    ROW s10 tags_kernel PASS 1.9069 + 1.907 0 2.1255 2.5026 0.2106 3.66 7329 0 3706/3623 1590 0.99962 4 131072 22.08 -83.0 196 1500->1590(OK) BELOW_50US [raw]
+    ROW s10 compact_kernel_null PASS 2.2966 + 2.297 0 2.2386 1.2575 0.7618 3.43 6868 0 3470/3398 1590 0.99967 1 262144 40.96 -117.7 231 1515->1590(OK) BELOW_50US [raw]
+    ROW s10 compact_kernel PASS 1.9613 + -0.506 0 2.0528 2.3251 0.6893 3.31 6618 0 3291/3327 1590 0.99963 1 262144 41.34 22.3 199 1425->1590(OK) BELOW_50US [crop 91 (below 0.0797392214)]
+    PASS rule f(2) s8: full-N control_null PASS - max |t| 2.9446
+    PASS rule f(2) s10: full-N control_null PASS - max |t| 2.7444
+    PASS rule f(3): 0 mismatches in every target
+    PASS rule f(4): fewer than 5% of the measurements flagged in each of the 8 kernel-window targets - 3.09% to 4.12% (worst s10 tags_kernel_null)
+    NOTE rule f(4) read for control_leak_q as well would NOT hold (100.00% flagged): see the notes on the self-test
+    NOTE windows with a median below the 50 us of ai/GPU_GUIDE.md section 7: compact_kernel, compact_kernel_null, tags_kernel, tags_kernel_null (r was fitted from the single-launch time before the clock rose: compact_kernel 73.4 us x r 1, compact_kernel_null 77.2 us x r 1, tags_kernel 14.8 us x r 4, tags_kernel_null 15.0 us x r 4)
+    NOTE clock: lock refused, yet the modal SM clock of all kernel-window targets is 1590 MHz with at least 99.959% of the measurements at it and at most 3 off the clock; control_null (no per-measurement clock) ran at 1065->1125, 1095->1095 MHz. The before->after status of a kernel target is taken around the target, the first reading before its blocker loop raised the clock
+    READING rule f, as written: control_leak_q FAILS True, control_null PASSES True, 0 mismatches True, kernel targets below 5% flagged True -> USABLE; power of the QUEUED window shown by the queued subset of control_leak_q: True (251 measurements, not the full series)
+    READING tags: rule g: null PASSES and target PASSES in both seeds: no dependence detected at this N, on this device - null 1.1320, 1.4622; target 2.1075, 1.9069 (seeds 8, 10); without flagged: null 0.8310, 1.1041; target 0.1330, 0.2106; a raw mean difference of 196 ns per window (r 4) would give |t| = 4.5
+    READING compact: rule g: null PASSES and target PASSES in both seeds: no dependence detected at this N, on this device - null 0.7532, 2.2966; target 0.9475, 1.9613 (seeds 8, 10); without flagged: null 0.1302, 0.7618; target 0.8438, 0.6893; a raw mean difference of 232 ns per window (r 1) would give |t| = 4.5
+    READING rule l: the lock was refused, so no locked run exists to compare; both seeds are unlocked runs at a steady modal clock (1590 MHz, not the 585 MHz the rule expected)
+SUMMARY 55 gates PASS, 0 FAIL
