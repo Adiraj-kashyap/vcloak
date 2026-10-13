@@ -1045,5 +1045,5 @@
 - Deviations from spec: the issue proposed column arrays; the rows stay `StoredRow` objects (interface of ARCHITECTURE §4,
   ADR-014), only the uuid construction and the comprehension changed
 - Not verified: any timing; the engine against the oracle on the device (in the job); the runtime of the job
-- Commit: 59d622f (code, job spec), 36c8b35 (checks), records HASH_PENDING
+- Commit: 59d622f (code, job spec), 36c8b35 (checks), records 6de1c9f
 - Next: ingest of 20261013-163732_M07_issue12, then M15 S1 ; human action: ISSUE-44 (run the job)
