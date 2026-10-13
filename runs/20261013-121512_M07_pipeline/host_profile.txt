@@ -1,0 +1,38 @@
+         985707 function calls (985704 primitive calls) in 0.808 seconds
+
+   Ordered by: cumulative time
+   List reduced from 106 to 30 due to restriction <30>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        4    0.013    0.003    0.426    0.107 threading.py:327(wait)
+        4    0.000    0.000    0.384    0.096 telemetry.py:41(_sample)
+       40    0.012    0.000    0.332    0.008 telemetry.py:29(_try)
+       17    0.169    0.010    0.319    0.019 {method 'acquire' of '_thread.lock' objects}
+        6    0.064    0.011    0.137    0.023 {built-in method numpy.fromiter}
+        3    0.093    0.031    0.122    0.041 engine.py:59(row_ids)
+        4    0.060    0.015    0.084    0.021 pynvml.py:4463(nvmlDeviceGetCurrentClocksThrottleReasons)
+   196611    0.050    0.000    0.050    0.000 engine.py:239(<genexpr>)
+        8    0.030    0.004    0.048    0.006 pynvml.py:3503(nvmlDeviceGetClockInfo)
+   196611    0.046    0.000    0.046    0.000 engine.py:240(<genexpr>)
+   196608    0.037    0.000    0.037    0.000 {built-in method __new__ of type object at 0x9ba920}
+   196668    0.034    0.000    0.034    0.000 {method 'append' of 'list' objects}
+        5    0.023    0.005    0.033    0.007 pynvml.py:3791(nvmlDeviceGetPowerUsage)
+   196608    0.026    0.000    0.026    0.000 <string>:2(__init__)
+        5    0.020    0.004    0.025    0.005 pynvml.py:3908(nvmlDeviceGetUtilizationRates)
+        4    0.016    0.004    0.022    0.005 pynvml.py:3705(nvmlDeviceGetTemperature)
+        5    0.013    0.003    0.021    0.004 pynvml.py:3822(nvmlDeviceGetMemoryInfo)
+       12    0.017    0.001    0.017    0.001 {method 'tolist' of 'numpy.ndarray' objects}
+        3    0.017    0.006    0.017    0.006 {built-in method posix.urandom}
+        4    0.013    0.003    0.016    0.004 pynvml.py:3743(nvmlDeviceGetPerformanceState)
+        5    0.007    0.001    0.015    0.003 pynvml.py:3784(nvmlDeviceGetEnforcedPowerLimit)
+        3    0.011    0.004    0.014    0.005 engine.py:224(write_epoch)
+        3    0.000    0.000    0.010    0.003 engine.py:200(_real_order)
+        3    0.006    0.002    0.006    0.002 {method 'tobytes' of 'numpy.ndarray' objects}
+        6    0.005    0.001    0.005    0.001 {method 'astype' of 'numpy.ndarray' objects}
+        6    0.000    0.000    0.004    0.001 kernels.py:158(gpu_bitonic_sort)
+      216    0.003    0.000    0.004    0.000 kernels.py:140(run_launch)
+        3    0.003    0.001    0.003    0.001 {built-in method numpy.ascontiguousarray}
+        3    0.000    0.000    0.002    0.001 kernels.py:409(gpu_compact)
+        9    0.001    0.000    0.002    0.000 engine.py:181(_h2d)
+
+

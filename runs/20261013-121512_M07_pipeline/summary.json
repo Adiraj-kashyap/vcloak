@@ -1,0 +1,2217 @@
+{
+  "metrics": [
+    {
+      "id": "P-WRITE-EPOCH-P99-S64",
+      "value": 1.1758,
+      "unit": "ms",
+      "stat": "p99",
+      "note": "write_epoch whole call, 200 calls, CUDA events, CV of total 0.093, SM clock 585 of 1590 MHz (LOW); real-time gate p99 < 200 ms: PASS"
+    },
+    {
+      "id": "P-WRITE-EPOCH-MS-S64",
+      "value": 0.9124,
+      "unit": "ms",
+      "stat": "median",
+      "note": "write_epoch whole call, 200 calls, CUDA events, CV of total 0.093, SM clock 585 of 1590 MHz (LOW)"
+    },
+    {
+      "id": "P-WRITE-EPOCH-DEVICE-MS-S64",
+      "value": 0.7471,
+      "unit": "ms",
+      "stat": "median",
+      "note": "write_epoch device stages only, 200 calls, CUDA events, CV of total 0.093, SM clock 585 of 1590 MHz (LOW)"
+    },
+    {
+      "id": "P-WRITE-EPOCH-DEVICE-P99-S64",
+      "value": 0.9574,
+      "unit": "ms",
+      "stat": "p99",
+      "note": "write_epoch device stages only, 200 calls, CUDA events, CV of total 0.093, SM clock 585 of 1590 MHz (LOW)"
+    },
+    {
+      "id": "P-WRITE-EPOCH-HOST-MS-S64",
+      "value": 0.1621,
+      "unit": "ms",
+      "stat": "median",
+      "note": "write_epoch host stage only, 200 calls, CUDA events, CV of total 0.093, SM clock 585 of 1590 MHz (LOW)"
+    },
+    {
+      "id": "P-WRITE-EPOCH-P99-S1024",
+      "value": "UNSTABLE",
+      "unit": "ms",
+      "stat": "p99",
+      "note": "write_epoch whole call, 200 calls, CUDA events, CV of total 0.556, SM clock 585 of 1590 MHz (LOW); real-time gate p99 < 200 ms: PASS; UNSTABLE after 2 attempts, both in raw.csv and summary.json"
+    },
+    {
+      "id": "P-WRITE-EPOCH-MS-S1024",
+      "value": "UNSTABLE",
+      "unit": "ms",
+      "stat": "median",
+      "note": "write_epoch whole call, 200 calls, CUDA events, CV of total 0.556, SM clock 585 of 1590 MHz (LOW); UNSTABLE after 2 attempts, both in raw.csv and summary.json"
+    },
+    {
+      "id": "P-WRITE-EPOCH-DEVICE-MS-S1024",
+      "value": "UNSTABLE",
+      "unit": "ms",
+      "stat": "median",
+      "note": "write_epoch device stages only, 200 calls, CUDA events, CV of total 0.556, SM clock 585 of 1590 MHz (LOW); UNSTABLE after 2 attempts, both in raw.csv and summary.json"
+    },
+    {
+      "id": "P-WRITE-EPOCH-DEVICE-P99-S1024",
+      "value": "UNSTABLE",
+      "unit": "ms",
+      "stat": "p99",
+      "note": "write_epoch device stages only, 200 calls, CUDA events, CV of total 0.556, SM clock 585 of 1590 MHz (LOW); UNSTABLE after 2 attempts, both in raw.csv and summary.json"
+    },
+    {
+      "id": "P-WRITE-EPOCH-HOST-MS-S1024",
+      "value": "UNSTABLE",
+      "unit": "ms",
+      "stat": "median",
+      "note": "write_epoch host stage only, 200 calls, CUDA events, CV of total 0.556, SM clock 585 of 1590 MHz (LOW); UNSTABLE after 2 attempts, both in raw.csv and summary.json"
+    },
+    {
+      "id": "P-WRITE-EPOCH-P99-S4096",
+      "value": "UNSTABLE",
+      "unit": "ms",
+      "stat": "p99",
+      "note": "write_epoch whole call, 200 calls, CUDA events, CV of total 0.474, SM clock 585 of 1590 MHz (LOW); real-time gate p99 < 200 ms: PASS; UNSTABLE after 2 attempts, both in raw.csv and summary.json"
+    },
+    {
+      "id": "P-WRITE-EPOCH-MS-S4096",
+      "value": "UNSTABLE",
+      "unit": "ms",
+      "stat": "median",
+      "note": "write_epoch whole call, 200 calls, CUDA events, CV of total 0.474, SM clock 585 of 1590 MHz (LOW); UNSTABLE after 2 attempts, both in raw.csv and summary.json"
+    },
+    {
+      "id": "P-WRITE-EPOCH-DEVICE-MS-S4096",
+      "value": "UNSTABLE",
+      "unit": "ms",
+      "stat": "median",
+      "note": "write_epoch device stages only, 200 calls, CUDA events, CV of total 0.474, SM clock 585 of 1590 MHz (LOW); UNSTABLE after 2 attempts, both in raw.csv and summary.json"
+    },
+    {
+      "id": "P-WRITE-EPOCH-DEVICE-P99-S4096",
+      "value": "UNSTABLE",
+      "unit": "ms",
+      "stat": "p99",
+      "note": "write_epoch device stages only, 200 calls, CUDA events, CV of total 0.474, SM clock 585 of 1590 MHz (LOW); UNSTABLE after 2 attempts, both in raw.csv and summary.json"
+    },
+    {
+      "id": "P-WRITE-EPOCH-HOST-MS-S4096",
+      "value": "UNSTABLE",
+      "unit": "ms",
+      "stat": "median",
+      "note": "write_epoch host stage only, 200 calls, CUDA events, CV of total 0.474, SM clock 585 of 1590 MHz (LOW); UNSTABLE after 2 attempts, both in raw.csv and summary.json"
+    },
+    {
+      "id": "P-WRITE-EPOCH-P99-S16384",
+      "value": "UNSTABLE",
+      "unit": "ms",
+      "stat": "p99",
+      "note": "write_epoch whole call, 200 calls, CUDA events, CV of total 0.272, SM clock 585 of 1590 MHz (LOW); real-time gate p99 < 200 ms: PASS; UNSTABLE after 2 attempts, both in raw.csv and summary.json"
+    },
+    {
+      "id": "P-WRITE-EPOCH-MS-S16384",
+      "value": "UNSTABLE",
+      "unit": "ms",
+      "stat": "median",
+      "note": "write_epoch whole call, 200 calls, CUDA events, CV of total 0.272, SM clock 585 of 1590 MHz (LOW); UNSTABLE after 2 attempts, both in raw.csv and summary.json"
+    },
+    {
+      "id": "P-WRITE-EPOCH-DEVICE-MS-S16384",
+      "value": "UNSTABLE",
+      "unit": "ms",
+      "stat": "median",
+      "note": "write_epoch device stages only, 200 calls, CUDA events, CV of total 0.272, SM clock 585 of 1590 MHz (LOW); UNSTABLE after 2 attempts, both in raw.csv and summary.json"
+    },
+    {
+      "id": "P-WRITE-EPOCH-DEVICE-P99-S16384",
+      "value": "UNSTABLE",
+      "unit": "ms",
+      "stat": "p99",
+      "note": "write_epoch device stages only, 200 calls, CUDA events, CV of total 0.272, SM clock 585 of 1590 MHz (LOW); UNSTABLE after 2 attempts, both in raw.csv and summary.json"
+    },
+    {
+      "id": "P-WRITE-EPOCH-HOST-MS-S16384",
+      "value": "UNSTABLE",
+      "unit": "ms",
+      "stat": "median",
+      "note": "write_epoch host stage only, 200 calls, CUDA events, CV of total 0.272, SM clock 585 of 1590 MHz (LOW); UNSTABLE after 2 attempts, both in raw.csv and summary.json"
+    },
+    {
+      "id": "P-WRITE-EPOCH-P99-S65536",
+      "value": "UNSTABLE",
+      "unit": "ms",
+      "stat": "p99",
+      "note": "write_epoch whole call, 200 calls, CUDA events, CV of total 0.140, SM clock 585 of 1590 MHz (LOW); real-time gate p99 < 200 ms: PASS; UNSTABLE after 2 attempts, both in raw.csv and summary.json"
+    },
+    {
+      "id": "P-WRITE-EPOCH-MS-S65536",
+      "value": "UNSTABLE",
+      "unit": "ms",
+      "stat": "median",
+      "note": "write_epoch whole call, 200 calls, CUDA events, CV of total 0.140, SM clock 585 of 1590 MHz (LOW); UNSTABLE after 2 attempts, both in raw.csv and summary.json"
+    },
+    {
+      "id": "P-WRITE-EPOCH-DEVICE-MS-S65536",
+      "value": "UNSTABLE",
+      "unit": "ms",
+      "stat": "median",
+      "note": "write_epoch device stages only, 200 calls, CUDA events, CV of total 0.140, SM clock 585 of 1590 MHz (LOW); UNSTABLE after 2 attempts, both in raw.csv and summary.json"
+    },
+    {
+      "id": "P-WRITE-EPOCH-DEVICE-P99-S65536",
+      "value": "UNSTABLE",
+      "unit": "ms",
+      "stat": "p99",
+      "note": "write_epoch device stages only, 200 calls, CUDA events, CV of total 0.140, SM clock 585 of 1590 MHz (LOW); UNSTABLE after 2 attempts, both in raw.csv and summary.json"
+    },
+    {
+      "id": "P-WRITE-EPOCH-HOST-MS-S65536",
+      "value": "UNSTABLE",
+      "unit": "ms",
+      "stat": "median",
+      "note": "write_epoch host stage only, 200 calls, CUDA events, CV of total 0.140, SM clock 585 of 1590 MHz (LOW); UNSTABLE after 2 attempts, both in raw.csv and summary.json"
+    },
+    {
+      "id": "P-READ-WINDOW-P99-K64",
+      "value": 0.6191,
+      "unit": "ms",
+      "stat": "p99",
+      "note": "read_window whole call, 200 calls, CUDA events, CV of total 0.095, SM clock 585 of 1590 MHz (LOW)"
+    },
+    {
+      "id": "P-READ-WINDOW-MS-K64",
+      "value": 0.4454,
+      "unit": "ms",
+      "stat": "median",
+      "note": "read_window whole call, 200 calls, CUDA events, CV of total 0.095, SM clock 585 of 1590 MHz (LOW)"
+    },
+    {
+      "id": "P-READ-WINDOW-DEVICE-MS-K64",
+      "value": 0.4412,
+      "unit": "ms",
+      "stat": "median",
+      "note": "read_window device stages only, 200 calls, CUDA events, CV of total 0.095, SM clock 585 of 1590 MHz (LOW)"
+    },
+    {
+      "id": "P-READ-WINDOW-DEVICE-P99-K64",
+      "value": 0.615,
+      "unit": "ms",
+      "stat": "p99",
+      "note": "read_window device stages only, 200 calls, CUDA events, CV of total 0.095, SM clock 585 of 1590 MHz (LOW)"
+    },
+    {
+      "id": "P-READ-WINDOW-HOST-MS-K64",
+      "value": 0.0039,
+      "unit": "ms",
+      "stat": "median",
+      "note": "read_window host stage only, 200 calls, CUDA events, CV of total 0.095, SM clock 585 of 1590 MHz (LOW)"
+    },
+    {
+      "id": "P-READ-WINDOW-P99-K128",
+      "value": 0.5986,
+      "unit": "ms",
+      "stat": "p99",
+      "note": "read_window whole call, 200 calls, CUDA events, CV of total 0.091, SM clock 585 of 1590 MHz (LOW)"
+    },
+    {
+      "id": "P-READ-WINDOW-MS-K128",
+      "value": 0.4537,
+      "unit": "ms",
+      "stat": "median",
+      "note": "read_window whole call, 200 calls, CUDA events, CV of total 0.091, SM clock 585 of 1590 MHz (LOW)"
+    },
+    {
+      "id": "P-READ-WINDOW-DEVICE-MS-K128",
+      "value": 0.4493,
+      "unit": "ms",
+      "stat": "median",
+      "note": "read_window device stages only, 200 calls, CUDA events, CV of total 0.091, SM clock 585 of 1590 MHz (LOW)"
+    },
+    {
+      "id": "P-READ-WINDOW-DEVICE-P99-K128",
+      "value": 0.5942,
+      "unit": "ms",
+      "stat": "p99",
+      "note": "read_window device stages only, 200 calls, CUDA events, CV of total 0.091, SM clock 585 of 1590 MHz (LOW)"
+    },
+    {
+      "id": "P-READ-WINDOW-HOST-MS-K128",
+      "value": 0.0043,
+      "unit": "ms",
+      "stat": "median",
+      "note": "read_window host stage only, 200 calls, CUDA events, CV of total 0.091, SM clock 585 of 1590 MHz (LOW)"
+    },
+    {
+      "id": "P-READ-WINDOW-P99-K256",
+      "value": 0.6935,
+      "unit": "ms",
+      "stat": "p99",
+      "note": "read_window whole call, 200 calls, CUDA events, CV of total 0.090, SM clock 585 of 1590 MHz (LOW)"
+    },
+    {
+      "id": "P-READ-WINDOW-MS-K256",
+      "value": 0.4652,
+      "unit": "ms",
+      "stat": "median",
+      "note": "read_window whole call, 200 calls, CUDA events, CV of total 0.090, SM clock 585 of 1590 MHz (LOW)"
+    },
+    {
+      "id": "P-READ-WINDOW-DEVICE-MS-K256",
+      "value": 0.458,
+      "unit": "ms",
+      "stat": "median",
+      "note": "read_window device stages only, 200 calls, CUDA events, CV of total 0.090, SM clock 585 of 1590 MHz (LOW)"
+    },
+    {
+      "id": "P-READ-WINDOW-DEVICE-P99-K256",
+      "value": 0.6872,
+      "unit": "ms",
+      "stat": "p99",
+      "note": "read_window device stages only, 200 calls, CUDA events, CV of total 0.090, SM clock 585 of 1590 MHz (LOW)"
+    },
+    {
+      "id": "P-READ-WINDOW-HOST-MS-K256",
+      "value": 0.0063,
+      "unit": "ms",
+      "stat": "median",
+      "note": "read_window host stage only, 200 calls, CUDA events, CV of total 0.090, SM clock 585 of 1590 MHz (LOW)"
+    },
+    {
+      "id": "P-READ-WINDOW-P99-K512",
+      "value": 0.5754,
+      "unit": "ms",
+      "stat": "p99",
+      "note": "read_window whole call, 200 calls, CUDA events, CV of total 0.060, SM clock 585 of 1590 MHz (LOW)"
+    },
+    {
+      "id": "P-READ-WINDOW-MS-K512",
+      "value": 0.4587,
+      "unit": "ms",
+      "stat": "median",
+      "note": "read_window whole call, 200 calls, CUDA events, CV of total 0.060, SM clock 585 of 1590 MHz (LOW)"
+    },
+    {
+      "id": "P-READ-WINDOW-DEVICE-MS-K512",
+      "value": 0.4502,
+      "unit": "ms",
+      "stat": "median",
+      "note": "read_window device stages only, 200 calls, CUDA events, CV of total 0.060, SM clock 585 of 1590 MHz (LOW)"
+    },
+    {
+      "id": "P-READ-WINDOW-DEVICE-P99-K512",
+      "value": 0.567,
+      "unit": "ms",
+      "stat": "p99",
+      "note": "read_window device stages only, 200 calls, CUDA events, CV of total 0.060, SM clock 585 of 1590 MHz (LOW)"
+    },
+    {
+      "id": "P-READ-WINDOW-HOST-MS-K512",
+      "value": 0.0081,
+      "unit": "ms",
+      "stat": "median",
+      "note": "read_window host stage only, 200 calls, CUDA events, CV of total 0.060, SM clock 585 of 1590 MHz (LOW)"
+    },
+    {
+      "id": "P-READ-WINDOW-P99-K1024",
+      "value": 0.7278,
+      "unit": "ms",
+      "stat": "p99",
+      "note": "read_window whole call, 200 calls, CUDA events, CV of total 0.099, SM clock 585 of 1590 MHz (LOW)"
+    },
+    {
+      "id": "P-READ-WINDOW-MS-K1024",
+      "value": 0.5314,
+      "unit": "ms",
+      "stat": "median",
+      "note": "read_window whole call, 200 calls, CUDA events, CV of total 0.099, SM clock 585 of 1590 MHz (LOW)"
+    },
+    {
+      "id": "P-READ-WINDOW-DEVICE-MS-K1024",
+      "value": 0.5181,
+      "unit": "ms",
+      "stat": "median",
+      "note": "read_window device stages only, 200 calls, CUDA events, CV of total 0.099, SM clock 585 of 1590 MHz (LOW)"
+    },
+    {
+      "id": "P-READ-WINDOW-DEVICE-P99-K1024",
+      "value": 0.7131,
+      "unit": "ms",
+      "stat": "p99",
+      "note": "read_window device stages only, 200 calls, CUDA events, CV of total 0.099, SM clock 585 of 1590 MHz (LOW)"
+    },
+    {
+      "id": "P-READ-WINDOW-HOST-MS-K1024",
+      "value": 0.0129,
+      "unit": "ms",
+      "stat": "median",
+      "note": "read_window host stage only, 200 calls, CUDA events, CV of total 0.099, SM clock 585 of 1590 MHz (LOW)"
+    },
+    {
+      "id": "P-READ-WINDOW-P99-K2048",
+      "value": 0.7974,
+      "unit": "ms",
+      "stat": "p99",
+      "note": "read_window whole call, 200 calls, CUDA events, CV of total 0.092, SM clock 615 of 1590 MHz (LOW)"
+    },
+    {
+      "id": "P-READ-WINDOW-MS-K2048",
+      "value": 0.58,
+      "unit": "ms",
+      "stat": "median",
+      "note": "read_window whole call, 200 calls, CUDA events, CV of total 0.092, SM clock 615 of 1590 MHz (LOW)"
+    },
+    {
+      "id": "P-READ-WINDOW-DEVICE-MS-K2048",
+      "value": 0.56,
+      "unit": "ms",
+      "stat": "median",
+      "note": "read_window device stages only, 200 calls, CUDA events, CV of total 0.092, SM clock 615 of 1590 MHz (LOW)"
+    },
+    {
+      "id": "P-READ-WINDOW-DEVICE-P99-K2048",
+      "value": 0.7777,
+      "unit": "ms",
+      "stat": "p99",
+      "note": "read_window device stages only, 200 calls, CUDA events, CV of total 0.092, SM clock 615 of 1590 MHz (LOW)"
+    },
+    {
+      "id": "P-READ-WINDOW-HOST-MS-K2048",
+      "value": 0.0195,
+      "unit": "ms",
+      "stat": "median",
+      "note": "read_window host stage only, 200 calls, CUDA events, CV of total 0.092, SM clock 615 of 1590 MHz (LOW)"
+    },
+    {
+      "id": "P-READ-WINDOW-P99-K4096",
+      "value": 0.8038,
+      "unit": "ms",
+      "stat": "p99",
+      "note": "read_window whole call, 200 calls, CUDA events, CV of total 0.065, SM clock 585 of 1590 MHz (LOW)"
+    },
+    {
+      "id": "P-READ-WINDOW-MS-K4096",
+      "value": 0.6535,
+      "unit": "ms",
+      "stat": "median",
+      "note": "read_window whole call, 200 calls, CUDA events, CV of total 0.065, SM clock 585 of 1590 MHz (LOW)"
+    },
+    {
+      "id": "P-READ-WINDOW-DEVICE-MS-K4096",
+      "value": 0.6184,
+      "unit": "ms",
+      "stat": "median",
+      "note": "read_window device stages only, 200 calls, CUDA events, CV of total 0.065, SM clock 585 of 1590 MHz (LOW)"
+    },
+    {
+      "id": "P-READ-WINDOW-DEVICE-P99-K4096",
+      "value": 0.7715,
+      "unit": "ms",
+      "stat": "p99",
+      "note": "read_window device stages only, 200 calls, CUDA events, CV of total 0.065, SM clock 585 of 1590 MHz (LOW)"
+    },
+    {
+      "id": "P-READ-WINDOW-HOST-MS-K4096",
+      "value": 0.0325,
+      "unit": "ms",
+      "stat": "median",
+      "note": "read_window host stage only, 200 calls, CUDA events, CV of total 0.065, SM clock 585 of 1590 MHz (LOW)"
+    }
+  ],
+  "executed_by": "cupy.RawModule (nvrtc)",
+  "mismatches": 0,
+  "unstable": [
+    "write_epoch@1024",
+    "write_epoch@4096",
+    "write_epoch@16384",
+    "write_epoch@65536"
+  ],
+  "realtime_gate": [
+    {
+      "slots": 64,
+      "epoch_ms": 200,
+      "p99_total_ms": 1.1757603263854974,
+      "p99_device_ms": 0.9574310357123608,
+      "median_host_ms": 0.16212799958884716,
+      "pass_total": true,
+      "pass_device": true,
+      "unstable": false
+    },
+    {
+      "slots": 1024,
+      "epoch_ms": 200,
+      "p99_total_ms": 2.691049203872674,
+      "p99_device_ms": 1.1324838314577936,
+      "median_host_ms": 1.3157920241355896,
+      "pass_total": true,
+      "pass_device": true,
+      "unstable": true
+    },
+    {
+      "slots": 4096,
+      "epoch_ms": 200,
+      "p99_total_ms": 28.148878231048577,
+      "p99_device_ms": 1.6190438484027982,
+      "median_host_ms": 5.586592018604279,
+      "pass_total": true,
+      "pass_device": true,
+      "unstable": true
+    },
+    {
+      "slots": 16384,
+      "epoch_ms": 200,
+      "p99_total_ms": 56.694688224792465,
+      "p99_device_ms": 2.9170854535326356,
+      "median_host_ms": 24.804800033569336,
+      "pass_total": true,
+      "pass_device": true,
+      "unstable": true
+    },
+    {
+      "slots": 65536,
+      "epoch_ms": 200,
+      "p99_total_ms": 199.43602172851556,
+      "p99_device_ms": 11.701341752558946,
+      "median_host_ms": 145.36937713623047,
+      "pass_total": true,
+      "pass_device": true,
+      "unstable": true
+    }
+  ],
+  "configs": [
+    {
+      "kind": "write_epoch",
+      "size": 64,
+      "n_real": 64,
+      "mismatches": 0,
+      "attempts": [
+        {
+          "attempt": 1,
+          "clock": {
+            "before_mhz": 585,
+            "after_mhz": 585,
+            "max_mhz": 1590,
+            "relative_change": 0.0,
+            "fraction_of_max": 0.36792452830188677,
+            "status": "LOW"
+          },
+          "warmup_calls": 2043,
+          "telemetry_after_warmup": {
+            "available": true,
+            "ts": 1791893714.8274581,
+            "sm_clock_mhz": 585,
+            "mem_clock_mhz": 5000,
+            "temperature_c": 77,
+            "power_w": 34.416,
+            "power_limit_w": 70.0,
+            "util_gpu_pct": 13,
+            "util_mem_pct": 0,
+            "throttle_reasons": 0,
+            "pstate": 0,
+            "mem_used_mb": 659.1875,
+            "sm_clock_max_mhz": 1590
+          },
+          "telemetry_after_runs": {
+            "available": true,
+            "ts": 1791893715.0528464,
+            "sm_clock_mhz": 585,
+            "mem_clock_mhz": 5000,
+            "temperature_c": 77,
+            "power_w": 34.514,
+            "power_limit_w": 70.0,
+            "util_gpu_pct": 11,
+            "util_mem_pct": 0,
+            "throttle_reasons": 0,
+            "pstate": 0,
+            "mem_used_mb": 659.1875,
+            "sm_clock_max_mhz": 1590
+          },
+          "stable": true,
+          "runs": 200,
+          "median_ms": 0.9123840034008026,
+          "p5_ms": 0.7984191924333572,
+          "p95_ms": 1.0375424325466154,
+          "p99_ms": 1.1757603263854974,
+          "min_ms": 0.7780159711837769,
+          "max_ms": 1.4972480535507202,
+          "mean_ms": 0.9167689609527588,
+          "std_ms": 0.08519515998490014,
+          "cv": 0.09292980414210408,
+          "device": {
+            "runs": 200,
+            "median_ms": 0.7471199948340654,
+            "p5_ms": 0.6523184048011899,
+            "p95_ms": 0.8652624135836959,
+            "p99_ms": 0.9574310357123608,
+            "min_ms": 0.628543995320797,
+            "max_ms": 1.2786239981651306,
+            "mean_ms": 0.7510299210995436,
+            "std_ms": 0.07407331338957919,
+            "cv": 0.09862897776580237
+          },
+          "host": {
+            "runs": 200,
+            "median_ms": 0.16212799958884716,
+            "p5_ms": 0.141807996109128,
+            "p95_ms": 0.20205280650407073,
+            "p99_ms": 0.2781379135698079,
+            "min_ms": 0.137728001922369,
+            "max_ms": 0.32659199833869934,
+            "mean_ms": 0.16573903987184166,
+            "std_ms": 0.0243092346072477,
+            "cv": 0.1466717475016442
+          },
+          "host_share_of_median_total": 0.17769710887579612,
+          "stage_median_ms": {
+            "h2d": 0.07895999774336815,
+            "tags": 0.08182399719953537,
+            "sort": 0.11472000181674957,
+            "compact": 0.22472000122070312,
+            "d2h": 0.11545599810779095,
+            "seal": 0.06771200150251389,
+            "bucket": 0.04273599945008755,
+            "open": 0.0,
+            "host": 0.16212799958884716
+          },
+          "stage_p99_ms": {
+            "h2d": 0.1606019131839275,
+            "tags": 0.15782431438565248,
+            "sort": 0.22507679983973497,
+            "compact": 0.33251806944608664,
+            "d2h": 0.1858425609394905,
+            "seal": 0.15005920156836497,
+            "bucket": 0.06555615983903407,
+            "open": 0.0,
+            "host": 0.2781379135698079
+          }
+        }
+      ]
+    },
+    {
+      "kind": "write_epoch",
+      "size": 1024,
+      "n_real": 1024,
+      "mismatches": 0,
+      "attempts": [
+        {
+          "attempt": 1,
+          "clock": {
+            "before_mhz": 585,
+            "after_mhz": 585,
+            "max_mhz": 1590,
+            "relative_change": 0.0,
+            "fraction_of_max": 0.36792452830188677,
+            "status": "LOW"
+          },
+          "warmup_calls": 725,
+          "telemetry_after_warmup": {
+            "available": true,
+            "ts": 1791893717.121381,
+            "sm_clock_mhz": 585,
+            "mem_clock_mhz": 5000,
+            "temperature_c": 77,
+            "power_w": 34.514,
+            "power_limit_w": 70.0,
+            "util_gpu_pct": 9,
+            "util_mem_pct": 0,
+            "throttle_reasons": 0,
+            "pstate": 0,
+            "mem_used_mb": 659.1875,
+            "sm_clock_max_mhz": 1590
+          },
+          "telemetry_after_runs": {
+            "available": true,
+            "ts": 1791893717.726504,
+            "sm_clock_mhz": 585,
+            "mem_clock_mhz": 5000,
+            "temperature_c": 77,
+            "power_w": 34.514,
+            "power_limit_w": 70.0,
+            "util_gpu_pct": 8,
+            "util_mem_pct": 0,
+            "throttle_reasons": 0,
+            "pstate": 0,
+            "mem_used_mb": 659.1875,
+            "sm_clock_max_mhz": 1590
+          },
+          "stable": false,
+          "runs": 200,
+          "median_ms": 2.372767925262451,
+          "p5_ms": 2.143359899520874,
+          "p95_ms": 2.840566456317901,
+          "p99_ms": 4.023744943141768,
+          "min_ms": 2.113663911819458,
+          "max_ms": 23.26464080810547,
+          "mean_ms": 2.619557443857193,
+          "std_ms": 2.056756331920508,
+          "cv": 0.7851541246952068,
+          "device": {
+            "runs": 200,
+            "median_ms": 0.9127839971333742,
+            "p5_ms": 0.8211695915088058,
+            "p95_ms": 1.1560879884287714,
+            "p99_ms": 1.484545620307326,
+            "min_ms": 0.8110719919204712,
+            "max_ms": 1.6158080026507378,
+            "mean_ms": 0.9435287997685373,
+            "std_ms": 0.11965597451940226,
+            "cv": 0.12681751161040952
+          },
+          "host": {
+            "runs": 200,
+            "median_ms": 1.447136029601097,
+            "p5_ms": 1.3043488159775734,
+            "p95_ms": 1.6720399737358091,
+            "p99_ms": 3.0889957815407043,
+            "min_ms": 1.2846079766750336,
+            "max_ms": 22.27974444627762,
+            "mean_ms": 1.6760286426544189,
+            "std_ms": 2.0295444584055176,
+            "cv": 1.2109246863414078
+          },
+          "host_share_of_median_total": 0.6098936243168535,
+          "stage_median_ms": {
+            "h2d": 0.10028799995779991,
+            "tags": 0.10462399944663048,
+            "sort": 0.15862400084733963,
+            "compact": 0.2640319913625717,
+            "d2h": 0.15159999951720238,
+            "seal": 0.0859999991953373,
+            "bucket": 0.036896001547575,
+            "open": 0.0,
+            "host": 1.447136029601097
+          },
+          "stage_p99_ms": {
+            "h2d": 0.18568959712982164,
+            "tags": 0.2264857636392108,
+            "sort": 0.26364960223436346,
+            "compact": 0.5119312220811842,
+            "d2h": 0.24264480687677856,
+            "seal": 0.143987199962139,
+            "bucket": 0.06767456024885167,
+            "open": 0.0,
+            "host": 3.0889957815407043
+          }
+        },
+        {
+          "attempt": 2,
+          "clock": {
+            "before_mhz": 585,
+            "after_mhz": 585,
+            "max_mhz": 1590,
+            "relative_change": 0.0,
+            "fraction_of_max": 0.36792452830188677,
+            "status": "LOW"
+          },
+          "warmup_calls": 741,
+          "telemetry_after_warmup": {
+            "available": true,
+            "ts": 1791893719.7616258,
+            "sm_clock_mhz": 585,
+            "mem_clock_mhz": 5000,
+            "temperature_c": 77,
+            "power_w": 34.712,
+            "power_limit_w": 70.0,
+            "util_gpu_pct": 10,
+            "util_mem_pct": 0,
+            "throttle_reasons": 0,
+            "pstate": 0,
+            "mem_used_mb": 659.1875,
+            "sm_clock_max_mhz": 1590
+          },
+          "telemetry_after_runs": {
+            "available": true,
+            "ts": 1791893720.2797801,
+            "sm_clock_mhz": 585,
+            "mem_clock_mhz": 5000,
+            "temperature_c": 77,
+            "power_w": 34.514,
+            "power_limit_w": 70.0,
+            "util_gpu_pct": 9,
+            "util_mem_pct": 0,
+            "throttle_reasons": 0,
+            "pstate": 0,
+            "mem_used_mb": 659.1875,
+            "sm_clock_max_mhz": 1590
+          },
+          "stable": false,
+          "runs": 200,
+          "median_ms": 2.1731040477752686,
+          "p5_ms": 2.1166927933692934,
+          "p95_ms": 2.431635284423828,
+          "p99_ms": 2.691049203872674,
+          "min_ms": 2.110527992248535,
+          "max_ms": 20.205472946166992,
+          "mean_ms": 2.302848334312439,
+          "std_ms": 1.2793176759872633,
+          "cv": 0.5555370959196185,
+          "device": {
+            "runs": 200,
+            "median_ms": 0.8470880016684532,
+            "p5_ms": 0.8111551893875003,
+            "p95_ms": 1.0195136019960045,
+            "p99_ms": 1.1324838314577936,
+            "min_ms": 0.8003839962184429,
+            "max_ms": 1.373727984726429,
+            "mean_ms": 0.8688903996162116,
+            "std_ms": 0.07193870929449427,
+            "cv": 0.08279376700015278
+          },
+          "host": {
+            "runs": 200,
+            "median_ms": 1.3157920241355896,
+            "p5_ms": 1.2884832262992858,
+            "p95_ms": 1.4829440116882324,
+            "p99_ms": 1.6242054134607276,
+            "min_ms": 1.2799039781093597,
+            "max_ms": 19.349184334278107,
+            "mean_ms": 1.4339579212665559,
+            "std_ms": 1.275581342917582,
+            "cv": 0.8895528411258495
+          },
+          "host_share_of_median_total": 0.6054896568264375,
+          "stage_median_ms": {
+            "h2d": 0.09153599664568901,
+            "tags": 0.09647999703884125,
+            "sort": 0.14744000136852264,
+            "compact": 0.24436800181865692,
+            "d2h": 0.13552000373601913,
+            "seal": 0.081216000020504,
+            "bucket": 0.03267199918627739,
+            "open": 0.0,
+            "host": 1.3157920241355896
+          },
+          "stage_p99_ms": {
+            "h2d": 0.16037983834743488,
+            "tags": 0.14665023833513252,
+            "sort": 0.21293824434280392,
+            "compact": 0.41336960911750775,
+            "d2h": 0.24423455491662,
+            "seal": 0.1145926393568514,
+            "bucket": 0.084414721801877,
+            "open": 0.0,
+            "host": 1.6242054134607276
+          }
+        }
+      ]
+    },
+    {
+      "kind": "write_epoch",
+      "size": 4096,
+      "n_real": 4096,
+      "mismatches": 0,
+      "attempts": [
+        {
+          "attempt": 1,
+          "clock": {
+            "before_mhz": 585,
+            "after_mhz": 585,
+            "max_mhz": 1590,
+            "relative_change": 0.0,
+            "fraction_of_max": 0.36792452830188677,
+            "status": "LOW"
+          },
+          "warmup_calls": 246,
+          "telemetry_after_warmup": {
+            "available": true,
+            "ts": 1791893722.400612,
+            "sm_clock_mhz": 585,
+            "mem_clock_mhz": 5000,
+            "temperature_c": 77,
+            "power_w": 35.304,
+            "power_limit_w": 70.0,
+            "util_gpu_pct": 4,
+            "util_mem_pct": 0,
+            "throttle_reasons": 0,
+            "pstate": 0,
+            "mem_used_mb": 659.1875,
+            "sm_clock_max_mhz": 1590
+          },
+          "telemetry_after_runs": {
+            "available": true,
+            "ts": 1791893724.1539817,
+            "sm_clock_mhz": 585,
+            "mem_clock_mhz": 5000,
+            "temperature_c": 77,
+            "power_w": 34.613,
+            "power_limit_w": 70.0,
+            "util_gpu_pct": 4,
+            "util_mem_pct": 0,
+            "throttle_reasons": 0,
+            "pstate": 0,
+            "mem_used_mb": 659.1875,
+            "sm_clock_max_mhz": 1590
+          },
+          "stable": false,
+          "runs": 200,
+          "median_ms": 7.290224075317383,
+          "p5_ms": 6.767270255088806,
+          "p95_ms": 8.598260974884031,
+          "p99_ms": 29.820934810638427,
+          "min_ms": 6.534624099731445,
+          "max_ms": 31.282207489013672,
+          "mean_ms": 8.111016647815704,
+          "std_ms": 4.087648956466754,
+          "cv": 0.5039625898890934,
+          "device": {
+            "runs": 200,
+            "median_ms": 1.3332320023328066,
+            "p5_ms": 1.2037951814010739,
+            "p95_ms": 1.5474335925653575,
+            "p99_ms": 1.6264723416790363,
+            "min_ms": 1.1455680094659328,
+            "max_ms": 2.2581440210342407,
+            "mean_ms": 1.348631359115243,
+            "std_ms": 0.11778331871391327,
+            "cv": 0.08733544412847104
+          },
+          "host": {
+            "runs": 200,
+            "median_ms": 5.938512027263641,
+            "p5_ms": 5.51275532245636,
+            "p95_ms": 6.971289718151089,
+            "p99_ms": 28.512523086071013,
+            "min_ms": 5.287680149078369,
+            "max_ms": 29.73516857624054,
+            "mean_ms": 6.762385288476944,
+            "std_ms": 4.087171633225325,
+            "cv": 0.6043979245296532
+          },
+          "host_share_of_median_total": 0.8145856651196426,
+          "stage_median_ms": {
+            "h2d": 0.12257599830627441,
+            "tags": 0.12273599952459335,
+            "sort": 0.2593280076980591,
+            "compact": 0.376911997795105,
+            "d2h": 0.28969600051641464,
+            "seal": 0.09404800087213516,
+            "bucket": 0.03944000042974949,
+            "open": 0.0,
+            "host": 5.938512027263641
+          },
+          "stage_p99_ms": {
+            "h2d": 0.19482623755931816,
+            "tags": 0.19965952008962629,
+            "sort": 0.4117145729064941,
+            "compact": 0.6068307137489318,
+            "d2h": 0.3922748756408687,
+            "seal": 0.1527264070510863,
+            "bucket": 0.07383328258991231,
+            "open": 0.0,
+            "host": 28.512523086071013
+          }
+        },
+        {
+          "attempt": 2,
+          "clock": {
+            "before_mhz": 585,
+            "after_mhz": 585,
+            "max_mhz": 1590,
+            "relative_change": 0.0,
+            "fraction_of_max": 0.36792452830188677,
+            "status": "LOW"
+          },
+          "warmup_calls": 254,
+          "telemetry_after_warmup": {
+            "available": true,
+            "ts": 1791893726.2097528,
+            "sm_clock_mhz": 585,
+            "mem_clock_mhz": 5000,
+            "temperature_c": 77,
+            "power_w": 34.613,
+            "power_limit_w": 70.0,
+            "util_gpu_pct": 5,
+            "util_mem_pct": 0,
+            "throttle_reasons": 0,
+            "pstate": 0,
+            "mem_used_mb": 659.1875,
+            "sm_clock_max_mhz": 1590
+          },
+          "telemetry_after_runs": {
+            "available": true,
+            "ts": 1791893727.844682,
+            "sm_clock_mhz": 585,
+            "mem_clock_mhz": 5000,
+            "temperature_c": 77,
+            "power_w": 34.613,
+            "power_limit_w": 70.0,
+            "util_gpu_pct": 4,
+            "util_mem_pct": 0,
+            "throttle_reasons": 0,
+            "pstate": 0,
+            "mem_used_mb": 659.1875,
+            "sm_clock_max_mhz": 1590
+          },
+          "stable": false,
+          "runs": 200,
+          "median_ms": 6.8161280155181885,
+          "p5_ms": 6.260831999778747,
+          "p95_ms": 8.264584255218505,
+          "p99_ms": 28.148878231048577,
+          "min_ms": 6.0799360275268555,
+          "max_ms": 30.309951782226562,
+          "mean_ms": 7.537495844364166,
+          "std_ms": 3.574369265533634,
+          "cv": 0.4742117726282016,
+          "device": {
+            "runs": 200,
+            "median_ms": 1.2548320088535547,
+            "p5_ms": 1.1375967964529992,
+            "p95_ms": 1.480292802862823,
+            "p99_ms": 1.6190438484027982,
+            "min_ms": 1.1086080186069012,
+            "max_ms": 1.7921600192785263,
+            "mean_ms": 1.2718953609932213,
+            "std_ms": 0.11405629244612135,
+            "cv": 0.08967427348508838
+          },
+          "host": {
+            "runs": 200,
+            "median_ms": 5.586592018604279,
+            "p5_ms": 5.098584020137787,
+            "p95_ms": 6.701057642698286,
+            "p99_ms": 26.894737790822976,
+            "min_ms": 4.952672004699707,
+            "max_ms": 28.9692804813385,
+            "mean_ms": 6.265600475668907,
+            "std_ms": 3.5722578195193053,
+            "cv": 0.5701381429268255
+          },
+          "host_share_of_median_total": 0.8196137170377902,
+          "stage_median_ms": {
+            "h2d": 0.11168000102043152,
+            "tags": 0.11500800028443336,
+            "sort": 0.23895999789237976,
+            "compact": 0.3548959940671921,
+            "d2h": 0.27532800287008286,
+            "seal": 0.08775999769568443,
+            "bucket": 0.03598399832844734,
+            "open": 0.0,
+            "host": 5.586592018604279
+          },
+          "stage_p99_ms": {
+            "h2d": 0.19082143872976284,
+            "tags": 0.18928160324692725,
+            "sort": 0.36774976551532734,
+            "compact": 0.5266457474231712,
+            "d2h": 0.41725664094090437,
+            "seal": 0.1420998340845108,
+            "bucket": 0.07779008224606497,
+            "open": 0.0,
+            "host": 26.894737790822976
+          }
+        }
+      ]
+    },
+    {
+      "kind": "write_epoch",
+      "size": 16384,
+      "n_real": 16384,
+      "mismatches": 0,
+      "attempts": [
+        {
+          "attempt": 1,
+          "clock": {
+            "before_mhz": 585,
+            "after_mhz": 585,
+            "max_mhz": 1590,
+            "relative_change": 0.0,
+            "fraction_of_max": 0.36792452830188677,
+            "status": "LOW"
+          },
+          "warmup_calls": 64,
+          "telemetry_after_warmup": {
+            "available": true,
+            "ts": 1791893730.331349,
+            "sm_clock_mhz": 585,
+            "mem_clock_mhz": 5000,
+            "temperature_c": 77,
+            "power_w": 34.613,
+            "power_limit_w": 70.0,
+            "util_gpu_pct": 2,
+            "util_mem_pct": 0,
+            "throttle_reasons": 0,
+            "pstate": 0,
+            "mem_used_mb": 663.1875,
+            "sm_clock_max_mhz": 1590
+          },
+          "telemetry_after_runs": {
+            "available": true,
+            "ts": 1791893737.4777155,
+            "sm_clock_mhz": 585,
+            "mem_clock_mhz": 5000,
+            "temperature_c": 78,
+            "power_w": 34.712,
+            "power_limit_w": 70.0,
+            "util_gpu_pct": 2,
+            "util_mem_pct": 0,
+            "throttle_reasons": 0,
+            "pstate": 0,
+            "mem_used_mb": 663.1875,
+            "sm_clock_max_mhz": 1590
+          },
+          "stable": false,
+          "runs": 200,
+          "median_ms": 30.509615898132324,
+          "p5_ms": 26.8875,
+          "p95_ms": 57.713830184936526,
+          "p99_ms": 60.87694786071776,
+          "min_ms": 24.135679244995117,
+          "max_ms": 63.438846588134766,
+          "mean_ms": 33.46557569503784,
+          "std_ms": 9.145999710000732,
+          "cv": 0.2732957530253056,
+          "device": {
+            "runs": 200,
+            "median_ms": 2.4942880291491747,
+            "p5_ms": 2.1330368225462735,
+            "p95_ms": 2.8183903449214993,
+            "p99_ms": 2.988246128037565,
+            "min_ms": 1.9389759972691536,
+            "max_ms": 4.861376024782658,
+            "mean_ms": 2.5134436785895375,
+            "std_ms": 0.26684613757267933,
+            "cv": 0.1061675421039968
+          },
+          "host": {
+            "runs": 200,
+            "median_ms": 27.95464038848877,
+            "p5_ms": 24.57529535293579,
+            "p95_ms": 55.21052553653717,
+            "p99_ms": 58.11911601543425,
+            "min_ms": 22.196704864501953,
+            "max_ms": 61.03126287460327,
+            "mean_ms": 30.952132081985475,
+            "std_ms": 9.113501061366419,
+            "cv": 0.2944385555485074
+          },
+          "host_share_of_median_total": 0.9162567133531183,
+          "stage_median_ms": {
+            "h2d": 0.24251200258731842,
+            "tags": 0.1905599981546402,
+            "sort": 0.43825599551200867,
+            "compact": 0.5530399978160858,
+            "d2h": 0.8836160004138947,
+            "seal": 0.12376000359654427,
+            "bucket": 0.0347680002450943,
+            "open": 0.0,
+            "host": 27.95464038848877
+          },
+          "stage_p99_ms": {
+            "h2d": 0.3634700897336005,
+            "tags": 0.3054467284679413,
+            "sort": 0.613982723951338,
+            "compact": 0.7644358229637133,
+            "d2h": 1.152743664383887,
+            "seal": 0.19317247465252863,
+            "bucket": 0.08138368122279643,
+            "open": 0.0,
+            "host": 58.11911601543425
+          }
+        },
+        {
+          "attempt": 2,
+          "clock": {
+            "before_mhz": 585,
+            "after_mhz": 585,
+            "max_mhz": 1590,
+            "relative_change": 0.0,
+            "fraction_of_max": 0.36792452830188677,
+            "status": "LOW"
+          },
+          "warmup_calls": 65,
+          "telemetry_after_warmup": {
+            "available": true,
+            "ts": 1791893739.5453324,
+            "sm_clock_mhz": 585,
+            "mem_clock_mhz": 5000,
+            "temperature_c": 78,
+            "power_w": 34.712,
+            "power_limit_w": 70.0,
+            "util_gpu_pct": 2,
+            "util_mem_pct": 0,
+            "throttle_reasons": 0,
+            "pstate": 0,
+            "mem_used_mb": 663.1875,
+            "sm_clock_max_mhz": 1590
+          },
+          "telemetry_after_runs": {
+            "available": true,
+            "ts": 1791893746.0012882,
+            "sm_clock_mhz": 585,
+            "mem_clock_mhz": 5000,
+            "temperature_c": 78,
+            "power_w": 35.58,
+            "power_limit_w": 70.0,
+            "util_gpu_pct": 2,
+            "util_mem_pct": 0,
+            "throttle_reasons": 0,
+            "pstate": 0,
+            "mem_used_mb": 663.1875,
+            "sm_clock_max_mhz": 1590
+          },
+          "stable": false,
+          "runs": 200,
+          "median_ms": 26.992671966552734,
+          "p5_ms": 24.608560657501222,
+          "p95_ms": 50.896336174011225,
+          "p99_ms": 56.694688224792465,
+          "min_ms": 23.523296356201172,
+          "max_ms": 62.200992584228516,
+          "mean_ms": 30.269995746612548,
+          "std_ms": 8.237418539744214,
+          "cv": 0.2721314733143313,
+          "device": {
+            "runs": 200,
+            "median_ms": 2.18899199180305,
+            "p5_ms": 1.9211039874702691,
+            "p95_ms": 2.7243808221071957,
+            "p99_ms": 2.9170854535326356,
+            "min_ms": 1.8651519753038883,
+            "max_ms": 4.098111979663372,
+            "mean_ms": 2.2595420795679093,
+            "std_ms": 0.2763731075909046,
+            "cv": 0.12231376883397332
+          },
+          "host": {
+            "runs": 200,
+            "median_ms": 24.804800033569336,
+            "p5_ms": 22.479195094108583,
+            "p95_ms": 48.37638089656829,
+            "p99_ms": 54.133210391998276,
+            "min_ms": 21.60767936706543,
+            "max_ms": 59.464513301849365,
+            "mean_ms": 28.01045361280441,
+            "std_ms": 8.179355980968285,
+            "cv": 0.2920108361697241
+          },
+          "host_share_of_median_total": 0.9189457073499636,
+          "stage_median_ms": {
+            "h2d": 0.2009119987487793,
+            "tags": 0.15275199711322784,
+            "sort": 0.4057759940624237,
+            "compact": 0.5109120011329651,
+            "d2h": 0.7678240090608597,
+            "seal": 0.10382400080561638,
+            "bucket": 0.029935999773442745,
+            "open": 0.0,
+            "host": 24.804800033569336
+          },
+          "stage_p99_ms": {
+            "h2d": 0.3108646434545515,
+            "tags": 0.2585968008637427,
+            "sort": 0.6326137566566468,
+            "compact": 0.6856358170509331,
+            "d2h": 1.0674889948964117,
+            "seal": 0.1754124818742275,
+            "bucket": 0.08808031976222988,
+            "open": 0.0,
+            "host": 54.133210391998276
+          }
+        }
+      ]
+    },
+    {
+      "kind": "write_epoch",
+      "size": 65536,
+      "n_real": 65536,
+      "mismatches": 0,
+      "attempts": [
+        {
+          "attempt": 1,
+          "clock": {
+            "before_mhz": 585,
+            "after_mhz": 585,
+            "max_mhz": 1590,
+            "relative_change": 0.0,
+            "fraction_of_max": 0.36792452830188677,
+            "status": "LOW"
+          },
+          "warmup_calls": 12,
+          "telemetry_after_warmup": {
+            "available": true,
+            "ts": 1791893749.9004924,
+            "sm_clock_mhz": 585,
+            "mem_clock_mhz": 5000,
+            "temperature_c": 78,
+            "power_w": 34.613,
+            "power_limit_w": 70.0,
+            "util_gpu_pct": 1,
+            "util_mem_pct": 0,
+            "throttle_reasons": 0,
+            "pstate": 0,
+            "mem_used_mb": 679.1875,
+            "sm_clock_max_mhz": 1590
+          },
+          "telemetry_after_runs": {
+            "available": true,
+            "ts": 1791893784.8271544,
+            "sm_clock_mhz": 585,
+            "mem_clock_mhz": 5000,
+            "temperature_c": 76,
+            "power_w": 34.119,
+            "power_limit_w": 70.0,
+            "util_gpu_pct": 1,
+            "util_mem_pct": 0,
+            "throttle_reasons": 0,
+            "pstate": 0,
+            "mem_used_mb": 679.1875,
+            "sm_clock_max_mhz": 1590
+          },
+          "stable": false,
+          "runs": 200,
+          "median_ms": 156.87902069091797,
+          "p5_ms": 137.46748046875,
+          "p95_ms": 197.22932510375975,
+          "p99_ms": 211.89437911987298,
+          "min_ms": 133.73951721191406,
+          "max_ms": 219.67286682128906,
+          "mean_ms": 163.6018756866455,
+          "std_ms": 23.14174687512727,
+          "cv": 0.14145159875459964,
+          "device": {
+            "runs": 200,
+            "median_ms": 8.919407919049263,
+            "p5_ms": 8.660592148452997,
+            "p95_ms": 9.475526496395469,
+            "p99_ms": 10.916097290627656,
+            "min_ms": 8.541312038898468,
+            "max_ms": 11.325055994093418,
+            "mean_ms": 8.984755042660982,
+            "std_ms": 0.35462714889581826,
+            "cv": 0.03946987393779738
+          },
+          "host": {
+            "runs": 200,
+            "median_ms": 147.8006248474121,
+            "p5_ms": 128.5687484741211,
+            "p95_ms": 188.19792652130127,
+            "p99_ms": 202.80837917327875,
+            "min_ms": 124.83378982543945,
+            "max_ms": 209.76217651367188,
+            "mean_ms": 154.61712085723877,
+            "std_ms": 23.089956758110947,
+            "cv": 0.14933635182245042
+          },
+          "host_share_of_median_total": 0.9421312307820173,
+          "stage_median_ms": {
+            "h2d": 0.6363359987735748,
+            "tags": 0.2319839969277382,
+            "sort": 0.8961919844150543,
+            "compact": 0.7741119861602783,
+            "d2h": 6.137903988361359,
+            "seal": 0.15785599499940872,
+            "bucket": 0.04303999990224838,
+            "open": 0.0,
+            "host": 147.8006248474121
+          },
+          "stage_p99_ms": {
+            "h2d": 0.7342607766389841,
+            "tags": 0.3175075203180309,
+            "sort": 1.0756661999225583,
+            "compact": 1.1878454613685572,
+            "d2h": 7.270323833227157,
+            "seal": 0.19664351969957353,
+            "bucket": 0.04480031818151471,
+            "open": 0.0,
+            "host": 202.80837917327875
+          }
+        },
+        {
+          "attempt": 2,
+          "clock": {
+            "before_mhz": 585,
+            "after_mhz": 585,
+            "max_mhz": 1590,
+            "relative_change": 0.0,
+            "fraction_of_max": 0.36792452830188677,
+            "status": "LOW"
+          },
+          "warmup_calls": 12,
+          "telemetry_after_warmup": {
+            "available": true,
+            "ts": 1791893786.895275,
+            "sm_clock_mhz": 585,
+            "mem_clock_mhz": 5000,
+            "temperature_c": 76,
+            "power_w": 34.218,
+            "power_limit_w": 70.0,
+            "util_gpu_pct": 1,
+            "util_mem_pct": 0,
+            "throttle_reasons": 0,
+            "pstate": 0,
+            "mem_used_mb": 679.1875,
+            "sm_clock_max_mhz": 1590
+          },
+          "telemetry_after_runs": {
+            "available": true,
+            "ts": 1791893820.2522316,
+            "sm_clock_mhz": 585,
+            "mem_clock_mhz": 5000,
+            "temperature_c": 78,
+            "power_w": 34.593,
+            "power_limit_w": 70.0,
+            "util_gpu_pct": 1,
+            "util_mem_pct": 0,
+            "throttle_reasons": 0,
+            "pstate": 0,
+            "mem_used_mb": 679.1875,
+            "sm_clock_max_mhz": 1590
+          },
+          "stable": false,
+          "runs": 200,
+          "median_ms": 154.37427520751953,
+          "p5_ms": 130.4965721130371,
+          "p95_ms": 189.2156555175781,
+          "p99_ms": 199.43602172851556,
+          "min_ms": 128.146240234375,
+          "max_ms": 210.42279052734375,
+          "mean_ms": 156.61539024353027,
+          "std_ms": 21.909926191620706,
+          "cv": 0.1398963802826255,
+          "device": {
+            "runs": 200,
+            "median_ms": 8.972159896045923,
+            "p5_ms": 8.66870725415647,
+            "p95_ms": 9.701568191498517,
+            "p99_ms": 11.701341752558946,
+            "min_ms": 8.430495977401733,
+            "max_ms": 12.52937588840723,
+            "mean_ms": 9.057106091082096,
+            "std_ms": 0.4895084920898199,
+            "cv": 0.05404689833232769
+          },
+          "host": {
+            "runs": 200,
+            "median_ms": 145.36937713623047,
+            "p5_ms": 121.77068862915038,
+            "p95_ms": 180.62573146820068,
+            "p99_ms": 190.2945558929443,
+            "min_ms": 118.92915344238281,
+            "max_ms": 201.235107421875,
+            "mean_ms": 147.55828407287598,
+            "std_ms": 21.85511192842937,
+            "cv": 0.14811172456868354
+          },
+          "host_share_of_median_total": 0.9416684025937345,
+          "stage_median_ms": {
+            "h2d": 0.621968001127243,
+            "tags": 0.23134399950504303,
+            "sort": 0.8869599997997284,
+            "compact": 0.7740959823131561,
+            "d2h": 6.197440028190613,
+            "seal": 0.15158400684595108,
+            "bucket": 0.04303999990224838,
+            "open": 0.0,
+            "host": 145.36937713623047
+          },
+          "stage_p99_ms": {
+            "h2d": 0.8037020808458326,
+            "tags": 0.3177833479642864,
+            "sort": 1.5546416401863095,
+            "compact": 1.461726357936857,
+            "d2h": 7.949987719058989,
+            "seal": 0.220470722168684,
+            "bucket": 0.06386080183088777,
+            "open": 0.0,
+            "host": 190.2945558929443
+          }
+        }
+      ]
+    },
+    {
+      "kind": "read_window",
+      "size": 64,
+      "hits": 8,
+      "mismatches": 0,
+      "attempts": [
+        {
+          "attempt": 1,
+          "clock": {
+            "before_mhz": 585,
+            "after_mhz": 585,
+            "max_mhz": 1590,
+            "relative_change": 0.0,
+            "fraction_of_max": 0.36792452830188677,
+            "status": "LOW"
+          },
+          "warmup_calls": 3520,
+          "telemetry_after_warmup": {
+            "available": true,
+            "ts": 1791893823.1317563,
+            "sm_clock_mhz": 585,
+            "mem_clock_mhz": 5000,
+            "temperature_c": 78,
+            "power_w": 34.791,
+            "power_limit_w": 70.0,
+            "util_gpu_pct": 13,
+            "util_mem_pct": 0,
+            "throttle_reasons": 0,
+            "pstate": 0,
+            "mem_used_mb": 679.1875,
+            "sm_clock_max_mhz": 1590
+          },
+          "telemetry_after_runs": {
+            "available": true,
+            "ts": 1791893823.267175,
+            "sm_clock_mhz": 585,
+            "mem_clock_mhz": 5000,
+            "temperature_c": 78,
+            "power_w": 34.889,
+            "power_limit_w": 70.0,
+            "util_gpu_pct": 13,
+            "util_mem_pct": 0,
+            "throttle_reasons": 0,
+            "pstate": 0,
+            "mem_used_mb": 679.1875,
+            "sm_clock_max_mhz": 1590
+          },
+          "stable": true,
+          "runs": 200,
+          "median_ms": 0.44542399048805237,
+          "p5_ms": 0.41916799545288086,
+          "p95_ms": 0.546193578839302,
+          "p99_ms": 0.6191046196222301,
+          "min_ms": 0.41417598724365234,
+          "max_ms": 0.7011839747428894,
+          "mean_ms": 0.4609121595323086,
+          "std_ms": 0.043674499911576785,
+          "cv": 0.09475666677115584,
+          "device": {
+            "runs": 200,
+            "median_ms": 0.4412000086158514,
+            "p5_ms": 0.41560960207134484,
+            "p95_ms": 0.5419408088549971,
+            "p99_ms": 0.61498623304069,
+            "min_ms": 0.4102720059454441,
+            "max_ms": 0.6968960054218769,
+            "mean_ms": 0.4565599999576807,
+            "std_ms": 0.04336904457275145,
+            "cv": 0.09499089840715656
+          },
+          "host": {
+            "runs": 200,
+            "median_ms": 0.003903999924659729,
+            "p5_ms": 0.0035200000274926424,
+            "p95_ms": 0.005123200081288803,
+            "p99_ms": 0.015663039945065963,
+            "min_ms": 0.003295999951660633,
+            "max_ms": 0.02099199965596199,
+            "mean_ms": 0.004352159990230575,
+            "std_ms": 0.002162863058047919,
+            "cv": 0.4969631316180846
+          },
+          "host_share_of_median_total": 0.008764682657487992,
+          "stage_median_ms": {
+            "h2d": 0.037776000797748566,
+            "tags": 0.0,
+            "sort": 0.28857600688934326,
+            "compact": 0.0,
+            "d2h": 0.04102399945259094,
+            "seal": 0.0,
+            "bucket": 0.0,
+            "open": 0.07169600203633308,
+            "host": 0.003903999924659729
+          },
+          "stage_p99_ms": {
+            "h2d": 0.06631871774792664,
+            "tags": 0.0,
+            "sort": 0.40532128840684883,
+            "compact": 0.0,
+            "d2h": 0.07085504204034793,
+            "seal": 0.0,
+            "bucket": 0.0,
+            "open": 0.13847008332610125,
+            "host": 0.015663039945065963
+          }
+        }
+      ]
+    },
+    {
+      "kind": "read_window",
+      "size": 128,
+      "hits": 16,
+      "mismatches": 0,
+      "attempts": [
+        {
+          "attempt": 1,
+          "clock": {
+            "before_mhz": 585,
+            "after_mhz": 585,
+            "max_mhz": 1590,
+            "relative_change": 0.0,
+            "fraction_of_max": 0.36792452830188677,
+            "status": "LOW"
+          },
+          "warmup_calls": 3706,
+          "telemetry_after_warmup": {
+            "available": true,
+            "ts": 1791893825.3020878,
+            "sm_clock_mhz": 585,
+            "mem_clock_mhz": 5000,
+            "temperature_c": 78,
+            "power_w": 35.383,
+            "power_limit_w": 70.0,
+            "util_gpu_pct": 15,
+            "util_mem_pct": 0,
+            "throttle_reasons": 0,
+            "pstate": 0,
+            "mem_used_mb": 679.1875,
+            "sm_clock_max_mhz": 1590
+          },
+          "telemetry_after_runs": {
+            "available": true,
+            "ts": 1791893825.4371786,
+            "sm_clock_mhz": 585,
+            "mem_clock_mhz": 5000,
+            "temperature_c": 78,
+            "power_w": 35.383,
+            "power_limit_w": 70.0,
+            "util_gpu_pct": 13,
+            "util_mem_pct": 0,
+            "throttle_reasons": 0,
+            "pstate": 0,
+            "mem_used_mb": 679.1875,
+            "sm_clock_max_mhz": 1590
+          },
+          "stable": true,
+          "runs": 200,
+          "median_ms": 0.4537440091371536,
+          "p5_ms": 0.4204927980899811,
+          "p95_ms": 0.528532800078392,
+          "p99_ms": 0.598600644469261,
+          "min_ms": 0.4145599901676178,
+          "max_ms": 0.8269760012626648,
+          "mean_ms": 0.4623635199666023,
+          "std_ms": 0.0421796819785066,
+          "cv": 0.09122623251409052,
+          "device": {
+            "runs": 200,
+            "median_ms": 0.4492800086736679,
+            "p5_ms": 0.41578559651970864,
+            "p95_ms": 0.5234047973528503,
+            "p99_ms": 0.5942460885643958,
+            "min_ms": 0.41065598651766777,
+            "max_ms": 0.81843201816082,
+            "mean_ms": 0.4577689597196877,
+            "std_ms": 0.0419150155978026,
+            "cv": 0.09156369104508316
+          },
+          "host": {
+            "runs": 200,
+            "median_ms": 0.00431999983265996,
+            "p5_ms": 0.003936000168323517,
+            "p95_ms": 0.005164800118654962,
+            "p99_ms": 0.00855135986581444,
+            "min_ms": 0.003456000005826354,
+            "max_ms": 0.023615999147295952,
+            "mean_ms": 0.004594559991965071,
+            "std_ms": 0.001496474166661798,
+            "cv": 0.3257056539209021
+          },
+          "host_share_of_median_total": 0.009520786491208856,
+          "stage_median_ms": {
+            "h2d": 0.039744000881910324,
+            "tags": 0.0,
+            "sort": 0.28860799968242645,
+            "compact": 0.0,
+            "d2h": 0.04132799990475178,
+            "seal": 0.0,
+            "bucket": 0.0,
+            "open": 0.07231999933719635,
+            "host": 0.00431999983265996
+          },
+          "stage_p99_ms": {
+            "h2d": 0.07276192151010022,
+            "tags": 0.0,
+            "sort": 0.38776672661304434,
+            "compact": 0.0,
+            "d2h": 0.08190591767430304,
+            "seal": 0.0,
+            "bucket": 0.0,
+            "open": 0.12255616113543502,
+            "host": 0.00855135986581444
+          }
+        }
+      ]
+    },
+    {
+      "kind": "read_window",
+      "size": 256,
+      "hits": 32,
+      "mismatches": 0,
+      "attempts": [
+        {
+          "attempt": 1,
+          "clock": {
+            "before_mhz": 585,
+            "after_mhz": 585,
+            "max_mhz": 1590,
+            "relative_change": 0.0,
+            "fraction_of_max": 0.36792452830188677,
+            "status": "LOW"
+          },
+          "warmup_calls": 3368,
+          "telemetry_after_warmup": {
+            "available": true,
+            "ts": 1791893827.475562,
+            "sm_clock_mhz": 585,
+            "mem_clock_mhz": 5000,
+            "temperature_c": 78,
+            "power_w": 34.889,
+            "power_limit_w": 70.0,
+            "util_gpu_pct": 17,
+            "util_mem_pct": 0,
+            "throttle_reasons": 0,
+            "pstate": 0,
+            "mem_used_mb": 679.1875,
+            "sm_clock_max_mhz": 1590
+          },
+          "telemetry_after_runs": {
+            "available": true,
+            "ts": 1791893827.6162071,
+            "sm_clock_mhz": 585,
+            "mem_clock_mhz": 5000,
+            "temperature_c": 78,
+            "power_w": 35.087,
+            "power_limit_w": 70.0,
+            "util_gpu_pct": 14,
+            "util_mem_pct": 0,
+            "throttle_reasons": 0,
+            "pstate": 0,
+            "mem_used_mb": 679.1875,
+            "sm_clock_max_mhz": 1590
+          },
+          "stable": true,
+          "runs": 200,
+          "median_ms": 0.46515199542045593,
+          "p5_ms": 0.43336321413517,
+          "p95_ms": 0.5360799849033355,
+          "p99_ms": 0.6934991896152495,
+          "min_ms": 0.42800000309944153,
+          "max_ms": 0.7496320009231567,
+          "mean_ms": 0.4755779206752777,
+          "std_ms": 0.042980329198586326,
+          "cv": 0.09037494662821634,
+          "device": {
+            "runs": 200,
+            "median_ms": 0.45795200392603874,
+            "p5_ms": 0.4269456032663584,
+            "p95_ms": 0.5298480026423931,
+            "p99_ms": 0.6871507134288548,
+            "min_ms": 0.42134400084614754,
+            "max_ms": 0.740672018378973,
+            "mean_ms": 0.46911424016579983,
+            "std_ms": 0.04278467301516199,
+            "cv": 0.0912031001234167
+          },
+          "host": {
+            "runs": 200,
+            "median_ms": 0.006271999794989824,
+            "p5_ms": 0.005918399919755757,
+            "p95_ms": 0.006884799781255423,
+            "p99_ms": 0.015076480209827419,
+            "min_ms": 0.005216000135987997,
+            "max_ms": 0.017055999487638474,
+            "mean_ms": 0.0064636799972504376,
+            "std_ms": 0.0012308346086291491,
+            "cv": 0.19042319687124512
+          },
+          "host_share_of_median_total": 0.013483764138903662,
+          "stage_median_ms": {
+            "h2d": 0.042447999119758606,
+            "tags": 0.0,
+            "sort": 0.2905440032482147,
+            "compact": 0.0,
+            "d2h": 0.04174400120973587,
+            "seal": 0.0,
+            "bucket": 0.0,
+            "open": 0.0798719972372055,
+            "host": 0.006271999794989824
+          },
+          "stage_p99_ms": {
+            "h2d": 0.09352960295975192,
+            "tags": 0.0,
+            "sort": 0.3865644767880435,
+            "compact": 0.0,
+            "d2h": 0.07178688213229173,
+            "seal": 0.0,
+            "bucket": 0.0,
+            "open": 0.12334368012845512,
+            "host": 0.015076480209827419
+          }
+        }
+      ]
+    },
+    {
+      "kind": "read_window",
+      "size": 512,
+      "hits": 64,
+      "mismatches": 0,
+      "attempts": [
+        {
+          "attempt": 1,
+          "clock": {
+            "before_mhz": 585,
+            "after_mhz": 585,
+            "max_mhz": 1590,
+            "relative_change": 0.0,
+            "fraction_of_max": 0.36792452830188677,
+            "status": "LOW"
+          },
+          "warmup_calls": 3355,
+          "telemetry_after_warmup": {
+            "available": true,
+            "ts": 1791893829.656436,
+            "sm_clock_mhz": 585,
+            "mem_clock_mhz": 5000,
+            "temperature_c": 78,
+            "power_w": 35.284,
+            "power_limit_w": 70.0,
+            "util_gpu_pct": 19,
+            "util_mem_pct": 0,
+            "throttle_reasons": 0,
+            "pstate": 0,
+            "mem_used_mb": 679.1875,
+            "sm_clock_max_mhz": 1590
+          },
+          "telemetry_after_runs": {
+            "available": true,
+            "ts": 1791893829.8012536,
+            "sm_clock_mhz": 585,
+            "mem_clock_mhz": 5000,
+            "temperature_c": 78,
+            "power_w": 34.889,
+            "power_limit_w": 70.0,
+            "util_gpu_pct": 16,
+            "util_mem_pct": 0,
+            "throttle_reasons": 0,
+            "pstate": 0,
+            "mem_used_mb": 679.1875,
+            "sm_clock_max_mhz": 1590
+          },
+          "stable": true,
+          "runs": 200,
+          "median_ms": 0.45867200195789337,
+          "p5_ms": 0.43467040210962293,
+          "p95_ms": 0.5058015972375869,
+          "p99_ms": 0.5754339200258254,
+          "min_ms": 0.4292159974575043,
+          "max_ms": 0.6477439999580383,
+          "mean_ms": 0.4620617598295212,
+          "std_ms": 0.0277878101971805,
+          "cv": 0.060138736015360544,
+          "device": {
+            "runs": 200,
+            "median_ms": 0.4501599967479706,
+            "p5_ms": 0.4267824053764343,
+            "p95_ms": 0.497702402062714,
+            "p99_ms": 0.5670483050122856,
+            "min_ms": 0.42131200432777405,
+            "max_ms": 0.6396800167858601,
+            "mean_ms": 0.45381632084026935,
+            "std_ms": 0.027748107568646443,
+            "cv": 0.06114391725107877
+          },
+          "host": {
+            "runs": 200,
+            "median_ms": 0.008063999935984612,
+            "p5_ms": 0.007679999805986881,
+            "p95_ms": 0.008511999621987343,
+            "p99_ms": 0.009059519758447857,
+            "min_ms": 0.0074880002066493034,
+            "max_ms": 0.028095999732613564,
+            "mean_ms": 0.008245439992751926,
+            "std_ms": 0.0018785888923287814,
+            "cv": 0.22783367461046794
+          },
+          "host_share_of_median_total": 0.01758119070177058,
+          "stage_median_ms": {
+            "h2d": 0.04497599974274635,
+            "tags": 0.0,
+            "sort": 0.2784319967031479,
+            "compact": 0.0,
+            "d2h": 0.041600000113248825,
+            "seal": 0.0,
+            "bucket": 0.0,
+            "open": 0.07755200192332268,
+            "host": 0.008063999935984612
+          },
+          "stage_p99_ms": {
+            "h2d": 0.08080575667321678,
+            "tags": 0.0,
+            "sort": 0.36098529219627357,
+            "compact": 0.0,
+            "d2h": 0.06362208008766174,
+            "seal": 0.0,
+            "bucket": 0.0,
+            "open": 0.10897664263844488,
+            "host": 0.009059519758447857
+          }
+        }
+      ]
+    },
+    {
+      "kind": "read_window",
+      "size": 1024,
+      "hits": 128,
+      "mismatches": 0,
+      "attempts": [
+        {
+          "attempt": 1,
+          "clock": {
+            "before_mhz": 585,
+            "after_mhz": 585,
+            "max_mhz": 1590,
+            "relative_change": 0.0,
+            "fraction_of_max": 0.36792452830188677,
+            "status": "LOW"
+          },
+          "warmup_calls": 2888,
+          "telemetry_after_warmup": {
+            "available": true,
+            "ts": 1791893831.844921,
+            "sm_clock_mhz": 585,
+            "mem_clock_mhz": 5000,
+            "temperature_c": 78,
+            "power_w": 35.284,
+            "power_limit_w": 70.0,
+            "util_gpu_pct": 19,
+            "util_mem_pct": 0,
+            "throttle_reasons": 0,
+            "pstate": 0,
+            "mem_used_mb": 679.1875,
+            "sm_clock_max_mhz": 1590
+          },
+          "telemetry_after_runs": {
+            "available": true,
+            "ts": 1791893832.0238519,
+            "sm_clock_mhz": 585,
+            "mem_clock_mhz": 5000,
+            "temperature_c": 78,
+            "power_w": 34.811,
+            "power_limit_w": 70.0,
+            "util_gpu_pct": 16,
+            "util_mem_pct": 0,
+            "throttle_reasons": 0,
+            "pstate": 0,
+            "mem_used_mb": 679.1875,
+            "sm_clock_max_mhz": 1590
+          },
+          "stable": true,
+          "runs": 200,
+          "median_ms": 0.5314080119132996,
+          "p5_ms": 0.4927375912666321,
+          "p95_ms": 0.6389455705881119,
+          "p99_ms": 0.7277759969234464,
+          "min_ms": 0.4787839949131012,
+          "max_ms": 0.8774080276489258,
+          "mean_ms": 0.547366880774498,
+          "std_ms": 0.054412360085767844,
+          "cv": 0.09940747604015966,
+          "device": {
+            "runs": 200,
+            "median_ms": 0.5181119963526726,
+            "p5_ms": 0.4802239963784814,
+            "p95_ms": 0.6253711892291903,
+            "p99_ms": 0.7130992056429386,
+            "min_ms": 0.4666240066289902,
+            "max_ms": 0.8585919961333275,
+            "mean_ms": 0.5333582396619022,
+            "std_ms": 0.05309330670692301,
+            "cv": 0.09954530137301161
+          },
+          "host": {
+            "runs": 200,
+            "median_ms": 0.012927999719977379,
+            "p5_ms": 0.01228800043463707,
+            "p95_ms": 0.015169600164517728,
+            "p99_ms": 0.056809600107371766,
+            "min_ms": 0.01196799986064434,
+            "max_ms": 0.07094399631023407,
+            "mean_ms": 0.014008639985695482,
+            "std_ms": 0.006470709202293986,
+            "cv": 0.4619084514200782
+          },
+          "host_share_of_median_total": 0.024327822370293153,
+          "stage_median_ms": {
+            "h2d": 0.051024001091718674,
+            "tags": 0.0,
+            "sort": 0.3274399936199188,
+            "compact": 0.0,
+            "d2h": 0.04620800167322159,
+            "seal": 0.0,
+            "bucket": 0.0,
+            "open": 0.0838559977710247,
+            "host": 0.012927999719977379
+          },
+          "stage_p99_ms": {
+            "h2d": 0.10503392197191709,
+            "tags": 0.0,
+            "sort": 0.4900799885392185,
+            "compact": 0.0,
+            "d2h": 0.08736128158867353,
+            "seal": 0.0,
+            "bucket": 0.0,
+            "open": 0.13169695690274236,
+            "host": 0.056809600107371766
+          }
+        }
+      ]
+    },
+    {
+      "kind": "read_window",
+      "size": 2048,
+      "hits": 256,
+      "mismatches": 0,
+      "attempts": [
+        {
+          "attempt": 1,
+          "clock": {
+            "before_mhz": 585,
+            "after_mhz": 615,
+            "max_mhz": 1590,
+            "relative_change": 0.05128205128205128,
+            "fraction_of_max": 0.36792452830188677,
+            "status": "LOW"
+          },
+          "warmup_calls": 2186,
+          "telemetry_after_warmup": {
+            "available": true,
+            "ts": 1791893834.0795856,
+            "sm_clock_mhz": 585,
+            "mem_clock_mhz": 5000,
+            "temperature_c": 77,
+            "power_w": 34.791,
+            "power_limit_w": 70.0,
+            "util_gpu_pct": 18,
+            "util_mem_pct": 0,
+            "throttle_reasons": 0,
+            "pstate": 0,
+            "mem_used_mb": 679.1875,
+            "sm_clock_max_mhz": 1590
+          },
+          "telemetry_after_runs": {
+            "available": true,
+            "ts": 1791893834.2765205,
+            "sm_clock_mhz": 615,
+            "mem_clock_mhz": 5000,
+            "temperature_c": 77,
+            "power_w": 35.383,
+            "power_limit_w": 70.0,
+            "util_gpu_pct": 15,
+            "util_mem_pct": 0,
+            "throttle_reasons": 0,
+            "pstate": 0,
+            "mem_used_mb": 679.1875,
+            "sm_clock_max_mhz": 1590
+          },
+          "stable": true,
+          "runs": 200,
+          "median_ms": 0.5799999833106995,
+          "p5_ms": 0.5431280016899109,
+          "p95_ms": 0.6837839752435683,
+          "p99_ms": 0.7974425315856926,
+          "min_ms": 0.5390080213546753,
+          "max_ms": 0.974943995475769,
+          "mean_ms": 0.5962766408920288,
+          "std_ms": 0.05507286729304338,
+          "cv": 0.09236126910934238,
+          "device": {
+            "runs": 200,
+            "median_ms": 0.5600320063531399,
+            "p5_ms": 0.5227952096611261,
+            "p95_ms": 0.660331202112138,
+            "p99_ms": 0.7777283213287587,
+            "min_ms": 0.5193919911980629,
+            "max_ms": 0.9391999915242195,
+            "mean_ms": 0.575500479452312,
+            "std_ms": 0.053851903149203864,
+            "cv": 0.09357403698508339
+          },
+          "host": {
+            "runs": 200,
+            "median_ms": 0.01950399950146675,
+            "p5_ms": 0.018878400325775146,
+            "p95_ms": 0.031331200152635574,
+            "p99_ms": 0.038310400843620265,
+            "min_ms": 0.01820800080895424,
+            "max_ms": 0.05446400120854378,
+            "mean_ms": 0.020776160042732954,
+            "std_ms": 0.004494083991677147,
+            "cv": 0.21630965406666083
+          },
+          "host_share_of_median_total": 0.0336275863149787,
+          "stage_median_ms": {
+            "h2d": 0.06030400097370148,
+            "tags": 0.0,
+            "sort": 0.36207999289035797,
+            "compact": 0.0,
+            "d2h": 0.04878399893641472,
+            "seal": 0.0,
+            "bucket": 0.0,
+            "open": 0.0817599967122078,
+            "host": 0.01950399950146675
+          },
+          "stage_p99_ms": {
+            "h2d": 0.10220608286559577,
+            "tags": 0.0,
+            "sort": 0.547647688388824,
+            "compact": 0.0,
+            "d2h": 0.09910208187997338,
+            "seal": 0.0,
+            "bucket": 0.0,
+            "open": 0.13479007720947253,
+            "host": 0.038310400843620265
+          }
+        }
+      ]
+    },
+    {
+      "kind": "read_window",
+      "size": 4096,
+      "hits": 512,
+      "mismatches": 0,
+      "attempts": [
+        {
+          "attempt": 1,
+          "clock": {
+            "before_mhz": 585,
+            "after_mhz": 585,
+            "max_mhz": 1590,
+            "relative_change": 0.0,
+            "fraction_of_max": 0.36792452830188677,
+            "status": "LOW"
+          },
+          "warmup_calls": 1684,
+          "telemetry_after_warmup": {
+            "available": true,
+            "ts": 1791893836.352482,
+            "sm_clock_mhz": 585,
+            "mem_clock_mhz": 5000,
+            "temperature_c": 77,
+            "power_w": 34.889,
+            "power_limit_w": 70.0,
+            "util_gpu_pct": 16,
+            "util_mem_pct": 0,
+            "throttle_reasons": 0,
+            "pstate": 0,
+            "mem_used_mb": 679.1875,
+            "sm_clock_max_mhz": 1590
+          },
+          "telemetry_after_runs": {
+            "available": true,
+            "ts": 1791893836.599728,
+            "sm_clock_mhz": 585,
+            "mem_clock_mhz": 5000,
+            "temperature_c": 77,
+            "power_w": 34.889,
+            "power_limit_w": 70.0,
+            "util_gpu_pct": 14,
+            "util_mem_pct": 0,
+            "throttle_reasons": 0,
+            "pstate": 0,
+            "mem_used_mb": 679.1875,
+            "sm_clock_max_mhz": 1590
+          },
+          "stable": true,
+          "runs": 200,
+          "median_ms": 0.6534560024738312,
+          "p5_ms": 0.6278239965438843,
+          "p95_ms": 0.7484783798456189,
+          "p99_ms": 0.8038387376070022,
+          "min_ms": 0.6158720254898071,
+          "max_ms": 0.9854720234870911,
+          "mean_ms": 0.6636259207129478,
+          "std_ms": 0.04333762743943928,
+          "cv": 0.06530430184655946,
+          "device": {
+            "runs": 200,
+            "median_ms": 0.6183999963104725,
+            "p5_ms": 0.59017439391464,
+            "p95_ms": 0.7072431910783052,
+            "p99_ms": 0.7715171228349208,
+            "min_ms": 0.5842559933662415,
+            "max_ms": 0.9498880207538605,
+            "mean_ms": 0.6289911999367177,
+            "std_ms": 0.04264044634396735,
+            "cv": 0.06779180113848553
+          },
+          "host": {
+            "runs": 200,
+            "median_ms": 0.03251200169324875,
+            "p5_ms": 0.031936001032590866,
+            "p95_ms": 0.0491312013939023,
+            "p99_ms": 0.05908384151756748,
+            "min_ms": 0.031488001346588135,
+            "max_ms": 0.09920000284910202,
+            "mean_ms": 0.034634720049798486,
+            "std_ms": 0.007139119491532664,
+            "cv": 0.2061260920044365
+          },
+          "host_share_of_median_total": 0.049753926155955315,
+          "stage_median_ms": {
+            "h2d": 0.07919999957084656,
+            "tags": 0.0,
+            "sort": 0.40696001052856445,
+            "compact": 0.0,
+            "d2h": 0.0522879995405674,
+            "seal": 0.0,
+            "bucket": 0.0,
+            "open": 0.07422399893403053,
+            "host": 0.03251200169324875
+          },
+          "stage_p99_ms": {
+            "h2d": 0.11929791897535318,
+            "tags": 0.0,
+            "sort": 0.5131750434637069,
+            "compact": 0.0,
+            "d2h": 0.08444192200899121,
+            "seal": 0.0,
+            "bucket": 0.0,
+            "open": 0.11550207830965495,
+            "host": 0.05908384151756748
+          }
+        }
+      ]
+    }
+  ],
+  "host_profile": {
+    "file": "host_profile.txt",
+    "calls": 3,
+    "slots": 65536,
+    "sorted_by": "cumulative time"
+  },
+  "timer": "cupy.cuda.Event",
+  "telemetry_samples": 786,
+  "cv_limit": 0.1,
+  "device": {
+    "backend": "cupy",
+    "is_gpu": true,
+    "device": "Tesla T4",
+    "gpu": "Tesla T4",
+    "cc": "7.5",
+    "sm_count": 40,
+    "vram_total_bytes": 15636037632,
+    "vram_free_bytes": 15393947648,
+    "mem_clock_khz": 5001000,
+    "mem_bus_width_bits": 256,
+    "peak_bw_gbs": 320.064,
+    "max_log2n": 24,
+    "cuda": "12090",
+    "cupy": "14.0.1",
+    "os": "Linux-6.18.48+-x86_64-with-glibc2.39",
+    "python": "3.13.15"
+  },
+  "host": {
+    "cpu": "Intel(R) Xeon(R) CPU @ 2.00GHz",
+    "cpu_count": 4,
+    "ram_gb": 31.3,
+    "os": "Linux-6.18.48+-x86_64-with-glibc2.39",
+    "python": "3.13.15"
+  },
+  "payload_note": "8-byte payload stand-ins: payload bytes never go to the device (ADR-006)"
+}

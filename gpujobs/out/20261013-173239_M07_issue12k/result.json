@@ -1,0 +1,80 @@
+{
+  "job_id": "20261013-173239_M07_issue12k",
+  "module": "M07_issue12k",
+  "step": "S5",
+  "quick": false,
+  "packed_from_git_sha": "f3903bcc5028a397fbe7bfed1a30ad9ad4ffbb1e",
+  "bundle_sha256": "24f409038d455233241bde2e1a44463f2a79827bb92aeaf2fa3f8a2d3f81f764",
+  "finished_at": "2026-10-13T12:17:17.196640+00:00",
+  "env": {
+    "collected_at": "2026-10-13T12:13:57.732014+00:00",
+    "python": "3.13.15",
+    "platform": "Linux-6.18.48+-x86_64-with-glibc2.39",
+    "backend": "cupy",
+    "runner": "kaggle",
+    "session_id": "20261013-121357",
+    "gpu": "Tesla T4",
+    "driver": "580.178.04",
+    "vram_total": "15360 MiB",
+    "compute_capability": "7.5",
+    "nvcc": "Build cuda_12.8.r12.8/compiler.35583870_0",
+    "ncu": "NVIDIA (R) Nsight Compute Command Line Profiler",
+    "cupy": "14.0.1",
+    "cuda_runtime": "12090",
+    "cpu": "Intel(R) Xeon(R) CPU @ 2.00GHz",
+    "cpu_count": "4"
+  },
+  "requirements": {
+    "file": "requirements-gpu.txt",
+    "installed": [],
+    "skipped": [
+      "cupy-cuda12x",
+      "nvidia-ml-py",
+      "cryptography"
+    ],
+    "failed": []
+  },
+  "commands": [
+    {
+      "n": 1,
+      "name": "nvidia_smi",
+      "cmd": "nvidia-smi",
+      "exit_code": 0,
+      "log": "logs/01_nvidia_smi.txt",
+      "optional": false
+    },
+    {
+      "n": 2,
+      "name": "cpu_info",
+      "cmd": "lscpu",
+      "exit_code": 0,
+      "log": "logs/02_cpu_info.txt",
+      "optional": false
+    },
+    {
+      "n": 3,
+      "name": "pytest_engine_regression",
+      "cmd": "python -m pytest -p no:cacheprovider -rs -q -m \"not slow\" tests/gpu/test_engine.py tests/integration/test_engine_vs_oracle.py",
+      "exit_code": 0,
+      "log": "logs/03_pytest_engine_regression.txt",
+      "optional": false
+    },
+    {
+      "n": 4,
+      "name": "pipeline",
+      "cmd": "python bench/run_pipeline.py --dev --full --seed 7 --out runs",
+      "exit_code": 0,
+      "log": "logs/04_pipeline.txt",
+      "optional": false
+    },
+    {
+      "n": 5,
+      "name": "nvidia_smi_after",
+      "cmd": "nvidia-smi",
+      "exit_code": 0,
+      "log": "logs/05_nvidia_smi_after.txt",
+      "optional": false
+    }
+  ],
+  "overall_exit": 0
+}
