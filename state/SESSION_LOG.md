@@ -1007,3 +1007,25 @@
   job, or say "S6 on the simulator"); ISSUE-41 and ISSUE-36 are still undecided
 
 - GPU-JOB 20261013-125843_M14_s6 ingested 2026-10-13 15:49: runner colab, gpu Tesla T4, session 20261013-101235, overall exit 0, runs 20261013-101309_M14_security_anon, 24 metrics indexed.
+
+## Session 41 — 2026-10-13 — M14 Security evaluation, S6 anonymity set (ingest half) and module audit — owner:Abhishek
+- Steps: S6 ingest, report, audit (status after: M14 DONE; next_unit M15)
+- Did: ingested job 20261013-125843_M14_s6 (7 of 7 commands exit 0). `report_security` got `--anonymity`: a run of a
+  second runner session, same real-stack checks, own provenance line, its stage checks in gates.csv (5 new test
+  functions, 8 cases). Regenerated results/security and section 4.S of the notes; captured evidence; audited M14.
+- Result (T4 + PostgreSQL, seed 2026, one replay each, W = 60): real rows per window, median / p5: 32 / 23.5 at 10
+  users, 384 / 331 at 100, 4098 / 3960.8 at 1000. Per bucket-window median / p5: 0 / 0, 0 / 0, 62 / 26 (900, 520, 0 of
+  960 cells empty). Turn-order accuracy 0.5691, 0.5583, 0.5559. Fullest bucket-window 26, 42, 172: above CAND_K 128
+  at 1000 users (ISSUE-43). Every cell equals the simulator run of session 40. 82 of 82 gates PASS.
+- Evidence: runs/20261013-101309_M14_security_anon (device run); runs/20261013-155229_M14_s6_ingest_report (report_command.txt,
+  report_stdout.txt, pytest_all.txt 2121 passed 675 skipped, check_*.txt, ruff.txt, g10_quick_rerun.txt);
+  results/security/s6_anonymity.json, anonymity_table.csv; evidence/terminal/M14_S6_*, evidence/gpu/M14_S6_nvidia_smi.txt
+- Metrics added: 24 rows S-ANON-*, S-TURNACC-W60-U*, S-F-W60-U* (backend cupy, runner colab), indexed by the ingest
+- Decisions: none new (ADR); how the second session is reported is in the Amendments of the module file
+- Issues: closed ISSUE-42 and ISSUE-40; opened ISSUE-43 (occupancy above CAND_K at 1000 users and at W300)
+- Deviations from spec: S6 from a runner session of its own; stage checks counted in the gate table; no S6 figure
+- Not verified: more than one seed or replay; a read on a layout above CAND_K (only dumped); how many bucket-windows
+  are above CAND_K at 1000 users; another mapping of users to conversations
+- Commit: ce8de77 (ingest, generator), d08aa1a (results, notes, evidence), records in the next commit
+- Next: M15 (ISSUE-12 BLOCKS M15 and comes first) ; human action: none required; ISSUE-41, ISSUE-36 and ISSUE-43 are
+  open for a decision of the owner

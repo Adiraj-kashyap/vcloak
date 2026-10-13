@@ -1228,3 +1228,35 @@ Notes:
   was removed, and the run was repeated after the code commit.
 - The evidence row of the pytest output says "dirty": the simulator run dir was still untracked when it was written.
 - The job's runtime on the runner is an estimate.
+
+## Audit M14 — 2026-10-13 — session 41 — result: PASS
+| Item | Result | Evidence |
+|---|---|---|
+| A1 real stack | PASS | S1 to S5 unchanged (job 20261013-105517_M14). S6: runs/20261013-101309_M14_security_anon/manifest.json (backend cupy, gpu_job 20261013-125843_M14_s6, params mode=vcloak, db=postgres, engine=gpu; every population's scheduler block says is_gpu true, Tesla T4). report_security refuses anything else (tests/unit/test_bench_report_security.py, 4 refusal cases for the anonymity run). S7 is by definition the CPU oracle side |
+| A2 acceptance gates recorded | PASS | results/security/gates.csv: 82 rows, 82 PASS (RUN/report_stdout.txt); TESTING §4 has no gate for S6, its 21 stage checks are recorded; the occupancy above CAND_K is recorded and is ISSUE-43, not omitted |
+| A3 GPU-vs-oracle table | PASS | results/security/oracle_comparison.csv and section 4.S.9 (unchanged by this session; 2 DIFFERS rows are ISSUE-41, open, BLOCKS none) |
+| A4 dudect FAIL reflected | PASS | section 4.S.5 of docs/REPORT_CH4_NOTES.md, regenerated this session from results/oblivious/oblivious_summary.json |
+| G1 | PASS | RUN/pytest_all.txt (2121 passed, 675 skipped: 674 need a CUDA device, 1 deliberate; the database answered, no database skip) |
+| G2 | PASS | RUN/check_metrics.txt (697 rows, 0 problems), same result after the report and the evidence |
+| G2b | PASS | the 24 new rows are backend cupy / runner colab from an ingested bundle (verified by gpujob.py ingest: job id, bundle sha, git sha b042dc8); they are counts and attack accuracies, none a timing |
+| G3 | PASS | RUN/check_oblivious.txt (11 files, 0 findings); the same check in the runner: gpujobs/out/20261013-125843_M14_s6/logs/04_check_oblivious.txt; no kernel changed |
+| G4 | PASS | RUN/check_secrets.txt (0 key-like runs), again after the evidence copy (1862 files, 0) |
+| G5 | N/A | no GPU twin was written; the 674 gpu tests ran on the device in job 20261013-105517_M14 |
+| G6 | PASS | traffic.py, attack.py, uniformity.py, anonymity.py under src/vcloak/eval; bench/run_security_eval.py; results/security (json, png, csv, now with s6_anonymity.json and anonymity_table.csv); docs/REPORT_CH4_NOTES.md section 4.S.1 to 4.S.10; the four items of Evidence to capture are in evidence/ (FIG-M14-*, TERM-M14-INGEST-*, the uniformity summary as e2_uniformity.json) |
+| G7 | PASS | checked after the closing commit |
+| G8 | PASS | STATE: M14 DONE at S7, 6 sessions, gpu_job.pending null, last_ingested 20261013-125843_M14_s6, next_unit M15 |
+| G9 | PASS | SESSION_LOG session 41, this entry, ISSUE-40 and ISSUE-42 closed, ISSUE-43 opened |
+| G10 | PASS | RUN/manifests_valid.txt (runs/20261013-101309_M14_security_anon valid: git b042dc8, seed 2026, command, env); RUN/g10_quick_rerun.txt (quick sizes, numpy simulator with PostgreSQL: exit 0, both populations ok); the full-size simulator run of session 40 prints the same table as the device run |
+Notes:
+- RUN is runs/20261013-155229_M14_s6_ingest_report.
+- The module is DONE with these stated limits, none of them hidden by the PASS: one seed and one replay per layout and
+  per population (no confidence interval); S6 comes from a second runner session and is reported apart; 2 of 35 oracle
+  rows differ on the oracle side (ISSUE-41, undecided); the M08 dudect FAILs are quoted, not resolved (ADR-023);
+  occupancy above CAND_K at W300 and at 1000 users (ISSUE-43); no read was tried on those layouts.
+- S6 "gates" in gates.csv are replay checks; the count 82 must not be quoted as 82 acceptance gates of TESTING §4.
+- The median per bucket-window over every cell is 0 at 10 and 100 users because most cells are empty (900 and 520 of
+  960); the notes give the row view beside it. Which of the two the report leads with is the owner's choice (M20).
+- results/security/fig_*.pdf changed bytes at the regeneration (the PNGs did not): same data, new file metadata. The
+  copies in evidence/figures are those of session 38.
+- First ruff call of the session scanned `.` and flagged an old helper script inside runs/20261011-213200_M05_ingest_audit;
+  RUN/ruff.txt is the usual call over src, tests, bench, scripts.

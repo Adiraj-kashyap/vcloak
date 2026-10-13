@@ -3,13 +3,13 @@
 ```yaml
 project: v-cloak
 kit_version: 1.0
-last_session: 40
+last_session: 41
 last_session_date: 2026-10-13
-current_module: M14
-current_step: S6
-status: BLOCKED_HUMAN        # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
-next_unit: M14
-last_checkpoint: 2026-10-13 session 40: S6 code done and job 20261013-125843_M14_s6 packed (ISSUE-42); next: ingest, then the S6 section of the notes and the M14 audit
+current_module: M15
+current_step: S1
+status: NOT_STARTED          # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
+next_unit: M15
+last_checkpoint: 2026-10-13 session 41: M14 DONE (S6 ingested, audit PASS, tag M14-done); next: M15, where ISSUE-12 (BLOCKS M15) comes first
 quick_mode_default: false
 local:                      # the laptop (no GPU) — filled by M00 S7
   os: "Windows-11-10.0.26200-SP0"
@@ -33,8 +33,8 @@ runner:                     # the free remote GPU — filled from the ingested M
   peak_bw_gbs: 320.064
   last_session_id: "20261012-135251"
 gpu_job:                    # set by the gpu-job skill
-  pending: 20261013-125843_M14_s6   # job id awaiting the upload of the human, or null
-  last_ingested: 20261013-105517_M14
+  pending: null   # job id awaiting the upload of the human, or null
+  last_ingested: 20261013-125843_M14_s6
 ```
 
 ## Modules
@@ -55,7 +55,7 @@ gpu_job:                    # set by the gpu-job skill
 | M11 | Session security (E5) | Divyansh | M10 | no | DONE | S7 | 2 |
 | M12 | Client SDK & CLI | Abhishek | M11 | no | DONE | S4 | 1 |
 | M13 | Frontend: chat + server view | Abhishek | M12 | no | DONE | S6 | 5 |
-| M14 | Security evaluation (E0–E2, anon set) | Abhishek | M08, M10 | no | BLOCKED_HUMAN | S6 |5 |
+| M14 | Security evaluation (E0–E2, anon set) | Abhishek | M08, M10 | no | DONE | S7 | 6 |
 | M15 | End-to-end performance (E6) | Divyansh | M10, M11 | no | NOT_STARTED | S1 | 0 |
 | M16 | Results export | Abhishek | M07, M08, M14 | no | NOT_STARTED | S1 | 0 |
 | M18 | Frontend: dashboard, experiments, logs | Abhishek | M13, M14 | no | NOT_STARTED | S1 | 0 |
@@ -115,5 +115,6 @@ Keep this file under 120 lines: one or two lines per note, the detail lives in t
   S7 is done: `bench/run_oracle_compare.py` (20261013-121247_M14_oracle_compare), into the notes by `--oracle`
   (command in runs/20261013-122548_M14_oracle_report/report_command.txt, which replaces the one above). Never
   write "the GPU matches the oracle": 31 of 35 rows agree, 2 differ on the oracle side (ISSUE-41). W300 is dumped
-  only (peak occupancy above CAND_K). S6: `--stage anonymity`, users in pairs, job `bench/jobs/M14_s6.json`
-  (ISSUE-42). At the ingest `report_security` must take the S6 run as a second session (it refuses two now).
+  only (peak occupancy above CAND_K). S6 (users in pairs) is a second runner session (20261013-101235),
+  in the notes by `--anonymity` (command in runs/20261013-155229_M14_s6_ingest_report/report_command.txt, which replaces
+  the two above). At 1000 users the fullest bucket-window is above CAND_K (ISSUE-43): M15 must read that first.

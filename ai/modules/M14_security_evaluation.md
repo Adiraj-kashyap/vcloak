@@ -108,3 +108,17 @@ paper-ready figures into `evidence/figures/`, plus the terminal output of the at
     `S-F-W60-U<users>`. `S-ANON-MED-U<users>` is the median per window.
   - The S6 job runs in a runner session of its own: `report_security` (one session only) has to take the S6 run as a
     separate input at the ingest, with its own provenance line.
+- 2026-10-13 (session 41): the ingest of job 20261013-125843_M14_s6 (Colab, Tesla T4, PostgreSQL 16 in the runner; runner
+  session 20261013-101235, not the session of S1 to S5).
+  - `report_security` takes the S6 run through `--anonymity`. It passes every check of the other runs (cupy, an ingested
+    job, full size, status OK, mode=vcloak, db=postgres, engine=gpu) except the one-session one, is described with its own
+    provenance line (section 4.S.10 of the notes, `anonymity_provenance` in `security_summary.json`), and none of its
+    values enters a table of the other session.
+  - The seven checks of the stage are copied into `results/security/gates.csv` for each population (21 rows, experiment
+    S6), so the gate count of the notes went from 61 to 82. They are checks of the replay, not acceptance gates of TESTING §4.
+  - The notes quote both counts: over every cell (the metric ids) and as a real row sees it (`msg_median`, `msg_p5`, read
+    from `s6_anonymity.json`, no metric id).
+  - The device values of S6 equal the simulator values of session 40 in every cell of the table: the counts depend on
+    the traffic (seed 2026) and the public bucket mapping only. Both sets are in METRICS_INDEX under the same ids, told
+    apart by backend and runner; only the cupy rows are results.
+  - No figure is drawn for S6 (*Evidence to capture* names none); the table is `results/security/anonymity_table.csv`.

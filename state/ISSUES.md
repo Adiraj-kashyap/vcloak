@@ -1171,7 +1171,7 @@ Done (session 38, 2026-10-13): the human ran the job on Colab (session 20261013-
 commands exit 0 (stack_up too), 5 run dirs, 40 metrics indexed, 674 of 674 tests marked gpu passed in one process
 (1519.60 s by pytest's own report: a duration of the test run, not a metric). The bundle is in gpujobs/done/. CLOSED.
 
-### ISSUE-40 [OPEN] M14 S6 (anonymity set) and S7 (comparison with the oracle) are not written and not in job 20261013-105517_M14
+### ISSUE-40 [CLOSED d08aa1a] M14 S6 (anonymity set) and S7 (comparison with the oracle) are not written and not in job 20261013-105517_M14
 BLOCKS: M14   SEVERITY: medium   OPENED: 2026-10-13 session 37
 The human asked for E0 to E3 in the job; S6 and S7 were not part of it and are not written.
 1. S7 needs no device: it compares the ingested numbers with the oracle (`seed/`, run locally) in a table.
@@ -1194,6 +1194,9 @@ the GPU job 20261013-125843_M14_s6 was packed (ISSUE-42). This issue closes with
 Point 3 has a sibling, seen on the simulator only (runs/20261013-124943_M14_security_anon/s6_anonymity.json): at 1000 users the
 fullest bucket-window of the default layout W = 60 holds more real rows than CAND_K (S-ANON-BW-PEAK-U1000, backend
 numpy), so a read there would answer `candidate_overflow`. To be re-read on the device numbers at the ingest.
+Session 41 (ingest of job 20261013-125843_M14_s6): closed. S6 is measured on the T4 with PostgreSQL (runs/20261013-101309_M14_security_anon)
+and is section 4.S.10 of the notes; nothing of M14 is NOT_MEASURED any more. The sibling of point 3 is the same on the
+device (S-ANON-BW-PEAK-U1000 172, CAND_K 128): it and the W300 point are carried by ISSUE-43.
 
 ### ISSUE-41 [OPEN] M14 S7: the CPU oracle's own chi-square run is outside the acceptance gate (p 0.0026); the device passes
 BLOCKS: none   SEVERITY: medium   OPENED: 2026-10-13 session 39
@@ -1215,7 +1218,7 @@ test key for the chi-square, so that the oracle side becomes repeatable (this ne
 Until decided, M20 and M22 quote the comparison as "31 of 35 rows agree, 2 are defined differently, 2 differ on the
 oracle side (ISSUE-41)", never as "the GPU matches the oracle".
 
-### ISSUE-42 [OPEN] HUMAN ACTION REQUIRED — GPU JOB READY: M14 S6, the anonymity set on the full stack (job 20261013-125843_M14_s6)
+### ISSUE-42 [CLOSED d08aa1a] HUMAN ACTION REQUIRED — GPU JOB READY: M14 S6, the anonymity set on the full stack (job 20261013-125843_M14_s6)
 BLOCKS: M14   SEVERITY: high   OPENED: 2026-10-13 session 40
 Why: S6 is the last open step of M14, and audit A1 wants its numbers from the T4 with PostgreSQL behind the service
 (ISSUE-40). No decision for the simulator was recorded, so the job was packed, as ISSUE-40 said it would be.
@@ -1248,3 +1251,23 @@ Alternative, if you do not want to run a job: say "S6 on the simulator". Then th
 are reported as simulator values and A1 is recorded as not met for S6.
 Confirm by running: `ls gpujobs/inbox/` shows results_20261013-125843_M14_s6.zip
 Then type: continue
+Session 41: the human ran the job on Colab and put results_20261013-125843_M14_s6.zip into gpujobs/inbox. Ingested: runner
+session 20261013-101235, Tesla T4, 7 of 7 commands exit 0, run runs/20261013-101309_M14_security_anon (mode=vcloak, db=postgres,
+engine=gpu), 24 rows indexed as cupy / colab. Closed with d08aa1a.
+
+### ISSUE-43 [OPEN] Bucket-window occupancy above CAND_K: the default layout W = 60 at 1000 users, and W = 300 at 200 conversations
+BLOCKS: none   SEVERITY: medium   OPENED: 2026-10-13 session 41
+What: measured on the device (T4 + PostgreSQL). (a) runs/20261013-101309_M14_security_anon/s6_anonymity.json: with 1000 users in 500
+conversations (61383 messages in 900 simulated seconds, 64 buckets, W = 60) the fullest bucket-window holds 172 real rows
+(S-ANON-BW-PEAK-U1000), the median bucket-window 62, CAND_K is 128. At 10 and 100 users the peaks are 26 and 42.
+(b) runs/20261013-054727_M14_security_e0e1/e1_attack.json: layout W300 with 200 conversations, peak 345, mean 132.97 (from ISSUE-40).
+Consequence: `fetch_candidates` raises `CandidateOverflow` above K (ADR-014), so a read of such a bucket-window answers
+`candidate_overflow`. M14 only dumped and counted these layouts; no read was attempted on them, so the failure of a read
+is the contract of ADR-014, not an observation of this run. How many bucket-windows are above CAND_K at 1000 users was not counted.
+Not a result of this issue: any capacity claim. The traffic model (rate 0.05, bursts) and one seed give these numbers.
+Affects: M15 (a load of 1000 users on the default parameters would hit overflow on reads: say which parameters it runs
+with before measuring); M20 and M22 (state as a limitation of the default parameters: the buckets, CAND_K and W have to
+be sized to the population). Sections 4.S.3 and 4.S.10 of the notes name this issue.
+Options for the owner: (a) document as a sizing limit (the state now); (b) a sizing rule for buckets / CAND_K from the
+expected rows per window, as a design note or ADR, checked by one more S6-type run; (c) raise CAND_K or the bucket count
+for the 1000-user point in M15 and record the parameters beside every number.
