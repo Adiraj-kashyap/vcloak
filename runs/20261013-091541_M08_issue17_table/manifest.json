@@ -1,0 +1,50 @@
+{
+  "run_id": "20261013-091541_M08_issue17_table",
+  "module": "M08",
+  "step": "S5",
+  "owner": "Aditya",
+  "git_sha": "7df8fc058433e76092ba2dc0b8b6e4d35d2b98de",
+  "dirty": true,
+  "command": "python -m vcloak.bench.report_oblivious ... --diagnostics runs/20261012-061420_M08_dudect_issue17_s8 runs/20261012-080629_M08_dudect_issue17_s9 --issue-diagnostics ISSUE-17 (full line in report_command.txt); pytest -m 'not gpu' (numpy); check_metrics.py; check_secrets.py; check_oblivious.py kernels/; ruff",
+  "seed": 0,
+  "quick": false,
+  "params": {},
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261013-091541",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U"
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791863141.7300787
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791863538.2581809
+  },
+  "outputs": [
+    "capture_terminal.json",
+    "check_metrics.txt",
+    "check_metrics_final.txt",
+    "check_oblivious.txt",
+    "check_secrets.txt",
+    "gates.txt",
+    "pytest_all.txt",
+    "regen_a.sha",
+    "regen_b.sha",
+    "regen_identical.txt",
+    "report.txt",
+    "report_command.txt",
+    "ruff.txt",
+    "section_4O3.md",
+    "staging_diagnostics.csv",
+    "summary_table.csv"
+  ],
+  "status": "OK",
+  "notes": "fix ISSUE-17 point 1: tables regenerated, nothing measured (numpy backend, correctness only); gates.txt came from an inline script that was not saved"
+}

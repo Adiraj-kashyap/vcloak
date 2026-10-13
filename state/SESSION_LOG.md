@@ -853,3 +853,25 @@
 - Commit: 9a6936f
 - Next: `fix ISSUE-17` point 1 (the report table shows the diagnostics; local, no GPU), then M14 S1 ; human action:
   none required. Optional: decide ISSUE-36 (keep the result with its limits, or NOT_MEASURED)
+
+## Session 35 — 2026-10-13 — fix ISSUE-17 point 1 (M08 GPU obliviousness audit), the report table — owner:Aditya
+- Steps: none new (M08 stays DONE). Local unit, no GPU job (status after: NOT_STARTED for M14, no job pending)
+- Did: `report_oblivious` gains `--diagnostics` / `--issue-diagnostics`: a sub-section of 4.O.3 and
+  results/oblivious/staging_diagnostics.csv put the ISSUE-17 runs (seeds 8 and 9) beside the three failing S2
+  series; the same rows are appended to summary_table.csv. 7 new test cases. results/oblivious and the notes regenerated.
+- Result: nothing measured. Table: 38 rows (4 of S2, 34 of the diagnostic job); the S2 rows unchanged; 3 S2 FAILs and 18 diagnostic FAILs kept.
+  Readings by the rules of ISSUE-17: aead_conv, aead_tag and write_epoch (whole call) follow the staging, not the
+  contents; no dependence on the contents detected at this N, on this device. Never "constant time".
+- Evidence: runs/20261013-091541_M08_issue17_table (report.txt, report_command.txt, gates.txt 49 PASS 0 FAIL, pytest_all.txt 2038 passed
+  1 skipped, check_metrics.txt, check_secrets.txt, check_oblivious.txt, ruff.txt, regen_identical.txt);
+  evidence/terminal/M08_issue17_staging_diagnostics.csv, _summary_table.csv, _section_4O3.md, _pytest_all.txt
+- Metrics added: none (every value was indexed by the ingests of sessions 16 and 21)
+- Decisions: none new
+- Issues: ISSUE-17 CLOSED (points 2 and 3 were closed in sessions 32 and 34). ISSUE-36 stays OPEN (optional decision)
+- Deviations from spec: the S2 staging was kept and the diagnostics are shown beside it; the other way named in
+  ISSUE-17 (symmetric staging as the S2 staging, measured again) was not taken. The text of the "not explained"
+  bullet and of one limitation line in 4.O.3 / 4.O.6 changes when diagnostics are given.
+- Not verified: nothing on a CUDA device this session. For the AEAD targets staging and SM clock change together;
+  the generator says so and does not separate them. The gates script was inline and is not saved.
+- Commit: PENDINGHASH
+- Next: M14 S1 (Security evaluation, owner Abhishek) ; human action: none required. Optional: decide ISSUE-36

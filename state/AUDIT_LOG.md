@@ -1031,3 +1031,38 @@ Notes:
   in section 4.O.7. Nothing was measured locally.
 - capture-evidence: terminal proofs and the runner's figures (measured; the self-test figure is quick). web/ did
   not change and M18 has not built the dashboard data yet, so no screenshot was taken.
+
+## Audit M08 (fix ISSUE-17 point 1, the report table) — 2026-10-13 — session 35 — result: PASS (records and a generator; nothing measured; ISSUE-17 CLOSED, M08 stays DONE)
+| Item | Result | Evidence |
+|---|---|---|
+| A1 planted leak detected | N/A | no measurement this session; unchanged (control_leak row of results/oblivious/summary_table.csv) |
+| A2 verdicts at full N | PASS | runs/20261013-091541_M08_issue17_table/gates.txt: the 38 rows of staging_diagnostics.csv equal the summaries of the three ingested runs (verdict, max abs(t), N, sign of raw t); all at N 100000, none quick |
+| A3 SASS branches explained | N/A | no kernel changed; 16 of 16 as before (runs/20261013-091541_M08_issue17_table/report.txt) |
+| A4 ncu | N/A | NOT_MEASURED as before (ISSUE-18) |
+| A5 a FAIL blocks M14, never softened | PASS | runs/20261013-091541_M08_issue17_table/gates.txt: the 10 lines of summary_table.csv at HEAD are unchanged, the three S2 FAILs are still FAIL, the 18 diagnostic FAILs are listed and bold in section 4.O.3; tests test_diagnostics_* (a FAIL without the staging, a FAIL not reproduced and a failing control each change the reading) |
+| G1 | PASS | runs/20261013-091541_M08_issue17_table/pytest_all.txt (2038 passed, 1 skipped, 674 deselected; numpy; 7 new cases) |
+| G2 | PASS | runs/20261013-091541_M08_issue17_table/check_metrics.txt and check_metrics_final.txt (528 rows, 0 problems); no row added: every value of the new table was indexed in sessions 16 and 21 |
+| G2b | PASS | runs/20261013-091541_M08_issue17_table/gates.txt: the three source runs are cupy runs with a gpu_job block; the generator refuses anything else (test_diagnostics_refuse_a_numpy_run_and_a_second_session) |
+| G3 | PASS | runs/20261013-091541_M08_issue17_table/check_oblivious.txt (11 files, 0 findings); no kernel changed |
+| G4 | PASS | runs/20261013-091541_M08_issue17_table/check_secrets.txt (1623 files, 0 key-like runs) |
+| G5 | N/A | no kernel or twin changed |
+| G6 | PASS | results/oblivious/staging_diagnostics.csv, summary_table.csv, docs/REPORT_CH4_NOTES.md 4.O.3, evidence/terminal/M08_issue17_staging_diagnostics.csv, _summary_table.csv, _section_4O3.md, _pytest_all.txt exist |
+| G7 | PASS | checked after the closing commit |
+| G8 | PASS | STATE: M08 DONE (9 sessions), next_unit M14 at S1, no job pending, no OPEN issue BLOCKS M14 |
+| G9 | PASS | SESSION_LOG session 35, this entry, ISSUE-17 closed |
+| G10 | PASS | runs/20261013-091541_M08_issue17_table/manifest.json valid, report_command.txt holds the full command; run twice, identical output (regen_a.sha = regen_b.sha) |
+Notes:
+- Nothing was measured. The backend of this run dir is numpy and it holds no performance or side-channel number
+  of its own: every value in the new table is copied from the summaries of ingested cupy runs.
+- The readings in section 4.O.3 are the rules written in ISSUE-17 before the diagnostic job ran, applied by the
+  generator to copied verdicts. They are readings, not proofs, and the section says so. For aead_conv and aead_tag
+  the generator states that the staging and the SM clock change together and that the job does not separate them.
+- The sign of the raw t is shown as a sign only. No number without an index row was added to the notes.
+- Point 1 was closed by showing the diagnostics beside the S2 rows. The S2 staging was not replaced and not
+  measured again; the table therefore still opens with three FAILs, as measured.
+- gates.txt was written by an inline script that was not saved in the run dir; the gates can be re-derived from
+  staging_diagnostics.csv and the three summary.json files, but the script itself is not evidence.
+- evidence/gpu/M08_summary_table.csv is the table as captured at S5 (session 16) and was left as it is; the
+  regenerated table is evidence/terminal/M08_issue17_summary_table.csv.
+- capture-evidence: terminal copies only. web/ did not change and M18 has not built the dashboard data yet.
+- The 1 skipped test is tests/unit/test_oracle_chacha.py:82 ("M02 references are wired in"), a deliberate skip.

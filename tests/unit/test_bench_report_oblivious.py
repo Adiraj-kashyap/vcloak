@@ -248,3 +248,108 @@ def test_kernel_window_refuses_a_numpy_run(tree: dict[str, Path]) -> None:
     (kw["seeds"][1] / "manifest.json").write_text(json.dumps(man), encoding="utf-8")
     with pytest.raises(ReportError, match="not an ingested cupy run"):
         _generate(tree, kernel_window=kw)
+
+
+# ---------------------------------------------------------------- staging diagnostics (ISSUE-17), synthetic
+
+def _dg(name: str, series: dict[str, tuple[float, str, float]], mhz: int = 585) -> dict[str, Any]:
+    out = _target(name, {s: {**_series(t, v), "t_raw": raw} for s, (t, v, raw) in series.items()})
+    out["clock"] = {"status": "LOW", "before_mhz": mhz, "after_mhz": mhz}
+    return out
+
+
+def _diag_tree(tree: dict[str, Path], sym: str = "PASS", original: tuple[str, str] = ("FAIL", "FAIL"),
+               control: str = "PASS", swap_raw: float = -5.0, session: str = "d1") -> dict[str, Any]:
+    seeds = []
+    for seed, ov in zip((8, 9), original, strict=True):
+        targets = [_dg("control_null", {"ms": (1.0, control, 0.5)}, 1000),
+                   _dg("aead_conv", {"ms": (30.0 if ov == "FAIL" else 2.0, ov, -6.0)}),
+                   _dg("aead_conv_null", {"ms": (40.0, "FAIL", -12.0)}),
+                   _dg("aead_conv_swap", {"ms": (34.0, "FAIL", swap_raw)}),
+                   _dg("aead_conv_sym", {"ms": (7.0 if sym == "FAIL" else 2.4, sym, -0.7)}, 1500),
+                   _dg("aead_conv_kernel", {"ms": (2.9, "PASS", 1.1)}, 1200),
+                   _dg("write_epoch", {"device_ms": (1.7, "PASS", -1.1), "call_ms": (29.0, "FAIL", -0.1)}),
+                   _dg("write_epoch_fresh", {"device_ms": (6.1 if seed == 8 else 3.0, "FAIL" if seed == 8 else "PASS",
+                                                           -2.0), "call_ms": (1.7, "PASS", -0.1)})]
+        if seed == 8:
+            targets.append(_dg("write_epoch_null", {"device_ms": (2.7, "PASS", -2.1), "call_ms": (12.7, "FAIL", -0.6)}))
+        d = _run(tree["root"], f"d{seed}", {"metrics": _metrics(targets), "targets": targets}, session=session)
+        man = json.loads((d / "manifest.json").read_text(encoding="utf-8"))
+        man["seed"] = seed
+        (d / "manifest.json").write_text(json.dumps(man), encoding="utf-8")
+        seeds.append(d)
+    return {"seeds": seeds, "issue": "ISSUE-D"}
+
+
+def _diag_text(tree: dict[str, Path], **kw: Any) -> str:
+    notes = tree["root"] / "notes.md"
+    _generate(tree, notes=notes, diagnostics=_diag_tree(tree, **kw))
+    return notes.read_text(encoding="utf-8").split("### Diagnostics of the failing series")[1].split("## 4.O.4")[0]
+
+
+def test_diagnostics_stand_beside_the_s2_rows_and_no_fail_is_removed(tree: dict[str, Path]) -> None:
+    notes = tree["root"] / "notes.md"
+    s = _generate(tree, notes=notes, diagnostics=_diag_tree(tree))
+    text = notes.read_text(encoding="utf-8")
+    head = "### Diagnostics of the failing series (ISSUE-D)"
+    assert text.index("## 4.O.3") < text.index(head) < text.index("## 4.O.4")
+    assert "aead_conv | full | 50<!--M:T-DUDECT-N-AEAD-CONV--> | 12.0<!--M:T-DUDECT-MAXT-AEAD-CONV--> | **FAIL" in text
+    assert "it blocks M14" not in text and "stay in every table as measured" in text
+    diag = text.split("### Diagnostics of the failing series")[1].split("## 4.O.4")[0]
+    assert "| S2 | None | `aead_conv` | aead_conv | 50 | 12.0<!--M:T-DUDECT-MAXT-AEAD-CONV--> | **FAIL** |" in diag
+    assert "| `aead_conv_null` | aead_conv_null | 50 | 40.0<!--M:T-DUDECT-MAXT-AEAD-CONV-NULL--> | **FAIL** |" in diag
+    assert "| 9 | `aead_conv_sym` | aead_conv_sym | 50 | 2.4<!--M:T-DUDECT-MAXT-AEAD-CONV-SYM--> | PASS |" in diag
+    conv = next(x for x in diag.splitlines() if x.startswith("- `aead_conv`:"))
+    assert "reproduced in 2 of 2 seeds" in conv and "FAIL in 2 of 2 series" in conv
+    assert "keeps its sign in 2 of 2 seeds" in conv and "PASSES in 4 of 4 series" in conv
+    assert "the difference follows the staging, not the contents" in conv
+    assert "585 to 585 MHz with the S2 staging and 1200 to 1500 MHz without it: the staging and the clock" in conv
+    call = next(x for x in diag.splitlines() if x.startswith("- `write_epoch` (whole call):"))
+    assert "FAIL in 1 of 1 series" in call and "follows the staging" in call and "change together" not in call
+    assert "although their S2 series PASSES: `write_epoch_fresh` (device stages) at seed 8." in diag
+    assert "constant time" not in diag
+    assert "staging_diagnostics.csv" in s["files"] and s["diagnostics"]["issue"] == "ISSUE-D"
+    assert s["fails"] == ["write_epoch:call_ms", "aead_conv:ms"] and "aead_conv_null:ms:s9" in s["diagnostic_fails"]
+    table = (tree["root"] / "out" / "summary_table.csv").read_text(encoding="utf-8").splitlines()
+    assert any(x.startswith("aead_conv,ms,dudect,50,12.0,raw,FAIL,PASS") for x in table)
+    assert any(x.startswith("aead_conv_sym,ms,diagnostic_s8,50,2.4,,PASS,PASS,1500-1500") for x in table)
+    rows = (tree["root"] / "out" / "staging_diagnostics.csv").read_text(encoding="utf-8")
+    assert "diagnostic,8,aead_conv_swap,ms,aead_conv,swap,aead_conv_swap,50,34.0,FAIL,PASS,-,585-585" in rows
+
+
+def test_without_diagnostics_the_fails_stay_open(tree: dict[str, Path]) -> None:
+    notes = tree["root"] / "notes.md"
+    s = _generate(tree, notes=notes)
+    text = notes.read_text(encoding="utf-8")
+    assert "it blocks M14" in text and "### Diagnostics" not in text and "diagnostics" not in s
+    assert "Three target series FAIL and are open (ISSUE-A)" in text
+
+
+@pytest.mark.parametrize(("kw", "expect", "never"), [
+    ({"sym": "FAIL"}, "**a FAIL remains without the S2 staging**", "follows the staging"),
+    ({"original": ("FAIL", "PASS")}, "reproduced in 1 of 2 seeds, so the diagnostics do not explain it", "Reading:"),
+    ({"control": "FAIL"}, "void, the full-N `control_null` of a seed does not PASS", "Reading:"),
+])
+def test_diagnostics_are_read_by_the_rules_never_softened(tree: dict[str, Path], kw: dict[str, Any], expect: str,
+                                                          never: str) -> None:
+    diag = _diag_text(tree, **kw)
+    conv = next(x for x in diag.splitlines() if x.startswith("- `aead_conv`:"))
+    assert expect in conv and never not in conv
+
+
+def test_diagnostics_count_a_swap_that_changes_its_sign(tree: dict[str, Path]) -> None:
+    conv = next(x for x in _diag_text(tree, swap_raw=5.0).splitlines() if x.startswith("- `aead_conv`:"))
+    assert "keeps its sign in 0 of 2 seeds" in conv
+
+
+def test_diagnostics_refuse_a_numpy_run_and_a_second_session(tree: dict[str, Path]) -> None:
+    dg = _diag_tree(tree)
+    man = json.loads((dg["seeds"][1] / "manifest.json").read_text(encoding="utf-8"))
+    man["env"]["session_id"] = "elsewhere"
+    (dg["seeds"][1] / "manifest.json").write_text(json.dumps(man), encoding="utf-8")
+    with pytest.raises(ReportError, match="never merge two sessions"):
+        _generate(tree, diagnostics=dg)
+    man["env"]["backend"] = "numpy"
+    (dg["seeds"][1] / "manifest.json").write_text(json.dumps(man), encoding="utf-8")
+    with pytest.raises(ReportError, match="not an ingested cupy run"):
+        _generate(tree, diagnostics=dg)

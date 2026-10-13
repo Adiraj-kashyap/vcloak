@@ -1,0 +1,21 @@
+{
+ "module": "M08",
+ "run": "runs/20261013-091541_M08_issue17_table (git 7df8fc0, dirty)",
+ "date": "2026-10-13",
+ "views": {},
+ "checks": {},
+ "ok": true,
+ "superseded": [],
+ "index_rows": [
+  "TERM-M08-ISSUE17-STAGING-DIAGNOSTICS",
+  "TERM-M08-ISSUE17-SUMMARY-TABLE",
+  "TERM-M08-ISSUE17-SECTION-4O3",
+  "TERM-M08-ISSUE17-PYTEST-ALL"
+ ],
+ "files_written": [
+  "terminal/M08_issue17_staging_diagnostics.csv",
+  "terminal/M08_issue17_summary_table.csv",
+  "terminal/M08_issue17_section_4O3.md",
+  "terminal/M08_issue17_pytest_all.txt"
+ ]
+}

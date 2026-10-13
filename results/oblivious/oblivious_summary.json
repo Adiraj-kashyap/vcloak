@@ -59,6 +59,7 @@
     "sass_chacha_tags_branches.txt",
     "sass_control_planted_leak.txt",
     "sass_control_planted_leak_branches.txt",
+    "staging_diagnostics.csv",
     "summary_table.csv"
   ],
   "generated_by": "python -m vcloak.bench.report_oblivious",
@@ -75,5 +76,32 @@
       "runs/20261012-155223_M08_dudect_i25_s11",
       "runs/20261012-165055_M08_dudect_i25_s12"
     ]
-  }
+  },
+  "diagnostics": {
+    "issue": "ISSUE-17",
+    "seeds": [
+      "runs/20261012-061420_M08_dudect_issue17_s8",
+      "runs/20261012-080629_M08_dudect_issue17_s9"
+    ]
+  },
+  "diagnostic_fails": [
+    "write_epoch:call_ms:s8",
+    "write_epoch:call_ms:s9",
+    "write_epoch_null:call_ms:s8",
+    "write_epoch_age:call_ms:s8",
+    "write_epoch_age:device_ms:s8",
+    "write_epoch_fresh:device_ms:s8",
+    "aead_tag:ms:s8",
+    "aead_tag:ms:s9",
+    "aead_tag_null:ms:s8",
+    "aead_tag_null:ms:s9",
+    "aead_tag_swap:ms:s8",
+    "aead_tag_swap:ms:s9",
+    "aead_conv:ms:s8",
+    "aead_conv:ms:s9",
+    "aead_conv_null:ms:s8",
+    "aead_conv_null:ms:s9",
+    "aead_conv_swap:ms:s8",
+    "aead_conv_swap:ms:s9"
+  ]
 }

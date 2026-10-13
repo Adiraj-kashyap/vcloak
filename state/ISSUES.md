@@ -382,7 +382,7 @@ Then open a new session and type: continue
 Closed 2026-10-12 session 16: the human ran the job on Kaggle (session 20261012-031230, Tesla T4) and the results
 zip was ingested; all 8 commands exit 0, git sha and bundle sha match (runs/20261012-093714_M08_ingest_audit/gates.txt).
 
-### ISSUE-17 [OPEN] M08 dudect: three target series FAIL at N = 100000 (aead_conv, write_epoch whole call, aead_tag)
+### ISSUE-17 [CLOSED PENDINGHASH] M08 dudect: three target series FAIL at N = 100000 (aead_conv, write_epoch whole call, aead_tag)
 BLOCKS: M14   SEVERITY: high   OPENED: 2026-10-12 session 16
 Finding (job 20261012-041010_M08, runner session 20261012-031230, Tesla T4, threshold 4.5; all values from
 runs/20261012-031331_M08_dudect/summary.json and dudect_<target>.json, recomputed from the raw npz in runs/20261012-093714_M08_ingest_audit/gates.txt):
@@ -473,6 +473,20 @@ listed as a limitation; it does not block M14 by itself any more. Points 1 and 3
 Update 2026-10-13 session 34: point 3 is closed (ISSUE-25 closed by the kernel-only job, see its result). Point 1
 is the only open point: the summary table and section 4.O.3 must show the ISSUE-17 diagnostics beside the S2
 targets. It is a local unit (no GPU job) and it still BLOCKS M14: `fix ISSUE-17` comes before M14 S1.
+Closed 2026-10-13 session 35 (point 1; nothing measured, the tables were regenerated from the ingested runs):
+`python -m vcloak.bench.report_oblivious --diagnostics <seed runs> --issue-diagnostics ISSUE-17` now writes
+- section 4.O.3 of docs/REPORT_CH4_NOTES.md with the sub-section "Diagnostics of the failing series": the three
+  failing S2 series, the same targets measured again and every diagnostic of seeds 8 and 9, one row per series
+  (38 rows), with the reading of the rules above applied to the copied verdicts;
+- results/oblivious/staging_diagnostics.csv (the same 38 rows) and 34 diagnostic rows appended to
+  results/oblivious/summary_table.csv. The 9 rows of S2 are byte-identical to before; the three S2 FAILs and the
+  18 FAILs of the diagnostic job are in the tables (runs/20261013-091541_M08_issue17_table/gates.txt, 49 PASS 0 FAIL).
+The second way of point 1 (make the symmetric staging the S2 staging and measure again) was NOT taken: no GPU job.
+What M14 may write is unchanged from the result of session 21 above: with symmetric staging no dependence of the
+AEAD-open time on the contents was detected at N 100000 per class in two seeds, on one T4; the S2 FAILs are
+reproduced with identical contents. Never "constant time". Limits that stay: for aead_conv and aead_tag the
+staging and the SM clock change together (585 MHz against 1140 to 1560 MHz), one GPU model, readings are rules,
+not proofs; the whole-call FAIL is host timing (ADR-023, a limitation); ISSUE-36 for the kernel-only window.
 
 ### ISSUE-18 [OPEN] M08 ncu: the runner refuses the GPU performance counters (ERR_NVGPUCTRPERM); divergence is NOT_MEASURED
 BLOCKS: none   SEVERITY: medium   OPENED: 2026-10-12 session 16

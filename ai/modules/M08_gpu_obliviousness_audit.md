@@ -130,3 +130,8 @@ paper's setup section and the panel will ask to see. Follow `ai/EVIDENCE.md`.
   targets of session 30 could not test these kernels against their data (`tests/unit/test_run_dudect.py`,
   `test_issue25_tags_and_compact_get_the_same_device_input_in_both_classes`). Job spec `bench/jobs/M08_issue25k.json`.
   ADR-023 scopes P3 to the kernels. This is the last job for ISSUE-25: an unusable result is recorded as NOT_MEASURED.
+- 2026-10-13 (session 35, fix ISSUE-17 point 1). `report_oblivious` reads the diagnostic runs of session 21 when
+  `--diagnostics` is given: section 4.O.3 gets a sub-section and `results/oblivious/staging_diagnostics.csv` with
+  the S2 series, their repeats and every diagnostic series, and `summary_table.csv` gets the diagnostic rows after
+  the S2 rows (run `diagnostic_s<seed>`). The S2 targets, their staging and their FAILs are unchanged; the readings
+  are the rules of ISSUE-17 applied to copied verdicts. Nothing was measured for this.

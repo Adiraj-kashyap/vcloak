@@ -1,0 +1,50 @@
+PASS diagnostic s8 control_null:ms verdict PASS and max abs(t) 1.6126 equal the run summary; run_dir runs/20261012-061420_M08_dudect_issue17_s8
+PASS diagnostic s9 control_null:ms verdict PASS and max abs(t) 1.2530 equal the run summary; run_dir runs/20261012-080629_M08_dudect_issue17_s9
+PASS S2 s8 write_epoch:call_ms verdict FAIL and max abs(t) 8.2776 equal the run summary; run_dir runs/20261012-031331_M08_dudect
+PASS diagnostic s8 write_epoch:call_ms verdict FAIL and max abs(t) 29.6309 equal the run summary; run_dir runs/20261012-061420_M08_dudect_issue17_s8
+PASS diagnostic s9 write_epoch:call_ms verdict FAIL and max abs(t) 8.5822 equal the run summary; run_dir runs/20261012-080629_M08_dudect_issue17_s9
+PASS diagnostic s8 write_epoch_null:call_ms verdict FAIL and max abs(t) 12.7431 equal the run summary; run_dir runs/20261012-061420_M08_dudect_issue17_s8
+PASS diagnostic s8 write_epoch_age:call_ms verdict FAIL and max abs(t) 12.1795 equal the run summary; run_dir runs/20261012-061420_M08_dudect_issue17_s8
+PASS diagnostic s8 write_epoch_fresh:call_ms verdict PASS and max abs(t) 1.7015 equal the run summary; run_dir runs/20261012-061420_M08_dudect_issue17_s8
+PASS diagnostic s9 write_epoch_fresh:call_ms verdict PASS and max abs(t) 1.3865 equal the run summary; run_dir runs/20261012-080629_M08_dudect_issue17_s9
+PASS S2 s8 write_epoch:device_ms verdict PASS and max abs(t) 2.7559 equal the run summary; run_dir runs/20261012-031331_M08_dudect
+PASS diagnostic s8 write_epoch:device_ms verdict PASS and max abs(t) 1.7742 equal the run summary; run_dir runs/20261012-061420_M08_dudect_issue17_s8
+PASS diagnostic s9 write_epoch:device_ms verdict PASS and max abs(t) 1.9675 equal the run summary; run_dir runs/20261012-080629_M08_dudect_issue17_s9
+PASS diagnostic s8 write_epoch_null:device_ms verdict PASS and max abs(t) 2.7782 equal the run summary; run_dir runs/20261012-061420_M08_dudect_issue17_s8
+PASS diagnostic s8 write_epoch_age:device_ms verdict FAIL and max abs(t) 6.3027 equal the run summary; run_dir runs/20261012-061420_M08_dudect_issue17_s8
+PASS diagnostic s8 write_epoch_fresh:device_ms verdict FAIL and max abs(t) 6.1653 equal the run summary; run_dir runs/20261012-061420_M08_dudect_issue17_s8
+PASS diagnostic s9 write_epoch_fresh:device_ms verdict PASS and max abs(t) 3.0940 equal the run summary; run_dir runs/20261012-080629_M08_dudect_issue17_s9
+PASS S2 s8 aead_tag:ms verdict FAIL and max abs(t) 6.2415 equal the run summary; run_dir runs/20261012-031331_M08_dudect
+PASS diagnostic s8 aead_tag:ms verdict FAIL and max abs(t) 51.4940 equal the run summary; run_dir runs/20261012-061420_M08_dudect_issue17_s8
+PASS diagnostic s9 aead_tag:ms verdict FAIL and max abs(t) 35.6716 equal the run summary; run_dir runs/20261012-080629_M08_dudect_issue17_s9
+PASS diagnostic s8 aead_tag_null:ms verdict FAIL and max abs(t) 63.0436 equal the run summary; run_dir runs/20261012-061420_M08_dudect_issue17_s8
+PASS diagnostic s9 aead_tag_null:ms verdict FAIL and max abs(t) 50.8492 equal the run summary; run_dir runs/20261012-080629_M08_dudect_issue17_s9
+PASS diagnostic s8 aead_tag_swap:ms verdict FAIL and max abs(t) 59.6183 equal the run summary; run_dir runs/20261012-061420_M08_dudect_issue17_s8
+PASS diagnostic s9 aead_tag_swap:ms verdict FAIL and max abs(t) 42.6905 equal the run summary; run_dir runs/20261012-080629_M08_dudect_issue17_s9
+PASS diagnostic s8 aead_tag_sym:ms verdict PASS and max abs(t) 1.5629 equal the run summary; run_dir runs/20261012-061420_M08_dudect_issue17_s8
+PASS diagnostic s9 aead_tag_sym:ms verdict PASS and max abs(t) 3.8937 equal the run summary; run_dir runs/20261012-080629_M08_dudect_issue17_s9
+PASS diagnostic s8 aead_tag_kernel:ms verdict PASS and max abs(t) 1.5075 equal the run summary; run_dir runs/20261012-061420_M08_dudect_issue17_s8
+PASS diagnostic s9 aead_tag_kernel:ms verdict PASS and max abs(t) 2.3929 equal the run summary; run_dir runs/20261012-080629_M08_dudect_issue17_s9
+PASS S2 s8 aead_conv:ms verdict FAIL and max abs(t) 11.6369 equal the run summary; run_dir runs/20261012-031331_M08_dudect
+PASS diagnostic s8 aead_conv:ms verdict FAIL and max abs(t) 30.8131 equal the run summary; run_dir runs/20261012-061420_M08_dudect_issue17_s8
+PASS diagnostic s9 aead_conv:ms verdict FAIL and max abs(t) 28.2772 equal the run summary; run_dir runs/20261012-080629_M08_dudect_issue17_s9
+PASS diagnostic s8 aead_conv_null:ms verdict FAIL and max abs(t) 43.1742 equal the run summary; run_dir runs/20261012-061420_M08_dudect_issue17_s8
+PASS diagnostic s9 aead_conv_null:ms verdict FAIL and max abs(t) 30.1696 equal the run summary; run_dir runs/20261012-080629_M08_dudect_issue17_s9
+PASS diagnostic s8 aead_conv_swap:ms verdict FAIL and max abs(t) 34.4452 equal the run summary; run_dir runs/20261012-061420_M08_dudect_issue17_s8
+PASS diagnostic s9 aead_conv_swap:ms verdict FAIL and max abs(t) 28.6825 equal the run summary; run_dir runs/20261012-080629_M08_dudect_issue17_s9
+PASS diagnostic s8 aead_conv_sym:ms verdict PASS and max abs(t) 2.4044 equal the run summary; run_dir runs/20261012-061420_M08_dudect_issue17_s8
+PASS diagnostic s9 aead_conv_sym:ms verdict PASS and max abs(t) 1.3480 equal the run summary; run_dir runs/20261012-080629_M08_dudect_issue17_s9
+PASS diagnostic s8 aead_conv_kernel:ms verdict PASS and max abs(t) 2.9037 equal the run summary; run_dir runs/20261012-061420_M08_dudect_issue17_s8
+PASS diagnostic s9 aead_conv_kernel:ms verdict PASS and max abs(t) 1.8673 equal the run summary; run_dir runs/20261012-080629_M08_dudect_issue17_s9
+PASS every series of the two diagnostic runs is in the table (34)
+PASS summary_table.csv: the 10 lines of HEAD are unchanged and come first
+PASS summary_table.csv: the three S2 FAILs are still FAIL
+PASS summary_table.csv: 34 diagnostic rows, one per diagnostic series
+PASS diagnostic FAILs kept: 18
+PASS section 4.O.3 holds the diagnostics sub-section
+PASS section 4.O.3 has a bold FAIL for each of the 21 failing rows of the diagnostics table
+PASS no 'constant time' / 'constant-time' claim in the M08 block
+PASS runs/20261012-031331_M08_dudect: backend cupy, gpu_job block, not quick
+PASS runs/20261012-061420_M08_dudect_issue17_s8: backend cupy, gpu_job block, not quick
+PASS runs/20261012-080629_M08_dudect_issue17_s9: backend cupy, gpu_job block, not quick
+gates: 49 PASS 0 FAIL

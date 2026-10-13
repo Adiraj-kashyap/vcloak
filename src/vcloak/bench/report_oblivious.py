@@ -138,7 +138,7 @@ def summary_rows(runs: dict[str, dict[str, Any]], branches: list[dict[str, Any]]
 
 
 def build_section(runs: dict[str, dict[str, Any]], prov: dict[str, Any], root: Path, rows: list[dict[str, Any]],
-                  branches: list[dict[str, Any]], issues: dict[str, str]) -> str:
+                  branches: list[dict[str, Any]], issues: dict[str, str], diagnostics: str = "") -> str:
     def t(run: str, mid: str) -> str:
         return tagged({run: runs[run]}, mid)
 
@@ -182,6 +182,18 @@ def build_section(runs: dict[str, dict[str, Any]], prov: dict[str, Any], root: P
     crops = runs["dudect"]["manifest"]["params"]["percentile_crops"]
     n_series = sum(r["run"] == "dudect" and r["target"] in TARGETS for r in rows)
     leak_t, n_full = t("selftest", "T-DUDECT-MAXT-CONTROL-LEAK"), t("dudect", "T-DUDECT-N-AEAD-CONV")
+    if diagnostics:
+        diagnostics = "\n\n" + diagnostics
+        cause = ("This job does not say whether it comes from the device, from host work inside the timed window, or\n"
+                 "  from the way the two classes are staged by the harness; the diagnostic job at the end of this\n"
+                 f"  section ({issues['fail']}) measured that, and the FAILs above stay in every table as measured.")
+        open_fails = f"{len(fails)} target series FAIL with the staging of this job; the diagnostics are in 4.O.3"
+    else:
+        cause = ("Whether it comes from the device, from host work inside the timed window, or from the way the two "
+                 "classes are\n"
+                 f"  staged by the harness is not known from this job; {issues['fail']} lists the hypotheses and the "
+                 "controls that\n  would separate them, and it blocks M14.")
+        open_fails = "Three target series FAIL and are open"
     return f"""{BEGIN}
 # Chapter 4 notes — obliviousness, physical (M08, E3)
 
@@ -217,15 +229,13 @@ What these results do and do not show:
   and the null control stays below the threshold at full N (max |t| {t('dudect', 'T-DUDECT-MAXT-CONTROL-NULL')}).
 - The fused bitonic sort shows no dependence on the tag order at this N, and neither do the device stages of
   write_epoch.
-- The FAILs are recorded as findings and are **not explained**. The static evidence (no data-dependent branch in
-  `aead_open_seq`, section 4.O.4) does not remove them: a timing difference between the classes was measured.
-  Whether it comes from the device, from host work inside the timed window, or from the way the two classes are
-  staged by the harness is not known from this job; {issues['fail']} lists the hypotheses and the controls that
-  would separate them, and it blocks M14.
+- The FAILs are recorded as findings and are **not explained** by this job. The static evidence (no data-dependent
+  branch in `aead_open_seq`, section 4.O.4) does not remove them: a timing difference between the classes was measured.
+  {cause}
 - The whole-call series of write_epoch includes the engine's host stage, which is Python code working on the
   submissions; it is not covered by the kernel rules of `ai/CONVENTIONS.md §2`.
 - All three failing series, and the device series of write_epoch, were measured with the SM clock at a low
-  frequency (column `clock` of `results/oblivious/summary_table.csv`).
+  frequency (column `clock` of `results/oblivious/summary_table.csv`).{diagnostics}
 
 ## 4.O.4 SASS branches
 Built with `{sass['log']['files']['bitonic.cu']['command'].split(' -I')[0]}` and listed with
@@ -256,7 +266,7 @@ branch-efficiency and divergent-branch metrics of the four profiled kernels are 
 ## 4.O.6 Limitations
 - One runner session on a shared GPU; no repeat on a second session or a second GPU model.
 - dudect can show a dependence, not its absence; N is {t('dudect', 'T-DUDECT-N-BITONIC-EQUAL')} per class.
-- Three target series FAIL and are open ({issues['fail']}).
+- {open_fails} ({issues['fail']}).
 - No dynamic divergence measurement ({issues['ncu']}); no listing of the executed nvrtc code ({issues['sass']}).
 - P3 is a claim about the kernels. The host code that issues the launches (Python) is not constant time and is
   not claimed to be: timing can be observed only on a live server, which the threat model excludes (ADR-023).
@@ -415,6 +425,154 @@ when the end event was enqueued is flagged unqueued; the SM clock is read after 
 {stage_note}"""
     return section, rows
 
+# ---------------------------------------------------------------- staging diagnostics (ISSUE-17)
+
+DIAG_SAME = ("null", "age")             # the same contents in both classes: only the staging differs
+DIAG_CLEAN = ("sym", "kernel", "fresh")  # the content comparison without the staging of S2
+DIAG_ORDER = ("s2", "original", *DIAG_SAME, "swap", *DIAG_CLEAN)
+DIAG_LABEL = {"ms": "", "device_ms": " (device stages)", "call_ms": " (whole call)"}
+
+
+def _diag_kind(target: str) -> tuple[str, str] | None:
+    """(S2 target, kind) of a target of the diagnostic job; None for its controls."""
+    if target in TARGETS:
+        return target, "original"
+    base, _, kind = target.rpartition("_")
+    return (base, kind) if base in TARGETS and kind in DIAG_ORDER else None
+
+
+def diagnostic_rows(s2: dict[str, Any], seeds: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """One row per series: the S2 targets that have a diagnostic, then every target of the diagnostic job."""
+    rows = []
+
+    def add(r: dict[str, Any], t: dict[str, Any], base: str, kind: str, job: str) -> None:
+        for s, st in t["series"].items():
+            raw = st.get("t_raw")
+            rows.append({
+                "run": r, "job": job, "seed": r["manifest"].get("seed"), "target": t["target"], "base": base,
+                "kind": kind, "series": s, "title": t["title"], "n_per_class": st["n_class0"],
+                "max_abs_t": st["max_abs_t"], "verdict": st["verdict"],
+                "expected": t["expected_verdict"] if s != "call_ms" else "PASS",
+                "metric": metric_id("T-DUDECT-MAXT", t["target"]) + ("-CALL" if s == "call_ms" else ""),
+                "sign": "" if raw is None else "-" if raw < 0 else "+", "clock": t["clock"]["status"],
+                "mhz": (t["clock"]["before_mhz"], t["clock"]["after_mhz"]), "r": t["r"],
+                "mismatches": t["mismatches"],
+            })
+
+    for r in seeds:
+        for t in r["summary"]["targets"]:
+            add(r, t, *(_diag_kind(t["target"]) or (t["target"], "control")), "diagnostic")
+    bases = {r["base"] for r in rows if r["kind"] in DIAG_ORDER}
+    for t in s2["summary"]["targets"]:
+        if t["target"] in bases:
+            add(s2, t, t["target"], "s2", "S2")
+    order = {b: i for i, b in enumerate(TARGETS)}
+    rows.sort(key=lambda r: (r["kind"] != "control", order.get(r["base"], -1), r["series"],
+                             DIAG_ORDER.index(r["kind"]) if r["kind"] in DIAG_ORDER else -1, str(r["seed"])))
+    return rows
+
+
+def _mhz(rows: list[dict[str, Any]]) -> str:
+    v = [m for r in rows for m in r["mhz"]]
+    return f"{min(v)} to {max(v)} MHz" if v else NM
+
+
+def diagnostic_reading(rows: list[dict[str, Any]], base: str, series: str) -> str:
+    """The reading rules of ISSUE-17 applied to the copied verdicts of one failing S2 series."""
+    mine = [r for r in rows if r["base"] == base and r["series"] == series and r["job"] == "diagnostic"]
+    orig = [r for r in mine if r["kind"] == "original"]
+    same = [r for r in mine if r["kind"] in DIAG_SAME]
+    swap = [r for r in mine if r["kind"] == "swap"]
+    clean = [r for r in mine if r["kind"] in DIAG_CLEAN]
+    name = f"`{base}`{DIAG_LABEL[series]}"
+    if any(r["verdict"] != "PASS" for r in rows if r["kind"] == "control"):
+        return f"{name}: void, the full-N `control_null` of a seed does not PASS"
+    again = sum(r["verdict"] == "FAIL" for r in orig)
+    if not orig or again < len(orig):
+        return (f"{name}: the FAIL of S2 is reproduced in {again} of {len(orig)} seeds, so the diagnostics do not "
+                f"explain it; reported as measured")
+    parts = [f"the FAIL of S2 is reproduced in {again} of {len(orig)} seeds"]
+    if same:
+        parts.append(f"the controls with the same contents in both classes FAIL in "
+                     f"{sum(r['verdict'] == 'FAIL' for r in same)} of {len(same)} series "
+                     f"(measured at seed {', '.join(sorted({str(r['seed']) for r in same}))})")
+    if swap:
+        o = {r["seed"]: r["sign"] for r in orig}
+        kept = sum(r["sign"] == o.get(r["seed"]) for r in swap)
+        parts.append(f"with the contents exchanged between the two staging roles the raw t keeps its sign in "
+                     f"{kept} of {len(swap)} seeds")
+    if clean:
+        parts.append(f"the comparison of the contents without that staging PASSES in "
+                     f"{sum(r['verdict'] == 'PASS' for r in clean)} of {len(clean)} series")
+    staged = [r for r in mine if r["kind"] not in DIAG_CLEAN]
+    clocks = f"SM clock {_mhz(staged)} with the S2 staging and {_mhz(clean)} without it"
+    a, b = [m for r in staged for m in r["mhz"]], [m for r in clean for m in r["mhz"]]
+    if a and b and (max(a) < min(b) or min(a) > max(b)):
+        clocks += ": the staging and the clock change together, and this job does not separate the two"
+    if any(r["verdict"] == "FAIL" for r in clean):
+        verdict = ("**a FAIL remains without the S2 staging**, so a dependence of the time on the contents is not "
+                   "excluded")
+    elif same and clean and all(r["verdict"] == "FAIL" for r in same):
+        verdict = ("the difference follows the staging, not the contents; no dependence on the contents was "
+                   "detected at this N, on this device")
+    else:
+        verdict = "not decided by these series; reported as measured"
+    return f"{name}: {'; '.join(parts)}. Reading: {verdict}. {clocks}"
+
+
+def build_diagnostics(s2: dict[str, Any], seeds: list[dict[str, Any]], root: Path, issue: str,
+                      elsewhere: str = "") -> tuple[str, list[dict[str, Any]]]:
+    """The diagnostics part of section 4.O.3 and its rows. Verdicts are copied; a FAIL is never removed."""
+    first = seeds[0]["manifest"]
+    for r in seeds:
+        m = r["manifest"]
+        if m["env"]["backend"] != "cupy" or "gpu_job" not in m:
+            raise ReportError(f"{r['id']}: not an ingested cupy run")
+        if m["env"]["session_id"] != first["env"]["session_id"] or m["gpu_job"]["job_id"] != first["gpu_job"]["job_id"]:
+            raise ReportError(f"{r['id']}: session or job differs (never merge two sessions)")
+        if m["quick"]:
+            raise ReportError(f"{r['id']}: a diagnostic run is a quick run")
+    rows = diagnostic_rows(s2, seeds)
+    env = first["env"]
+
+    def t(r: dict[str, Any]) -> str:
+        return tagged({"x": r["run"]}, r["metric"])
+
+    table = _md_table(
+        ["job", "seed", "target", "what the two classes are", "N / class", "max \\|t\\|", "verdict", "sign of raw t",
+         "SM clock MHz", "r"],
+        [[r["job"], str(r["seed"]), f"`{r['target']}`{DIAG_LABEL[r['series']]}", r["title"].replace("|", "\\|"),
+          str(r["n_per_class"]), t(r), f"**{r['verdict']}**" if r["verdict"] != r["expected"] else r["verdict"],
+          r["sign"] or "-", f"{r['mhz'][0]}-{r['mhz'][1]} ({r['clock']})", str(r["r"])] for r in rows])
+    failing = sorted({(r["base"], r["series"]) for r in rows if r["kind"] == "s2" and r["verdict"] == "FAIL"},
+                     key=lambda x: (TARGETS.index(x[0]), x[1]))
+    readings = "\n".join(f"- {diagnostic_reading(rows, b, s)}." for b, s in failing) or "- none"
+    other = [r for r in rows if r["job"] == "diagnostic" and r["verdict"] == "FAIL" and r["kind"] in DIAG_ORDER
+             and (r["base"], r["series"]) not in failing]
+    other_text = ""
+    if other:
+        listed = ", ".join(f"`{r['target']}`{DIAG_LABEL[r['series']]} at seed {r['seed']}" for r in other)
+        other_text = (f"\n- Diagnostic series that FAIL although their S2 series PASSES: {listed}. They are findings "
+                      f"of their own{elsewhere}.")
+    mism = sum(r["mismatches"] for r in rows if r["job"] == "diagnostic")
+    section = f"""
+### Diagnostics of the failing series ({issue})
+Job `{first['gpu_job']['job_id']}`, runner session {env['session_id']} ({env['gpu']}, driver {env.get('driver', NM)}),
+run dirs {', '.join(f"`{rel(r['dir'], root)}`" for r in seeds)}. This is another runner session than the summary
+above; values are not pooled. Rows of job `S2` repeat the summary; the rows of the diagnostic job measure the same
+targets again and, beside them, the same targets with only the staging or only the contents changed
+(`results/oblivious/staging_diagnostics.csv`).
+
+{table}
+
+Read by the rules written in {issue} before the job ran (a reading, not a proof); {mism} output mismatches:
+{readings}{other_text}
+- Limits: one GPU model, one runner session for the diagnostics, {len(seeds)} seeds. dudect can show a dependence,
+  not its absence: a PASS without the S2 staging says that none was detected with this many measurements.
+  The FAILs of the S2 staging stay in `results/oblivious/summary_table.csv` and in the summary above.
+"""
+    return section, rows
+
 
 def merge_notes(path: Path, section: str) -> None:
     """Replace the M08 block of the notes, or append it; the rest of the file is left as it is."""
@@ -429,7 +587,8 @@ def merge_notes(path: Path, section: str) -> None:
 
 def generate(selftest: str | Path, dudect: str | Path, sass: str | Path, ncu: str | Path, out: str | Path,
              explained: str | Path, issues: dict[str, str], notes: str | Path | None = None,
-             root: str | Path = ".", kernel_window: dict[str, Any] | None = None) -> dict[str, Any]:
+             root: str | Path = ".", kernel_window: dict[str, Any] | None = None,
+             diagnostics: dict[str, Any] | None = None) -> dict[str, Any]:
     root, out = Path(root), Path(out)
     runs = {"selftest": load_run(selftest), "dudect": load_run(dudect), "sass": load_run(sass), "ncu": load_run(ncu)}
     prov = check_inputs(runs)
@@ -454,6 +613,27 @@ def generate(selftest: str | Path, dudect: str | Path, sass: str | Path, ncu: st
         shutil.copyfile(src, out / src.name)
         copied.append(src.name)
 
+    diag_text, diag_rows, diag_dirs = "", [], {}
+    if diagnostics:
+        d_seeds = [load_run(d) for d in diagnostics["seeds"]]
+        d_issue = diagnostics.get("issue", "no issue")
+        kw_issue = (kernel_window or {}).get("issue")
+        diag_text, diag_rows = build_diagnostics(
+            runs["dudect"], d_seeds, root, d_issue,
+            f"; section 4.O.7 follows the device stages ({kw_issue})" if kw_issue else "")
+        write_csv(out / "staging_diagnostics.csv",
+                  ["job", "seed", "target", "series", "s2_target", "kind", "classes", "n_per_class", "max_abs_t",
+                   "verdict", "expected_verdict", "raw_t_sign", "sm_clock_mhz", "clock", "r", "output_mismatches",
+                   "metric_id", "run_dir"],
+                  [[r["job"], r["seed"], r["target"], r["series"], r["base"], r["kind"], r["title"], r["n_per_class"],
+                    r["max_abs_t"], r["verdict"], r["expected"], r["sign"], f"{r['mhz'][0]}-{r['mhz'][1]}", r["clock"],
+                    r["r"], r["mismatches"], r["metric"], rel(r["run"]["dir"], root)] for r in diag_rows])
+        diag_dirs = {"issue": d_issue, "seeds": [rel(r["dir"], root) for r in d_seeds]}
+    # the diagnostics stand beside the S2 rows; the S2 rows are never replaced
+    diag_csv = [[r["target"], r["series"], f"diagnostic_s{r['seed']}", r["n_per_class"], r["max_abs_t"], "",
+                 r["verdict"], r["expected"], f"{r['mhz'][0]}-{r['mhz'][1]}", r["clock"], r["r"], r["mismatches"],
+                 "", "", r["metric"], rel(r["run"]["dir"], root)] for r in diag_rows if r["job"] == "diagnostic"]
+
     write_csv(out / "summary_table.csv",
               ["target", "series", "run", "n_per_class", "max_abs_t", "max_at", "verdict", "expected_verdict",
                "sm_clock_mhz", "clock", "r", "output_mismatches", "sass_conditional_explained", "ncu_divergent",
@@ -461,7 +641,7 @@ def generate(selftest: str | Path, dudect: str | Path, sass: str | Path, ncu: st
               [[r["target"], r["series"], r["run"], r["n_per_class"], r["max_abs_t"], r["max_at"], r["verdict"],
                 r["expected"], r["sm_clock_mhz"], r["clock"], r["r"], r["mismatches"],
                 "" if r["sass_conditional"] is None else r["sass_conditional"], r["ncu_divergent"], r["metric"],
-                run_dirs[r["run"]]] for r in rows])
+                run_dirs[r["run"]]] for r in rows] + diag_csv)
     write_csv(out / "sass_branches_explained.csv",
               ["file", "function", "addr", "instr", "setter", "source", "depends_on", "public", "checker_class",
                "run_dir"],
@@ -497,13 +677,18 @@ def generate(selftest: str | Path, dudect: str | Path, sass: str | Path, ncu: st
                "fails": fails, "sass_conditional_branches": len(branches), "sass_explained_public": len(branches),
                "ncu_reason": runs["ncu"]["summary"]["reason"], "issues": issues,
                "files": sorted(set(copied) | {"summary_table.csv", "sass_branches_explained.csv",
-                                              "ncu_divergence.csv"} | set(kw_files)),
+                                              "ncu_divergence.csv"} | set(kw_files)
+                               | ({"staging_diagnostics.csv"} if diag_rows else set())),
                "generated_by": "python -m vcloak.bench.report_oblivious"}
     if kw_dirs:
         summary["kernel_window"] = kw_dirs
+    if diag_dirs:
+        summary["diagnostics"] = diag_dirs
+        summary["diagnostic_fails"] = [f"{r['target']}:{r['series']}:s{r['seed']}" for r in diag_rows
+                                       if r["job"] == "diagnostic" and r["verdict"] == "FAIL"]
     (out / "oblivious_summary.json").write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
     if notes:
-        section = build_section(runs, prov, root, rows, branches, issues)
+        section = build_section(runs, prov, root, rows, branches, issues, diag_text.strip("\n"))
         merge_notes(Path(notes), section.replace(END, extra.strip("\n") + "\n" + END) if extra else section)
     return summary
 
@@ -521,6 +706,8 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--kernel-window", nargs="*", default=[], help="full-N run dirs of the kernel-only window job")
     ap.add_argument("--stage-runs", nargs="*", default=[], help="per-stage run dirs counted by the ANN-1 note")
     ap.add_argument("--issue-kernel-window", default="no issue")
+    ap.add_argument("--diagnostics", nargs="*", default=[], help="full-N run dirs of the staging diagnostics job")
+    ap.add_argument("--issue-diagnostics", default="no issue")
     a = ap.parse_args(argv)
     issues = {"fail": a.issue_fail, "ncu": a.issue_ncu, "sass": a.issue_sass}
     kw = None
@@ -530,13 +717,18 @@ def main(argv: list[str] | None = None) -> int:
         kw = {"selftest": a.kernel_selftest, "seeds": a.kernel_window, "stage_runs": a.stage_runs,
               "issue": a.issue_kernel_window}
     try:
-        s = generate(a.selftest, a.dudect, a.sass, a.ncu, a.out, a.explained, issues, a.notes, kernel_window=kw)
+        diag = {"seeds": a.diagnostics, "issue": a.issue_diagnostics} if a.diagnostics else None
+        s = generate(a.selftest, a.dudect, a.sass, a.ncu, a.out, a.explained, issues, a.notes, kernel_window=kw,
+                     diagnostics=diag)
     except ReportError as e:
         print(f"report_oblivious: {NM} - {e}")
         return 1
     print(f"report_oblivious: session {s['provenance']['session_id']}  {len(s['files'])} files -> {a.out}")
     print(f"  controls {'OK' if s['controls_ok'] else 'NOT AS EXPECTED'}   "
           f"dudect FAIL: {', '.join(s['fails']) or 'none'}")
+    if "diagnostics" in s:
+        print(f"  diagnostics ({s['diagnostics']['issue']}): {len(s['diagnostics']['seeds'])} seeds, "
+              f"{len(s['diagnostic_fails'])} series FAIL (kept)")
     print(f"  SASS conditional branches explained {s['sass_explained_public']}/{s['sass_conditional_branches']}"
           f"   ncu: {s['ncu_reason'] or 'measured'}")
     return 0
