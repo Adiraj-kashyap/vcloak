@@ -1,0 +1,42 @@
+{
+  "run_id": "20261013-125258_M14_s6_prep_checks",
+  "module": "M14",
+  "step": "S6",
+  "owner": "Abhishek",
+  "git_sha": "9c0e7f6e765f21e3af27a099c80a1e4db03a1f72",
+  "dirty": true,
+  "command": "pytest -q (numpy backend); check_metrics, check_oblivious, check_secrets, ruff; quick rerun of --stage anonymity on the simulator in scratch",
+  "seed": 2026,
+  "quick": false,
+  "params": {},
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261013-125258",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U"
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791876178.4830782
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791876522.6665184
+  },
+  "outputs": [
+    "capture_terminal.json",
+    "check_metrics.txt",
+    "check_oblivious.txt",
+    "check_secrets.txt",
+    "g10_quick_rerun.txt",
+    "manifests_valid.txt",
+    "pytest_all.txt",
+    "ruff.txt"
+  ],
+  "status": "OK",
+  "notes": "M14 S6 prep session: no measurement here. Local pytest on the numpy backend (2114 passed, 675 skipped), global checks, ruff, quick rerun of --stage anonymity on the simulator in scratch (exit 0), manifest of runs/20261013-124943_M14_security_anon valid (full-size simulator run with PostgreSQL: kernel semantics only, not evidence about a GPU)"
+}

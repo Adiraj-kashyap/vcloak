@@ -1,0 +1,5 @@
+ok   10 users: 78 messages, per window median 39 p5 30, per bucket-window median 0 p5 0 peak 19, turn-order accuracy 0.5616
+ok   100 users: 733 messages, per window median 366.5 p5 349.85, per bucket-window median 19.5 p5 0 peak 66, turn-order accuracy 0.5359
+engine numpy-simulator, db sqlite
+run dir: C:\Users\HP\AppData\Local\Temp\claude\d--PJT-vcloak\e7186d47-61fc-458d-bedf-4d1a15407d5a\scratchpad\runs\20261013-125802_M14_security_anon_quick
+exit 0

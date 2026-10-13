@@ -1,0 +1,317 @@
+{
+  "stage": "S6",
+  "seed": 2026,
+  "db_server_version": "16.15 (Debian 16.15-1.pgdg13+2)",
+  "mapping": "two users per conversation, every user in exactly one (conversations = users / 2)",
+  "populations": [
+    {
+      "layout": "W60",
+      "mode": "vcloak",
+      "visible_round": "window",
+      "window_s": 60,
+      "messages": 555,
+      "rows_stored": 555,
+      "epochs_passed": 4501,
+      "scheduler": {
+        "epochs_written": 4501,
+        "epoch_errors": 0,
+        "overflow": 0,
+        "missed": 0,
+        "queued": 0,
+        "windows_rewritten": 15,
+        "max_rewrites_of_a_window": 1,
+        "compute": {
+          "backend": "numpy",
+          "runner": "local",
+          "is_gpu": false,
+          "device": "12th Gen Intel(R) Core(TM) i7-1255U"
+        }
+      },
+      "checks": {
+        "every_post_accepted": true,
+        "row_count_equals_message_count": true,
+        "stored_ciphertexts_are_the_sent_ones": true,
+        "no_epoch_failed": true,
+        "nothing_left_queued": true,
+        "no_window_left_unshuffled": true,
+        "each_window_rewritten_once": true
+      },
+      "attack": {
+        "tau_global": 0.9308290239698181,
+        "tau_within_round": 0.04117774733950603,
+        "rounds_with_3plus": 15,
+        "adjacent_pair_accuracy": 0.5126353790613718,
+        "turn_order_accuracy": 0.5690909090909091,
+        "turns_same_round_frac": 0.8745454545454545,
+        "turn_accuracy_same_round": 0.5072765072765073,
+        "rows": 555,
+        "visible_rounds": 15,
+        "predicted_turn_accuracy": 0.5627272727272727
+      },
+      "occupancy": {
+        "bucket_windows": 60,
+        "peak": 26,
+        "mean": 9.25
+      },
+      "anonymity": {
+        "n_windows": 15,
+        "buckets": 64,
+        "per_window": {
+          "cells": 15,
+          "empty": 0,
+          "rows": 555,
+          "min": 20,
+          "p5": 23.5,
+          "median": 32.0,
+          "mean": 37.0,
+          "max": 57,
+          "msg_p5": 25.0,
+          "msg_median": 34.0
+        },
+        "per_bucket_window": {
+          "cells": 960,
+          "empty": 900,
+          "rows": 555,
+          "min": 0,
+          "p5": 0.0,
+          "median": 0.0,
+          "mean": 0.578125,
+          "max": 26,
+          "msg_p5": 4.0,
+          "msg_median": 11.0
+        },
+        "rows_per_window": [
+          31,
+          34,
+          30,
+          31,
+          25,
+          32,
+          51,
+          32,
+          57,
+          25,
+          33,
+          20,
+          40,
+          57,
+          57
+        ]
+      },
+      "ok": true,
+      "users": 10,
+      "conversations": 5,
+      "cand_k": 128,
+      "peak_bucket_window_above_cand_k": false
+    },
+    {
+      "layout": "W60",
+      "mode": "vcloak",
+      "visible_round": "window",
+      "window_s": 60,
+      "messages": 5855,
+      "rows_stored": 5855,
+      "epochs_passed": 4501,
+      "scheduler": {
+        "epochs_written": 4501,
+        "epoch_errors": 0,
+        "overflow": 0,
+        "missed": 0,
+        "queued": 0,
+        "windows_rewritten": 15,
+        "max_rewrites_of_a_window": 1,
+        "compute": {
+          "backend": "numpy",
+          "runner": "local",
+          "is_gpu": false,
+          "device": "12th Gen Intel(R) Core(TM) i7-1255U"
+        }
+      },
+      "checks": {
+        "every_post_accepted": true,
+        "row_count_equals_message_count": true,
+        "stored_ciphertexts_are_the_sent_ones": true,
+        "no_epoch_failed": true,
+        "nothing_left_queued": true,
+        "no_window_left_unshuffled": true,
+        "each_window_rewritten_once": true
+      },
+      "attack": {
+        "tau_global": 0.9323049309456379,
+        "tau_within_round": -0.005655469800588245,
+        "rounds_with_3plus": 15,
+        "adjacent_pair_accuracy": 0.5,
+        "turn_order_accuracy": 0.5583118001722653,
+        "turns_same_round_frac": 0.882687338501292,
+        "turn_accuracy_same_round": 0.4996096799375488,
+        "rows": 5855,
+        "visible_rounds": 15,
+        "predicted_turn_accuracy": 0.558656330749354
+      },
+      "occupancy": {
+        "bucket_windows": 440,
+        "peak": 42,
+        "mean": 13.306818181818182
+      },
+      "anonymity": {
+        "n_windows": 15,
+        "buckets": 64,
+        "per_window": {
+          "cells": 15,
+          "empty": 0,
+          "rows": 5855,
+          "min": 310,
+          "p5": 331.0,
+          "median": 384.0,
+          "mean": 390.3333333333333,
+          "max": 465,
+          "msg_p5": 310.0,
+          "msg_median": 404.0
+        },
+        "per_bucket_window": {
+          "cells": 960,
+          "empty": 520,
+          "rows": 5855,
+          "min": 0,
+          "p5": 0.0,
+          "median": 0.0,
+          "mean": 6.098958333333333,
+          "max": 42,
+          "msg_p5": 6.0,
+          "msg_median": 18.0
+        },
+        "rows_per_window": [
+          404,
+          378,
+          418,
+          441,
+          451,
+          416,
+          345,
+          372,
+          365,
+          310,
+          384,
+          340,
+          354,
+          465,
+          412
+        ]
+      },
+      "ok": true,
+      "users": 100,
+      "conversations": 50,
+      "cand_k": 128,
+      "peak_bucket_window_above_cand_k": false
+    },
+    {
+      "layout": "W60",
+      "mode": "vcloak",
+      "visible_round": "window",
+      "window_s": 60,
+      "messages": 61383,
+      "rows_stored": 61383,
+      "epochs_passed": 4501,
+      "scheduler": {
+        "epochs_written": 4501,
+        "epoch_errors": 0,
+        "overflow": 0,
+        "missed": 0,
+        "queued": 0,
+        "windows_rewritten": 15,
+        "max_rewrites_of_a_window": 1,
+        "compute": {
+          "backend": "numpy",
+          "runner": "local",
+          "is_gpu": false,
+          "device": "12th Gen Intel(R) Core(TM) i7-1255U"
+        }
+      },
+      "checks": {
+        "every_post_accepted": true,
+        "row_count_equals_message_count": true,
+        "stored_ciphertexts_are_the_sent_ones": true,
+        "no_epoch_failed": true,
+        "nothing_left_queued": true,
+        "no_window_left_unshuffled": true,
+        "each_window_rewritten_once": true
+      },
+      "attack": {
+        "tau_global": 0.9332839976355228,
+        "tau_within_round": -9.489044657817171e-05,
+        "rounds_with_3plus": 15,
+        "adjacent_pair_accuracy": 0.5010589423609527,
+        "turn_order_accuracy": 0.5558694545275364,
+        "turns_same_round_frac": 0.8893944122333,
+        "turn_accuracy_same_round": 0.5006371308796099,
+        "rows": 61383,
+        "visible_rounds": 15,
+        "predicted_turn_accuracy": 0.55530279388335
+      },
+      "occupancy": {
+        "bucket_windows": 960,
+        "peak": 172,
+        "mean": 63.940625
+      },
+      "anonymity": {
+        "n_windows": 15,
+        "buckets": 64,
+        "per_window": {
+          "cells": 15,
+          "empty": 0,
+          "rows": 61383,
+          "min": 3958,
+          "p5": 3960.8,
+          "median": 4098.0,
+          "mean": 4092.2,
+          "max": 4340,
+          "msg_p5": 3958.0,
+          "msg_median": 4098.0
+        },
+        "per_bucket_window": {
+          "cells": 960,
+          "empty": 0,
+          "rows": 61383,
+          "min": 7,
+          "p5": 26.0,
+          "median": 62.0,
+          "mean": 63.940625,
+          "max": 172,
+          "msg_p5": 36.0,
+          "msg_median": 73.0
+        },
+        "rows_per_window": [
+          4022,
+          4098,
+          4211,
+          4340,
+          4121,
+          4201,
+          3958,
+          3975,
+          4112,
+          3962,
+          3985,
+          4257,
+          3967,
+          4153,
+          4021
+        ]
+      },
+      "ok": true,
+      "users": 1000,
+      "conversations": 500,
+      "cand_k": 128,
+      "peak_bucket_window_above_cand_k": true
+    }
+  ],
+  "params": {
+    "duration_s": 900,
+    "buckets": 64,
+    "rate": 0.05,
+    "window_s": 60,
+    "slots": 64,
+    "epoch_ms": 200,
+    "cand_k": 128
+  }
+}
