@@ -1068,3 +1068,33 @@
   measurement of any pipeline row on this runner
 - Commit: 698dff2 (ingest), records c50fe95
 - Next: M15 S1 ; human action: none required; ISSUE-12 has three options open for a decision of the owner
+
+## Session 44 — 2026-10-13 — M16 Results export (with the decisions on ISSUE-12 and ISSUE-36) — owner:Abhishek
+- Steps: S1→S4 (status after: M16 AUDIT_FAILED at S4, job 20261013-173239_M07_issue12k pending; next_unit M16)
+- Did (owner decisions first): ISSUE-12 text corrected (the Colab run was UNSTABLE in 12 of 12 configurations, so 65536
+  slots are UNMEASURED under valid conditions, not "measured and failing"; no attempt value is quoted any more in the
+  issue, ANN-3 or STATE). ADR-024 and gpu-bench rules 8 to 10: comparisons within one runner platform, vCPU count in
+  every provenance line (manifest `cpu_count`, `runs.runner_vcpu`), a platform guard in pack and in the runner entry.
+  Section 4.P.6 of the notes marked STALE in place. ISSUE-36 decided: the eight kernel-only series are NOT_MEASURED
+  (16 index rows, ANN-4; generator flag `--kernel-window-not-measured`; sections 4.O and 4.S regenerated).
+  M16: scripts/export_results.py, results/paper (13 files and the source map), results/figures, PAPER_UPDATES.md,
+  deck_numbers.md. Kaggle rerun packed as bench/jobs/M07_issue12k.json (runner_required kaggle, 4 vCPU).
+- Result: 372 exported values: 163 index rows, 36 derived from index rows only, 64 public parameters, 75 run-file
+  fields, 1 derived with a field, 33 without a value (UNSTABLE, NOT_MEASURED, M15 not run, ISSUE-12 held back, no AES).
+  Kaggle internet is not needed for the rerun (no `stack_up`, no bundle ever installed a package).
+- Evidence: runs/20261013-171026_M16_prefixes (kaggle_internet_check.txt, report_command.txt, pytest_all.txt 2132 passed);
+  runs/20261013-172550_M16_export (export_stdout.txt, export_check.txt, a1_traceability.txt, pytest_all.txt 2138 passed 1 skipped,
+  check_*.txt, ruff.txt); evidence/terminal/M16_*
+- Metrics added: none. 16 rows changed to NOT_MEASURED (ANN-4); ANN-3 corrected
+- Decisions: ADR-024 (decision of the owner, recorded by the agent)
+- Issues: ISSUE-12 corrected (OPEN); ISSUE-36 closed; opened ISSUE-45 (GPU JOB READY, Kaggle) and ISSUE-46 (BLOCKS M16)
+- Deviations from spec: audit A1 is not met for 9 macros (run-file fields without a METRIC-ID, ISSUE-46); the pipeline
+  breakdown and the two write_epoch figures are held back (ISSUE-12); the e2e table is all pending (M15); no LaTeX on
+  this machine, so A3 is a syntax check; the deck is not in the repository, so deck_numbers.md has no slide numbers;
+  docs/REPORT_CH4_NOTES.md got no M16 section; the mapping of the `Conv` macros to the baseline layout is a choice
+  of the exporter (stated in PAPER_UPDATES.md section 5); the job was packed three times (twice discarded as stale)
+- Not verified: that the .tex files compile in the Overleaf project; any timing; that Kaggle gives 4 vCPU today
+- Commit: 28c0c40 (decisions, ADR-024, ISSUE-36), 4a50288 and f3903bc (M16), records in the next commit
+- Next: ingest 20261013-173239_M07_issue12k if it is in the inbox, then M16 A1 ; human action: ISSUE-45 (run the job on
+  Kaggle), ISSUE-46 (decide A1), ISSUE-41 and ISSUE-43 (answers announced for this handoff)
+

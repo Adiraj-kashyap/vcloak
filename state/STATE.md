@@ -3,13 +3,13 @@
 ```yaml
 project: v-cloak
 kit_version: 1.0
-last_session: 43
+last_session: 44
 last_session_date: 2026-10-13
-current_module: M15
-current_step: S1
-status: NOT_STARTED          # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
-next_unit: M15
-last_checkpoint: 2026-10-13 session 43: job 20261013-163732_M07_issue12 ingested (698dff2); gate still FAILS at 65536 slots, UNSTABLE; ISSUE-12 is a limitation; next: M15 S1
+current_module: M16
+current_step: S4
+status: AUDIT_FAILED          # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
+next_unit: M16
+last_checkpoint: 2026-10-13 session 44: M16 S1-S4 written (f3903bc), audit A1 not met (ISSUE-46, decision of the owner); Kaggle job 20261013-173239_M07_issue12k packed (ISSUE-45); next: ingest it if it is in the inbox, then M16 A1
 quick_mode_default: false
 local:                      # the laptop (no GPU) — filled by M00 S7
   os: "Windows-11-10.0.26200-SP0"
@@ -33,7 +33,7 @@ runner:                     # the free remote GPU — filled from the ingested M
   peak_bw_gbs: 320.064
   last_session_id: "20261012-135251"
 gpu_job:                    # set by the gpu-job skill
-  pending: null   # job id awaiting the upload of the human, or null
+  pending: 20261013-173239_M07_issue12k   # job id awaiting the upload of the human, or null
   last_ingested: 20261013-163732_M07_issue12
 ```
 
@@ -57,7 +57,7 @@ gpu_job:                    # set by the gpu-job skill
 | M13 | Frontend: chat + server view | Abhishek | M12 | no | DONE | S6 | 5 |
 | M14 | Security evaluation (E0–E2, anon set) | Abhishek | M08, M10 | no | DONE | S7 | 6 |
 | M15 | End-to-end performance (E6) | Divyansh | M10, M11 | no | NOT_STARTED | S1 | 0 |
-| M16 | Results export | Abhishek | M07, M08, M14 | no | NOT_STARTED | S1 | 0 |
+| M16 | Results export | Abhishek | M07, M08, M14 | no | AUDIT_FAILED | S4 | 1 |
 | M18 | Frontend: dashboard, experiments, logs | Abhishek | M13, M14 | no | NOT_STARTED | S1 | 0 |
 | M17 | Final audit & demo (Review 3 close-out) | Team | all required | no | NOT_STARTED | S1 | 0 |
 | M22 | Draft report (prelim pages, Ch.1–4, similarity) | Team | M16 | no | NOT_STARTED | S1 | 0 |
@@ -79,18 +79,26 @@ Keep this file under 120 lines: one or two lines per note, the detail lives in t
   timings across images (ISSUE-3).
 - M07: one runner session (20261011-213139). 65 of 213 rows are UNSTABLE (ISSUE-15); never quote K-BITONIC-BW-PCT
   below 2^18 as bandwidth (ISSUE-14). Figures and notes only through `python -m vcloak.bench.report`.
-- write_epoch misses EPOCH_MS at 2^16 slots because of host Python, not the GPU (ISSUE-12: OPEN, a limitation, not a
-  blocker). After the row-id fix the gate still FAILS and the Colab run is UNSTABLE (ANN-3; gates.txt of
-  runs/20261013-165216_M07_issue12_ingest_checks). M15 says so; never quote a speed-up between the Kaggle and the Colab run.
+- ISSUE-12 (OPEN, limitation NOT accepted): at 2^16 slots write_epoch is UNMEASURED under valid conditions since the
+  row-id change; the Colab run was UNSTABLE in 12 of 12 configurations and none of its attempts is quoted anywhere.
+  Rerun on Kaggle 4 vCPU = ISSUE-45; at its ingest compare vCPU, CUDA and driver with session 20261011-213139.
+  M15 goes after M16 and gives no verdict for 65536 slots before that ingest. No column arrays. Section 4.P.6 of the
+  notes is marked STALE by hand (the only hand edit); the framing for docs/RESULTS_ANALYSIS.md is in ISSUE-12.
+- ADR-024: comparisons only within one runner platform (provider + vCPU); a comparison job names it in its spec
+  (`runner_required`, `cpu_count_required`) and the runner refuses another; provenance lines carry the vCPU count.
+- M16: `python scripts/export_results.py` (`--check` in audits) writes results/paper, results/figures,
+  results/PAPER_UPDATES.md, results/deck_numbers.md; never edit them by hand. Run it again after every ingest that
+  changes the index. Open: ISSUE-46 (9 macros come from run files without a METRIC-ID). scripts/ and tests/ are in
+  the job bundle: pack a job after the last code commit of a session, or the ingest is stale.
 - M08 is DONE with a negative result: dudect FAILS for aead_conv, aead_tag and the whole write_epoch call (ISSUE-17,
   closed). Diagnostics trace the AEAD FAILs to the harness staging and the whole-call FAIL to host Python state.
   ADR-023: P3 is claimed for the KERNELS only; host timing is a limitation. Never write "constant time".
 - How M14/M20/M22 quote M08: AEAD only as "no dependence on the contents detected with symmetric staging, N 100000,
-  two seeds, one T4; staging and SM clock change together", naming ISSUE-37 (S2 never re-measured that way); tags
-  and compact only with the limits of ISSUE-36 and ANN-1 / ANN-2. ncu is NOT_MEASURED (ISSUE-18); the SASS claim
-  rests on a manual reading (ISSUE-19). The dudect timebox of session 32 stands: no further dudect job.
+  two seeds, one T4; staging and SM clock change together", naming ISSUE-37 (S2 never re-measured that way). The
+  kernel-only series of tags and compact are NOT_MEASURED (ISSUE-36 closed, ANN-4): never write "no dependence
+  detected" for them. ncu is NOT_MEASURED (ISSUE-18); SASS is a manual reading (ISSUE-19). No further dudect job.
 - The obliviousness section of docs/REPORT_CH4_NOTES.md is generated (`python -m vcloak.bench.report_oblivious`,
-  command in runs/20261013-091541_M08_issue17_table/report_command.txt). Never edit it by hand.
+  command: line 1 of runs/20261013-171026_M16_prefixes/report_command.txt). Never edit it by hand.
 - Database: `docker compose up -d --wait db` (postgres:16, 127.0.0.1:54329; docker.exe is under
   %LOCALAPPDATA%/Programs/DockerDesktop/resources/bin). Fallback: `python scripts/pgdev.py up` (never both).
   Integration tests SKIP when no database answers: read the skip count before calling G1 a pass.
@@ -108,13 +116,8 @@ Keep this file under 120 lines: one or two lines per note, the detail lives in t
   cross-sender order (ISSUE-28).
 - M13 (ADR-020..022): browser tests need Chrome (read the skip count). `serve --dev --compare` stores every message
   twice: never measure on it. `/v1/stats/live` `last_write_ms` is never a metric (ISSUE-33).
-- M14: `python bench/run_security_eval.py --stage s1|attack|uniformity|trace` (schemas m14_eval*, dropped at each
-  run; `eval.traffic.replay` needs `autorun=False`). Local runs are the numpy simulator: correctness only, never a
-  GPU result. S1-S5 are measured on the real stack (job 20261013-105517_M14, Colab session 20261013-054610: T4 +
-  PostgreSQL in the runner). results/security and section 4.S of the notes are generated: never edit them by hand,
-  re-run runs/20261013-115636_M14_security_ingest_report/report_command.txt (`vcloak.bench.report_security`).
-  S7 is done: `bench/run_oracle_compare.py` (20261013-121247_M14_oracle_compare), into the notes by `--oracle`
-  (command in runs/20261013-122548_M14_oracle_report/report_command.txt, which replaces the one above). Never
-  write "the GPU matches the oracle": 31 of 35 rows agree, 2 differ on the oracle side (ISSUE-41). W300 is dumped
-  only (peak occupancy above CAND_K). S6 (pairs) is a second runner session, in by `--anonymity`: the command is now
-  runs/20261013-155229_M14_s6_ingest_report/report_command.txt. Occupancy above CAND_K at 1000 users: ISSUE-43 (M15).
+- M14: `python bench/run_security_eval.py --stage s1|attack|uniformity|trace` (`eval.traffic.replay` needs
+  `autorun=False`). Local runs are the simulator: never a GPU result. S1-S5 and S6 are measured on the real stack
+  (jobs 20261013-105517_M14 and 20261013-125843_M14_s6, two Colab sessions). results/security and section 4.S are
+  generated (line 2 of runs/20261013-171026_M16_prefixes/report_command.txt). Never write "the GPU matches the oracle":
+  31 of 35 rows agree, 2 differ on the oracle side (ISSUE-41). Occupancy above CAND_K at W300 and at 1000 users: ISSUE-43.

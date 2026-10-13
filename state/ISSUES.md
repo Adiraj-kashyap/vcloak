@@ -1359,3 +1359,50 @@ Confirm by running: `ls gpujobs/inbox/` shows results_20261013-163732_M07_issue1
 Then type: continue
 Closed session 43: the human ran the job on Colab (T4, 2 vCPU; session 20261013-111455) and the bundle was ingested
 (698dff2): 5 of 5 commands exit 0, run dir runs/20261013-111612_M07_pipeline. The result is in ISSUE-12.
+
+### ISSUE-45 [OPEN] HUMAN ACTION REQUIRED — GPU JOB READY: write_epoch on Kaggle with 4 vCPU, the platform of the M07 measurement (job 20261013-173239_M07_issue12k)
+BLOCKS: none (ISSUE-12 waits for it; M15 gives no verdict for 65536 slots before it is ingested)   SEVERITY: high   OPENED: 2026-10-13 session 44
+Why: decision of the owner on ISSUE-12 (option a). One job settles whether 65536 slots miss EPOCH_MS on 4 vCPU and
+gives an after-measurement on the platform of the before-measurement (ADR-024). It must run on KAGGLE, not Colab:
+the job checks this itself and refuses to start on another platform or with another vCPU count.
+Internet: NOT needed. Leave the Kaggle internet toggle off; no phone verification is required for this job. It has
+no `stack_up` step and installs nothing (runs/20261013-171026_M16_prefixes/kaggle_internet_check.txt).
+Do this:
+```
+GPU JOB READY — 20261013-173239_M07_issue12k              (runtime not measured; plan for about 20 to 30 minutes)
+
+1. Open https://www.kaggle.com  ->  Create > New Notebook > File > Import Notebook
+   Pick:  colab/VCloak_GPU_Runner.ipynb
+2. Settings > Accelerator > GPU T4 x2                    <- easy to miss
+3. + Add Input > Upload, pick:  gpujobs/out/20261013-173239_M07_issue12k/job.zip
+4. Run Cell 1. It must print a GPU name (Tesla T4).
+5. Run Cell 2 as it is (Kaggle unpacks the upload into a folder; the cell finds the job by itself).
+6. Run Cell 3 and keep the tab open.
+   If it prints "This job needs 4 vCPU" or "must run on kaggle": nothing was run. Tell me what it printed;
+   do not move the job to Colab.
+7. Take results_20261013-173239_M07_issue12k.zip from the Output panel and put it in:  gpujobs/inbox/
+8. New session, type: continue
+```
+Known risk, not a defect of the job: Kaggle sessions of this project had 4 vCPU (driver 580.178.04, CUDA 12090) from
+M05 to M08 and 2 vCPU (driver 580.82.07, CUDA 13000) for M00, M03 and M04. If Kaggle gives 2 vCPU the job refuses,
+and the choice goes back to the owner (accept the limitation, as announced). If the image differs from the M07
+session the run is ingested and the difference is stated beside the numbers.
+Confirm by running: `ls gpujobs/inbox/` shows results_20261013-173239_M07_issue12k.zip
+Then type: continue
+
+### ISSUE-46 [OPEN] M16 audit A1 is not met as written: 9 macros are traced to a run file, not to a METRIC-ID
+BLOCKS: M16   SEVERITY: medium   OPENED: 2026-10-13 session 44
+What: A1 of ai/modules/M16 asks that every macro value is traceable to a METRIC-ID. Of the 48 contract macros 31 are
+index rows, 7 are public parameters, 1 is pending (resAESus, ADR-003) and 9 are measured values that exist only in
+the output file of an ingested run and have no index row: resRestoreN, resTVD, resChiIdeal, resTVDIdeal, resTauSigma,
+resTauBand, resTauMean, resTauMaxAbs, and resMeanPerEpoch (messages divided by the epochs passed). The same holds for
+tau_hist.dat, trace_table.tex, session_table.tex and the verdict column of dudect_table.tex. Every one of them is
+traced in results/paper/macro_map.json to its run dir, file and JSON path (runs/20261013-172550_M16_export/a1_traceability.txt),
+so nothing is typed or estimated; what is missing is the ID.
+Why the agent did not close it: an index row must be listed in the summary.json of its run (check_metrics rule 5),
+and these summaries came out of ingested bundles. Adding the IDs honestly means changing the bench scripts and
+running them again on the runner; indexing them under a local run dir would give device values a local backend.
+Decision for the owner: (a) accept run dir + file + path as traceability for values that a run wrote but did not
+index, and amend A1 (one line under Amendments of the module file; M16 is then DONE at the next `audit M16`);
+(b) add the IDs to the M14 bench scripts and take them from the next M14-type job; (c) drop these 9 macros to pending.
+Until decided: M16 is AUDIT_FAILED and M19, M20, M22 (which depend on it) do not start.

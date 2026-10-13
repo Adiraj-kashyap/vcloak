@@ -1321,3 +1321,37 @@ Notes:
 - The cause of the tail (p95 far above the median) is not profiled. The cProfile in host_profile.txt also contains the
   telemetry thread of the bench, so its totals are not the host stage alone.
 - G10 on the timing gate: the laptop has no GPU, so the FAIL of the gate itself cannot be reproduced here.
+
+## Audit M16 — 2026-10-13 — session 44 — result: FAIL (A1 not met as written, ISSUE-46; module not DONE)
+| Item | Result | Evidence |
+|---|---|---|
+| A1 every macro value traceable to a METRIC-ID; mapping file; check_metrics | FAIL | RUN/a1_traceability.txt: of 48 macros 31 index rows, 7 parameters, 1 pending, 9 run-file values without an ID; results/paper/macro_map.json names run dir, file and path for each; RUN/check_metrics.txt (757 rows, 0 problems) |
+| A2 no quick-tagged metric in the paper outputs | PASS | tests/unit/test_export_results.py (every metric entry is a non-quick index row with a value; quick run dirs and quick figures are refused); RUN/pytest_all.txt |
+| A3 the files compile | PARTIAL | no `paper/` and no LaTeX on this machine: RUN/export_stdout.txt "tex syntax check PASS" (braces, row ends, column counts, macro names). Compilation in Overleaf is not verified |
+| Owner decision: ISSUE-12 text | PASS | state/ISSUES.md ISSUE-12 (no attempt value of the UNSTABLE run), ANN-3 correction, 28c0c40 |
+| Owner decision: same-platform rule and vCPU in provenance | PASS | ai/DECISIONS.md ADR-024; gpu-bench rules 8-10; tests/unit/test_gpujob.py (the runner refuses another platform), test_runs_manifest.py; notes lines "Tesla T4, 4 vCPU" and "2 vCPU" |
+| Owner decision: M07 notes section marked STALE | PASS | docs/REPORT_CH4_NOTES.md sections 4.P.6 and 4.P.10, 28c0c40 |
+| Owner decision: ISSUE-36, eight series NOT_MEASURED | PASS | ANN-4 (16 rows); results/oblivious/kernel_window.csv; section 4.O.7; test_bench_report_oblivious.py (a FAIL cannot be withdrawn) |
+| Kaggle internet confirmed before packing | PASS | PRE/kaggle_internet_check.txt (no stack_up in the job; requirements installed [] in all 13 bundles) |
+| G1 | PASS | RUN/pytest_all.txt (2138 passed, 1 skipped, 674 gpu tests deselected); after the last fix the three affected files were run again (24 passed) |
+| G2 | PASS | RUN/check_metrics.txt; no metric added; rule 5 now accepts NOT_MEASURED against a summary value (withdrawal only) |
+| G2b | PASS | no performance number was produced; exported GPU values are rows of ingested cupy runs |
+| G3 | PASS | RUN/check_oblivious.txt (11 files, 0 findings); no kernel changed |
+| G4 | PASS | RUN/check_secrets.txt (0 key-like runs); run again after the last pack, before the closing commit |
+| G5 | N/A | no GPU twin was written |
+| G6 | PARTIAL | RUN/deliverables.txt: every listed file exists; e2e_table.tex is all pending (M15) and pipeline_breakdown.dat has no rows (ISSUE-12) |
+| G7 | PASS | checked after the closing commit |
+| G8 | PASS | STATE: M16 AUDIT_FAILED at S4, sessions 1, gpu_job.pending 20261013-173239_M07_issue12k, next_unit M16 |
+| G9 | PASS | SESSION_LOG session 44, this entry, ISSUE-12 corrected, ISSUE-36 closed, ISSUE-45 and ISSUE-46 opened |
+| G10 | PASS | RUN/export_check.txt (a second run changes no file); both run manifests validate |
+Notes:
+- RUN is runs/20261013-172550_M16_export, PRE is runs/20261013-171026_M16_prefixes.
+- A1 fails by its wording, not by an untraceable number: the 9 values are read from files of ingested runs. Whether
+  that counts as traceable is a decision of the owner (ISSUE-46); the agent did not relax the checklist.
+- Withdrawing the kernel-only series removes the only timing evidence for the tags and compaction kernels against
+  their own data. The generated sections were regenerated; evidence files captured before today may still show the
+  old table.
+- The exported write_epoch material is empty on purpose. The M07 table of the code before the row-id change is
+  still a valid measurement of that code, and is not exported as a result of the current code.
+- The job was packed after the last code commit (f3903bc); records and evidence do not make it stale.
+
