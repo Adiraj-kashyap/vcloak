@@ -1415,3 +1415,25 @@ Notes:
 - Not verified: everything that needs the PC. SETUP.txt was written from documentation and memory of NVIDIA's
   install pages; no address in it was fetched in this session.
 
+## Audit — session 47 — 2026-10-14 — ingest of the PC runner jobs (M08 follow-up, no module step) — RESULT: PASS
+M08 stays DONE. Of its checklist only A4 is touched; A1-A3 and A5 are unchanged since the M08 audit.
+| Check | Result | Evidence |
+|---|---|---|
+| A4 ncu metrics collected or NOT_MEASURED with the reason | PASS | RUN/gates.txt: 7 of 8 values on pc-rtx3050laptopgpu, 1 NOT_MEASURED with its reason; the Kaggle rows stay NOT_MEASURED (ISSUE-18 closed) |
+| G1 | PASS | RUN/pytest_all.txt (2142 passed, 675 skipped, numpy backend; the skips are the GPU and database tests) |
+| G2 | PASS | RUN/check_metrics.txt (829 rows, 0 problems); the 12 new rows were written by `gpujob.py ingest` |
+| G2b | PASS | both run manifests: backend cupy, a gpu_job block, runner pc-rtx3050laptopgpu (RUN/gates.txt) |
+| G3 | PASS | RUN/check_oblivious.txt (11 files, 0 findings); no kernel changed |
+| G4 | PASS | RUN/check_secrets.txt, and a second run after the evidence copies (2095 files, 0 key-like runs) |
+| G5 | N/A | no GPU twin was written |
+| G6 | PASS | RUN/export_check.txt (39 files, 0 would change) |
+| G7 | PASS | 555b4f5 and the records commit, owner Aditya; review/publication/ stays untracked as before |
+| G8 | PASS | STATE: session 47, next_unit M15, gpu_job.pending null, last_ingested 20261013-224820_M08_ncu, M08 sessions 11 |
+| G9 | PASS | SESSION_LOG session 47, this entry, ISSUE-47 and ISSUE-18 closed, ISSUE-48 opened |
+| G10 | N/A | RUN/manifests_valid.txt (3 manifests valid); the quick rerun needs the PC and its counters |
+Notes:
+- RUN is runs/20261014-012623_M08_pc_ingest_checks.
+- The optional unit_tests command of job 20261013-224820_M00 exited 2 on the PC (collection errors, missing
+  packages). It is optional in the job spec and no GPU result depends on it (ISSUE-48 point 4).
+- The PC result is in no generated table yet, and has caveats (bitonic_pairs_global counts no branch target at all):
+  ISSUE-48. Nothing in results/, docs/ or web/ changed in this session.

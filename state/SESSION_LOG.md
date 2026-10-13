@@ -1145,3 +1145,37 @@
 - Commit: 072ee8c (kit and code), records in the next commit
 - Next: M15 S1 ; human action: ISSUE-47 (run the two jobs on the PC) and its staleness decision
 
+
+- GPU-JOB 20261013-224820_M00 ingested 2026-10-14 01:25: runner pc-rtx3050laptopgpu, gpu NVIDIA GeForce RTX 3050 Laptop GPU, session 20261014-001649, overall exit 0, runs 20261014-001653_M00_gpu_probe, 4 metrics indexed.
+
+- GPU-JOB 20261013-224820_M08_ncu ingested 2026-10-14 01:25: runner pc-rtx3050laptopgpu, gpu NVIDIA GeForce RTX 3050 Laptop GPU, session 20261014-003925, overall exit 0, runs 20261014-003929_M08_ncu, 8 metrics indexed.
+
+## Session 47 — 2026-10-14 — M08 follow-up: ingest of the two PC runner jobs (ISSUE-47, ISSUE-18) — owner:Aditya
+- Steps: not a module step. The owner reported that the PC runner output was in the repository folder (pc_runner/,
+  nsight/, nsight_dl/); ISSUE-47 says results are ingested first (status after: M08 stays DONE; next_unit M15)
+- Did: the inbox was empty; the two results zips were in pc_runner/results/ and matched the SHA-256 of
+  pc_runner/HANDOFF.md, so the agent copied them to gpujobs/inbox/ and ingested them, the probe first, without
+  `--allow-stale`. nsight/, nsight_dl/ (Nsight Compute installer and extraction, about 1.8 GB), pc_runner/.pipcache/
+  and pc_runner/.piptmp/ are now in .gitignore; nothing was deleted. Gates read by runs/20261014-012623_M08_pc_ingest_checks/gates.py.
+- Result: both jobs overall exit 0 on runner pc-rtx3050laptopgpu (RTX 3050 Laptop GPU, cc 8.6, driver 610.88,
+  CUDA 12090, CuPy 14.2.0, Windows 11, 16 logical CPUs). ncu: counters permitted, 7 of 8 metrics carry values, the
+  planted-leak control shows divergence, the four audited kernels report 0 divergent branch targets. The exporter
+  changes no file: every generated table still pins the Kaggle ncu run (NOT_MEASURED on the T4). The optional
+  unit_tests command of the probe job exited 2 at collection (missing httpx, matplotlib on the PC).
+- Evidence: runs/20261014-001653_M00_gpu_probe, runs/20261014-003929_M08_ncu (device runs); runs/20261014-012623_M08_pc_ingest_checks
+  (gates.txt, pytest_all.txt 2142 passed 675 skipped, check_*.txt, export_check.txt, ruff.txt, manifests_valid.txt,
+  job_*.txt); evidence/terminal/M08_S47_*, evidence/gpu/M08_pc_ncu_*, evidence/gpu/M00_pc_*
+- Metrics added: 12 rows with runner pc-rtx3050laptopgpu, backend cupy: ENV-PEAK-BW, ENV-D2D-BW, ENV-MAX-LOG2N,
+  ENV-VRAM-FREE (probe) and the 8 T-NCU-* rows (7 values, 1 NOT_MEASURED)
+- Decisions: none taken by the agent. Two are left to the owner in ISSUE-48 (how the PC ncu result is reported;
+  record_env.py for the PC probe)
+- Issues: closed ISSUE-47 (555b4f5), ISSUE-18 (555b4f5); opened ISSUE-48
+- Deviations from spec: the agent, not the human, moved the zips into the inbox (they were already in the repository
+  folder and their hashes matched). record_env.py not run for the PC probe. No dashboard screenshot: web/ and
+  results/ did not change. review/publication/ is still untracked and untouched. The generated obliviousness
+  outputs were not regenerated (ISSUE-48).
+- Not verified: why bitonic_pairs_global counts no branch target at all; what the `.avg` aggregate averages over;
+  any size other than log2n 16; anything about the T4; G10 rerun (needs the PC). pc_runner/HANDOFF.md was written on
+  the PC and is committed as received: its setup claims were not checked here, only its two SHA-256 values
+- Commit: 555b4f5 (ingest, evidence), records in the next commit
+- Next: M15 S1 ; human action: none to start M15; ISSUE-48 when convenient

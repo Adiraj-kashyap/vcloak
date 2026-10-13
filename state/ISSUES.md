@@ -563,7 +563,7 @@ reproduced with identical contents. Never "constant time". Limits that stay: for
 staging and the SM clock change together (585 MHz against 1140 to 1560 MHz), one GPU model, readings are rules,
 not proofs; the whole-call FAIL is host timing (ADR-023, a limitation); ISSUE-36 for the kernel-only window.
 
-### ISSUE-18 [OPEN] M08 ncu: the runner refuses the GPU performance counters (ERR_NVGPUCTRPERM); divergence is NOT_MEASURED
+### ISSUE-18 [CLOSED 555b4f5] M08 ncu: the runner refuses the GPU performance counters (ERR_NVGPUCTRPERM); divergence is NOT_MEASURED
 BLOCKS: none   SEVERITY: medium   OPENED: 2026-10-12 session 16
 `ncu --query-metrics` and `ncu --csv --section SourceCounters` both stop with ERR_NVGPUCTRPERM on the Kaggle T4
 (runs/20261012-040027_M08_ncu/ncu_query_metrics.txt, ncu_profile_raw.txt; ncu 2025.1.1.0). The eight
@@ -593,6 +593,12 @@ The ncu step alone is packed for it as job 20261013-224820_M08_ncu (ISSUE-47). N
 from the PC describes the nvrtc code on THAT GPU model, not on the T4 of the SASS listing: it is reported with its
 own provenance and never as a T4 value (ADR-024). This issue closes when that job is ingested with counters that
 carry values and a planted-leak control that shows divergence; a refusal on the PC leaves it NOT_MEASURED.
+Closed 2026-10-14 session 47: job 20261013-224820_M08_ncu ran on the PC runner pc-rtx3050laptopgpu (RTX 3050 Laptop
+GPU, cc 8.6, driver 610.88, Windows 11, Nsight Compute 2026.3.1.0) and is ingested as runs/20261014-003929_M08_ncu.
+The closing condition is met (runs/20261014-012623_M08_pc_ingest_checks/gates.txt): the counters carry values (7 of 8 metrics; reason none) and the
+planted-leak control shows divergence. The four audited kernels report 0 divergent branch targets. On the Kaggle T4
+the rows of runs/20261012-040027_M08_ncu stay NOT_MEASURED: the PC result describes the nvrtc code for cc 8.6 on
+that GPU, not the T4. How it is reported, and its caveats: ISSUE-48.
 
 ### ISSUE-19 [OPEN] M08 SASS: sass_check.py labels every conditional branch DATA; no listing of the nvrtc code that runs
 BLOCKS: none   SEVERITY: low   OPENED: 2026-10-12 session 16
@@ -1459,7 +1465,7 @@ amendment.
 Follow-up (owner: opportunistic, never its own job, blocks nothing): if an M14-type GPU job is run for another
 reason, extend the bench scripts so that these 9 values get METRIC-IDs.
 
-### ISSUE-47 [OPEN] HUMAN ACTION REQUIRED — GPU JOBS READY for the PC runner: the M00 probe, then the ncu job of ISSUE-18 (jobs 20261013-224820_M00 and 20261013-224820_M08_ncu)
+### ISSUE-47 [CLOSED 555b4f5] HUMAN ACTION REQUIRED — GPU JOBS READY for the PC runner: the M00 probe, then the ncu job of ISSUE-18 (jobs 20261013-224820_M00 and 20261013-224820_M08_ncu)
 BLOCKS: none (M15 may run meanwhile; see "Staleness" below)   SEVERITY: medium   OPENED: 2026-10-13 session 46
 Why: decision of the owner (ADR-025). The PC is a third runner under the job protocol; the project stays on the
 laptop. Both jobs are packed from commit 072ee8c and are already inside the kit folder.
@@ -1496,3 +1502,36 @@ For the ingest session:
   (runs/20261013-224907_M08_pc_runner_kit holds what could be run here: refusals without a GPU, the verifier on old result zips).
 Confirm by running: `ls gpujobs/inbox/` shows both results_20261013-224820_*.zip
 Then type: continue
+Closed 2026-10-14 session 47: the owner ran both jobs on the PC (runner pc-rtx3050laptopgpu) and brought the kit
+folder back; both results zips matched the SHA-256 of pc_runner/HANDOFF.md, were copied to gpujobs/inbox/ by the
+agent and ingested, the probe first, without `--allow-stale` (no bundled path changed since 072ee8c). An ID that
+exists for two runners is safe: index rows and the exporter are keyed by (METRIC-ID, run dir), check_metrics PASS.
+`scripts/record_env.py` was not run for the PC probe. The superseded first attempt of job 2
+(pc_runner/results/previous, counters still refused) was not ingested. Deviations of the PC setup from SETUP.txt
+(no CUDA Toolkit, header wheels, standalone Nsight Compute extracted from its MSI): pc_runner/HANDOFF.md.
+
+### ISSUE-48 [OPEN] The ncu result of the PC runner is indexed but appears in no generated table or text; caveats of that result
+BLOCKS: none   SEVERITY: medium   OPENED: 2026-10-14 session 47
+1. Decision for the owner: how the PC ncu result is reported. `scripts/export_results.py` and
+   `vcloak.bench.report_oblivious` pin the Kaggle run runs/20261012-040027_M08_ncu, so results/oblivious/
+   ncu_divergence.csv, the S5 summary table, the paper table and the obliviousness section of
+   docs/REPORT_CH4_NOTES.md still say NOT_MEASURED and "No dynamic divergence measurement". That is correct for the
+   T4 and silent about the PC. Options: (a) a separate table and paragraph for runner pc-rtx3050laptopgpu with its
+   own provenance, beside the unchanged T4 rows (proposal of the agent; ADR-025 point 3 forbids one figure and
+   forbids replacing a T4 value, not a separate statement); (b) one sentence in the limitations only; (c) not
+   reported. (a) and (b) need code in scripts/ and src/vcloak/bench; no job is pending, so nothing becomes stale.
+2. Decision for the owner: `scripts/record_env.py` for the PC probe (ADR-025 point 4). Not run; the `runner` block
+   of STATE.md and docs/ENV.md describe the Kaggle T4. Proposal of the agent: leave it so.
+3. Caveats to carry into any text (all from runs/20261014-003929_M08_ncu/summary.json):
+   - bitonic_pairs_global: the divergent AND the uniform counter are both 0 over 44 launches, so no branch target
+     was counted at all and T-NCU-BRANCHEFF-BITONIC-PAIRS-GLOBAL is NOT_MEASURED. Its 0 divergent is not backed by
+     a non-zero uniform count the way the other three are. The cause was not investigated (code without a
+     counted branch target is one possible reading, not a finding).
+   - The values are sums over launches of the `.avg` aggregate of the sm__sass_branch_targets_threads_* counters;
+     the unit `branches` is the label of bench/run_ncu.py. What `.avg` averages over was not checked against the
+     Nsight Compute documentation.
+   - One run, seed 8, log2n 16, one GPU model. The code profiled is what nvrtc built for cc 8.6, not the T4 code of
+     the SASS listing (ISSUE-19). Never write it as a T4 measurement or as proof for other sizes.
+4. Low: the optional unit_tests command of job 20261013-224820_M00 exited 2 on the PC at collection (httpx and
+   matplotlib are not in the package list of pc_runner/SETUP.txt; gpujobs/out/20261013-224820_M00/logs/03_unit_tests.txt).
+   No test ran there. If the PC is used again: add the packages to SETUP.txt or leave the step out of PC jobs.
