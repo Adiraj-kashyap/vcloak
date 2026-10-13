@@ -1047,3 +1047,5 @@
 - Not verified: any timing; the engine against the oracle on the device (in the job); the runtime of the job
 - Commit: 59d622f (code, job spec), 36c8b35 (checks), records 6de1c9f
 - Next: ingest of 20261013-163732_M07_issue12, then M15 S1 ; human action: ISSUE-44 (run the job)
+
+- GPU-JOB 20261013-163732_M07_issue12 ingested 2026-10-13 16:50: runner colab, gpu Tesla T4, session 20261013-111455, overall exit 0, runs 20261013-111612_M07_pipeline, 60 metrics indexed.

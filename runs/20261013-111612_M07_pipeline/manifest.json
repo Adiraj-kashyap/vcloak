@@ -1,0 +1,109 @@
+{
+  "run_id": "20261013-111612_M07_pipeline",
+  "module": "M07",
+  "step": "S5",
+  "owner": "Aditya",
+  "git_sha": "36c8b35cde5a46ecf8d2b9725321f7224ab0f9b1",
+  "dirty": false,
+  "command": "python bench/run_pipeline.py --dev --full --seed 7 --out runs",
+  "seed": 7,
+  "quick": false,
+  "params": {
+    "write_slots": [
+      64,
+      1024,
+      4096,
+      16384,
+      65536
+    ],
+    "read_k": [
+      64,
+      128,
+      256,
+      512,
+      1024,
+      2048,
+      4096
+    ],
+    "n_real": "slots (full)",
+    "read_hits": "K/8",
+    "buckets": 64,
+    "window_s": 60,
+    "epoch_ms": 200,
+    "warmup": 10,
+    "warm_seconds": 2.0,
+    "runs": 200,
+    "device_stages": [
+      "h2d",
+      "tags",
+      "sort",
+      "compact",
+      "d2h",
+      "seal",
+      "bucket",
+      "open"
+    ],
+    "cv_limit": 0.1
+  },
+  "env": {
+    "os": "Linux-6.6.122+-x86_64-with-glibc2.39",
+    "python": "3.13.15",
+    "backend": "cupy",
+    "runner": "colab",
+    "session_id": "20261013-111455",
+    "gpu": "Tesla T4",
+    "cc": "7.5",
+    "cuda": "13000",
+    "cupy": "14.0.1",
+    "driver": "580.82.07"
+  },
+  "telemetry_start": {
+    "available": true,
+    "gpu": "Tesla T4",
+    "driver": "580.82.07",
+    "clocks": "unlocked",
+    "sm_clock_max_mhz": 1590,
+    "ts": 1791890172.6696556,
+    "sm_clock_mhz": 960,
+    "mem_clock_mhz": 5000,
+    "temperature_c": 50,
+    "power_w": 28.541,
+    "power_limit_w": 70.0,
+    "util_gpu_pct": 5,
+    "util_mem_pct": 0,
+    "throttle_reasons": 0,
+    "pstate": 0,
+    "mem_used_mb": 654.1875
+  },
+  "telemetry_end": {
+    "available": true,
+    "gpu": "Tesla T4",
+    "driver": "580.82.07",
+    "clocks": "unlocked",
+    "sm_clock_max_mhz": 1590,
+    "ts": 1791890322.5307796,
+    "sm_clock_mhz": 585,
+    "mem_clock_mhz": 5000,
+    "temperature_c": 49,
+    "power_w": 27.67,
+    "power_limit_w": 70.0,
+    "util_gpu_pct": 7,
+    "util_mem_pct": 0,
+    "throttle_reasons": 0,
+    "pstate": 0,
+    "mem_used_mb": 678.1875
+  },
+  "outputs": [
+    "host_profile.txt",
+    "raw.csv",
+    "summary.json",
+    "telemetry.csv"
+  ],
+  "status": "UNSTABLE",
+  "notes": "CV above the limit or SM clock change on both attempts: write_epoch@64, write_epoch@1024, write_epoch@4096, write_epoch@16384, write_epoch@65536, read_window@64, read_window@128, read_window@256, read_window@512, read_window@1024, read_window@2048, read_window@4096; real-time gate (p99 of a whole call < 200 ms) FAILS at SLOTS 65536",
+  "gpu_job": {
+    "job_id": "20261013-163732_M07_issue12",
+    "bundle_sha256": "e57edb1414d960fcc00f22b8913da9633bfc09708dd25f77af6f4f0e7ae1f236",
+    "packed_from_git_sha": "36c8b35cde5a46ecf8d2b9725321f7224ab0f9b1"
+  }
+}
