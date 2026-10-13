@@ -158,7 +158,8 @@ def _oracle_run(tree: dict[str, Any], device_runs: dict[str, str] | None = None,
                {"experiment": "S1", "quantity": "messages", "device_metric": "S-TRAFFIC-MSGS",
                 "oracle_metric": "S-ORACLE-TRAFFIC-MSGS", "lo": None, "hi": None, "verdict": "EQUAL", "criterion": "c"},
                {"experiment": "E1", "quantity": "turn-order accuracy, W60", "device_metric": "S-TURNACC-W60",
-                "oracle_metric": "S-ORACLE-TURNACC-W60", "lo": 0.6, "hi": 0.7, "verdict": "DIFFERS", "criterion": "c"},
+                "oracle_metric": "S-ORACLE-TURNACC-W60", "lo": 0.6, "hi": 0.7, "verdict": "DIFFERS", "criterion": "c",
+                "device": 0.56, "oracle": 0.65},
                {"experiment": "E0", "quantity": "candidate set size K", "device_metric": "S-CANDK",
                 "oracle_metric": "S-ORACLE-CANDK", "lo": None, "hi": None, "verdict": "NOT_COMPARABLE",
                 "criterion": "defined differently"}]}
@@ -178,7 +179,8 @@ def test_oracle_comparison_is_copied_and_both_sides_are_tagged(tree: dict[str, A
     assert s["not_measured"] == ["S6 anonymity set"] and s["oracle_comparison"]["counts"]["DIFFERS"] == 1
     assert "| S1 | messages | 40<!--M:S-TRAFFIC-MSGS--> | 40<!--M:S-ORACLE-TRAFFIC-MSGS--> | - | EQUAL |" in text
     assert "0.56<!--M:S-TURNACC-W60--> | 0.65<!--M:S-ORACLE-TURNACC-W60--> | 0.6 to 0.7 | DIFFERS |" in text
-    assert "- DIFFERS: E1 / turn-order accuracy, W60 (ISSUE-8)." in text  # a difference is named with its issue
+    # a difference is named with the side that is outside and with its issue
+    assert "- DIFFERS: E1 / turn-order accuracy, W60; outside the interval: the device value (ISSUE-8)." in text
     assert "No row differs" not in text
     assert "## 4.S.10 Not in this section\n- The anonymity-set study (S6): NOT_MEASURED (ISSUE-9)." in text
 

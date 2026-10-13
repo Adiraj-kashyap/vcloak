@@ -1,0 +1,623 @@
+{
+  "rows": [
+    {
+      "experiment": "S1",
+      "quantity": "messages",
+      "device_metric": "S-TRAFFIC-MSGS",
+      "oracle_metric": "S-ORACLE-TRAFFIC-MSGS",
+      "device": 24733,
+      "oracle": 24733,
+      "kind": "exact",
+      "lo": null,
+      "hi": null,
+      "verdict": "EQUAL",
+      "criterion": "equal to 1e-9: same generator state, same draws"
+    },
+    {
+      "experiment": "E0",
+      "quantity": "conversations read back in exact order",
+      "device_metric": "S-E0-RESTORE",
+      "oracle_metric": "S-ORACLE-E0-RESTORE",
+      "device": 60,
+      "oracle": 60,
+      "kind": "exact",
+      "lo": null,
+      "hi": null,
+      "verdict": "EQUAL",
+      "criterion": "equal to 1e-9: all of 60 on both sides (the conversations drawn differ)"
+    },
+    {
+      "experiment": "E0",
+      "quantity": "candidate set size K",
+      "device_metric": "S-CANDK",
+      "oracle_metric": "S-ORACLE-CANDK",
+      "device": 128,
+      "oracle": 128,
+      "kind": "definition",
+      "lo": null,
+      "hi": null,
+      "verdict": "NOT_COMPARABLE",
+      "criterion": "the device uses the public parameter CAND_K; the oracle derives K from the peak occupancy of its own run (next power of two)"
+    },
+    {
+      "experiment": "E1",
+      "quantity": "global tau, BASELINE",
+      "device_metric": "S-TAU-GLOBAL-BASELINE",
+      "oracle_metric": "S-ORACLE-TAU-GLOBAL-BASELINE",
+      "device": 1.0,
+      "oracle": 1.0,
+      "kind": "exact",
+      "lo": null,
+      "hi": null,
+      "verdict": "EQUAL",
+      "criterion": "equal to 1e-9: arrival order is stored, no key is involved"
+    },
+    {
+      "experiment": "E1",
+      "quantity": "tau within a round, BASELINE",
+      "device_metric": "S-TAU-WITHIN-BASELINE",
+      "oracle_metric": "S-ORACLE-TAU-WITHIN-BASELINE",
+      "device": 0.9999999999999999,
+      "oracle": 1.0,
+      "kind": "exact",
+      "lo": null,
+      "hi": null,
+      "verdict": "EQUAL",
+      "criterion": "equal to 1e-9: arrival order is stored, no key is involved"
+    },
+    {
+      "experiment": "E1",
+      "quantity": "turn-order accuracy, BASELINE",
+      "device_metric": "S-TURNACC-BASELINE",
+      "oracle_metric": "S-ORACLE-TURNACC-BASELINE",
+      "device": 1.0,
+      "oracle": 1.0,
+      "kind": "exact",
+      "lo": null,
+      "hi": null,
+      "verdict": "EQUAL",
+      "criterion": "equal to 1e-9: arrival order is stored, no key is involved"
+    },
+    {
+      "experiment": "E1",
+      "quantity": "f (turns inside one visible round), BASELINE",
+      "device_metric": "S-F-BASELINE",
+      "oracle_metric": "S-ORACLE-F-BASELINE",
+      "device": 0.8894142583459015,
+      "oracle": 0.15880650552317288,
+      "kind": "definition",
+      "lo": null,
+      "hi": null,
+      "verdict": "NOT_COMPARABLE",
+      "criterion": "the baseline service stores the window as the visible round; the oracle's conventional layout stores the second of arrival"
+    },
+    {
+      "experiment": "E1",
+      "quantity": "f (turns inside one visible round), EPOCH",
+      "device_metric": "S-F-EPOCH",
+      "oracle_metric": "S-ORACLE-F-EPOCH",
+      "device": 0.036236905392736316,
+      "oracle": 0.036236905392736316,
+      "kind": "exact",
+      "lo": null,
+      "hi": null,
+      "verdict": "EQUAL",
+      "criterion": "equal to 1e-9: fixed by the arrival times and the round length"
+    },
+    {
+      "experiment": "E1",
+      "quantity": "f (turns inside one visible round), W1",
+      "device_metric": "S-F-W1",
+      "oracle_metric": "S-ORACLE-F-W1",
+      "device": 0.15880650552317288,
+      "oracle": 0.15880650552317288,
+      "kind": "exact",
+      "lo": null,
+      "hi": null,
+      "verdict": "EQUAL",
+      "criterion": "equal to 1e-9: fixed by the arrival times and the round length"
+    },
+    {
+      "experiment": "E1",
+      "quantity": "f (turns inside one visible round), W10",
+      "device_metric": "S-F-W10",
+      "oracle_metric": "S-ORACLE-F-W10",
+      "device": 0.6287857171972445,
+      "oracle": 0.6287857171972445,
+      "kind": "exact",
+      "lo": null,
+      "hi": null,
+      "verdict": "EQUAL",
+      "criterion": "equal to 1e-9: fixed by the arrival times and the round length"
+    },
+    {
+      "experiment": "E1",
+      "quantity": "f (turns inside one visible round), W60",
+      "device_metric": "S-F-W60",
+      "oracle_metric": "S-ORACLE-F-W60",
+      "device": 0.8894142583459015,
+      "oracle": 0.8894142583459015,
+      "kind": "exact",
+      "lo": null,
+      "hi": null,
+      "verdict": "EQUAL",
+      "criterion": "equal to 1e-9: fixed by the arrival times and the round length"
+    },
+    {
+      "experiment": "E1",
+      "quantity": "f (turns inside one visible round), W300",
+      "device_metric": "S-F-W300",
+      "oracle_metric": "S-ORACLE-F-W300",
+      "device": 0.9836954306444381,
+      "oracle": 0.9836954306444381,
+      "kind": "exact",
+      "lo": null,
+      "hi": null,
+      "verdict": "EQUAL",
+      "criterion": "equal to 1e-9: fixed by the arrival times and the round length"
+    },
+    {
+      "experiment": "E1",
+      "quantity": "global tau, EPOCH",
+      "device_metric": "S-TAU-GLOBAL-EPOCH",
+      "oracle_metric": "S-ORACLE-TAU-GLOBAL-EPOCH",
+      "device": 0.999775424597944,
+      "oracle": 0.9997747576005644,
+      "kind": "spread",
+      "lo": 0.9997680296731349,
+      "hi": 0.999780789104259,
+      "verdict": "WITHIN_NOISE",
+      "criterion": "device value inside the prediction interval of 20 oracle repetitions with fresh keys, per-row level 0.000588",
+      "oracle_reps": {
+        "mean": 0.999774409388697,
+        "sd": 1.5127241679145587e-06,
+        "min": 0.9997726519813855,
+        "max": 0.9997791453970521
+      },
+      "oracle_run_inside": true
+    },
+    {
+      "experiment": "E1",
+      "quantity": "tau within a round, EPOCH",
+      "device_metric": "S-TAU-WITHIN-EPOCH",
+      "oracle_metric": "S-ORACLE-TAU-WITHIN-EPOCH",
+      "device": 0.0003798655037083861,
+      "oracle": 0.0018786724271720378,
+      "kind": "spread",
+      "lo": -0.025582400858725467,
+      "hi": 0.025986096139092956,
+      "verdict": "WITHIN_NOISE",
+      "criterion": "device value inside the prediction interval of 20 oracle repetitions with fresh keys, per-row level 0.000588",
+      "oracle_reps": {
+        "mean": 0.000201847640183745,
+        "sd": 0.006113823645655404,
+        "min": -0.007461809288914912,
+        "max": 0.01894607265326481
+      },
+      "oracle_run_inside": true
+    },
+    {
+      "experiment": "E1",
+      "quantity": "turn-order accuracy, EPOCH",
+      "device_metric": "S-TURNACC-EPOCH",
+      "oracle_metric": "S-ORACLE-TURNACC-EPOCH",
+      "device": 0.9819834508621041,
+      "oracle": 0.9823095422492153,
+      "kind": "spread",
+      "lo": 0.9797422194240619,
+      "hi": 0.9846526772457298,
+      "verdict": "WITHIN_NOISE",
+      "criterion": "device value inside the prediction interval of 20 oracle repetitions with fresh keys, per-row level 0.000588",
+      "oracle_reps": {
+        "mean": 0.9821974483348959,
+        "sd": 0.0005821707997884241,
+        "min": 0.9810459381241593,
+        "max": 0.9829617250234378
+      },
+      "oracle_run_inside": true
+    },
+    {
+      "experiment": "E1",
+      "quantity": "global tau, W1",
+      "device_metric": "S-TAU-GLOBAL-W1",
+      "oracle_metric": "S-ORACLE-TAU-GLOBAL-W1",
+      "device": 0.9988783458182493,
+      "oracle": 0.9988811838267078,
+      "kind": "spread",
+      "lo": 0.9988498217977898,
+      "hi": 0.9989070097773746,
+      "verdict": "WITHIN_NOISE",
+      "criterion": "device value inside the prediction interval of 20 oracle repetitions with fresh keys, per-row level 0.000588",
+      "oracle_reps": {
+        "mean": 0.9988784157875822,
+        "sd": 6.780054533042301e-06,
+        "min": 0.998860840406628,
+        "max": 0.9988899267237332
+      },
+      "oracle_run_inside": true
+    },
+    {
+      "experiment": "E1",
+      "quantity": "tau within a round, W1",
+      "device_metric": "S-TAU-WITHIN-W1",
+      "oracle_metric": "S-ORACLE-TAU-WITHIN-W1",
+      "device": 0.000682980809796884,
+      "oracle": 0.0022154813205719093,
+      "kind": "spread",
+      "lo": -0.025635392916220273,
+      "hi": 0.02717494436600512,
+      "verdict": "WITHIN_NOISE",
+      "criterion": "device value inside the prediction interval of 20 oracle repetitions with fresh keys, per-row level 0.000588",
+      "oracle_reps": {
+        "mean": 0.0007697757248924228,
+        "sd": 0.006261052921995492,
+        "min": -0.016104035170315792,
+        "max": 0.012063585499217416
+      },
+      "oracle_run_inside": true
+    },
+    {
+      "experiment": "E1",
+      "quantity": "turn-order accuracy, W1",
+      "device_metric": "S-TURNACC-W1",
+      "oracle_metric": "S-ORACLE-TURNACC-W1",
+      "device": 0.9202298944279135,
+      "oracle": 0.9188032446093017,
+      "kind": "spread",
+      "lo": 0.9165622791545804,
+      "hi": 0.9253160072351803,
+      "verdict": "WITHIN_NOISE",
+      "criterion": "device value inside the prediction interval of 20 oracle repetitions with fresh keys, per-row level 0.000588",
+      "oracle_reps": {
+        "mean": 0.9209391431948803,
+        "sd": 0.0010378186847112014,
+        "min": 0.9192108588431908,
+        "max": 0.9226755798312477
+      },
+      "oracle_run_inside": true
+    },
+    {
+      "experiment": "E1",
+      "quantity": "global tau, W10",
+      "device_metric": "S-TAU-GLOBAL-W10",
+      "oracle_metric": "S-ORACLE-TAU-GLOBAL-W10",
+      "device": 0.9888125575779767,
+      "oracle": 0.9888297425692881,
+      "kind": "spread",
+      "lo": 0.9885422615254433,
+      "hi": 0.9890916233382148,
+      "verdict": "WITHIN_NOISE",
+      "criterion": "device value inside the prediction interval of 20 oracle repetitions with fresh keys, per-row level 0.000588",
+      "oracle_reps": {
+        "mean": 0.988816942431829,
+        "sd": 6.513087323611561e-05,
+        "min": 0.9886745545122868,
+        "max": 0.988937776527223
+      },
+      "oracle_run_inside": true
+    },
+    {
+      "experiment": "E1",
+      "quantity": "tau within a round, W10",
+      "device_metric": "S-TAU-WITHIN-W10",
+      "oracle_metric": "S-ORACLE-TAU-WITHIN-W10",
+      "device": -0.00044834259819898493,
+      "oracle": 0.0023822103686713205,
+      "kind": "spread",
+      "lo": -0.024349584995094035,
+      "hi": 0.025157019669223242,
+      "verdict": "WITHIN_NOISE",
+      "criterion": "device value inside the prediction interval of 20 oracle repetitions with fresh keys, per-row level 0.000588",
+      "oracle_reps": {
+        "mean": 0.0004037173370646017,
+        "sd": 0.0058693711826742125,
+        "min": -0.013036818526545573,
+        "max": 0.011279040913882502
+      },
+      "oracle_run_inside": true
+    },
+    {
+      "experiment": "E1",
+      "quantity": "turn-order accuracy, W10",
+      "device_metric": "S-TURNACC-W10",
+      "oracle_metric": "S-ORACLE-TURNACC-W10",
+      "device": 0.6867484612562671,
+      "oracle": 0.6855663799779889,
+      "kind": "spread",
+      "lo": 0.6761122535260911,
+      "hi": 0.6959865521642037,
+      "verdict": "WITHIN_NOISE",
+      "criterion": "device value inside the prediction interval of 20 oracle repetitions with fresh keys, per-row level 0.000588",
+      "oracle_reps": {
+        "mean": 0.6860494028451474,
+        "sd": 0.0023562439091379763,
+        "min": 0.6811641462519871,
+        "max": 0.6894794766233237
+      },
+      "oracle_run_inside": true
+    },
+    {
+      "experiment": "E1",
+      "quantity": "global tau, W60",
+      "device_metric": "S-TAU-GLOBAL-W60",
+      "oracle_metric": "S-ORACLE-TAU-GLOBAL-W60",
+      "device": 0.9328739656987705,
+      "oracle": 0.9340391381899492,
+      "kind": "spread",
+      "lo": 0.932327133212944,
+      "hi": 0.9339898398059462,
+      "verdict": "WITHIN_NOISE",
+      "criterion": "device value inside the prediction interval of 20 oracle repetitions with fresh keys, per-row level 0.000588",
+      "oracle_reps": {
+        "mean": 0.9331584865094451,
+        "sd": 0.00019712606486308758,
+        "min": 0.9327279128901946,
+        "max": 0.9334801093763229
+      },
+      "oracle_run_inside": false
+    },
+    {
+      "experiment": "E1",
+      "quantity": "tau within a round, W60",
+      "device_metric": "S-TAU-WITHIN-W60",
+      "oracle_metric": "S-ORACLE-TAU-WITHIN-W60",
+      "device": -0.005945015707058048,
+      "oracle": 0.012066514500218091,
+      "kind": "spread",
+      "lo": -0.013946579288960962,
+      "hi": 0.01121926182029209,
+      "verdict": "WITHIN_NOISE",
+      "criterion": "device value inside the prediction interval of 20 oracle repetitions with fresh keys, per-row level 0.000588",
+      "oracle_reps": {
+        "mean": -0.001363658734334436,
+        "sd": 0.0029835950899066745,
+        "min": -0.008110478055356942,
+        "max": 0.003186167882797687
+      },
+      "oracle_run_inside": false
+    },
+    {
+      "experiment": "E1",
+      "quantity": "turn-order accuracy, W60",
+      "device_metric": "S-TURNACC-W60",
+      "oracle_metric": "S-ORACLE-TURNACC-W60",
+      "device": 0.5560265764480495,
+      "oracle": 0.5596951045530509,
+      "kind": "spread",
+      "lo": 0.5441670935567169,
+      "hi": 0.5655300490675035,
+      "verdict": "WITHIN_NOISE",
+      "criterion": "device value inside the prediction interval of 20 oracle repetitions with fresh keys, per-row level 0.000588",
+      "oracle_reps": {
+        "mean": 0.5548485713121102,
+        "sd": 0.0025327351027596805,
+        "min": 0.5508498756776586,
+        "max": 0.5591244446256063
+      },
+      "oracle_run_inside": true
+    },
+    {
+      "experiment": "E1",
+      "quantity": "global tau, W300",
+      "device_metric": "S-TAU-GLOBAL-W300",
+      "oracle_metric": "S-ORACLE-TAU-GLOBAL-W300",
+      "device": 0.6659023334439046,
+      "oracle": 0.6662616815517922,
+      "kind": "spread",
+      "lo": 0.6625821475741952,
+      "hi": 0.669943504245888,
+      "verdict": "WITHIN_NOISE",
+      "criterion": "device value inside the prediction interval of 20 oracle repetitions with fresh keys, per-row level 0.000588",
+      "oracle_reps": {
+        "mean": 0.6662628259100416,
+        "sd": 0.0008727428392067031,
+        "min": 0.6642781359717187,
+        "max": 0.6674754271462664
+      },
+      "oracle_run_inside": true
+    },
+    {
+      "experiment": "E1",
+      "quantity": "tau within a round, W300",
+      "device_metric": "S-TAU-WITHIN-W300",
+      "oracle_metric": "S-ORACLE-TAU-WITHIN-W300",
+      "device": -0.0006598790092191928,
+      "oracle": 0.00014861688623078517,
+      "kind": "spread",
+      "lo": -0.011170888732005524,
+      "hi": 0.011315322275630408,
+      "verdict": "WITHIN_NOISE",
+      "criterion": "device value inside the prediction interval of 20 oracle repetitions with fresh keys, per-row level 0.000588",
+      "oracle_reps": {
+        "mean": 7.221677181244257e-05,
+        "sd": 0.0026659052825506488,
+        "min": -0.00595491908932934,
+        "max": 0.004054515020307886
+      },
+      "oracle_run_inside": true
+    },
+    {
+      "experiment": "E1",
+      "quantity": "turn-order accuracy, W300",
+      "device_metric": "S-TURNACC-W300",
+      "oracle_metric": "S-ORACLE-TURNACC-W300",
+      "device": 0.5067867769942527,
+      "oracle": 0.5071536298047528,
+      "kind": "spread",
+      "lo": 0.501292604867351,
+      "hi": 0.5130635684502213,
+      "verdict": "WITHIN_NOISE",
+      "criterion": "device value inside the prediction interval of 20 oracle repetitions with fresh keys, per-row level 0.000588",
+      "oracle_reps": {
+        "mean": 0.5071780866587862,
+        "sd": 0.001395534089119285,
+        "min": 0.5051970814820853,
+        "max": 0.5098846451718094
+      },
+      "oracle_run_inside": true
+    },
+    {
+      "experiment": "E0",
+      "quantity": "peak bucket-window occupancy, W60",
+      "device_metric": "S-OCC-PEAK",
+      "oracle_metric": "S-ORACLE-OCC-PEAK",
+      "device": 91,
+      "oracle": 82,
+      "kind": "spread",
+      "lo": 41.61599310688107,
+      "hi": 146.48400689311893,
+      "verdict": "WITHIN_NOISE",
+      "criterion": "device value inside the prediction interval of 20 oracle repetitions with fresh keys, per-row level 0.000588",
+      "oracle_reps": {
+        "mean": 94.05,
+        "sd": 12.432872386921442,
+        "min": 77,
+        "max": 117
+      },
+      "oracle_run_inside": true
+    },
+    {
+      "experiment": "E0",
+      "quantity": "mean bucket-window occupancy, W60",
+      "device_metric": "S-OCC-MEAN",
+      "oracle_metric": "S-ORACLE-OCC-MEAN",
+      "device": 26.796316359696643,
+      "oracle": 26.767316017316016,
+      "kind": "spread",
+      "lo": 24.17546897138806,
+      "hi": 30.127987961699066,
+      "verdict": "WITHIN_NOISE",
+      "criterion": "device value inside the prediction interval of 20 oracle repetitions with fresh keys, per-row level 0.000588",
+      "oracle_reps": {
+        "mean": 27.151728466543563,
+        "sd": 0.7057147962973567,
+        "min": 25.87133891213389,
+        "max": 28.4614499424626
+      },
+      "oracle_run_inside": true
+    },
+    {
+      "experiment": "E2",
+      "quantity": "chi-square statistic, n 64",
+      "device_metric": "S-CHI2",
+      "oracle_metric": "S-ORACLE-CHI2",
+      "device": 3854.5856999999996,
+      "oracle": 4222.7766,
+      "kind": "theory",
+      "lo": 3658.5485999999996,
+      "hi": 4209.0426,
+      "verdict": "DIFFERS",
+      "criterion": "both inside the range of the 200 ideal-sampler tables of the device run"
+    },
+    {
+      "experiment": "E2",
+      "quantity": "chi-square p-value",
+      "device_metric": "S-CHI2-P",
+      "oracle_metric": "S-ORACLE-CHI2-P",
+      "device": 0.9013404415190159,
+      "oracle": 0.0025768101260514333,
+      "kind": "theory",
+      "lo": 0.01,
+      "hi": 1.0,
+      "verdict": "DIFFERS",
+      "criterion": "both above 0.01 (the acceptance gate)"
+    },
+    {
+      "experiment": "E2",
+      "quantity": "tau inside 3 sigma (%), n 65536",
+      "device_metric": "S-TAUBAND-PCT",
+      "oracle_metric": "S-ORACLE-TAUBAND-PCT",
+      "device": 99.7,
+      "oracle": 99.7,
+      "kind": "theory",
+      "lo": 99.2,
+      "hi": 100.0,
+      "verdict": "WITHIN_NOISE",
+      "criterion": "both inside the central 99% interval of Binomial(1000, 0.9973)"
+    },
+    {
+      "experiment": "E2",
+      "quantity": "standard deviation of tau",
+      "device_metric": "S-TAU-SIGMA-MEAS",
+      "oracle_metric": "S-ORACLE-TAU-SIGMA-MEAS",
+      "device": 0.0026536221504245908,
+      "oracle": 0.0025133295025381135,
+      "kind": "theory",
+      "lo": 0.002454773609380888,
+      "hi": 0.0027548455286066356,
+      "verdict": "WITHIN_NOISE",
+      "criterion": "both inside the central 99% interval of the sample standard deviation of 1000 normal draws at the theoretical sigma"
+    },
+    {
+      "experiment": "E3",
+      "quantity": "distinct comparator traces, bitonic sort",
+      "device_metric": "S-TRACE-DISTINCT-DEVICE",
+      "oracle_metric": "S-ORACLE-TRACE-DISTINCT-DEVICE",
+      "device": 1,
+      "oracle": 1,
+      "kind": "exact",
+      "lo": null,
+      "hi": null,
+      "verdict": "EQUAL",
+      "criterion": "equal to 1e-9: the schedule depends on n only (five input classes each)"
+    },
+    {
+      "experiment": "E3",
+      "quantity": "distinct comparator traces, merge sort",
+      "device_metric": "S-TRACE-DISTINCT-MERGESORT",
+      "oracle_metric": "S-ORACLE-TRACE-DISTINCT-MERGESORT",
+      "device": 4,
+      "oracle": 4,
+      "kind": "exact",
+      "lo": null,
+      "hi": null,
+      "verdict": "EQUAL",
+      "criterion": "equal to 1e-9: data-dependent control; the random input of the two sides differs"
+    }
+  ],
+  "counts": {
+    "EQUAL": 12,
+    "WITHIN_NOISE": 19,
+    "DIFFERS": 2,
+    "NOT_COMPARABLE": 2
+  },
+  "checks": {
+    "same_seed": true,
+    "same_conversations": true,
+    "same_duration": true,
+    "same_buckets": true,
+    "same_slots": true,
+    "same_chi2_size": true,
+    "same_tau_size": true,
+    "same_trace_size": true
+  },
+  "family_alpha": 0.01,
+  "spread_rows": 17,
+  "per_row_alpha": 0.0005882352941176471,
+  "oracle_reps": 20,
+  "stage": "S7",
+  "seed": 2026,
+  "device_runs": {
+    "s1": "20261013-054644_M14_security_s1",
+    "attack": "20261013-054727_M14_security_e0e1",
+    "uniformity": "20261013-055417_M14_security_e2",
+    "trace": "20261013-055444_M14_security_e3"
+  },
+  "device_stack": {
+    "backend": [
+      "cupy"
+    ],
+    "runner": [
+      "colab"
+    ],
+    "session_id": [
+      "20261013-054610"
+    ],
+    "quick": [
+      false
+    ],
+    "engine": "gpu",
+    "db": "postgres"
+  },
+  "oracle_run": "20261013-121247_M14_oracle_compare"
+}

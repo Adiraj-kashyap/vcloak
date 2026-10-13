@@ -1,0 +1,167 @@
+E1 done
+E0 done
+E2 done
+{
+ "seed": 2026,
+ "quick": false,
+ "traffic": {
+  "conversations": 200,
+  "duration_s": 900,
+  "messages": 24733,
+  "slots_per_epoch": 64,
+  "epochs": 4500,
+  "max_real_per_epoch": 18,
+  "buckets": 64,
+  "mean_real_per_epoch": 5.496222222222222
+ },
+ "E1_attack": {
+  "conventional": {
+   "tau_global": 1.0,
+   "tau_within_round": 1.0,
+   "rounds_with_3plus": 900,
+   "adjacent_pair_accuracy": 1.0,
+   "turn_order_accuracy": 1.0,
+   "turns_same_round_frac": 0.15880650552317288,
+   "turn_accuracy_same_round": 1.0
+  },
+  "epoch_200ms": {
+   "tau_global": 0.9997747576005644,
+   "tau_within_round": 0.0018786724271720378,
+   "rounds_with_3plus": 4042,
+   "adjacent_pair_accuracy": 0.5922286915736698,
+   "turn_order_accuracy": 0.9823095422492153,
+   "turns_same_round_frac": 0.036236905392736316,
+   "turn_accuracy_same_round": 0.5118110236220472
+  },
+  "window_1s": {
+   "tau_global": 0.9988811838267078,
+   "tau_within_round": 0.0022154813205719093,
+   "rounds_with_3plus": 900,
+   "adjacent_pair_accuracy": 0.5204997573993208,
+   "turn_order_accuracy": 0.9188032446093017,
+   "turns_same_round_frac": 0.15880650552317288,
+   "turn_accuracy_same_round": 0.4887063655030801
+  },
+  "window_10s": {
+   "tau_global": 0.9888297425692881,
+   "tau_within_round": 0.0023822103686713205,
+   "rounds_with_3plus": 90,
+   "adjacent_pair_accuracy": 0.5040837781012454,
+   "turn_order_accuracy": 0.6855663799779889,
+   "turns_same_round_frac": 0.6287857171972445,
+   "turn_accuracy_same_round": 0.49993517438091534
+  },
+  "window_60s": {
+   "tau_global": 0.9340391381899492,
+   "tau_within_round": 0.012066514500218091,
+   "rounds_with_3plus": 15,
+   "adjacent_pair_accuracy": 0.5017386382015203,
+   "turn_order_accuracy": 0.5596951045530509,
+   "turns_same_round_frac": 0.8894142583459015,
+   "turn_accuracy_same_round": 0.5049495875343721
+  },
+  "window_300s": {
+   "tau_global": 0.6662616815517922,
+   "tau_within_round": 0.00014861688623078517,
+   "rounds_with_3plus": 3,
+   "adjacent_pair_accuracy": 0.5019003719877082,
+   "turn_order_accuracy": 0.5071536298047528,
+   "turns_same_round_frac": 0.9836954306444381,
+   "turn_accuracy_same_round": 0.4989847926076327
+  }
+ },
+ "E1_time_s": 20.376101200003177,
+ "E0_candidate_K": {
+  "K": 128,
+  "max_occupancy": 82,
+  "mean_occupancy": 26.767316017316016
+ },
+ "E0_restoration": {
+  "conversations_checked": 60,
+  "exact_order": 60
+ },
+ "E2_uniformity": {
+  "n": 64,
+  "epochs": 20000,
+  "chi2": 4222.7766,
+  "dof": 3969,
+  "p_value": 0.0025768101260514333,
+  "chi2_ideal_sampler": 3840.039,
+  "p_ideal_sampler": 0.9272933620006499,
+  "mean_tvd": 0.023061328125000002,
+  "tvd_of_ideal_sampler": 0.0220203125
+ },
+ "E2_tau_band": {
+  "n": 65536,
+  "epochs": 1000,
+  "sigma_theory": 0.0026042362055515517,
+  "band_3sigma": 0.007812708616654656,
+  "mean_tau": -5.336269204909587e-05,
+  "std_tau": 0.0025133295025381135,
+  "max_abs_tau": 0.00917319421993019,
+  "frac_in_band": 0.997
+ },
+ "E4_cpu_throughput": [
+  {
+   "log2n": 10,
+   "rounds": 55,
+   "median_ms": 1.9129000138491392,
+   "keys_per_s": 535312.8718628143
+  },
+  {
+   "log2n": 12,
+   "rounds": 78,
+   "median_ms": 5.3437999449670315,
+   "keys_per_s": 766495.7599802645
+  },
+  {
+   "log2n": 14,
+   "rounds": 105,
+   "median_ms": 41.52969992719591,
+   "keys_per_s": 394512.84330785315
+  },
+  {
+   "log2n": 16,
+   "rounds": 136,
+   "median_ms": 147.7835001423955,
+   "keys_per_s": 443459.51974918286
+  },
+  {
+   "log2n": 18,
+   "rounds": 171,
+   "median_ms": 2346.232899930328,
+   "keys_per_s": 111729.7434571753
+  },
+  {
+   "log2n": 20,
+   "rounds": 210,
+   "median_ms": 11973.214199999347,
+   "keys_per_s": 87576.81792747491
+  }
+ ],
+ "E4_aesgcm_us_per_block": 1.9007000024430454,
+ "analytic_bitonic": [
+  {
+   "log2n": 10,
+   "rounds": 55,
+   "cmp_exch": 28160
+  },
+  {
+   "log2n": 12,
+   "rounds": 78,
+   "cmp_exch": 159744
+  },
+  {
+   "log2n": 14,
+   "rounds": 105,
+   "cmp_exch": 860160
+  },
+  {
+   "log2n": 16,
+   "rounds": 136,
+   "cmp_exch": 4456448
+  },
+  {
+   "log2n": 18,
+   "rounds": 171,
+   "cmp_

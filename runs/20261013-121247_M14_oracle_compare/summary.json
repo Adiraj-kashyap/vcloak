@@ -1,0 +1,244 @@
+{
+  "metrics": [
+    {
+      "id": "S-ORACLE-TRAFFIC-MSGS",
+      "value": 24733,
+      "unit": "-",
+      "stat": "CPU oracle, messages, seed 2026, one run of seed/vcloak_oracle.py"
+    },
+    {
+      "id": "S-ORACLE-E0-RESTORE",
+      "value": 60,
+      "unit": "-",
+      "stat": "CPU oracle, conversations read back in exact order, seed 2026, one run of seed/vcloak_oracle.py"
+    },
+    {
+      "id": "S-ORACLE-CANDK",
+      "value": 128,
+      "unit": "-",
+      "stat": "CPU oracle, candidate set size K, seed 2026, one run of seed/vcloak_oracle.py"
+    },
+    {
+      "id": "S-ORACLE-TAU-GLOBAL-BASELINE",
+      "value": 1.0,
+      "unit": "-",
+      "stat": "CPU oracle, global tau, BASELINE, seed 2026, one run of seed/vcloak_oracle.py"
+    },
+    {
+      "id": "S-ORACLE-TAU-WITHIN-BASELINE",
+      "value": 1.0,
+      "unit": "-",
+      "stat": "CPU oracle, tau within a round, BASELINE, seed 2026, one run of seed/vcloak_oracle.py"
+    },
+    {
+      "id": "S-ORACLE-TURNACC-BASELINE",
+      "value": 1.0,
+      "unit": "-",
+      "stat": "CPU oracle, turn-order accuracy, BASELINE, seed 2026, one run of seed/vcloak_oracle.py"
+    },
+    {
+      "id": "S-ORACLE-F-BASELINE",
+      "value": 0.15880650552317288,
+      "unit": "-",
+      "stat": "CPU oracle, f (turns inside one visible round), BASELINE, seed 2026, one run of seed/vcloak_oracle.py"
+    },
+    {
+      "id": "S-ORACLE-F-EPOCH",
+      "value": 0.036236905392736316,
+      "unit": "-",
+      "stat": "CPU oracle, f (turns inside one visible round), EPOCH, seed 2026, one run of seed/vcloak_oracle.py"
+    },
+    {
+      "id": "S-ORACLE-F-W1",
+      "value": 0.15880650552317288,
+      "unit": "-",
+      "stat": "CPU oracle, f (turns inside one visible round), W1, seed 2026, one run of seed/vcloak_oracle.py"
+    },
+    {
+      "id": "S-ORACLE-F-W10",
+      "value": 0.6287857171972445,
+      "unit": "-",
+      "stat": "CPU oracle, f (turns inside one visible round), W10, seed 2026, one run of seed/vcloak_oracle.py"
+    },
+    {
+      "id": "S-ORACLE-F-W60",
+      "value": 0.8894142583459015,
+      "unit": "-",
+      "stat": "CPU oracle, f (turns inside one visible round), W60, seed 2026, one run of seed/vcloak_oracle.py"
+    },
+    {
+      "id": "S-ORACLE-F-W300",
+      "value": 0.9836954306444381,
+      "unit": "-",
+      "stat": "CPU oracle, f (turns inside one visible round), W300, seed 2026, one run of seed/vcloak_oracle.py"
+    },
+    {
+      "id": "S-ORACLE-TAU-GLOBAL-EPOCH",
+      "value": 0.9997747576005644,
+      "unit": "-",
+      "stat": "CPU oracle, global tau, EPOCH, seed 2026, one run of seed/vcloak_oracle.py"
+    },
+    {
+      "id": "S-ORACLE-TAU-WITHIN-EPOCH",
+      "value": 0.0018786724271720378,
+      "unit": "-",
+      "stat": "CPU oracle, tau within a round, EPOCH, seed 2026, one run of seed/vcloak_oracle.py"
+    },
+    {
+      "id": "S-ORACLE-TURNACC-EPOCH",
+      "value": 0.9823095422492153,
+      "unit": "-",
+      "stat": "CPU oracle, turn-order accuracy, EPOCH, seed 2026, one run of seed/vcloak_oracle.py"
+    },
+    {
+      "id": "S-ORACLE-TAU-GLOBAL-W1",
+      "value": 0.9988811838267078,
+      "unit": "-",
+      "stat": "CPU oracle, global tau, W1, seed 2026, one run of seed/vcloak_oracle.py"
+    },
+    {
+      "id": "S-ORACLE-TAU-WITHIN-W1",
+      "value": 0.0022154813205719093,
+      "unit": "-",
+      "stat": "CPU oracle, tau within a round, W1, seed 2026, one run of seed/vcloak_oracle.py"
+    },
+    {
+      "id": "S-ORACLE-TURNACC-W1",
+      "value": 0.9188032446093017,
+      "unit": "-",
+      "stat": "CPU oracle, turn-order accuracy, W1, seed 2026, one run of seed/vcloak_oracle.py"
+    },
+    {
+      "id": "S-ORACLE-TAU-GLOBAL-W10",
+      "value": 0.9888297425692881,
+      "unit": "-",
+      "stat": "CPU oracle, global tau, W10, seed 2026, one run of seed/vcloak_oracle.py"
+    },
+    {
+      "id": "S-ORACLE-TAU-WITHIN-W10",
+      "value": 0.0023822103686713205,
+      "unit": "-",
+      "stat": "CPU oracle, tau within a round, W10, seed 2026, one run of seed/vcloak_oracle.py"
+    },
+    {
+      "id": "S-ORACLE-TURNACC-W10",
+      "value": 0.6855663799779889,
+      "unit": "-",
+      "stat": "CPU oracle, turn-order accuracy, W10, seed 2026, one run of seed/vcloak_oracle.py"
+    },
+    {
+      "id": "S-ORACLE-TAU-GLOBAL-W60",
+      "value": 0.9340391381899492,
+      "unit": "-",
+      "stat": "CPU oracle, global tau, W60, seed 2026, one run of seed/vcloak_oracle.py"
+    },
+    {
+      "id": "S-ORACLE-TAU-WITHIN-W60",
+      "value": 0.012066514500218091,
+      "unit": "-",
+      "stat": "CPU oracle, tau within a round, W60, seed 2026, one run of seed/vcloak_oracle.py"
+    },
+    {
+      "id": "S-ORACLE-TURNACC-W60",
+      "value": 0.5596951045530509,
+      "unit": "-",
+      "stat": "CPU oracle, turn-order accuracy, W60, seed 2026, one run of seed/vcloak_oracle.py"
+    },
+    {
+      "id": "S-ORACLE-TAU-GLOBAL-W300",
+      "value": 0.6662616815517922,
+      "unit": "-",
+      "stat": "CPU oracle, global tau, W300, seed 2026, one run of seed/vcloak_oracle.py"
+    },
+    {
+      "id": "S-ORACLE-TAU-WITHIN-W300",
+      "value": 0.00014861688623078517,
+      "unit": "-",
+      "stat": "CPU oracle, tau within a round, W300, seed 2026, one run of seed/vcloak_oracle.py"
+    },
+    {
+      "id": "S-ORACLE-TURNACC-W300",
+      "value": 0.5071536298047528,
+      "unit": "-",
+      "stat": "CPU oracle, turn-order accuracy, W300, seed 2026, one run of seed/vcloak_oracle.py"
+    },
+    {
+      "id": "S-ORACLE-OCC-PEAK",
+      "value": 82,
+      "unit": "-",
+      "stat": "CPU oracle, peak bucket-window occupancy, W60, seed 2026, one run of seed/vcloak_oracle.py"
+    },
+    {
+      "id": "S-ORACLE-OCC-MEAN",
+      "value": 26.767316017316016,
+      "unit": "-",
+      "stat": "CPU oracle, mean bucket-window occupancy, W60, seed 2026, one run of seed/vcloak_oracle.py"
+    },
+    {
+      "id": "S-ORACLE-CHI2",
+      "value": 4222.7766,
+      "unit": "-",
+      "stat": "CPU oracle, chi-square statistic, n 64, seed 2026, one run of seed/vcloak_oracle.py"
+    },
+    {
+      "id": "S-ORACLE-CHI2-P",
+      "value": 0.0025768101260514333,
+      "unit": "-",
+      "stat": "CPU oracle, chi-square p-value, seed 2026, one run of seed/vcloak_oracle.py"
+    },
+    {
+      "id": "S-ORACLE-TAUBAND-PCT",
+      "value": 99.7,
+      "unit": "-",
+      "stat": "CPU oracle, tau inside 3 sigma (%), n 65536, seed 2026, one run of seed/vcloak_oracle.py"
+    },
+    {
+      "id": "S-ORACLE-TAU-SIGMA-MEAS",
+      "value": 0.0025133295025381135,
+      "unit": "-",
+      "stat": "CPU oracle, standard deviation of tau, seed 2026, one run of seed/vcloak_oracle.py"
+    },
+    {
+      "id": "S-ORACLE-TRACE-DISTINCT-DEVICE",
+      "value": 1,
+      "unit": "-",
+      "stat": "CPU oracle, distinct comparator traces, bitonic sort, seed 2026, one run of seed/vcloak_oracle.py"
+    },
+    {
+      "id": "S-ORACLE-TRACE-DISTINCT-MERGESORT",
+      "value": 4,
+      "unit": "-",
+      "stat": "CPU oracle, distinct comparator traces, merge sort, seed 2026, one run of seed/vcloak_oracle.py"
+    },
+    {
+      "id": "S-ORACLE-CMP-EQUAL",
+      "value": 12,
+      "unit": "rows",
+      "stat": "rows of the device against oracle table with this verdict, of 35"
+    },
+    {
+      "id": "S-ORACLE-CMP-WITHIN-NOISE",
+      "value": 19,
+      "unit": "rows",
+      "stat": "rows of the device against oracle table with this verdict, of 35"
+    },
+    {
+      "id": "S-ORACLE-CMP-DIFFERS",
+      "value": 2,
+      "unit": "rows",
+      "stat": "rows of the device against oracle table with this verdict, of 35"
+    },
+    {
+      "id": "S-ORACLE-CMP-NOT-COMPARABLE",
+      "value": 2,
+      "unit": "rows",
+      "stat": "rows of the device against oracle table with this verdict, of 35"
+    },
+    {
+      "id": "S-ORACLE-REPS",
+      "value": 20,
+      "unit": "repetitions",
+      "stat": "oracle attack repeated with fresh keys on the same traffic"
+    }
+  ]
+}

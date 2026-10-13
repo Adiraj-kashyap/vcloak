@@ -116,8 +116,10 @@ def oracle_section(orun: dict[str, Any], cmp: dict[str, Any], runs: dict[str, di
          "", f"- {len(cmp['rows'])} rows: {o('S-ORACLE-CMP-EQUAL')} EQUAL, {o('S-ORACLE-CMP-WITHIN-NOISE')} "
          f"WITHIN_NOISE, {o('S-ORACLE-CMP-DIFFERS')} DIFFERS, {o('S-ORACLE-CMP-NOT-COMPARABLE')} NOT_COMPARABLE "
          "(`results/security/oracle_comparison.csv`)."]
-    L += [f"- DIFFERS: {r['experiment']} / {r['quantity']} ({issues.get('oracle', 'no issue')})."
-          for r in cmp["rows"] if r["verdict"] == "DIFFERS"]
+    for r in (r for r in cmp["rows"] if r["verdict"] == "DIFFERS"):
+        sides = [] if r["lo"] is None else [n for n in ("device", "oracle") if not r["lo"] <= r[n] <= r["hi"]]
+        where = f"; outside the interval: the {' and the '.join(sides)} value" if sides else ""
+        L.append(f"- DIFFERS: {r['experiment']} / {r['quantity']}{where} ({issues.get('oracle', 'no issue')}).")
     L += [f"- NOT_COMPARABLE: {r['quantity']} - {r['criterion']}." for r in cmp["rows"]
           if r["verdict"] == "NOT_COMPARABLE"]
     if cmp["counts"]["DIFFERS"] == 0:

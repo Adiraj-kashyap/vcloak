@@ -80,3 +80,15 @@ paper-ready figures into `evidence/figures/`, plus the terminal output of the at
   - The "uniformity summary" of *Evidence to capture* is `e2_uniformity.json` with section 4.S.4; no separate figure.
   - In the ablation figure the predicted 1 - f/2 is drawn as rings around the measured points (they coincide).
   - S6 and S7 are still open (ISSUE-40); the notes say NOT_MEASURED for both.
+- 2026-10-13 (session 39): S7 as built.
+  - "The CPU oracle" is `seed/vcloak_oracle.py`, run unchanged and locally by `bench/run_oracle_compare.py` with the
+    seed of the device runs; its output directory is redirected into the run dir, so it never writes into `results/`.
+  - The module text does not define "sampling noise". As built (`src/vcloak/eval/oracle_compare.py`, fixed before the
+    full oracle run was read): a quantity fixed by the traffic or the schedule must be equal to 1e-9; a key-dependent
+    quantity of E0 or E1 must lie inside the prediction interval of 20 repetitions of the oracle's attack with fresh
+    keys on the same traffic (level 0.01 shared over those rows); for E2 both values must lie inside the interval that
+    theory or the ideal-sampler calibration gives. Two quantities are defined differently on the two sides (f of the
+    baseline layout, the candidate set size K) and are shown as NOT_COMPARABLE.
+  - Metric ids the list above does not name: `S-ORACLE-<the device id without S->`, `S-ORACLE-CMP-<verdict>`,
+    `S-ORACLE-REPS`. They are backend numpy / runner local: reference values of the logic, never GPU results.
+  - The table reaches `results/security` and section 4.S.9 of the notes through `report_security --oracle`.

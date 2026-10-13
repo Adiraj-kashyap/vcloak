@@ -1,0 +1,66 @@
+{
+  "run_id": "20261013-121247_M14_oracle_compare",
+  "module": "M14",
+  "step": "S7",
+  "owner": "Abhishek",
+  "git_sha": "b299525bd89b36d93767443bc693865cda3f1b6f",
+  "dirty": false,
+  "command": "python bench/run_oracle_compare.py --reps 20",
+  "seed": 2026,
+  "quick": false,
+  "params": {
+    "device_runs": {
+      "s1": "20261013-054644_M14_security_s1",
+      "attack": "20261013-054727_M14_security_e0e1",
+      "uniformity": "20261013-055417_M14_security_e2",
+      "trace": "20261013-055444_M14_security_e3"
+    },
+    "device_stack": {
+      "backend": [
+        "cupy"
+      ],
+      "runner": [
+        "colab"
+      ],
+      "session_id": [
+        "20261013-054610"
+      ],
+      "quick": [
+        false
+      ],
+      "engine": "gpu",
+      "db": "postgres"
+    },
+    "oracle_reps": 20,
+    "oracle": "seed/vcloak_oracle.py",
+    "oracle_sha256": "3823a1e7d6aa51517d153a0c31ab61aa190f53dcdea0484011ecb288b2ed7777",
+    "family_alpha": 0.01
+  },
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261013-121246",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U"
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791873767.5344927
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791874406.36681
+  },
+  "outputs": [
+    "oracle",
+    "oracle_comparison.csv",
+    "oracle_comparison.json",
+    "oracle_reps.json",
+    "summary.json"
+  ],
+  "status": "OK",
+  "notes": "S7 device against CPU oracle: 35 rows, 12 EQUAL, 19 WITHIN_NOISE, 2 DIFFERS, 2 NOT_COMPARABLE. The oracle ran on this CPU (numpy); the device values are read from the runs in params.device_runs. No GPU, no performance result."
+}

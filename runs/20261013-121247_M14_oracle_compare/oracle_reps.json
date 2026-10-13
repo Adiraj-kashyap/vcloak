@@ -1,0 +1,1065 @@
+{
+  "seed": 2026,
+  "reps": [
+    {
+      "attack": {
+        "epoch_200ms": {
+          "tau_global": 0.9997746333559545,
+          "tau_within_round": 0.0023282542414538475,
+          "rounds_with_3plus": 4042,
+          "adjacent_pair_accuracy": 0.589115316189552,
+          "turn_order_accuracy": 0.9828802021766601,
+          "turns_same_round_frac": 0.036236905392736316,
+          "turn_accuracy_same_round": 0.5275590551181102
+        },
+        "window_1s": {
+          "tau_global": 0.9988858658867453,
+          "tau_within_round": 0.007039875591410593,
+          "rounds_with_3plus": 900,
+          "adjacent_pair_accuracy": 0.5169011806566391,
+          "turn_order_accuracy": 0.922145681327192,
+          "turns_same_round_frac": 0.15880650552317288,
+          "turn_accuracy_same_round": 0.5097535934291582
+        },
+        "window_10s": {
+          "tau_global": 0.9888224579116317,
+          "tau_within_round": 0.0006259361419557075,
+          "rounds_with_3plus": 90,
+          "adjacent_pair_accuracy": 0.5032346757237587,
+          "turn_order_accuracy": 0.6877267354176008,
+          "turns_same_round_frac": 0.6287857171972445,
+          "turn_accuracy_same_round": 0.5033709321924025
+        },
+        "window_60s": {
+          "tau_global": 0.9329101012626921,
+          "tau_within_round": -0.005110575146631138,
+          "rounds_with_3plus": 15,
+          "adjacent_pair_accuracy": 0.5003639010189228,
+          "turn_order_accuracy": 0.5519504341091591,
+          "turns_same_round_frac": 0.8894142583459015,
+          "turn_accuracy_same_round": 0.4962419798350137
+        },
+        "window_300s": {
+          "tau_global": 0.6670954021196092,
+          "tau_within_round": 0.0025238531011180457,
+          "rounds_with_3plus": 3,
+          "adjacent_pair_accuracy": 0.5027494743651949,
+          "turn_order_accuracy": 0.5075612440386418,
+          "turns_same_round_frac": 0.9836954306444381,
+          "turn_accuracy_same_round": 0.49939916297186426
+        }
+      },
+      "occupancy": {
+        "peak": 116,
+        "mean": 27.727578475336323
+      }
+    },
+    {
+      "attack": {
+        "epoch_200ms": {
+          "tau_global": 0.9997740775248046,
+          "tau_within_round": 0.0028170642138470934,
+          "rounds_with_3plus": 4042,
+          "adjacent_pair_accuracy": 0.5906517871583373,
+          "turn_order_accuracy": 0.9828394407532711,
+          "turns_same_round_frac": 0.036236905392736316,
+          "turn_accuracy_same_round": 0.5264341957255343
+        },
+        "window_1s": {
+          "tau_global": 0.9988899267237332,
+          "tau_within_round": 0.012063585499217416,
+          "rounds_with_3plus": 900,
+          "adjacent_pair_accuracy": 0.5202571567200388,
+          "turn_order_accuracy": 0.9205559858150246,
+          "turns_same_round_frac": 0.15880650552317288,
+          "turn_accuracy_same_round": 0.49974332648870634
+        },
+        "window_10s": {
+          "tau_global": 0.9888563570725745,
+          "tau_within_round": 0.0035157833569884438,
+          "rounds_with_3plus": 90,
+          "adjacent_pair_accuracy": 0.5028707747048359,
+          "turn_order_accuracy": 0.683772877348877,
+          "turns_same_round_frac": 0.6287857171972445,
+          "turn_accuracy_same_round": 0.4970828471411902
+        },
+        "window_60s": {
+          "tau_global": 0.9330838867760439,
+          "tau_within_round": -0.002480907839093133,
+          "rounds_with_3plus": 15,
+          "adjacent_pair_accuracy": 0.502466440239366,
+          "turn_order_accuracy": 0.5520727183793258,
+          "turns_same_round_frac": 0.8894142583459015,
+          "turn_accuracy_same_round": 0.4963794683776352
+        },
+        "window_300s": {
+          "tau_global": 0.6650932133088551,
+          "tau_within_round": -0.003292917548060331,
+          "rounds_with_3plus": 3,
+          "adjacent_pair_accuracy": 0.4995552320879832,
+          "turn_order_accuracy": 0.5065014470305303,
+          "turns_same_round_frac": 0.9836954306444381,
+          "turn_accuracy_same_round": 0.4983218000248622
+        }
+      },
+      "occupancy": {
+        "peak": 84,
+        "mean": 27.060175054704594
+      }
+    },
+    {
+      "attack": {
+        "epoch_200ms": {
+          "tau_global": 0.9997758365669138,
+          "tau_within_round": 0.004001697729346405,
+          "rounds_with_3plus": 4042,
+          "adjacent_pair_accuracy": 0.5909752547307132,
+          "turn_order_accuracy": 0.9820649737088819,
+          "turns_same_round_frac": 0.036236905392736316,
+          "turn_accuracy_same_round": 0.5050618672665916
+        },
+        "window_1s": {
+          "tau_global": 0.9988772079991899,
+          "tau_within_round": -0.0005421319633938563,
+          "rounds_with_3plus": 900,
+          "adjacent_pair_accuracy": 0.5176289826944849,
+          "turn_order_accuracy": 0.9198222801940243,
+          "turns_same_round_frac": 0.15880650552317288,
+          "turn_accuracy_same_round": 0.4951232032854209
+        },
+        "window_10s": {
+          "tau_global": 0.9887582692226243,
+          "tau_within_round": -0.004536119692346459,
+          "rounds_with_3plus": 90,
+          "adjacent_pair_accuracy": 0.5029516415979298,
+          "turn_order_accuracy": 0.6853218114376554,
+          "turns_same_round_frac": 0.6287857171972445,
+          "turn_accuracy_same_round": 0.49954622066640736
+        },
+        "window_60s": {
+          "tau_global": 0.9333280732089001,
+          "tau_within_round": 0.0011724626161523108,
+          "rounds_with_3plus": 15,
+          "adjacent_pair_accuracy": 0.49773572699336893,
+          "turn_order_accuracy": 0.5578608405005503,
+          "turns_same_round_frac": 0.8894142583459015,
+          "turn_accuracy_same_round": 0.5028872593950504
+        },
+        "window_300s": {
+          "tau_global": 0.6668716898906327,
+          "tau_within_round": 0.0016595507214852692,
+          "rounds_with_3plus": 3,
+          "adjacent_pair_accuracy": 0.500080866893094,
+          "turn_order_accuracy": 0.5079688582725309,
+          "turns_same_round_frac": 0.9836954306444381,
+          "turn_accuracy_same_round": 0.4998135333360958
+        }
+      },
+      "occupancy": {
+        "peak": 97,
+        "mean": 27.17912087912088
+      }
+    },
+    {
+      "attack": {
+        "epoch_200ms": {
+          "tau_global": 0.9997728808530353,
+          "tau_within_round": -0.0067230810530932664,
+          "rounds_with_3plus": 4042,
+          "adjacent_pair_accuracy": 0.5879023127931425,
+          "turn_order_accuracy": 0.9819426894387152,
+          "turns_same_round_frac": 0.036236905392736316,
+          "turn_accuracy_same_round": 0.5016872890888638
+        },
+        "window_1s": {
+          "tau_global": 0.9988806868482681,
+          "tau_within_round": 0.001775328460099785,
+          "rounds_with_3plus": 900,
+          "adjacent_pair_accuracy": 0.517184214782468,
+          "turn_order_accuracy": 0.9214527371295805,
+          "turns_same_round_frac": 0.15880650552317288,
+          "turn_accuracy_same_round": 0.5053901437371663
+        },
+        "window_10s": {
+          "tau_global": 0.9889212258373415,
+          "tau_within_round": 0.009653547448766852,
+          "rounds_with_3plus": 90,
+          "adjacent_pair_accuracy": 0.5040029112081513,
+          "turn_order_accuracy": 0.6893979537765459,
+          "turns_same_round_frac": 0.6287857171972445,
+          "turn_accuracy_same_round": 0.5060287825748736
+        },
+        "window_60s": {
+          "tau_global": 0.9332855423171617,
+          "tau_within_round": 0.00032840012760810633,
+          "rounds_with_3plus": 15,
+          "adjacent_pair_accuracy": 0.5007682354843926,
+          "turn_order_accuracy": 0.5552113479802715,
+          "turns_same_round_frac": 0.8894142583459015,
+          "turn_accuracy_same_round": 0.4999083409715857
+        },
+        "window_300s": {
+          "tau_global": 0.6653483267281957,
+          "tau_within_round": -0.002554165727302028,
+          "rounds_with_3plus": 3,
+          "adjacent_pair_accuracy": 0.49919133106906033,
+          "turn_order_accuracy": 0.5091509395508091,
+          "turns_same_round_frac": 0.9836954306444381,
+          "turn_accuracy_same_round": 0.5010152073923673
+        }
+      },
+      "occupancy": {
+        "peak": 90,
+        "mean": 28.010192525481315
+      }
+    },
+    {
+      "attack": {
+        "epoch_200ms": {
+          "tau_global": 0.9997727566084254,
+          "tau_within_round": -0.007461809288914912,
+          "rounds_with_3plus": 4042,
+          "adjacent_pair_accuracy": 0.5884279475982532,
+          "turn_order_accuracy": 0.9817388823217706,
+          "turns_same_round_frac": 0.036236905392736316,
+          "turn_accuracy_same_round": 0.49606299212598426
+        },
+        "window_1s": {
+          "tau_global": 0.998860840406628,
+          "tau_within_round": -0.016104035170315792,
+          "rounds_with_3plus": 900,
+          "adjacent_pair_accuracy": 0.5158094775998706,
+          "turn_order_accuracy": 0.9214119757061917,
+          "turns_same_round_frac": 0.15880650552317288,
+          "turn_accuracy_same_round": 0.5051334702258727
+        },
+        "window_10s": {
+          "tau_global": 0.9886745545122868,
+          "tau_within_round": -0.013036818526545573,
+          "rounds_with_3plus": 90,
+          "adjacent_pair_accuracy": 0.5006873685912987,
+          "turn_order_accuracy": 0.6811641462519871,
+          "turns_same_round_frac": 0.6287857171972445,
+          "turn_accuracy_same_round": 0.4929340075197718
+        },
+        "window_60s": {
+          "tau_global": 0.9329445889507347,
+          "tau_within_round": -0.004300312190878791,
+          "rounds_with_3plus": 15,
+          "adjacent_pair_accuracy": 0.4973313925278991,
+          "turn_order_accuracy": 0.555415155097216,
+          "turns_same_round_frac": 0.8894142583459015,
+          "turn_accuracy_same_round": 0.5001374885426214
+        },
+        "window_300s": {
+          "tau_global": 0.6670986651754176,
+          "tau_within_round": 0.002791487382926755,
+          "rounds_with_3plus": 3,
+          "adjacent_pair_accuracy": 0.49688662461588223,
+          "turn_order_accuracy": 0.5080096196959197,
+          "turns_same_round_frac": 0.9836954306444381,
+          "turn_accuracy_same_round": 0.49985497037251897
+        }
+      },
+      "occupancy": {
+        "peak": 89,
+        "mean": 26.767316017316016
+      }
+    },
+    {
+      "attack": {
+        "epoch_200ms": {
+          "tau_global": 0.9997726519813855,
+          "tau_within_round": -0.005589216582755852,
+          "rounds_with_3plus": 4042,
+          "adjacent_pair_accuracy": 0.5927138929322335,
+          "turn_order_accuracy": 0.9822687808258265,
+          "turns_same_round_frac": 0.036236905392736316,
+          "turn_accuracy_same_round": 0.5106861642294713
+        },
+        "window_1s": {
+          "tau_global": 0.998878489680429,
+          "tau_within_round": 0.0020440809406189306,
+          "rounds_with_3plus": 900,
+          "adjacent_pair_accuracy": 0.5168607472100922,
+          "turn_order_accuracy": 0.9198630416174133,
+          "turns_same_round_frac": 0.15880650552317288,
+          "turn_accuracy_same_round": 0.4953798767967146
+        },
+        "window_10s": {
+          "tau_global": 0.9888588419647732,
+          "tau_within_round": 0.004445057536553565,
+          "rounds_with_3plus": 90,
+          "adjacent_pair_accuracy": 0.5058628497493126,
+          "turn_order_accuracy": 0.6855663799779889,
+          "turns_same_round_frac": 0.6287857171972445,
+          "turn_accuracy_same_round": 0.49993517438091534
+        },
+        "window_60s": {
+          "tau_global": 0.9332432860714032,
+          "tau_within_round": -8.908447366259269e-05,
+          "rounds_with_3plus": 15,
+          "adjacent_pair_accuracy": 0.5037198770823225,
+          "turn_order_accuracy": 0.5508498756776586,
+          "turns_same_round_frac": 0.8894142583459015,
+          "turn_accuracy_same_round": 0.4950045829514207
+        },
+        "window_300s": {
+          "tau_global": 0.6663258767799897,
+          "tau_within_round": 0.0001578632718162863,
+          "rounds_with_3plus": 3,
+          "adjacent_pair_accuracy": 0.502426006792819,
+          "turn_order_accuracy": 0.5073574369216973,
+          "turns_same_round_frac": 0.9836954306444381,
+          "turn_accuracy_same_round": 0.4991919777897485
+        }
+      },
+      "occupancy": {
+        "peak": 92,
+        "mean": 27.20902090209021
+      }
+    },
+    {
+      "attack": {
+        "epoch_200ms": {
+          "tau_global": 0.999773698251785,
+          "tau_within_round": -0.0003647497451674114,
+          "rounds_with_3plus": 4042,
+          "adjacent_pair_accuracy": 0.5926734594856865,
+          "turn_order_accuracy": 0.9816573594749929,
+          "turns_same_round_frac": 0.036236905392736316,
+          "turn_accuracy_same_round": 0.4938132733408324
+        },
+        "window_1s": {
+          "tau_global": 0.9988893970493437,
+          "tau_within_round": 0.010963730110863915,
+          "rounds_with_3plus": 900,
+          "adjacent_pair_accuracy": 0.5164564127446224,
+          "turn_order_accuracy": 0.9197407573472466,
+          "turns_same_round_frac": 0.15880650552317288,
+          "turn_accuracy_same_round": 0.49460985626283366
+        },
+        "window_10s": {
+          "tau_global": 0.9888619088448817,
+          "tau_within_round": 0.004292889196271359,
+          "rounds_with_3plus": 90,
+          "adjacent_pair_accuracy": 0.5043668122270742,
+          "turn_order_accuracy": 0.6867076998328782,
+          "turns_same_round_frac": 0.6287857171972445,
+          "turn_accuracy_same_round": 0.5017502917152858
+        },
+        "window_60s": {
+          "tau_global": 0.9330811730121954,
+          "tau_within_round": -0.002421537604623366,
+          "rounds_with_3plus": 15,
+          "adjacent_pair_accuracy": 0.5044072456736213,
+          "turn_order_accuracy": 0.5527249011535483,
+          "turns_same_round_frac": 0.8894142583459015,
+          "turn_accuracy_same_round": 0.4971127406049496
+        },
+        "window_300s": {
+          "tau_global": 0.6653262308051968,
+          "tau_within_round": -0.002974053890329896,
+          "rounds_with_3plus": 3,
+          "adjacent_pair_accuracy": 0.49886786349668444,
+          "turn_order_accuracy": 0.5051970814820853,
+          "turns_same_round_frac": 0.9836954306444381,
+          "turn_accuracy_same_round": 0.49699581485932126
+        }
+      },
+      "occupancy": {
+        "peak": 95,
+        "mean": 26.311702127659576
+      }
+    },
+    {
+      "attack": {
+        "epoch_200ms": {
+          "tau_global": 0.9997743194748345,
+          "tau_within_round": -0.00041300784210908094,
+          "rounds_with_3plus": 4042,
+          "adjacent_pair_accuracy": 0.5919456574478409,
+          "turn_order_accuracy": 0.9822280194024375,
+          "turns_same_round_frac": 0.036236905392736316,
+          "turn_accuracy_same_round": 0.5095613048368954
+        },
+        "window_1s": {
+          "tau_global": 0.9988819816078874,
+          "tau_within_round": 0.005221698073149653,
+          "rounds_with_3plus": 900,
+          "adjacent_pair_accuracy": 0.5183972181788775,
+          "turn_order_accuracy": 0.9214119757061917,
+          "turns_same_round_frac": 0.15880650552317288,
+          "turn_accuracy_same_round": 0.5051334702258727
+        },
+        "window_10s": {
+          "tau_global": 0.988937776527223,
+          "tau_within_round": 0.011279040913882502,
+          "rounds_with_3plus": 90,
+          "adjacent_pair_accuracy": 0.504730713245997,
+          "turn_order_accuracy": 0.6871560754901561,
+          "turns_same_round_frac": 0.6287857171972445,
+          "turn_accuracy_same_round": 0.5024633735252172
+        },
+        "window_60s": {
+          "tau_global": 0.9329759705235287,
+          "tau_within_round": -0.004040538392360225,
+          "rounds_with_3plus": 15,
+          "adjacent_pair_accuracy": 0.5009299692705806,
+          "turn_order_accuracy": 0.5549260180165492,
+          "turns_same_round_frac": 0.8894142583459015,
+          "turn_accuracy_same_round": 0.49958753437213566
+        },
+        "window_300s": {
+          "tau_global": 0.6666566290100218,
+          "tau_within_round": 0.0010904558126956755,
+          "rounds_with_3plus": 3,
+          "adjacent_pair_accuracy": 0.5010512696102216,
+          "turn_order_accuracy": 0.5056862185627522,
+          "turns_same_round_frac": 0.9836954306444381,
+          "turn_accuracy_same_round": 0.49749305929639914
+        }
+      },
+      "occupancy": {
+        "peak": 109,
+        "mean": 26.6232508073197
+      }
+    },
+    {
+      "attack": {
+        "epoch_200ms": {
+          "tau_global": 0.9997747445221843,
+          "tau_within_round": 0.002135875013327219,
+          "rounds_with_3plus": 4042,
+          "adjacent_pair_accuracy": 0.5919860908943878,
+          "turn_order_accuracy": 0.9829617250234378,
+          "turns_same_round_frac": 0.036236905392736316,
+          "turn_accuracy_same_round": 0.5298087739032621
+        },
+        "window_1s": {
+          "tau_global": 0.9988765279234302,
+          "tau_within_round": -0.0021325603508747007,
+          "rounds_with_3plus": 900,
+          "adjacent_pair_accuracy": 0.5196910884683811,
+          "turn_order_accuracy": 0.9202706558513023,
+          "turns_same_round_frac": 0.15880650552317288,
+          "turn_accuracy_same_round": 0.49794661190965095
+        },
+        "window_10s": {
+          "tau_global": 0.9888823765095713,
+          "tau_within_round": 0.006294160371287972,
+          "rounds_with_3plus": 90,
+          "adjacent_pair_accuracy": 0.502506873685913,
+          "turn_order_accuracy": 0.6873191211837117,
+          "turns_same_round_frac": 0.6287857171972445,
+          "turn_accuracy_same_round": 0.5027226760015558
+        },
+        "window_60s": {
+          "tau_global": 0.9332439334512128,
+          "tau_within_round": -0.00011573227981562635,
+          "rounds_with_3plus": 15,
+          "adjacent_pair_accuracy": 0.4994339317483422,
+          "turn_order_accuracy": 0.5557820079077161,
+          "turns_same_round_frac": 0.8894142583459015,
+          "turn_accuracy_same_round": 0.5005499541704858
+        },
+        "window_300s": {
+          "tau_global": 0.6664306542213065,
+          "tau_within_round": 0.0004946362343869607,
+          "rounds_with_3plus": 3,
+          "adjacent_pair_accuracy": 0.4997978327672651,
+          "turn_order_accuracy": 0.506623731300697,
+          "turns_same_round_frac": 0.9836954306444381,
+          "turn_accuracy_same_round": 0.4984461111341317
+        }
+      },
+      "occupancy": {
+        "peak": 110,
+        "mean": 28.137656427758817
+      }
+    },
+    {
+      "attack": {
+        "epoch_200ms": {
+          "tau_global": 0.9997747249046144,
+          "tau_within_round": -0.0037688856869418767,
+          "rounds_with_3plus": 4042,
+          "adjacent_pair_accuracy": 0.5898835516739447,
+          "turn_order_accuracy": 0.981616598051604,
+          "turns_same_round_frac": 0.036236905392736316,
+          "turn_accuracy_same_round": 0.49268841394825647
+        },
+        "window_1s": {
+          "tau_global": 0.9988759328571404,
+          "tau_within_round": -0.0018863074364564882,
+          "rounds_with_3plus": 900,
+          "adjacent_pair_accuracy": 0.5186398188581595,
+          "turn_order_accuracy": 0.9211674071658582,
+          "turns_same_round_frac": 0.15880650552317288,
+          "turn_accuracy_same_round": 0.5035934291581109
+        },
+        "window_10s": {
+          "tau_global": 0.9888188548179435,
+          "tau_within_round": 0.00017209770544282526,
+          "rounds_with_3plus": 90,
+          "adjacent_pair_accuracy": 0.5002830341258289,
+          "turn_order_accuracy": 0.683365263114988,
+          "turns_same_round_frac": 0.6287857171972445,
+          "turn_accuracy_same_round": 0.4964345909503436
+        },
+        "window_60s": {
+          "tau_global": 0.9331042171177437,
+          "tau_within_round": -0.002418133122401198,
+          "rounds_with_3plus": 15,
+          "adjacent_pair_accuracy": 0.49894873038977844,
+          "turn_order_accuracy": 0.5529287082704928,
+          "turns_same_round_frac": 0.8894142583459015,
+          "turn_accuracy_same_round": 0.49734188817598535
+        },
+        "window_300s": {
+          "tau_global": 0.6658470053573426,
+          "tau_within_round": -0.0008803806978220296,
+          "rounds_with_3plus": 3,
+          "adjacent_pair_accuracy": 0.4994339317483422,
+          "turn_order_accuracy": 0.5063384013369747,
+          "turns_same_round_frac": 0.9836954306444381,
+          "turn_accuracy_same_round": 0.4981560518791696
+        }
+      },
+      "occupancy": {
+        "peak": 92,
+        "mean": 27.030601092896173
+      }
+    },
+    {
+      "attack": {
+        "epoch_200ms": {
+          "tau_global": 0.9997754115195641,
+          "tau_within_round": -2.149311778592636e-05,
+          "rounds_with_3plus": 4042,
+          "adjacent_pair_accuracy": 0.5906517871583373,
+          "turn_order_accuracy": 0.9826763950597155,
+          "turns_same_round_frac": 0.036236905392736316,
+          "turn_accuracy_same_round": 0.5219347581552306
+        },
+        "window_1s": {
+          "tau_global": 0.9988835902486265,
+          "tau_within_round": 0.006107541536481886,
+          "rounds_with_3plus": 900,
+          "adjacent_pair_accuracy": 0.5216723273491832,
+          "turn_order_accuracy": 0.9222272041739698,
+          "turns_same_round_frac": 0.15880650552317288,
+          "turn_accuracy_same_round": 0.5102669404517454
+        },
+        "window_10s": {
+          "tau_global": 0.9888089871802385,
+          "tau_within_round": -9.420091498007025e-05,
+          "rounds_with_3plus": 90,
+          "adjacent_pair_accuracy": 0.5030325084910238,
+          "turn_order_accuracy": 0.687645212570823,
+          "turns_same_round_frac": 0.6287857171972445,
+          "turn_accuracy_same_round": 0.5032412809542331
+        },
+        "window_60s": {
+          "tau_global": 0.9334801093763229,
+          "tau_within_round": 0.003186167882797687,
+          "rounds_with_3plus": 15,
+          "adjacent_pair_accuracy": 0.5009704027171276,
+          "turn_order_accuracy": 0.55712713487955,
+          "turns_same_round_frac": 0.8894142583459015,
+          "turn_accuracy_same_round": 0.5020623281393217
+        },
+        "window_300s": {
+          "tau_global": 0.6642781359717187,
+          "tau_within_round": -0.00595491908932934,
+          "rounds_with_3plus": 3,
+          "adjacent_pair_accuracy": 0.5016982047549733,
+          "turn_order_accuracy": 0.5082949496596422,
+          "turns_same_round_frac": 0.9836954306444381,
+          "turn_accuracy_same_round": 0.5001450296274811
+        }
+      },
+      "occupancy": {
+        "peak": 86,
+        "mean": 27.060175054704594
+      }
+    },
+    {
+      "attack": {
+        "epoch_200ms": {
+          "tau_global": 0.9997733712922852,
+          "tau_within_round": -0.0005082902204272637,
+          "rounds_with_3plus": 4042,
+          "adjacent_pair_accuracy": 0.5910965550703542,
+          "turn_order_accuracy": 0.9813312680878816,
+          "turns_same_round_frac": 0.036236905392736316,
+          "turn_accuracy_same_round": 0.484814398200225
+        },
+        "window_1s": {
+          "tau_global": 0.9988798956062784,
+          "tau_within_round": 0.0019934910221302694,
+          "rounds_with_3plus": 900,
+          "adjacent_pair_accuracy": 0.5224809962801229,
+          "turn_order_accuracy": 0.9208005543553581,
+          "turns_same_round_frac": 0.15880650552317288,
+          "turn_accuracy_same_round": 0.5012833675564682
+        },
+        "window_10s": {
+          "tau_global": 0.9887455635764606,
+          "tau_within_round": -0.005851204113803919,
+          "rounds_with_3plus": 90,
+          "adjacent_pair_accuracy": 0.5028303412582888,
+          "turn_order_accuracy": 0.6835690702319325,
+          "turns_same_round_frac": 0.6287857171972445,
+          "turn_accuracy_same_round": 0.4967587190457669
+        },
+        "window_60s": {
+          "tau_global": 0.9332193264792552,
+          "tau_within_round": -0.0006568294027370775,
+          "rounds_with_3plus": 15,
+          "adjacent_pair_accuracy": 0.5021025392204431,
+          "turn_order_accuracy": 0.5550483022867159,
+          "turns_same_round_frac": 0.8894142583459015,
+          "turn_accuracy_same_round": 0.4997250229147571
+        },
+        "window_300s": {
+          "tau_global": 0.6658492548387015,
+          "tau_within_round": -0.001540805639215384,
+          "rounds_with_3plus": 3,
+          "adjacent_pair_accuracy": 0.497493126314087,
+          "turn_order_accuracy": 0.5098846451718094,
+          "turns_same_round_frac": 0.9836954306444381,
+          "turn_accuracy_same_round": 0.5017610740479841
+        }
+      },
+      "occupancy": {
+        "peak": 111,
+        "mean": 26.73837837837838
+      }
+    },
+    {
+      "attack": {
+        "epoch_200ms": {
+          "tau_global": 0.9997749603154543,
+          "tau_within_round": 0.0020863220321637645,
+          "rounds_with_3plus": 4042,
+          "adjacent_pair_accuracy": 0.5917839236616529,
+          "turn_order_accuracy": 0.9817796437451596,
+          "turns_same_round_frac": 0.036236905392736316,
+          "turn_accuracy_same_round": 0.49718785151856015
+        },
+        "window_1s": {
+          "tau_global": 0.9988698644888235,
+          "tau_within_round": -0.005560191408420182,
+          "rounds_with_3plus": 900,
+          "adjacent_pair_accuracy": 0.5176694161410319,
+          "turn_order_accuracy": 0.9205152243916358,
+          "turns_same_round_frac": 0.15880650552317288,
+          "turn_accuracy_same_round": 0.49948665297741274
+        },
+        "window_10s": {
+          "tau_global": 0.9887647560991011,
+          "tau_within_round": -0.0038909609860056336,
+          "rounds_with_3plus": 90,
+          "adjacent_pair_accuracy": 0.504973313925279,
+          "turn_order_accuracy": 0.6878490196877675,
+          "turns_same_round_frac": 0.6287857171972445,
+          "turn_accuracy_same_round": 0.5035654090496564
+        },
+        "window_60s": {
+          "tau_global": 0.9334196087904736,
+          "tau_within_round": 0.002558014649583266,
+          "rounds_with_3plus": 15,
+          "adjacent_pair_accuracy": 0.499878699660359,
+          "turn_order_accuracy": 0.5568825663392165,
+          "turns_same_round_frac": 0.8894142583459015,
+          "turn_accuracy_same_round": 0.5017873510540788
+        },
+        "window_300s": {
+          "tau_global": 0.6659397703066355,
+          "tau_within_round": -0.0010985909991924417,
+          "rounds_with_3plus": 3,
+          "adjacent_pair_accuracy": 0.5007682354843926,
+          "turn_order_accuracy": 0.5055639342925855,
+          "turns_same_round_frac": 0.9836954306444381,
+          "turn_accuracy_same_round": 0.4973687481871297
+        }
+      },
+      "occupancy": {
+        "peak": 94,
+        "mean": 26.283740701381507
+      }
+    },
+    {
+      "attack": {
+        "epoch_200ms": {
+          "tau_global": 0.999773554389605,
+          "tau_within_round": -0.003180055383178314,
+          "rounds_with_3plus": 4042,
+          "adjacent_pair_accuracy": 0.589115316189552,
+          "turn_order_accuracy": 0.9816573594749929,
+          "turns_same_round_frac": 0.036236905392736316,
+          "turn_accuracy_same_round": 0.4938132733408324
+        },
+        "window_1s": {
+          "tau_global": 0.9988783588966292,
+          "tau_within_round": 5.218825432162145e-05,
+          "rounds_with_3plus": 900,
+          "adjacent_pair_accuracy": 0.5192867540029112,
+          "turn_order_accuracy": 0.9217788285166918,
+          "turns_same_round_frac": 0.15880650552317288,
+          "turn_accuracy_same_round": 0.5074435318275154
+        },
+        "window_10s": {
+          "tau_global": 0.9887856422719503,
+          "tau_within_round": -0.002219663917895778,
+          "rounds_with_3plus": 90,
+          "adjacent_pair_accuracy": 0.5022642730066311,
+          "turn_order_accuracy": 0.6835283088085436,
+          "turns_same_round_frac": 0.6287857171972445,
+          "turn_accuracy_same_round": 0.49669389342668224
+        },
+        "window_60s": {
+          "tau_global": 0.9333119868015083,
+          "tau_within_round": 0.0011488523577430432,
+          "rounds_with_3plus": 15,
+          "adjacent_pair_accuracy": 0.5017386382015203,
+          "turn_order_accuracy": 0.5576977948069947,
+          "turns_same_round_frac": 0.8894142583459015,
+          "turn_accuracy_same_round": 0.5027039413382218
+        },
+        "window_300s": {
+          "tau_global": 0.6654143660079721,
+          "tau_within_round": -0.0023042934395363828,
+          "rounds_with_3plus": 3,
+          "adjacent_pair_accuracy": 0.49842309558466763,
+          "turn_order_accuracy": 0.5060530713732524,
+          "turns_same_round_frac": 0.9836954306444381,
+          "turn_accuracy_same_round": 0.4978659926242075
+        }
+      },
+      "occupancy": {
+        "peak": 77,
+        "mean": 27.149286498353458
+      }
+    },
+    {
+      "attack": {
+        "epoch_200ms": {
+          "tau_global": 0.9997731228030651,
+          "tau_within_round": -0.007006746460601556,
+          "rounds_with_3plus": 4042,
+          "adjacent_pair_accuracy": 0.5875788452207666,
+          "turn_order_accuracy": 0.9810459381241593,
+          "turns_same_round_frac": 0.036236905392736316,
+          "turn_accuracy_same_round": 0.4769403824521935
+        },
+        "window_1s": {
+          "tau_global": 0.9988772733910898,
+          "tau_within_round": 0.00028108125689455774,
+          "rounds_with_3plus": 900,
+          "adjacent_pair_accuracy": 0.5247857027333009,
+          "turn_order_accuracy": 0.9192108588431908,
+          "turns_same_round_frac": 0.15880650552317288,
+          "turn_accuracy_same_round": 0.4912731006160164
+        },
+        "window_10s": {
+          "tau_global": 0.9887403649204133,
+          "tau_within_round": -0.005855928354823866,
+          "rounds_with_3plus": 90,
+          "adjacent_pair_accuracy": 0.5059437166424066,
+          "turn_order_accuracy": 0.6886642481555456,
+          "turns_same_round_frac": 0.6287857171972445,
+          "turn_accuracy_same_round": 0.5048619214313497
+        },
+        "window_60s": {
+          "tau_global": 0.9330511973652506,
+          "tau_within_round": -0.003017200104075555,
+          "rounds_with_3plus": 15,
+          "adjacent_pair_accuracy": 0.4986656962639495,
+          "turn_order_accuracy": 0.5515020584518812,
+          "turns_same_round_frac": 0.8894142583459015,
+          "turn_accuracy_same_round": 0.4957378551787351
+        },
+        "window_300s": {
+          "tau_global": 0.6665974558797418,
+          "tau_within_round": 0.0011906258545873946,
+          "rounds_with_3plus": 3,
+          "adjacent_pair_accuracy": 0.5018599385411613,
+          "turn_order_accuracy": 0.5061753556434191,
+          "turns_same_round_frac": 0.9836954306444381,
+          "turn_accuracy_same_round": 0.49799030373347697
+        }
+      },
+      "occupancy": {
+        "peak": 80,
+        "mean": 26.651939655172413
+      }
+    },
+    {
+      "attack": {
+        "epoch_200ms": {
+          "tau_global": 0.9997755488425539,
+          "tau_within_round": 0.0018981990416448602,
+          "rounds_with_3plus": 4042,
+          "adjacent_pair_accuracy": 0.5903687530325085,
+          "turn_order_accuracy": 0.9825541107895488,
+          "turns_same_round_frac": 0.036236905392736316,
+          "turn_accuracy_same_round": 0.5185601799775028
+        },
+        "window_1s": {
+          "tau_global": 0.9988737029933515,
+          "tau_within_round": -0.004152719918380625,
+          "rounds_with_3plus": 900,
+          "adjacent_pair_accuracy": 0.5181950509461426,
+          "turn_order_accuracy": 0.9203521786980802,
+          "turns_same_round_frac": 0.15880650552317288,
+          "turn_accuracy_same_round": 0.4984599589322382
+        },
+        "window_10s": {
+          "tau_global": 0.98878663622883,
+          "tau_within_round": -0.002719808959759661,
+          "rounds_with_3plus": 90,
+          "adjacent_pair_accuracy": 0.5031133753841177,
+          "turn_order_accuracy": 0.6871560754901561,
+          "turns_same_round_frac": 0.6287857171972445,
+          "turn_accuracy_same_round": 0.5024633735252172
+        },
+        "window_60s": {
+          "tau_global": 0.9331655808766725,
+          "tau_within_round": -0.000799708292014637,
+          "rounds_with_3plus": 15,
+          "adjacent_pair_accuracy": 0.4994743651948892,
+          "turn_order_accuracy": 0.5520727183793258,
+          "turns_same_round_frac": 0.8894142583459015,
+          "turn_accuracy_same_round": 0.4963794683776352
+        },
+        "window_300s": {
+          "tau_global": 0.6664169938534034,
+          "tau_within_round": 0.0004735026342723558,
+          "rounds_with_3plus": 3,
+          "adjacent_pair_accuracy": 0.5002830341258289,
+          "turn_order_accuracy": 0.5079688582725309,
+          "turns_same_round_frac": 0.9836954306444381,
+          "turn_accuracy_same_round": 0.4998135333360958
+        }
+      },
+      "occupancy": {
+        "peak": 83,
+        "mean": 28.010192525481315
+      }
+    },
+    {
+      "attack": {
+        "epoch_200ms": {
+          "tau_global": 0.9997741494558947,
+          "tau_within_round": 0.0010450805539769323,
+          "rounds_with_3plus": 4042,
+          "adjacent_pair_accuracy": 0.5914200226427301,
+          "turn_order_accuracy": 0.9823095422492153,
+          "turns_same_round_frac": 0.036236905392736316,
+          "turn_accuracy_same_round": 0.5118110236220472
+        },
+        "window_1s": {
+          "tau_global": 0.9988789343453489,
+          "tau_within_round": 0.0007627436155889445,
+          "rounds_with_3plus": 900,
+          "adjacent_pair_accuracy": 0.5232087983179686,
+          "turn_order_accuracy": 0.9225125341376921,
+          "turns_same_round_frac": 0.15880650552317288,
+          "turn_accuracy_same_round": 0.5120636550308009
+        },
+        "window_10s": {
+          "tau_global": 0.9888087059950688,
+          "tau_within_round": -0.00030803388109006943,
+          "rounds_with_3plus": 90,
+          "adjacent_pair_accuracy": 0.5010917030567685,
+          "turn_order_accuracy": 0.687645212570823,
+          "turns_same_round_frac": 0.6287857171972445,
+          "turn_accuracy_same_round": 0.5032412809542331
+        },
+        "window_60s": {
+          "tau_global": 0.9334290383024489,
+          "tau_within_round": 0.002761099724213715,
+          "rounds_with_3plus": 15,
+          "adjacent_pair_accuracy": 0.5014960375222384,
+          "turn_order_accuracy": 0.5591244446256063,
+          "turns_same_round_frac": 0.8894142583459015,
+          "turn_accuracy_same_round": 0.504307974335472
+        },
+        "window_300s": {
+          "tau_global": 0.666332867174096,
+          "tau_within_round": 0.00023130275403255196,
+          "rounds_with_3plus": 3,
+          "adjacent_pair_accuracy": 0.5014151706291444,
+          "turn_order_accuracy": 0.5095585537846982,
+          "turns_same_round_frac": 0.9836954306444381,
+          "turn_accuracy_same_round": 0.5014295777565988
+        }
+      },
+      "occupancy": {
+        "peak": 88,
+        "mean": 28.4614499424626
+      }
+    },
+    {
+      "attack": {
+        "epoch_200ms": {
+          "tau_global": 0.9997791453970521,
+          "tau_within_round": 0.01894607265326481,
+          "rounds_with_3plus": 4042,
+          "adjacent_pair_accuracy": 0.5949377324923176,
+          "turn_order_accuracy": 0.9826356336363266,
+          "turns_same_round_frac": 0.036236905392736316,
+          "turn_accuracy_same_round": 0.5208098987626547
+        },
+        "window_1s": {
+          "tau_global": 0.998870871524083,
+          "tau_within_round": -0.004480794002689195,
+          "rounds_with_3plus": 900,
+          "adjacent_pair_accuracy": 0.5204997573993208,
+          "turn_order_accuracy": 0.9194554273835243,
+          "turns_same_round_frac": 0.15880650552317288,
+          "turn_accuracy_same_round": 0.4928131416837782
+        },
+        "window_10s": {
+          "tau_global": 0.9887837459068513,
+          "tau_within_round": -0.002835424495782006,
+          "rounds_with_3plus": 90,
+          "adjacent_pair_accuracy": 0.502426006792819,
+          "turn_order_accuracy": 0.6849549586271553,
+          "turns_same_round_frac": 0.6287857171972445,
+          "turn_accuracy_same_round": 0.4989627900946454
+        },
+        "window_60s": {
+          "tau_global": 0.9327279128901946,
+          "tau_within_round": -0.008110478055356942,
+          "rounds_with_3plus": 15,
+          "adjacent_pair_accuracy": 0.5008086689309397,
+          "turn_order_accuracy": 0.5533363225043818,
+          "turns_same_round_frac": 0.8894142583459015,
+          "turn_accuracy_same_round": 0.4978001833180568
+        },
+        "window_300s": {
+          "tau_global": 0.6674047711983522,
+          "tau_within_round": 0.004054515020307886,
+          "rounds_with_3plus": 3,
+          "adjacent_pair_accuracy": 0.5018195050946143,
+          "turn_order_accuracy": 0.5065422084539192,
+          "turns_same_round_frac": 0.9836954306444381,
+          "turn_accuracy_same_round": 0.4983632370612854
+        }
+      },
+      "occupancy": {
+        "peak": 94,
+        "mean": 26.70950323974082
+      }
+    },
+    {
+      "attack": {
+        "epoch_200ms": {
+          "tau_global": 0.9997729200881754,
+          "tau_within_round": -0.005009763217389525,
+          "rounds_with_3plus": 4042,
+          "adjacent_pair_accuracy": 0.5901261523532266,
+          "turn_order_accuracy": 0.9827986793298822,
+          "turns_same_round_frac": 0.036236905392736316,
+          "turn_accuracy_same_round": 0.5253093363329584
+        },
+        "window_1s": {
+          "tau_global": 0.9988749127435009,
+          "tau_within_round": -0.0026970307398724697,
+          "rounds_with_3plus": 900,
+          "adjacent_pair_accuracy": 0.5138282387190685,
+          "turn_order_accuracy": 0.9214119757061917,
+          "turns_same_round_frac": 0.15880650552317288,
+          "turn_accuracy_same_round": 0.5051334702258727
+        },
+        "window_10s": {
+          "tau_global": 0.9888841355516805,
+          "tau_within_round": 0.006844632714041457,
+          "rounds_with_3plus": 90,
+          "adjacent_pair_accuracy": 0.5021429726669902,
+          "turn_order_accuracy": 0.6829984103044878,
+          "turns_same_round_frac": 0.6287857171972445,
+          "turn_accuracy_same_round": 0.4958511603785816
+        },
+        "window_60s": {
+          "tau_global": 0.9329355387117793,
+          "tau_within_round": -0.004941777308949521,
+          "rounds_with_3plus": 15,
+          "adjacent_pair_accuracy": 0.5034368429564936,
+          "turn_order_accuracy": 0.5560265764480495,
+          "turns_same_round_frac": 0.8894142583459015,
+          "turn_accuracy_same_round": 0.5008249312557287
+        },
+        "window_300s": {
+          "tau_global": 0.6674754271462664,
+          "tau_within_round": 0.003485499116144958,
+          "rounds_with_3plus": 3,
+          "adjacent_pair_accuracy": 0.4997573993207181,
+          "turn_order_accuracy": 0.5078058125789753,
+          "turns_same_round_frac": 0.9836954306444381,
+          "turn_accuracy_same_round": 0.4996477851904032
+        }
+      },
+      "occupancy": {
+        "peak": 117,
+        "mean": 28.041950113378686
+      }
+    },
+    {
+      "attack": {
+        "epoch_200ms": {
+          "tau_global": 0.9997756796263539,
+          "tau_within_round": 0.008825485923014952,
+          "rounds_with_3plus": 4042,
+          "adjacent_pair_accuracy": 0.5921882581271227,
+          "turn_order_accuracy": 0.9829617250234378,
+          "turns_same_round_frac": 0.036236905392736316,
+          "turn_accuracy_same_round": 0.5298087739032621
+        },
+        "window_1s": {
+          "tau_global": 0.9988840545311164,
+          "tau_within_round": 0.0046459411274741924,
+          "rounds_with_3plus": 900,
+          "adjacent_pair_accuracy": 0.5211871259906194,
+          "turn_order_accuracy": 0.9226755798312477,
+          "turns_same_round_frac": 0.15880650552317288,
+          "turn_accuracy_same_round": 0.5130903490759754
+        },
+        "window_10s": {
+          "tau_global": 0.9888376876851339,
+          "tau_within_round": 0.0022993651991343863,
+          "rounds_with_3plus": 90,
+          "adjacent_pair_accuracy": 0.5031133753841177,
+          "turn_order_accuracy": 0.6894794766233237,
+          "turns_same_round_frac": 0.6287857171972445,
+          "turn_accuracy_same_round": 0.5061584338130429
+        },
+        "window_60s": {
+          "tau_global": 0.9332286579033805,
+          "tau_within_round": 7.464216781295726e-05,
+          "rounds_with_3plus": 15,
+          "adjacent_pair_accuracy": 0.49773572699336893,
+          "turn_order_accuracy": 0.5584315004279949,
+          "turns_same_round_frac": 0.8894142583459015,
+          "turn_accuracy_same_round": 0.5035288725939505
+        },
+        "window_300s": {
+          "tau_global": 0.6674537824273774,
+          "tau_within_round": 0.0038911705632625453,
+          "rounds_with_3plus": 3,
+          "adjacent_pair_accuracy": 0.5018599385411613,
+          "turn_order_accuracy": 0.5053193657522521,
+          "turns_same_round_frac": 0.9836954306444381,
+          "turn_accuracy_same_round": 0.49712012596859073
+        }
+      },
+      "occupancy": {
+        "peak": 77,
+        "mean": 25.87133891213389
+      }
+    }
+  ]
+}

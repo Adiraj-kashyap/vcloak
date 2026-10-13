@@ -1,0 +1,14 @@
+\newcommand{\sessionrows}{%
+Valid token + fresh DPoP proof & 200 & 200 \\
+Replayed proof (same jti) & 401 & 401 (jti\_fresh) \\
+Stolen token, attacker's own key & 401 & 401 (key\_binding) \\
+Proof for different URL (htu) & 401 & 401 (htu) \\
+Proof for different method (htm) & 401 & 401 (htm) \\
+Stale proof (iat -5 min) & 401 & 401 (iat\_window) \\
+Expired access token & 401 & 401 (token\_exp) \\
+Tampered access token & 401 & 401 (token\_mac) \\
+Refresh-token rotation & rotated & rotated \\
+Old refresh token reused & family revoked & reuse-detected: family revoked \\
+Rotated token after reuse detected & family revoked & reuse-detected: family revoked \\
+X25519+HKDF content key agreement & keys equal & keys equal \\
+}
