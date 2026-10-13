@@ -1,0 +1,23 @@
+{
+ "module": "M14",
+ "run": "runs/20261013-155229_M14_s6_ingest_report (git ce8de77, dirty)",
+ "date": "2026-10-13",
+ "views": {},
+ "checks": {},
+ "ok": true,
+ "superseded": [],
+ "index_rows": [
+  "TERM-M14-S6-JOB-LOG-05-SECURITY-ANON",
+  "TERM-M14-S6-JOB-LOG-06-STACK-STATUS",
+  "TERM-M14-S6-ANONYMITY-TABLE",
+  "TERM-M14-S6-GATES",
+  "TERM-M14-S6-PYTEST-ALL"
+ ],
+ "files_written": [
+  "terminal/M14_S6_job_log_05_security_anon.txt",
+  "terminal/M14_S6_job_log_06_stack_status.txt",
+  "terminal/M14_S6_anonymity_table.csv",
+  "terminal/M14_S6_gates.csv",
+  "terminal/M14_S6_pytest_all.txt"
+ ]
+}

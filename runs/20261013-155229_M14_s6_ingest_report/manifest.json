@@ -1,0 +1,48 @@
+{
+  "run_id": "20261013-155229_M14_s6_ingest_report",
+  "module": "M14",
+  "step": "S6",
+  "owner": "Abhishek",
+  "git_sha": "ce8de771fa2d2e2b6ecd4fcb82d90c4f7eb88901",
+  "dirty": true,
+  "command": "python -m vcloak.bench.report_security ... --anonymity runs/20261013-101309_M14_security_anon (report_command.txt); pytest -q; global checks",
+  "seed": 0,
+  "quick": false,
+  "params": {},
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261013-155229",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U"
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791886949.9600449
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791887339.5172656
+  },
+  "outputs": [
+    "anonymity_table.csv",
+    "capture_terminal.json",
+    "check_metrics.txt",
+    "check_oblivious.txt",
+    "check_secrets.txt",
+    "g10_quick_rerun.txt",
+    "gates.csv",
+    "job_log_05_security_anon.txt",
+    "job_log_06_stack_status.txt",
+    "manifests_valid.txt",
+    "pytest_all.txt",
+    "report_command.txt",
+    "report_stdout.txt",
+    "ruff.txt"
+  ],
+  "status": "OK",
+  "notes": "M14 S6 ingest: report_security re-run with the anonymity run of job 20261013-125843_M14_s6 (command in report_command.txt); whole test suite on the numpy backend; global checks. Nothing is measured here."
+}

@@ -60,3 +60,24 @@ E3,write_epoch,launch_list_identical_for_every_batch,PASS,runs/20261013-055444_M
 E3,write_epoch,pair_schedule_identical_for_every_batch,PASS,runs/20261013-055444_M14_security_e3
 tests,pytest -m gpu,tests_passed,PASS,runs/20261013-055445_M14_cuda_tests
 tests,pytest -m gpu,none_failed,PASS,runs/20261013-055445_M14_cuda_tests
+S6,10 users,every_post_accepted,PASS,runs/20261013-101309_M14_security_anon
+S6,10 users,row_count_equals_message_count,PASS,runs/20261013-101309_M14_security_anon
+S6,10 users,stored_ciphertexts_are_the_sent_ones,PASS,runs/20261013-101309_M14_security_anon
+S6,10 users,no_epoch_failed,PASS,runs/20261013-101309_M14_security_anon
+S6,10 users,nothing_left_queued,PASS,runs/20261013-101309_M14_security_anon
+S6,10 users,no_window_left_unshuffled,PASS,runs/20261013-101309_M14_security_anon
+S6,10 users,each_window_rewritten_once,PASS,runs/20261013-101309_M14_security_anon
+S6,100 users,every_post_accepted,PASS,runs/20261013-101309_M14_security_anon
+S6,100 users,row_count_equals_message_count,PASS,runs/20261013-101309_M14_security_anon
+S6,100 users,stored_ciphertexts_are_the_sent_ones,PASS,runs/20261013-101309_M14_security_anon
+S6,100 users,no_epoch_failed,PASS,runs/20261013-101309_M14_security_anon
+S6,100 users,nothing_left_queued,PASS,runs/20261013-101309_M14_security_anon
+S6,100 users,no_window_left_unshuffled,PASS,runs/20261013-101309_M14_security_anon
+S6,100 users,each_window_rewritten_once,PASS,runs/20261013-101309_M14_security_anon
+S6,1000 users,every_post_accepted,PASS,runs/20261013-101309_M14_security_anon
+S6,1000 users,row_count_equals_message_count,PASS,runs/20261013-101309_M14_security_anon
+S6,1000 users,stored_ciphertexts_are_the_sent_ones,PASS,runs/20261013-101309_M14_security_anon
+S6,1000 users,no_epoch_failed,PASS,runs/20261013-101309_M14_security_anon
+S6,1000 users,nothing_left_queued,PASS,runs/20261013-101309_M14_security_anon
+S6,1000 users,no_window_left_unshuffled,PASS,runs/20261013-101309_M14_security_anon
+S6,1000 users,each_window_rewritten_once,PASS,runs/20261013-101309_M14_security_anon

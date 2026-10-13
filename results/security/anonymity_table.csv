@@ -1,0 +1,4 @@
+users,conversations,messages,window_median,window_p5,window_empty,windows,bucket_window_median,bucket_window_p5,bucket_window_empty,bucket_windows,bucket_window_peak,turn_order_accuracy,turns_same_round_frac,predicted_turn_accuracy
+10,5,555,32.0,23.5,0,15,0.0,0.0,900,960,26,0.5690909090909091,0.8745454545454545,0.5627272727272727
+100,50,5855,384.0,331.0,0,15,0.0,0.0,520,960,42,0.5583118001722653,0.882687338501292,0.558656330749354
+1000,500,61383,4098.0,3960.8,0,15,62.0,26.0,0,960,172,0.5558694545275364,0.8893944122333,0.55530279388335

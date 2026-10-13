@@ -1,0 +1,83 @@
+experiment,scope,gate,result,run_dir
+S1,traffic,every_post_accepted,PASS,runs/20261013-054644_M14_security_s1
+S1,traffic,row_count_equals_message_count,PASS,runs/20261013-054644_M14_security_s1
+S1,traffic,stored_ciphertexts_are_the_sent_ones,PASS,runs/20261013-054644_M14_security_s1
+S1,traffic,no_epoch_failed,PASS,runs/20261013-054644_M14_security_s1
+S1,traffic,nothing_left_queued,PASS,runs/20261013-054644_M14_security_s1
+S1,traffic,no_window_left_unshuffled,PASS,runs/20261013-054644_M14_security_s1
+S1,traffic,each_window_rewritten_once,PASS,runs/20261013-054644_M14_security_s1
+S1,traffic,sql_count_equals_message_count,PASS,runs/20261013-054644_M14_security_s1
+E1,BASELINE,every_post_accepted,PASS,runs/20261013-054727_M14_security_e0e1
+E1,BASELINE,row_count_equals_message_count,PASS,runs/20261013-054727_M14_security_e0e1
+E1,BASELINE,stored_ciphertexts_are_the_sent_ones,PASS,runs/20261013-054727_M14_security_e0e1
+E1,EPOCH,every_post_accepted,PASS,runs/20261013-054727_M14_security_e0e1
+E1,EPOCH,row_count_equals_message_count,PASS,runs/20261013-054727_M14_security_e0e1
+E1,EPOCH,stored_ciphertexts_are_the_sent_ones,PASS,runs/20261013-054727_M14_security_e0e1
+E1,EPOCH,no_epoch_failed,PASS,runs/20261013-054727_M14_security_e0e1
+E1,EPOCH,nothing_left_queued,PASS,runs/20261013-054727_M14_security_e0e1
+E1,W1,every_post_accepted,PASS,runs/20261013-054727_M14_security_e0e1
+E1,W1,row_count_equals_message_count,PASS,runs/20261013-054727_M14_security_e0e1
+E1,W1,stored_ciphertexts_are_the_sent_ones,PASS,runs/20261013-054727_M14_security_e0e1
+E1,W1,no_epoch_failed,PASS,runs/20261013-054727_M14_security_e0e1
+E1,W1,nothing_left_queued,PASS,runs/20261013-054727_M14_security_e0e1
+E1,W1,no_window_left_unshuffled,PASS,runs/20261013-054727_M14_security_e0e1
+E1,W1,each_window_rewritten_once,PASS,runs/20261013-054727_M14_security_e0e1
+E1,W10,every_post_accepted,PASS,runs/20261013-054727_M14_security_e0e1
+E1,W10,row_count_equals_message_count,PASS,runs/20261013-054727_M14_security_e0e1
+E1,W10,stored_ciphertexts_are_the_sent_ones,PASS,runs/20261013-054727_M14_security_e0e1
+E1,W10,no_epoch_failed,PASS,runs/20261013-054727_M14_security_e0e1
+E1,W10,nothing_left_queued,PASS,runs/20261013-054727_M14_security_e0e1
+E1,W10,no_window_left_unshuffled,PASS,runs/20261013-054727_M14_security_e0e1
+E1,W10,each_window_rewritten_once,PASS,runs/20261013-054727_M14_security_e0e1
+E1,W60,every_post_accepted,PASS,runs/20261013-054727_M14_security_e0e1
+E1,W60,row_count_equals_message_count,PASS,runs/20261013-054727_M14_security_e0e1
+E1,W60,stored_ciphertexts_are_the_sent_ones,PASS,runs/20261013-054727_M14_security_e0e1
+E1,W60,no_epoch_failed,PASS,runs/20261013-054727_M14_security_e0e1
+E1,W60,nothing_left_queued,PASS,runs/20261013-054727_M14_security_e0e1
+E1,W60,no_window_left_unshuffled,PASS,runs/20261013-054727_M14_security_e0e1
+E1,W60,each_window_rewritten_once,PASS,runs/20261013-054727_M14_security_e0e1
+E1,W60,e0_every_conversation_in_exact_order,PASS,runs/20261013-054727_M14_security_e0e1
+E1,W60,e0_no_read_failed,PASS,runs/20261013-054727_M14_security_e0e1
+E1,W60,e0_cand_k_above_peak_occupancy,PASS,runs/20261013-054727_M14_security_e0e1
+E1,W300,every_post_accepted,PASS,runs/20261013-054727_M14_security_e0e1
+E1,W300,row_count_equals_message_count,PASS,runs/20261013-054727_M14_security_e0e1
+E1,W300,stored_ciphertexts_are_the_sent_ones,PASS,runs/20261013-054727_M14_security_e0e1
+E1,W300,no_epoch_failed,PASS,runs/20261013-054727_M14_security_e0e1
+E1,W300,nothing_left_queued,PASS,runs/20261013-054727_M14_security_e0e1
+E1,W300,no_window_left_unshuffled,PASS,runs/20261013-054727_M14_security_e0e1
+E1,W300,each_window_rewritten_once,PASS,runs/20261013-054727_M14_security_e0e1
+E0,W60,every_conversation_in_exact_order,PASS,runs/20261013-054727_M14_security_e0e1
+E0,W60,no_read_failed,PASS,runs/20261013-054727_M14_security_e0e1
+E0,W60,cand_k_above_peak_occupancy,PASS,runs/20261013-054727_M14_security_e0e1
+E2,chi2,p_above_0_01,PASS,runs/20261013-055417_M14_security_e2
+E2,chi2,chi2_inside_ideal_range,PASS,runs/20261013-055417_M14_security_e2
+E2,tau band,coverage_inside_binomial_99_bounds,PASS,runs/20261013-055417_M14_security_e2
+E3,sort,device_trace_identical_for_every_input,PASS,runs/20261013-055444_M14_security_e3
+E3,sort,merge_sort_trace_depends_on_the_input,PASS,runs/20261013-055444_M14_security_e3
+E3,sort,device_trace_equals_oracle_trace,PASS,runs/20261013-055444_M14_security_e3
+E3,sort,device_result_equals_oracle,PASS,runs/20261013-055444_M14_security_e3
+E3,write_epoch,launch_list_identical_for_every_batch,PASS,runs/20261013-055444_M14_security_e3
+E3,write_epoch,pair_schedule_identical_for_every_batch,PASS,runs/20261013-055444_M14_security_e3
+tests,pytest -m gpu,tests_passed,PASS,runs/20261013-055445_M14_cuda_tests
+tests,pytest -m gpu,none_failed,PASS,runs/20261013-055445_M14_cuda_tests
+S6,10 users,every_post_accepted,PASS,runs/20261013-101309_M14_security_anon
+S6,10 users,row_count_equals_message_count,PASS,runs/20261013-101309_M14_security_anon
+S6,10 users,stored_ciphertexts_are_the_sent_ones,PASS,runs/20261013-101309_M14_security_anon
+S6,10 users,no_epoch_failed,PASS,runs/20261013-101309_M14_security_anon
+S6,10 users,nothing_left_queued,PASS,runs/20261013-101309_M14_security_anon
+S6,10 users,no_window_left_unshuffled,PASS,runs/20261013-101309_M14_security_anon
+S6,10 users,each_window_rewritten_once,PASS,runs/20261013-101309_M14_security_anon
+S6,100 users,every_post_accepted,PASS,runs/20261013-101309_M14_security_anon
+S6,100 users,row_count_equals_message_count,PASS,runs/20261013-101309_M14_security_anon
+S6,100 users,stored_ciphertexts_are_the_sent_ones,PASS,runs/20261013-101309_M14_security_anon
+S6,100 users,no_epoch_failed,PASS,runs/20261013-101309_M14_security_anon
+S6,100 users,nothing_left_queued,PASS,runs/20261013-101309_M14_security_anon
+S6,100 users,no_window_left_unshuffled,PASS,runs/20261013-101309_M14_security_anon
+S6,100 users,each_window_rewritten_once,PASS,runs/20261013-101309_M14_security_anon
+S6,1000 users,every_post_accepted,PASS,runs/20261013-101309_M14_security_anon
+S6,1000 users,row_count_equals_message_count,PASS,runs/20261013-101309_M14_security_anon
+S6,1000 users,stored_ciphertexts_are_the_sent_ones,PASS,runs/20261013-101309_M14_security_anon
+S6,1000 users,no_epoch_failed,PASS,runs/20261013-101309_M14_security_anon
+S6,1000 users,nothing_left_queued,PASS,runs/20261013-101309_M14_security_anon
+S6,1000 users,no_window_left_unshuffled,PASS,runs/20261013-101309_M14_security_anon
+S6,1000 users,each_window_rewritten_once,PASS,runs/20261013-101309_M14_security_anon

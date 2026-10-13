@@ -390,6 +390,7 @@ carries a `<!--M:ID-->` tag that names its row in `state/METRICS_INDEX.md`. Gate
   - `runs/20261013-055417_M14_security_e2` (uniformity, status OK)
   - `runs/20261013-055444_M14_security_e3` (trace, status OK)
   - `runs/20261013-055445_M14_cuda_tests` (tests, status OK)
+  - `runs/20261013-101309_M14_security_anon` (anonymity, status OK)
 
 ## 4.S.2 E0: restoration through the read path
 - 60<!--M:S-E0-RESTORE--> of 60 conversations read back in exact order on the W = 60 s layout (7683 messages, 960 window reads, 0 failed).
@@ -410,7 +411,7 @@ The attacker reads the table in physical order (`ORDER BY ctid`) and guesses tha
 - BASELINE stores arrival order; EPOCH is V-cloak with the epoch as the visible round (the Review-1 design); W*n* is V-cloak re-shuffling each window of *n* seconds.
 - For BASELINE the prediction does not apply: nothing is shuffled inside its rounds.
 - Global τ stays high in every layout because the order of the rounds themselves is public; the protection is inside a round, where τ is near zero.
-- Limit of the ablation: on layout W300 the peak bucket-window occupancy is 345, above CAND_K 128, so a read at that window size would answer `candidate_overflow`. That layout is only dumped, never read (ISSUE-40).
+- Limit of the ablation: on layout W300 the peak bucket-window occupancy is 345, above CAND_K 128, so a read at that window size would answer `candidate_overflow`. That layout is only dumped, never read (ISSUE-43).
 
 ## 4.S.4 E2: uniformity of the permutations from device tags
 - χ² at n = 64 over 20000 epochs, with the (n−1)/n correction: statistic 3854.5856999999996<!--M:S-CHI2--> at 3969 degrees of freedom, p = 0.9013404415190159<!--M:S-CHI2-P-->. Calibration with 200 tables of an ideal sampler: statistic between 3658.5 and 4209.0 (the first table has p = 0.946837065162254<!--M:S-CHI2-P-IDEAL-->).
@@ -428,7 +429,7 @@ The attacker reads the table in physical order (`ORDER BY ctid`) and guesses tha
 - 674<!--M:S-CUDA-TESTS-PASSED--> passed, 0<!--M:S-CUDA-TESTS-FAILED--> failed, 0<!--M:S-CUDA-TESTS-ERRORS--> errors, 0<!--M:S-CUDA-TESTS-SKIPPED--> skipped, in one pytest process on the runner.
 
 ## 4.S.7 Acceptance gates
-61 gates evaluated by the runs, 61 PASS, 0 FAIL (`results/security/gates.csv`).
+82 gates evaluated by the runs, 82 PASS, 0 FAIL (`results/security/gates.csv`).
 
 ## 4.S.8 Figures
 - `results/security/fig_window_ablation.png` from `runs/20261013-054727_M14_security_e0e1`
@@ -483,6 +484,19 @@ The attacker reads the table in physical order (`ORDER BY ctid`) and guesses tha
 - NOT_COMPARABLE: candidate set size K - the device uses the public parameter CAND_K; the oracle derives K from the peak occupancy of its own run (next power of two).
 - NOT_COMPARABLE: f (turns inside one visible round), BASELINE - the baseline service stores the window as the visible round; the oracle's conventional layout stores the second of arrival.
 
-## 4.S.10 Not in this section
-- The anonymity-set study (S6): NOT_MEASURED (ISSUE-40).
+## 4.S.10 S6: anonymity set
+- Runner: colab, Tesla T4, driver 580.82.07, CUDA runtime 13000, CuPy 14.0.1; runner session 20261013-101235 (a runner session of its own, not the one of the sections above), GPU job 20261013-125843_M14_s6, packed from commit `b042dc8`.
+- Stack: mode=vcloak, db=postgres (PostgreSQL 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1), in the runner), engine=gpu.
+- Traffic: two users per conversation, every user in exactly one (conversations = users / 2); 900 simulated seconds, seed 2026, 64 buckets, layout W = 60 s. One replay per population, one seed: no confidence interval is given.
+
+| users | conversations | messages | per window: median | per window: p5 | per bucket-window: median | per bucket-window: p5 | empty bucket-windows | fullest bucket-window | turn-order accuracy | f (turns inside one round) | predicted 1 − f/2 |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 10 | 5 | 555<!--M:S-ANON-MSGS-U10--> | 32.0<!--M:S-ANON-MED-U10--> | 23.5<!--M:S-ANON-P5-U10--> | 0.0<!--M:S-ANON-BW-MED-U10--> | 0.0<!--M:S-ANON-BW-P5-U10--> | 900 of 960 | 26<!--M:S-ANON-BW-PEAK-U10--> | 0.5690909090909091<!--M:S-TURNACC-W60-U10--> | 0.8745454545454545<!--M:S-F-W60-U10--> | 0.5627 |
+| 100 | 50 | 5855<!--M:S-ANON-MSGS-U100--> | 384.0<!--M:S-ANON-MED-U100--> | 331.0<!--M:S-ANON-P5-U100--> | 0.0<!--M:S-ANON-BW-MED-U100--> | 0.0<!--M:S-ANON-BW-P5-U100--> | 520 of 960 | 42<!--M:S-ANON-BW-PEAK-U100--> | 0.5583118001722653<!--M:S-TURNACC-W60-U100--> | 0.882687338501292<!--M:S-F-W60-U100--> | 0.5587 |
+| 1000 | 500 | 61383<!--M:S-ANON-MSGS-U1000--> | 4098.0<!--M:S-ANON-MED-U1000--> | 3960.8<!--M:S-ANON-P5-U1000--> | 62.0<!--M:S-ANON-BW-MED-U1000--> | 26.0<!--M:S-ANON-BW-P5-U1000--> | 0 of 960 | 172<!--M:S-ANON-BW-PEAK-U1000--> | 0.5558694545275364<!--M:S-TURNACC-W60-U1000--> | 0.8893944122333<!--M:S-F-W60-U1000--> | 0.5553 |
+
+- A cell is a window, or one bucket of one window; the values are real rows in a cell, counted over every cell of the run, the empty ones as 0. p5 is the 5th percentile with linear interpolation.
+- The same count as a real row sees it (median / p5 of the size of the cell the row is stored in, from `s6_anonymity.json`): 10 users: 34 / 25 per window, 11 / 4 per bucket-window; 100 users: 404 / 310 per window, 18 / 6 per bucket-window; 1000 users: 4098 / 3958 per window, 73 / 36 per bucket-window.
+- The attack is the one of 4.S.3 on the dump of each population. S6 has no acceptance gate of its own; the checks of the stage are in the gate table.
+- Limit: at 1000 users the fullest bucket-window holds 172 real rows, above CAND_K 128, so a read of that bucket-window would answer `candidate_overflow`. This population was dumped and counted, never read (ISSUE-43).
 <!-- END M14 SECURITY -->
