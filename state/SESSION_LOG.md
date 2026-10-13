@@ -1094,7 +1094,7 @@
   docs/REPORT_CH4_NOTES.md got no M16 section; the mapping of the `Conv` macros to the baseline layout is a choice
   of the exporter (stated in PAPER_UPDATES.md section 5); the job was packed three times (twice discarded as stale)
 - Not verified: that the .tex files compile in the Overleaf project; any timing; that Kaggle gives 4 vCPU today
-- Commit: 28c0c40 (decisions, ADR-024, ISSUE-36), 4a50288 and f3903bc (M16), records in the next commit
+- Commit: 28c0c40 (decisions, ADR-024, ISSUE-36), 4a50288 and f3903bc (M16), records 2dec7aa
 - Next: ingest 20261013-173239_M07_issue12k if it is in the inbox, then M16 A1 ; human action: ISSUE-45 (run the job on
   Kaggle), ISSUE-46 (decide A1), ISSUE-41 and ISSUE-43 (answers announced for this handoff)
 
