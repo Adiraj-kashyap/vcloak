@@ -1097,3 +1097,35 @@ session 32 excludes a further job, so no fix job is proposed. If a job is ever a
 r after the warm-up at the measuring clock, re-fit when the unqueued share of a chunk exceeds 5%, and mark
 clock_reset optional.
 Until decided: M14 and M20 quote the result only together with limits 1 and 2.
+
+### ISSUE-37 [OPEN] M08 residual of ISSUE-17: the S2 dudect series were never measured again with symmetric staging
+BLOCKS: none   SEVERITY: low   OPENED: 2026-10-13 session 36
+Opened at the request of the human so that the residual of ISSUE-17 (closed in session 35, commit 44d7ff5) stays
+traceable. Nothing is measured or changed by this issue.
+ISSUE-17 point 1 named two ways: show the diagnostics beside the S2 rows, or make the symmetric staging the S2
+staging and measure again. Session 35 took the first. The second was NOT done:
+1. The S2 series of aead_conv and aead_tag in results/oblivious/summary_table.csv are still the asymmetric staging
+   and still FAIL. The symmetric-staging result exists only as diagnostic rows (`aead_conv_sym`, `aead_tag_sym`,
+   job 20261012-113437_M08_issue17, seeds 8 and 9, N 100000 per class, one T4), never as an S2 run.
+2. In that job the staging and the SM clock change together (failing series at 585 MHz, *_sym at 1425 to 1560 MHz),
+   so "the FAIL follows the staging, not the contents" is a reading by the rules of ISSUE-17, not a separated result.
+Why it is open and not fixed: the timebox of session 32 excludes a further GPU job. If a job is ever allowed: run
+S2 with the symmetric staging as the S2 staging, with the clock held or recorded per class, and keep the old FAIL rows.
+Until then: M14, M20 and M22 quote the AEAD result only in the wording of the ISSUE-17 closing note and name this
+issue; section 4.O.6 points to ISSUE-17 only (generated text, not edited by hand), so the limitations chapter of the
+report (M20) must list this issue explicitly.
+
+### ISSUE-38 [OPEN] M14 A1 asks for engine=gpu: the service and PostgreSQL have never run on the runner
+BLOCKS: M14   SEVERITY: medium   OPENED: 2026-10-13 session 36
+M14 S1 ran on the laptop: service API, sim clock, PostgreSQL, numpy simulator behind the engine
+(runs/20261013-094044_M14_security_s1, manifest engine "numpy-simulator"). Audit A1 wants mode=vcloak, db=postgres,
+engine=gpu in the manifest, and ai/PROTOCOL.md 6b puts the M14 measurements in a GPU job. No job has ever started
+the service or a database on Kaggle (STATE: "The service has never run on a CUDA device").
+Not decided here; to settle before M14 can be DONE, at the latest when S2 to S6 are written:
+1. one GPU job that runs `bench/run_security_eval.py` on the T4 with a store on the runner (PostgreSQL installed in
+   the notebook, or sqlite with db recorded as sqlite and A1 met only for the engine), or
+2. local runs with the numpy simulator reported as such (tests keep it bit-exact against the references; the
+   security numbers depend on the tags, not on timing) and A1 recorded as not met for the engine, with an
+   amendment to the module file.
+The timebox of session 32 was about further dudect jobs; whether it covers an M14 job is for the human to say.
+Until then every M14 number is indexed with backend numpy / runner local and is never called a GPU result.

@@ -49,3 +49,10 @@ paper-ready figures into `evidence/figures/`, plus the terminal output of the at
 3. Do the GPU results match the CPU oracle, and how do you know?
 
 ## Next: M15
+
+## Amendments
+- 2026-10-13 (session 36): S1 as built differs from the text above in these points.
+  - The app runs in-process with the objects of `vcloak serve --dev --clock sim`, but the scheduler is stepped by the
+    replay (`autorun=False`): with the free-running sim clock an arrival time could not be placed in its epoch.
+  - The run of S1 used the numpy simulator behind the engine (no local GPU). A1 (engine=gpu) is open: ISSUE-38.
+  - The message count is recorded as `S-TRAFFIC-MSGS`, a metric id the list above does not name.

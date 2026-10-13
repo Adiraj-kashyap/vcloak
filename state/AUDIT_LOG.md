@@ -1066,3 +1066,32 @@ Notes:
   regenerated table is evidence/terminal/M08_issue17_summary_table.csv.
 - capture-evidence: terminal copies only. web/ did not change and M18 has not built the dashboard data yet.
 - The 1 skipped test is tests/unit/test_oracle_chacha.py:82 ("M02 references are wired in"), a deliberate skip.
+
+## Audit M14 — 2026-10-13 — session 36 — result: PASS for S1 (checkpoint; module IN_PROGRESS, A1 open)
+| Item | Result | Evidence |
+|---|---|---|
+| S1 check: row count = message count, manifest records the seed | PASS | RUN/s1_traffic.json (24733 sent, 24733 rows, SQL count 24733, 8 of 8 checks), manifest.json seed 2026 |
+| A1 real stack (mode=vcloak, db=postgres, engine=gpu) | NOT MET | RUN/manifest.json: mode vcloak, db postgres, engine numpy-simulator; ISSUE-38 (BLOCKS M14) |
+| A2 acceptance gates recorded | N/A | S1 has no gate of TESTING section 4; S2 to S4 not started |
+| A3 GPU-vs-oracle table | N/A | S7 not started |
+| A4 dudect FAIL reflected | N/A | S5 not started; the wording rules are in ISSUE-17, ISSUE-36, ISSUE-37 |
+| G1 | PASS | RUN/pytest_all.txt (2050 passed, 675 skipped: 674 need a CUDA device, 1 deliberate; 12 new cases) |
+| G2 | PASS | RUN/check_metrics.txt (529 rows, 0 problems); 1 row added (S-TRAFFIC-MSGS) |
+| G2b | PASS | the one new row is a message count, not a performance or side-channel metric; it is indexed as numpy / local |
+| G3 | PASS | RUN/check_oblivious.txt (11 files, 0 findings); no kernel changed |
+| G4 | PASS | RUN/check_secrets.txt (1637 files, 0 key-like runs) |
+| G5 | N/A | no kernel or twin changed |
+| G6 | PARTIAL | src/vcloak/eval/traffic.py and bench/run_security_eval.py exist; eval/attack.py, uniformity.py, anonymity.py, results/security and the notes section belong to S2 to S7 |
+| G7 | PASS | checked after the closing commit |
+| G8 | PASS | STATE: M14 IN_PROGRESS at S2, 1 session, no job pending |
+| G9 | PASS | SESSION_LOG session 36, this entry, ISSUE-37 and ISSUE-38 opened |
+| G10 | PASS | manifest valid (git_sha, seed, command, env); RUN/g10_quick_rerun.txt (quick, PostgreSQL: exit 0) and g10_same_seed_sqlite.txt (same seed on sqlite: 24733 again) |
+Notes:
+- RUN is runs/20261013-094044_M14_security_s1.
+- The run is on the numpy simulator. It shows that the traffic passes through the API, the scheduler, the engine
+  semantics and PostgreSQL without loss; it says nothing about a GPU. The pytest run was not filtered by marker, so
+  the GPU tests appear as skipped instead of deselected.
+- ruff was run on src, tests, scripts and bench (RUN/ruff.txt); a run on the whole tree also reports files under runs/.
+- The manifest is dirty (the code of this session was not committed when the run started).
+- The evaluation conversation keys are derived from the public seed in memory and are not written anywhere.
+- The schemas m14_eval and m14_eval_quick (G10 re-run) are left in the development database.

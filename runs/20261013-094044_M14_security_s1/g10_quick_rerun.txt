@@ -1,0 +1,11 @@
+ok   every_post_accepted
+ok   row_count_equals_message_count
+ok   stored_ciphertexts_are_the_sent_ones
+ok   no_epoch_failed
+ok   nothing_left_queued
+ok   no_window_left_unshuffled
+ok   each_window_rewritten_once
+ok   sql_count_equals_message_count
+S-TRAFFIC-MSGS 608 (rows stored 608, epochs 601, db postgres, engine numpy-simulator)
+run dir: C:\Users\HP\AppData\Local\Temp\claude\d--PJT-vcloak\671dcd62-1bf7-43cd-82a9-9aa789b208c0\scratchpad\g10\20261013-094643_M14_security_s1_quick
+exit 0

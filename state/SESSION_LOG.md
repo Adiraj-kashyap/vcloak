@@ -875,3 +875,28 @@
   the generator says so and does not separate them. The gates script was inline and is not saved.
 - Commit: 44d7ff5
 - Next: M14 S1 (Security evaluation, owner Abhishek) ; human action: none required. Optional: decide ISSUE-36
+
+## Session 36 — 2026-10-13 — M14 Security evaluation, S1 traffic on the real stack — owner:Abhishek
+- Steps: S1 done (status after: IN_PROGRESS, current_step S2, no job pending)
+- Before the unit, at the request of the human: ISSUE-37 opened (low) so that the residual of ISSUE-17 (S2 never
+  measured again with symmetric staging; staging and SM clock not separated) stays traceable. Nothing measured for it.
+- Did: src/vcloak/eval/traffic.py (the burst model of the oracle with the same draws; replay through POST /v1/messages
+  on the sim clock, epoch by epoch), bench/run_security_eval.py (--stage s1), tests/unit/test_eval_traffic.py (12 cases).
+- Result: seed 2026, 200 conversations, 900 s: 24733 messages sent, 24733 rows in PostgreSQL (SQL count and
+  ciphertext digests agree), 4501 epochs, 0 errors, 0 overflow, 15 windows each re-shuffled once. Engine: numpy
+  simulator, so this is correctness evidence only.
+- Evidence: runs/20261013-094044_M14_security_s1 (s1_traffic.json, summary.json, pytest_all.txt 2050 passed 675
+  skipped, check_metrics.txt, check_secrets.txt, check_oblivious.txt, ruff.txt, g10_quick_rerun.txt,
+  g10_same_seed_sqlite.txt); evidence/terminal/M14_S1_s1_traffic.json
+- Metrics added: S-TRAFFIC-MSGS (numpy, local; a count, not a performance number)
+- Decisions: none new
+- Issues: opened ISSUE-37 (low, BLOCKS none) and ISSUE-38 (medium, BLOCKS M14: A1 wants engine=gpu, the service and
+  a database have never run on the runner). ISSUE-36 stays OPEN
+- Deviations from spec: scheduler stepped by the replay (autorun off) instead of the free-running sim clock; metric
+  id S-TRAFFIC-MSGS is not in the module list; both in the Amendments of the module file.
+- Not verified: anything on a CUDA device; the read path (S2); the attack (S3); that the PostgreSQL dump order is
+  the physical order the attack needs. The same events as the seed oracle are expected from the same draws (a unit
+  test compares against a copy of its loop); the oracle itself was not run this session.
+- Commit: PENDING
+- Next: M14 S2 (E0 restoration) ; human action: none required. Optional: decide ISSUE-36; say whether an M14 GPU
+  job is allowed (ISSUE-38)

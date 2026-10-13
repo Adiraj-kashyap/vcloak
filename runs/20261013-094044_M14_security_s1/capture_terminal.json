@@ -1,0 +1,15 @@
+{
+ "module": "M14",
+ "run": "runs/20261013-094044_M14_security_s1 (git a7dd085, dirty)",
+ "date": "2026-10-13",
+ "views": {},
+ "checks": {},
+ "ok": true,
+ "superseded": [],
+ "index_rows": [
+  "TERM-M14-S1-S1-TRAFFIC"
+ ],
+ "files_written": [
+  "terminal/M14_S1_s1_traffic.json"
+ ]
+}
