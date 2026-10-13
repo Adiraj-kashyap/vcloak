@@ -1029,3 +1029,21 @@
 - Commit: ce8de77 (ingest, generator), d08aa1a (results, notes, evidence), records 492c599
 - Next: M15 (ISSUE-12 BLOCKS M15 and comes first) ; human action: none required; ISSUE-41, ISSUE-36 and ISSUE-43 are
   open for a decision of the owner
+
+## Session 42 — 2026-10-13 — ISSUE-12 (BLOCKS M15): the host path of write_epoch, prep half — owner:Aditya
+- Steps: ISSUE-12 fix and job (status after: M15 NOT_STARTED, BLOCKED_HUMAN on job 20261013-163732_M07_issue12; next_unit M15)
+- Did: `row_ids` in src/vcloak/gpu/engine.py builds the row ids of an epoch in one pass (bits set on the entropy
+  matrix, objects filled through their slots); `write_epoch` uses it and builds the rows with one `map`. 7 new test
+  cases. Job spec bench/jobs/M07_issue12.json; job packed.
+- Result: none measured. The ids and the stored rows are byte-identical to before (tests; engine equals the oracle at
+  64 to 65536 slots on the simulator). Whether p99 < EPOCH_MS holds at 65536 slots is NOT_MEASURED until the ingest.
+- Evidence: runs/20261013-163225_M07_issue12_prep_checks (pytest_all.txt 2128 passed 675 skipped, ruff.txt, check_*.txt,
+  g10_quick_rerun.txt); gpujobs/out/20261013-163732_M07_issue12/job.zip (packed from 36c8b35)
+- Metrics added: none
+- Decisions: none new (ADR)
+- Issues: ISSUE-12 updated (stays OPEN); opened ISSUE-44 (GPU JOB READY)
+- Deviations from spec: the issue proposed column arrays; the rows stay `StoredRow` objects (interface of ARCHITECTURE §4,
+  ADR-014), only the uuid construction and the comprehension changed
+- Not verified: any timing; the engine against the oracle on the device (in the job); the runtime of the job
+- Commit: 59d622f (code, job spec), 36c8b35 (checks), records HASH_PENDING
+- Next: ingest of 20261013-163732_M07_issue12, then M15 S1 ; human action: ISSUE-44 (run the job)

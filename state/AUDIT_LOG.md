@@ -1260,3 +1260,31 @@ Notes:
   copies in evidence/figures are those of session 38.
 - First ruff call of the session scanned `.` and flagged an old helper script inside runs/20261011-213200_M05_ingest_audit;
   RUN/ruff.txt is the usual call over src, tests, bench, scripts.
+
+## Audit M07 (ISSUE-12) — 2026-10-13 — session 42 — result: PASS for the prep (checkpoint; BLOCKED_HUMAN on job 20261013-163732_M07_issue12; ISSUE-12 open until the ingest)
+| Item | Result | Evidence |
+|---|---|---|
+| The fix removes the per-row uuid constructor | PASS | 59d622f; tests/gpu/test_engine.py `test_write_epoch_builds_no_uuid_through_the_constructor` |
+| The row ids are unchanged | PASS | `test_row_ids_*` (6 cases: equal to `uuid.UUID(bytes=..., version=4)` in bytes, int, str, hash, version, variant, is_safe, pickle) |
+| The engine still equals the oracle | PASS on the simulator; OPEN on the device | RUN/g10_quick_rerun.txt (write_epoch 64 to 65536 slots and read_window K 64 to 4096: oracle_mismatches=0); the device half is command 3 of the job |
+| The real-time gate at 65536 slots | OPEN | not measured: no GPU here; job 20261013-163732_M07_issue12 |
+| G1 | PASS | RUN/pytest_all.txt (2128 passed, 675 skipped, the skip count of session 41: no database skip) |
+| G2 | PASS | RUN/check_metrics.txt (697 rows, 0 problems); no metric row was added this session |
+| G2b | PASS | nothing was timed for the record; the status of the simulator pipeline run is NOT_MEASURED and its run dir is outside the repository |
+| G3 | PASS | RUN/check_oblivious.txt (11 files, 0 findings); no kernel changed; `row_ids` handles public values only (row ids from the entropy source) |
+| G4 | PASS | RUN/check_secrets.txt, RUN/check_secrets_after_pack.txt (0 key-like runs; the bundle sha allow-listed by the pack) |
+| G5 | N/A | no GPU twin was written |
+| G6 | N/A | a fix unit: no module deliverable |
+| G7 | PASS | checked after the closing commit |
+| G8 | PASS | STATE: M15 NOT_STARTED at S1, BLOCKED_HUMAN, pending 20261013-163732_M07_issue12 |
+| G9 | PASS | SESSION_LOG session 42, this entry, ISSUE-12 updated, ISSUE-44 opened |
+| G10 | PASS | RUN/manifest.json valid (git 59d622f); the quick simulator pipeline run exits 0 with 0 mismatches |
+Notes:
+- RUN is runs/20261013-163225_M07_issue12_prep_checks.
+- No performance number was produced. A microbenchmark on the laptop guided the choice of the construction; its
+  times were not saved, are not results and are quoted nowhere.
+- The rows are still one object per message. The issue asked for column arrays; that would change the interface
+  of ARCHITECTURE §4 and the repository contract (ADR-014), so it was not done in this unit. If the job shows the gate
+  still failing, that is the next step and needs a decision of the owner.
+- `row_ids` writes the two slots of `uuid.UUID` (`int`, `is_safe`) directly. That relies on the layout of the standard
+  library class; the tests compare with the constructor, so a change of that layout fails a test rather than an id.

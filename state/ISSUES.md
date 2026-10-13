@@ -262,6 +262,14 @@ Fix (needs its own unit, before M15 gives the end-to-end verdict): build the sto
 generate the row ids in one vectorised call instead of one `uuid` object per row; then re-measure write_epoch with a
 new GPU job. That changes src/vcloak/gpu/engine.py, so every later job is packed from the new commit. Until then the
 honest statement is: the GPU pipeline fits the epoch at 2^16 slots, the Python host path on this runner's CPU does not.
+Update session 42 (prep, 59d622f): the fix is in. `vcloak.gpu.engine.row_ids` sets the version and variant bits of all
+row ids on the entropy matrix at once and fills the `uuid.UUID` objects through their two slots, so `write_epoch` makes
+no `uuid.UUID(...)` constructor call (pinned by tests/gpu/test_engine.py; the ids are equal to those of the constructor,
+and the engine still equals the oracle at 64 to 65536 slots on the simulator: runs/20261013-163225_M07_issue12_prep_checks/g10_quick_rerun.txt).
+What was NOT done: the rows are still one `StoredRow` object per message (the interface of ARCHITECTURE §4 and of the
+repository, ADR-014, returns a list of them), so the host stage still grows with the batch. No timing exists yet: the
+laptop has no GPU and a simulator time is not a result. Whether p99 < EPOCH_MS now holds at 65536 slots is what job
+20261013-163732_M07_issue12 measures (ISSUE-44). Stays OPEN, and keeps blocking M15, until that job is ingested.
 
 ### ISSUE-13 [CLOSED 9ae9ba5] HUMAN ACTION REQUIRED — GPU JOB READY: M07 performance sweeps (job 20261011-224124_M07)
 BLOCKS: M07   SEVERITY: high   OPENED: 2026-10-11 session 13
@@ -1271,3 +1279,36 @@ be sized to the population). Sections 4.S.3 and 4.S.10 of the notes name this is
 Options for the owner: (a) document as a sizing limit (the state now); (b) a sizing rule for buckets / CAND_K from the
 expected rows per window, as a design note or ADR, checked by one more S6-type run; (c) raise CAND_K or the bucket count
 for the 1000-user point in M15 and record the parameters beside every number.
+
+### ISSUE-44 [OPEN] HUMAN ACTION REQUIRED — GPU JOB READY: write_epoch re-measured after the ISSUE-12 fix (job 20261013-163732_M07_issue12)
+BLOCKS: M15   SEVERITY: high   OPENED: 2026-10-13 session 42
+Why: ISSUE-12 blocks M15. The host path of `write_epoch` was changed (59d622f); only a run on the T4 can say whether
+the whole call now fits EPOCH_MS at 65536 slots. M15 does not start before that number is in.
+Do this:
+```
+GPU JOB READY — 20261013-163732_M07_issue12              (runtime not measured; plan for about 20 minutes)
+
+1. Open https://colab.research.google.com  ->  File > Upload notebook
+   Pick:  colab/VCloak_GPU_Runner.ipynb
+2. Runtime > Change runtime type > T4 GPU > Save        <- easy to miss
+3. Run Cell 1. It must print a GPU name (e.g. Tesla T4).
+4. Run Cell 2, upload:  gpujobs/out/20261013-163732_M07_issue12/job.zip
+5. Run Cell 3 (keep the tab open), then Cell 4 to download results_20261013-163732_M07_issue12.zip
+6. Put that file in:  gpujobs/inbox/
+7. New session, type: continue
+
+Kaggle works as well (the M07 numbers this job is compared with came from Kaggle): Create > New Notebook >
+File > Import Notebook, Settings > Accelerator > GPU T4 x2, add job.zip via "+ Add Input > Upload", run Cell 2 as it
+is (Kaggle unpacks the uploaded zip into a folder and Cell 2 finds it by itself), and take the results from the
+Output panel. This job needs no internet.
+Full detail: YOUR_CHECKLIST.md
+```
+What the job runs: nvidia-smi; lscpu; the engine tests and the engine-against-oracle sweeps on the device;
+`bench/run_pipeline.py --dev --full --seed 7` (the command of runs/20261011-215653_M07_pipeline: write_epoch at 64 to 65536 slots and
+read_window at K 64 to 4096, 200 calls each, CUDA events, the real-time gate, cProfile of the host stage at 65536);
+nvidia-smi.
+Reading the result: the host stage is Python on the CPU of the runner, so the new numbers are comparable with those of
+M07 only as far as the two runner CPUs are (lscpu is in both bundles; ISSUE-3 for the images). Both outcomes are
+recorded as measured: if the gate still fails at 65536 slots, ISSUE-12 stays a limitation and M15 says so.
+Confirm by running: `ls gpujobs/inbox/` shows results_20261013-163732_M07_issue12.zip
+Then type: continue

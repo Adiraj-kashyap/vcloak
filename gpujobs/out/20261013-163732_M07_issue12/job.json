@@ -1,0 +1,45 @@
+{
+  "job_id": "20261013-163732_M07_issue12",
+  "module": "M07_issue12",
+  "step": "S5",
+  "title": "ISSUE-12 (write_epoch misses EPOCH_MS at 2^16 slots because of the host stage): the pipeline stage breakdown and the real-time gate again, after the row ids of an epoch are built in one pass instead of one uuid constructor call per row; engine regression against the oracle on the device first, cProfile of the host stage at 65536 slots",
+  "quick": false,
+  "params": {},
+  "seed": 7,
+  "git_sha": "36c8b35cde5a46ecf8d2b9725321f7224ab0f9b1",
+  "dirty": false,
+  "packed_at": "2026-10-13T11:07:32+00:00",
+  "bundle_sha256": "e57edb1414d960fcc00f22b8913da9633bfc09708dd25f77af6f4f0e7ae1f236",
+  "n_files": 195,
+  "commands": [
+    {
+      "name": "nvidia_smi",
+      "cmd": "nvidia-smi",
+      "timeout": 120
+    },
+    {
+      "name": "cpu_info",
+      "cmd": "lscpu",
+      "timeout": 60,
+      "stop_on_fail": false
+    },
+    {
+      "name": "pytest_engine_regression",
+      "cmd": "python -m pytest -p no:cacheprovider -rs -q -m \"not slow\" tests/gpu/test_engine.py tests/integration/test_engine_vs_oracle.py",
+      "timeout": 1800,
+      "stop_on_fail": false
+    },
+    {
+      "name": "pipeline",
+      "cmd": "python bench/run_pipeline.py --dev --full --seed 7 --out runs",
+      "timeout": 3600,
+      "stop_on_fail": false
+    },
+    {
+      "name": "nvidia_smi_after",
+      "cmd": "nvidia-smi",
+      "timeout": 120,
+      "stop_on_fail": false
+    }
+  ]
+}

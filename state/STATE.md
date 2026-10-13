@@ -3,13 +3,13 @@
 ```yaml
 project: v-cloak
 kit_version: 1.0
-last_session: 41
+last_session: 42
 last_session_date: 2026-10-13
 current_module: M15
 current_step: S1
-status: NOT_STARTED          # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
+status: BLOCKED_HUMAN        # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
 next_unit: M15
-last_checkpoint: 2026-10-13 session 41: M14 DONE (S6 ingested, audit PASS, tag M14-done); next: M15, where ISSUE-12 (BLOCKS M15) comes first
+last_checkpoint: 2026-10-13 session 42: ISSUE-12 fix in (59d622f), job 20261013-163732_M07_issue12 packed (ISSUE-44); next: ingest it, then M15 S1
 quick_mode_default: false
 local:                      # the laptop (no GPU) — filled by M00 S7
   os: "Windows-11-10.0.26200-SP0"
@@ -33,7 +33,7 @@ runner:                     # the free remote GPU — filled from the ingested M
   peak_bw_gbs: 320.064
   last_session_id: "20261012-135251"
 gpu_job:                    # set by the gpu-job skill
-  pending: null   # job id awaiting the upload of the human, or null
+  pending: 20261013-163732_M07_issue12   # job id awaiting the upload of the human, or null
   last_ingested: 20261013-125843_M14_s6
 ```
 
@@ -79,8 +79,9 @@ Keep this file under 120 lines: one or two lines per note, the detail lives in t
   timings across images (ISSUE-3).
 - M07: one runner session (20261011-213139). 65 of 213 rows are UNSTABLE (ISSUE-15); never quote K-BITONIC-BW-PCT
   below 2^18 as bandwidth (ISSUE-14). Figures and notes only through `python -m vcloak.bench.report`.
-- write_epoch misses EPOCH_MS at 2^16 slots because of host Python, not the GPU (ISSUE-12, BLOCKS M15): vectorise
-  the row building in its own unit, then re-measure with a new GPU job.
+- write_epoch missed EPOCH_MS at 2^16 slots because of host Python, not the GPU (ISSUE-12, BLOCKS M15). Row ids are
+  now built in one pass (`engine.row_ids`, 59d622f); job 20261013-163732_M07_issue12 re-measures (ISSUE-44). On ingest: apply the
+  real-time gate, close or keep ISSUE-12 as measured, then start M15 S1 in a NEW session.
 - M08 is DONE with a negative result: dudect FAILS for aead_conv, aead_tag and the whole write_epoch call (ISSUE-17,
   closed). Diagnostics trace the AEAD FAILs to the harness staging and the whole-call FAIL to host Python state.
   ADR-023: P3 is claimed for the KERNELS only; host timing is a limitation. Never write "constant time".
