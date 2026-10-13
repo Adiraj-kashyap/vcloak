@@ -3,13 +3,13 @@
 ```yaml
 project: v-cloak
 kit_version: 1.0
-last_session: 37
+last_session: 38
 last_session_date: 2026-10-13
 current_module: M14
-current_step: S2
-status: BLOCKED_HUMAN        # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
+current_step: S6
+status: IN_PROGRESS          # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
 next_unit: M14
-last_checkpoint: 2026-10-13 session 37: M14 S2-S5 written, numpy simulator only (no step check passed on the device yet); GPU job 20261013-105517_M14 packed (ISSUE-39); next: ingest it, then gates for S2-S5
+last_checkpoint: 2026-10-13 session 38: job 20261013-105517_M14 ingested, S2-S5 complete on the real stack (61 of 61 gates PASS), results/security and notes 4.S generated; next: S7 (no device needed), S6 after the decision of ISSUE-40
 quick_mode_default: false
 local:                      # the laptop (no GPU) — filled by M00 S7
   os: "Windows-11-10.0.26200-SP0"
@@ -33,8 +33,8 @@ runner:                     # the free remote GPU — filled from the ingested M
   peak_bw_gbs: 320.064
   last_session_id: "20261012-135251"
 gpu_job:                    # set by the gpu-job skill
-  pending: 20261013-105517_M14   # job id awaiting the upload of the human, or null
-  last_ingested: 20261013-005946_M08_issue25k
+  pending: null   # job id awaiting the upload of the human, or null
+  last_ingested: 20261013-105517_M14
 ```
 
 ## Modules
@@ -55,7 +55,7 @@ gpu_job:                    # set by the gpu-job skill
 | M11 | Session security (E5) | Divyansh | M10 | no | DONE | S7 | 2 |
 | M12 | Client SDK & CLI | Abhishek | M11 | no | DONE | S4 | 1 |
 | M13 | Frontend: chat + server view | Abhishek | M12 | no | DONE | S6 | 5 |
-| M14 | Security evaluation (E0–E2, anon set) | Abhishek | M08, M10 | no | BLOCKED_HUMAN | S2 | 2 |
+| M14 | Security evaluation (E0–E2, anon set) | Abhishek | M08, M10 | no | IN_PROGRESS | S6 | 3 |
 | M15 | End-to-end performance (E6) | Divyansh | M10, M11 | no | NOT_STARTED | S1 | 0 |
 | M16 | Results export | Abhishek | M07, M08, M14 | no | NOT_STARTED | S1 | 0 |
 | M18 | Frontend: dashboard, experiments, logs | Abhishek | M13, M14 | no | NOT_STARTED | S1 | 0 |
@@ -109,7 +109,8 @@ Keep this file under 120 lines: one or two lines per note, the detail lives in t
   twice: never measure on it. `/v1/stats/live` `last_write_ms` is never a metric (ISSUE-33).
 - M14: `python bench/run_security_eval.py --stage s1|attack|uniformity|trace` (schemas m14_eval*, dropped at each
   run; `eval.traffic.replay` needs `autorun=False`). Local runs are the numpy simulator: correctness only, never a
-  GPU result. The human allowed ONE full-stack GPU job (ISSUE-38): `bench/jobs/M14.json` starts PostgreSQL in the
-  runner (`scripts/runner_stack.py`, runner only), runs S1-S5 with `--backend cupy` and every test marked gpu
-  (`bench/run_gpu_tests.py`). At the ingest: gates of TESTING §4, figures from the run JSON, link M08 in the S5
-  summary, close ISSUE-38; then S6 and S7 (not written, not in the job: ISSUE-40).
+  GPU result. S1-S5 are measured on the real stack (job 20261013-105517_M14, Colab session 20261013-054610: T4 +
+  PostgreSQL in the runner). results/security and section 4.S of the notes are generated: never edit them by hand,
+  re-run runs/20261013-115636_M14_security_ingest_report/report_command.txt (`vcloak.bench.report_security`).
+  Left: S7 (oracle run locally against the ingested numbers) and S6 (decision of ISSUE-40 first). W300 is dumped
+  only: its peak occupancy is above CAND_K. The runner stack job shape is `bench/jobs/M14.json`.

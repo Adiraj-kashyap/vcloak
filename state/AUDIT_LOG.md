@@ -1130,3 +1130,36 @@ Notes:
   PostgreSQL 14.24 installed, hygiene as required, quick attack stage exit 0). Colab itself was not tried.
 - STATE.md was rewritten from 124 to 115 lines at the request of the human; notes were shortened, none dropped.
 
+
+## Audit M14 — 2026-10-13 — session 38 — result: PASS for S2 to S5 on the real stack (checkpoint; module IN_PROGRESS, S6 and S7 open)
+| Item | Result | Evidence |
+|---|---|---|
+| Ingest (job id, bundle sha, git sha; exit codes) | PASS | RUN/ingest.txt: job 20261013-105517_M14 verified, 11 of 11 commands exit 0, 5 run dirs, 40 metrics indexed |
+| S2 check (>= 60 conversations read back, CAND_K, occupancy) | PASS | runs/20261013-054727_M14_security_e0e1/e0_restoration.json (60 of 60 in exact order, 0 reads failed; CAND_K 128, W60 peak 91) |
+| S3 check (table and ablation figure saved) | PASS | results/security/attack_table.csv, fig_window_ablation.png/.pdf with its sidecar; six layouts, every layout check true |
+| S4 check (gates of TESTING section 4) | PASS | runs/20261013-055417_M14_security_e2/e2_uniformity.json: p above 0.01, statistic inside the ideal-sampler range, tau coverage inside the binomial bounds (3 of 3) |
+| S5 check (trace invariance vs merge sort; M08 linked) | PASS | runs/20261013-055444_M14_security_e3/e3_trace.json (6 of 6 gates); notes 4.S.5 quotes the M08 verdicts from results/oblivious/oblivious_summary.json |
+| A1 real stack (mode=vcloak, db=postgres, engine=gpu) | PASS for S1 to S5 | manifests of the s1 and e0e1 runs (backend cupy, runner colab, gpu_job block); report_security refuses anything else (tests/unit/test_bench_report_security.py) |
+| A2 acceptance gates recorded | PASS for S1 to S5 | results/security/gates.csv: 61 gates copied from the runs, 61 PASS, 0 FAIL |
+| A3 GPU-vs-oracle table | NOT MET | S7 not written (ISSUE-40) |
+| A4 dudect FAIL reflected | PASS | docs/REPORT_CH4_NOTES.md 4.S.5 names the three FAIL series of M08, ISSUE-17, ncu NOT_MEASURED and ADR-023 |
+| G1 | PASS | RUN/pytest_all.txt (2086 passed, 1 skipped deliberately, 674 deselected: they ran on the device, runs/20261013-055445_M14_cuda_tests 674 of 674 passed) |
+| G2 | PASS | RUN/check_metrics.txt (604 rows, 0 problems); 40 rows added by the ingest; every value in section 4.S carries its metric tag |
+| G2b | PASS | the 40 rows are backend cupy / runner colab with a gpu_job block; none is a timing metric |
+| G3 | PASS | RUN/check_oblivious.txt (11 files, 0 findings) locally, and command 4 of the job on the runner (exit 0); no kernel changed |
+| G4 | PASS | RUN/check_secrets.txt (0 key-like runs) |
+| G5 | PASS | the 674 device tests include the bit-exact ones; RUN/simulator_parity.txt: attack table, E0 and E3 of the device equal the simulator run byte for byte |
+| G6 | PARTIAL | results/security/*.json, .csv, .png and the notes section exist; src/vcloak/eval/anonymity.py does not (S6) |
+| G7 | PASS | checked after the closing commit |
+| G8 | PASS | STATE: M14 IN_PROGRESS at S6, 3 sessions, pending null, last_ingested 20261013-105517_M14; 116 lines |
+| G9 | PASS | SESSION_LOG session 38, this entry, ISSUE-38 and ISSUE-39 closed, ISSUE-40 updated |
+| G10 | PASS | RUN/manifests_valid.txt; RUN/g10_quick_rerun.txt (quick, simulator, PostgreSQL: three stages exit 0, the same PASS outcome) |
+Notes:
+- RUN is runs/20261013-115636_M14_security_ingest_report. Nothing was measured in this session: the numbers are those of the
+  ingested job; this session only checked, copied and drew them.
+- One replay and one seed: the attack numbers carry no confidence interval, and the notes say so.
+- E2 at full size has no simulator counterpart (too slow locally), so parity is not shown for it.
+- On the W300 layout the peak occupancy (345) is above CAND_K (128): dumped only, never read; stated in 4.S.3 (ISSUE-40).
+- Not checked on the device: S6 and S7. scripts/runner_stack.py worked on Colab (stack_up exit 0, hygiene as required).
+- ruff: src, tests, scripts, bench (RUN/ruff.txt, clean). The simulator evidence of session 37 for the attack table and
+  E0 was moved to evidence/superseded/.

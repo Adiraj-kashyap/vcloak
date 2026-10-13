@@ -1,0 +1,17 @@
+{
+  "marker": "gpu",
+  "expect": 674,
+  "pytest_exit": 0,
+  "backend": "cupy",
+  "selected_as_expected": true,
+  "selected": 674,
+  "passed": 674,
+  "failed": 0,
+  "errors": 0,
+  "skipped": 0,
+  "not_passed": [],
+  "checks": {
+    "tests_passed": true,
+    "none_failed": true
+  }
+}

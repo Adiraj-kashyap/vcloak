@@ -1115,7 +1115,7 @@ Until then: M14, M20 and M22 quote the AEAD result only in the wording of the IS
 issue; section 4.O.6 points to ISSUE-17 only (generated text, not edited by hand), so the limitations chapter of the
 report (M20) must list this issue explicitly.
 
-### ISSUE-38 [OPEN] M14 A1 asks for engine=gpu: the service and PostgreSQL have never run on the runner
+### ISSUE-38 [CLOSED HASHTBD] M14 A1 asks for engine=gpu: the service and PostgreSQL have never run on the runner
 BLOCKS: M14   SEVERITY: medium   OPENED: 2026-10-13 session 36
 M14 S1 ran on the laptop: service API, sim clock, PostgreSQL, numpy simulator behind the engine
 (runs/20261013-094044_M14_security_s1, manifest engine "numpy-simulator"). Audit A1 wants mode=vcloak, db=postgres,
@@ -1132,8 +1132,11 @@ Until then every M14 number is indexed with backend numpy / runner local and is 
 Decided by the human (session 37, 2026-10-13): way 1. A GPU job for M14 is allowed and wanted, as a full-stack job with
 PostgreSQL installed and started in the runner; the M14 numbers must not stay labelled numpy / local. Job 20261013-105517_M14
 is packed (ISSUE-39). This issue stays OPEN until that job is ingested and A1 is checked on its manifests.
+Closed (session 38, 2026-10-13): the job is ingested. The manifests of runs/20261013-054644_M14_security_s1 and
+runs/20261013-054727_M14_security_e0e1 say mode=vcloak, db=postgres, engine=gpu, backend cupy, runner colab, with the
+gpu_job block; `vcloak.bench.report_security` refuses any other input. A1 is met for S1 to S5; S6 is ISSUE-40.
 
-### ISSUE-39 [OPEN] HUMAN ACTION REQUIRED — GPU JOB READY: M14 on the full stack, and the tests marked gpu (job 20261013-105517_M14)
+### ISSUE-39 [CLOSED HASHTBD] HUMAN ACTION REQUIRED — GPU JOB READY: M14 on the full stack, and the tests marked gpu (job 20261013-105517_M14)
 BLOCKS: M14   SEVERITY: high   OPENED: 2026-10-13 session 37
 Why: M14 needs its numbers from the T4 with PostgreSQL behind the service (ISSUE-38), and the 674 tests that skip locally need a run.
 Do this:
@@ -1164,6 +1167,9 @@ Never run on a device before: the service and its engine thread on CuPy, Postgre
 `-m gpu` selection in one pytest process (earlier jobs ran files of it). The runtime is an estimate, not a measurement.
 Confirm by running: `ls gpujobs/inbox/` shows results_20261013-105517_M14.zip
 Then type: continue
+Done (session 38, 2026-10-13): the human ran the job on Colab (session 20261013-054610, Tesla T4). Ingested: 11 of 11
+commands exit 0 (stack_up too), 5 run dirs, 40 metrics indexed, 674 of 674 tests marked gpu passed in one process
+(1519.60 s by pytest's own report: a duration of the test run, not a metric). The bundle is in gpujobs/done/. CLOSED.
 
 ### ISSUE-40 [OPEN] M14 S6 (anonymity set) and S7 (comparison with the oracle) are not written and not in job 20261013-105517_M14
 BLOCKS: M14   SEVERITY: medium   OPENED: 2026-10-13 session 37
@@ -1176,4 +1182,7 @@ The human asked for E0 to E3 in the job; S6 and S7 were not part of it and are n
    (128), so a read at W = 300 would answer `candidate_overflow`. The ablation only dumps that layout; the default
    W = 60 stays below CAND_K. To be re-read on the device numbers and stated with the ablation.
 Decision for the human at the ingest: a second job for S6, or S6 on the simulator.
+Session 38 (ingest): point 3 is the same on the device (runs/20261013-054727_M14_security_e0e1/e1_attack.json: W300 peak
+occupancy 345, mean 132.97, CAND_K 128; W60 peak 91) and is stated in section 4.S.3 of the notes. S6 and S7 are still
+not written; the decision for S6 was asked again in the handoff of session 38. S7 can be done without it.
 

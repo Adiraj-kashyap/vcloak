@@ -1,0 +1,9 @@
+ok   layout BASELINE: 24733 rows, turn-order accuracy 1.0000
+ok   layout EPOCH: 24733 rows, turn-order accuracy 0.9820
+ok   layout W1: 24733 rows, turn-order accuracy 0.9202
+ok   layout W10: 24733 rows, turn-order accuracy 0.6867
+ok   layout W60: 24733 rows, turn-order accuracy 0.5560
+ok   layout W300: 24733 rows, turn-order accuracy 0.5068
+E0: 60 of 60 conversations in exact order (7683 messages, 960 reads)
+engine gpu, db postgres
+run dir: /content/vcloak_job/runs/20261013-054727_M14_security_e0e1

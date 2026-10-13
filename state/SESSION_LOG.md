@@ -928,3 +928,30 @@
 - Commit: e5a82fc (code; the job is packed from it), a74eea2 (records)
 - Next: ingest job 20261013-105517_M14 ; human action: ISSUE-39 (run the job on Colab); decide ISSUE-36 and ISSUE-40
 
+
+- GPU-JOB 20261013-105517_M14 ingested 2026-10-13 11:51: runner colab, gpu Tesla T4, session 20261013-054610, overall exit 0, runs 20261013-054644_M14_security_s1, 20261013-054727_M14_security_e0e1, 20261013-055417_M14_security_e2, 20261013-055444_M14_security_e3, 20261013-055445_M14_cuda_tests, 40 metrics indexed.
+
+## Session 38 — 2026-10-13 — M14 Security evaluation, ingest of the full-stack job, S2 to S5 — owner:Abhishek
+- Steps: S2, S3, S4, S5 complete on the device (status after: IN_PROGRESS, current_step S6)
+- Did: ingested job 20261013-105517_M14 (Colab, Tesla T4, PostgreSQL 16 in the runner; 11 of 11 commands exit 0);
+  wrote src/vcloak/bench/report_security.py and tests/unit/test_bench_report_security.py (11 cases); report.py keeps
+  the M14 block of the notes; generated results/security (stage files, gates.csv, two figures with sidecars,
+  security_summary.json) and section 4.S of docs/REPORT_CH4_NOTES.md.
+- Result (cupy, real stack, seed 2026, one replay): 61 of 61 gates PASS. Turn-order accuracy BASELINE 1.0000,
+  EPOCH 0.9820, W1 0.9202, W10 0.6867, W60 0.5560, W300 0.5068; E0 60 of 60; chi2 p 0.9013; tau band 99.7 %;
+  device trace 1 distinct against 4 for merge sort; 674 of 674 tests marked gpu passed. The attack table, E0 and E3
+  equal the simulator run of session 37 byte for byte.
+- Evidence: runs/20261013-054644_M14_security_s1, runs/20261013-054727_M14_security_e0e1, runs/20261013-055417_M14_security_e2,
+  runs/20261013-055444_M14_security_e3, runs/20261013-055445_M14_cuda_tests (ingested);
+  runs/20261013-115636_M14_security_ingest_report (pytest_all.txt 2086 passed 1 skipped, check_*.txt, simulator_parity.txt,
+  g10_quick_rerun.txt); evidence/figures/M14_fig_*, evidence/terminal/M14_ingest_*, evidence/gpu/M14_*
+- Metrics added: 40 rows by the ingest (S-*, backend cupy, runner colab)
+- Decisions: none new (ADR); the generator and the figure choices are in the Amendments of the module file
+- Issues: closed ISSUE-38 and ISSUE-39; ISSUE-40 updated (W300 occupancy above CAND_K on the device too), stays OPEN
+- Deviations from spec: results and notes come from a generator the Deliverables do not name; no separate
+  uniformity figure
+- Not verified: S6 (anonymity set) and S7 (comparison with the oracle), both not written; E2 parity with the simulator
+  at full size; more than one seed or replay
+- Commit: HASHTBD
+- Next: M14 S7, then S6 ; human action: decide ISSUE-40 (a second small GPU job for S6, or S6 on the simulator with A1
+  recorded as not met for it); ISSUE-36 is still undecided

@@ -1,0 +1,28 @@
+{
+  "metrics": [
+    {
+      "id": "S-CUDA-TESTS-PASSED",
+      "value": 674,
+      "unit": "tests",
+      "stat": "pytest -m 'gpu', 674 selected"
+    },
+    {
+      "id": "S-CUDA-TESTS-FAILED",
+      "value": 0,
+      "unit": "tests",
+      "stat": "pytest -m 'gpu', 674 selected"
+    },
+    {
+      "id": "S-CUDA-TESTS-ERRORS",
+      "value": 0,
+      "unit": "tests",
+      "stat": "pytest -m 'gpu', 674 selected"
+    },
+    {
+      "id": "S-CUDA-TESTS-SKIPPED",
+      "value": 0,
+      "unit": "tests",
+      "stat": "pytest -m 'gpu', 674 selected"
+    }
+  ]
+}

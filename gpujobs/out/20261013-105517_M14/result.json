@@ -1,0 +1,128 @@
+{
+  "job_id": "20261013-105517_M14",
+  "module": "M14",
+  "step": "S5",
+  "quick": false,
+  "packed_from_git_sha": "e5a82fc8bc29174ab06aba0f9d7d394ac9ba719c",
+  "bundle_sha256": "a990dbef5d20fa2924e6810656e2760c04bbd85225532a3a6fc09eb93d4cd23e",
+  "finished_at": "2026-10-13T06:20:08.098169+00:00",
+  "env": {
+    "collected_at": "2026-10-13T05:46:10.253275+00:00",
+    "python": "3.13.15",
+    "platform": "Linux-6.6.122+-x86_64-with-glibc2.39",
+    "backend": "cupy",
+    "runner": "colab",
+    "session_id": "20261013-054610",
+    "gpu": "Tesla T4",
+    "driver": "580.82.07",
+    "vram_total": "15360 MiB",
+    "compute_capability": "7.5",
+    "nvcc": "Build cuda_13.0.r13.0/compiler.36424714_0",
+    "ncu": "NVIDIA (R) Nsight Compute Command Line Profiler",
+    "cupy": "14.0.1",
+    "cuda_runtime": "13000",
+    "cpu": "Intel(R) Xeon(R) CPU @ 2.00GHz",
+    "cpu_count": "2"
+  },
+  "requirements": {
+    "file": "requirements-gpu.txt",
+    "installed": [],
+    "skipped": [
+      "cupy-cuda12x",
+      "nvidia-ml-py",
+      "cryptography"
+    ],
+    "failed": []
+  },
+  "commands": [
+    {
+      "n": 1,
+      "name": "nvidia_smi",
+      "cmd": "nvidia-smi",
+      "exit_code": 0,
+      "log": "logs/01_nvidia_smi.txt",
+      "optional": false
+    },
+    {
+      "n": 2,
+      "name": "whoami",
+      "cmd": "id",
+      "exit_code": 0,
+      "log": "logs/02_whoami.txt",
+      "optional": false
+    },
+    {
+      "n": 3,
+      "name": "stack_up",
+      "cmd": "python scripts/runner_stack.py up",
+      "exit_code": 0,
+      "log": "logs/03_stack_up.txt",
+      "optional": false
+    },
+    {
+      "n": 4,
+      "name": "check_oblivious",
+      "cmd": "python scripts/check_oblivious.py kernels/",
+      "exit_code": 0,
+      "log": "logs/04_check_oblivious.txt",
+      "optional": false
+    },
+    {
+      "n": 5,
+      "name": "security_s1",
+      "cmd": "python bench/run_security_eval.py --stage s1 --backend cupy --seed 2026 --out runs",
+      "exit_code": 0,
+      "log": "logs/05_security_s1.txt",
+      "optional": false
+    },
+    {
+      "n": 6,
+      "name": "security_e0e1",
+      "cmd": "python bench/run_security_eval.py --stage attack --backend cupy --seed 2026 --out runs",
+      "exit_code": 0,
+      "log": "logs/06_security_e0e1.txt",
+      "optional": false
+    },
+    {
+      "n": 7,
+      "name": "security_e2",
+      "cmd": "python bench/run_security_eval.py --stage uniformity --backend cupy --seed 2026 --out runs",
+      "exit_code": 0,
+      "log": "logs/07_security_e2.txt",
+      "optional": false
+    },
+    {
+      "n": 8,
+      "name": "security_e3",
+      "cmd": "python bench/run_security_eval.py --stage trace --backend cupy --seed 2026 --out runs",
+      "exit_code": 0,
+      "log": "logs/08_security_e3.txt",
+      "optional": false
+    },
+    {
+      "n": 9,
+      "name": "cuda_tests",
+      "cmd": "python bench/run_gpu_tests.py --expect 674 --out runs",
+      "exit_code": 0,
+      "log": "logs/09_cuda_tests.txt",
+      "optional": false
+    },
+    {
+      "n": 10,
+      "name": "stack_status",
+      "cmd": "python scripts/runner_stack.py status",
+      "exit_code": 0,
+      "log": "logs/10_stack_status.txt",
+      "optional": false
+    },
+    {
+      "n": 11,
+      "name": "nvidia_smi_after",
+      "cmd": "nvidia-smi",
+      "exit_code": 0,
+      "log": "logs/11_nvidia_smi_after.txt",
+      "optional": false
+    }
+  ],
+  "overall_exit": 0
+}

@@ -1,0 +1,10 @@
+{
+  "metrics": [
+    {
+      "id": "S-TRAFFIC-MSGS",
+      "value": 24733,
+      "unit": "messages",
+      "stat": "count, seed 2026, 200 conversations, 900 s"
+    }
+  ]
+}

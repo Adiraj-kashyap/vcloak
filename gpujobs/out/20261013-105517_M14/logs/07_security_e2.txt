@@ -1,0 +1,7 @@
+ok   p_above_0_01
+ok   chi2_inside_ideal_range
+ok   coverage_inside_binomial_99_bounds
+chi2 3854.6 (dof 3969, p 0.9013); ideal sampler range 3658.5 to 4209.0 over 200 tables
+tau band: 997 of 1000 epochs inside 3 sigma at n 65536 (binomial 99% bounds [992, 1000])
+engine gpu
+run dir: /content/vcloak_job/runs/20261013-055417_M14_security_e2

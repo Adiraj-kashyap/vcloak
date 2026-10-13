@@ -1,0 +1,74 @@
+{
+  "stage": "S1",
+  "seed": 2026,
+  "mode": "vcloak",
+  "visible_round": "window",
+  "params": {
+    "n_conv": 200,
+    "duration_s": 900,
+    "rate": 0.05,
+    "slots": 64,
+    "buckets": 64,
+    "window_s": 60,
+    "epoch_ms": 200,
+    "cand_k": 128
+  },
+  "messages": 24733,
+  "accepted": 24733,
+  "rows_stored": 24733,
+  "epochs_passed": 4501,
+  "scheduler": {
+    "epochs_written": 4501,
+    "epoch_errors": 0,
+    "overflow": 0,
+    "missed": 0,
+    "queued": 0,
+    "windows_rewritten": 15,
+    "max_rewrites_of_a_window": 1,
+    "compute": {
+      "backend": "cupy",
+      "runner": "colab",
+      "is_gpu": true,
+      "device": "Tesla T4"
+    }
+  },
+  "messages_per_conversation": {
+    "min": 63,
+    "median": 123.0,
+    "max": 182,
+    "conversations_with_messages": 200
+  },
+  "rows_per_window": {
+    "0": 1709,
+    "1": 1718,
+    "2": 1718,
+    "3": 1778,
+    "4": 1741,
+    "5": 1642,
+    "6": 1593,
+    "7": 1559,
+    "8": 1615,
+    "9": 1541,
+    "10": 1560,
+    "11": 1629,
+    "12": 1647,
+    "13": 1680,
+    "14": 1603
+  },
+  "peak_messages_in_one_epoch": 18,
+  "checks": {
+    "every_post_accepted": true,
+    "row_count_equals_message_count": true,
+    "stored_ciphertexts_are_the_sent_ones": true,
+    "no_epoch_failed": true,
+    "nothing_left_queued": true,
+    "no_window_left_unshuffled": true,
+    "each_window_rewritten_once": true,
+    "sql_count_equals_message_count": true
+  },
+  "ok": true,
+  "rows_counted_by_sql": 24733,
+  "run_id": "20261013-054644_M14_security_s1",
+  "db": "postgres",
+  "engine": "gpu"
+}

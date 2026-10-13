@@ -1,0 +1,29 @@
+{
+ "module": "M14",
+ "run": "runs/20261013-115636_M14_security_ingest_report (git 32c747c, dirty)",
+ "date": "2026-10-13",
+ "views": {},
+ "checks": {},
+ "ok": true,
+ "superseded": [],
+ "index_rows": [
+  "TERM-M14-INGEST-ATTACK-TABLE",
+  "TERM-M14-INGEST-E0-RESTORATION",
+  "TERM-M14-INGEST-JOB-LOG-06-SECURITY-E0E1",
+  "TERM-M14-INGEST-JOB-LOG-07-SECURITY-E2",
+  "TERM-M14-INGEST-JOB-LOG-08-SECURITY-E3",
+  "TERM-M14-INGEST-GATES",
+  "TERM-M14-INGEST-CUDA-TESTS-TAIL",
+  "TERM-M14-INGEST-JOB-LOG-10-STACK-STATUS"
+ ],
+ "files_written": [
+  "terminal/M14_ingest_attack_table.csv",
+  "terminal/M14_ingest_e0_restoration.json",
+  "terminal/M14_ingest_job_log_06_security_e0e1.txt",
+  "terminal/M14_ingest_job_log_07_security_e2.txt",
+  "terminal/M14_ingest_job_log_08_security_e3.txt",
+  "terminal/M14_ingest_gates.csv",
+  "terminal/M14_ingest_cuda_tests_tail.txt",
+  "terminal/M14_ingest_job_log_10_stack_status.txt"
+ ]
+}

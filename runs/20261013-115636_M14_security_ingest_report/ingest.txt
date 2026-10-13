@@ -1,0 +1,16 @@
+job 20261013-105517_M14  module M14  quick False
+runner colab  gpu Tesla T4  driver 580.82.07  cupy 14.0.1  session 20261013-054610
+  [1] nvidia_smi: exit 0 ok
+  [2] whoami: exit 0 ok
+  [3] stack_up: exit 0 ok
+  [4] check_oblivious: exit 0 ok
+  [5] security_s1: exit 0 ok
+  [6] security_e0e1: exit 0 ok
+  [7] security_e2: exit 0 ok
+  [8] security_e3: exit 0 ok
+  [9] cuda_tests: exit 0 ok
+  [10] stack_status: exit 0 ok
+  [11] nvidia_smi_after: exit 0 ok
+overall exit 0
+ingested 5 run dir(s): 20261013-054644_M14_security_s1, 20261013-054727_M14_security_e0e1, 20261013-055417_M14_security_e2, 20261013-055444_M14_security_e3, 20261013-055445_M14_cuda_tests
+indexed 40 metric(s); bundle moved to gpujobs/done/results_20261013-105517_M14.zip

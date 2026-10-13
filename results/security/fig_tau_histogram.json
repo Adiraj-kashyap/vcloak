@@ -1,0 +1,16 @@
+{
+  "figure": "fig_tau_histogram",
+  "files": [
+    "fig_tau_histogram.png",
+    "fig_tau_histogram.pdf"
+  ],
+  "run_dirs": [
+    "runs/20261013-055417_M14_security_e2"
+  ],
+  "metric_ids": [
+    "S-TAUBAND-PCT",
+    "S-TAU-SIGMA-MEAS"
+  ],
+  "session_id": "20261013-054610",
+  "generated_by": "python -m vcloak.bench.report_security"
+}

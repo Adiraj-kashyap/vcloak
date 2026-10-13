@@ -1,0 +1,79 @@
+{
+  "run_id": "20261013-055444_M14_security_e3",
+  "module": "M14",
+  "step": "S5",
+  "owner": "Abhishek",
+  "git_sha": "e5a82fc8bc29174ab06aba0f9d7d394ac9ba719c",
+  "dirty": false,
+  "command": "python bench/run_security_eval.py --stage trace --backend cupy --seed 2026 --out runs",
+  "seed": 2026,
+  "quick": false,
+  "params": {
+    "n_conv": 200,
+    "duration_s": 900,
+    "buckets": 64,
+    "rate": 0.05,
+    "mode": "vcloak",
+    "clock": "sim",
+    "engine": "gpu"
+  },
+  "env": {
+    "os": "Linux-6.6.122+-x86_64-with-glibc2.39",
+    "python": "3.13.15",
+    "backend": "cupy",
+    "runner": "colab",
+    "session_id": "20261013-054610",
+    "gpu": "Tesla T4",
+    "cc": "7.5",
+    "cuda": "13000",
+    "cupy": "14.0.1",
+    "driver": "580.82.07"
+  },
+  "telemetry_start": {
+    "available": true,
+    "gpu": "Tesla T4",
+    "driver": "580.82.07",
+    "clocks": "unlocked",
+    "sm_clock_max_mhz": 1590,
+    "ts": 1791870884.511258,
+    "sm_clock_mhz": 855,
+    "mem_clock_mhz": 5000,
+    "temperature_c": 69,
+    "power_w": 32.564,
+    "power_limit_w": 70.0,
+    "util_gpu_pct": 1,
+    "util_mem_pct": 0,
+    "throttle_reasons": 0,
+    "pstate": 0,
+    "mem_used_mb": 654.1875
+  },
+  "telemetry_end": {
+    "available": true,
+    "gpu": "Tesla T4",
+    "driver": "580.82.07",
+    "clocks": "unlocked",
+    "sm_clock_max_mhz": 1590,
+    "ts": 1791870884.7002318,
+    "sm_clock_mhz": 855,
+    "mem_clock_mhz": 5000,
+    "temperature_c": 69,
+    "power_w": 31.597,
+    "power_limit_w": 70.0,
+    "util_gpu_pct": 5,
+    "util_mem_pct": 0,
+    "throttle_reasons": 0,
+    "pstate": 0,
+    "mem_used_mb": 658.1875
+  },
+  "outputs": [
+    "e3_trace.json",
+    "summary.json"
+  ],
+  "status": "OK",
+  "notes": "S5 comparator trace of the device sort and of write_epoch; CUDA device.",
+  "gpu_job": {
+    "job_id": "20261013-105517_M14",
+    "bundle_sha256": "a990dbef5d20fa2924e6810656e2760c04bbd85225532a3a6fc09eb93d4cd23e",
+    "packed_from_git_sha": "e5a82fc8bc29174ab06aba0f9d7d394ac9ba719c"
+  }
+}

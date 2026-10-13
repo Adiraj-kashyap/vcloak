@@ -1,0 +1,21 @@
+ok   layout EPOCH: 608 rows, turn-order accuracy 0.9789
+ok   layout W10: 608 rows, turn-order accuracy 0.6901
+ok   layout W60: 608 rows, turn-order accuracy 0.5299
+E0: 15 of 15 conversations in exact order (228 messages, 45 reads)
+engine numpy-simulator, db postgres
+run dir: C:\Users\HP\AppData\Local\Temp\claude\d--PJT-vcloak\734ebc22-e73e-4355-8085-8a32c3a211ce\scratchpad\g10\20261013-120157_M14_security_e0e1_quick
+g10 attack exit 0
+ok   chi2_inside_ideal_range
+ok   coverage_inside_binomial_99_bounds
+chi2 4034.7 (dof 3969, p 0.2294); ideal sampler range 3754.7 to 4232.0 over 200 tables
+tau band: 100 of 100 epochs inside 3 sigma at n 4096 (binomial 99% bounds [98, 100])
+engine numpy-simulator
+run dir: C:\Users\HP\AppData\Local\Temp\claude\d--PJT-vcloak\734ebc22-e73e-4355-8085-8a32c3a211ce\scratchpad\g10\20261013-120223_M14_security_e2_quick
+g10 uniformity exit 0
+ok   device_result_equals_oracle
+ok   launch_list_identical_for_every_batch
+ok   pair_schedule_identical_for_every_batch
+distinct traces over 5 inputs at n 1024: device 1, merge sort 4
+engine numpy-simulator
+run dir: C:\Users\HP\AppData\Local\Temp\claude\d--PJT-vcloak\734ebc22-e73e-4355-8085-8a32c3a211ce\scratchpad\g10\20261013-120231_M14_security_e3_quick
+g10 trace exit 0

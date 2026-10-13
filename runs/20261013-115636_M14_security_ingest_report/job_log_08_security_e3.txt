@@ -1,0 +1,9 @@
+ok   device_trace_identical_for_every_input
+ok   merge_sort_trace_depends_on_the_input
+ok   device_trace_equals_oracle_trace
+ok   device_result_equals_oracle
+ok   launch_list_identical_for_every_batch
+ok   pair_schedule_identical_for_every_batch
+distinct traces over 5 inputs at n 1024: device 1, merge sort 4
+engine gpu
+run dir: /content/vcloak_job/runs/20261013-055444_M14_security_e3

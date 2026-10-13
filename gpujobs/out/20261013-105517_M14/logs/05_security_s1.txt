@@ -1,0 +1,10 @@
+ok   every_post_accepted
+ok   row_count_equals_message_count
+ok   stored_ciphertexts_are_the_sent_ones
+ok   no_epoch_failed
+ok   nothing_left_queued
+ok   no_window_left_unshuffled
+ok   each_window_rewritten_once
+ok   sql_count_equals_message_count
+S-TRAFFIC-MSGS 24733 (rows stored 24733, epochs 4501, db postgres, engine gpu)
+run dir: /content/vcloak_job/runs/20261013-054644_M14_security_s1

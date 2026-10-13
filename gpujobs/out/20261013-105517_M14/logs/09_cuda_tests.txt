@@ -1,0 +1,4 @@
+ok   tests_passed
+ok   none_failed
+selected 674 (expected 674): passed 674, failed 0, errors 0, skipped 0 (pytest exit 0, backend cupy)
+run dir: /content/vcloak_job/runs/20261013-055445_M14_cuda_tests

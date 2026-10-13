@@ -72,3 +72,11 @@ paper-ready figures into `evidence/figures/`, plus the terminal output of the at
   - The job `bench/jobs/M14.json` installs and starts PostgreSQL in the runner (`scripts/runner_stack.py`) and, at the
     request of the human, also runs every test marked `gpu` (`bench/run_gpu_tests.py`).
   - S6 (anonymity set) and S7 (comparison with the oracle) are not written and are not in that job.
+- 2026-10-13 (session 38): the ingest of job 20261013-105517_M14 (Colab, Tesla T4, PostgreSQL 16 in the runner).
+  - `results/security/*` and section 4.S of `docs/REPORT_CH4_NOTES.md` are written by a generator the Deliverables do
+    not name, `src/vcloak/bench/report_security.py`: it copies the stage files and the gates of the ingested runs, draws
+    the window-ablation figure and the tau histogram, and refuses runs that are not cupy runs of one session with
+    mode=vcloak, db=postgres, engine=gpu.
+  - The "uniformity summary" of *Evidence to capture* is `e2_uniformity.json` with section 4.S.4; no separate figure.
+  - In the ablation figure the predicted 1 - f/2 is drawn as rings around the measured points (they coincide).
+  - S6 and S7 are still open (ISSUE-40); the notes say NOT_MEASURED for both.

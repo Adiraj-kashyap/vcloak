@@ -1,0 +1,6 @@
+simulator parity (TESTING 2b): device run of job 20261013-105517_M14 against the numpy simulator runs of session 37, same seed 2026
+attack_table.csv: byte-identical (six layouts)
+e3 sort rows identical: True
+e3 write_epoch rows identical: True
+e0_restoration.json identical: True
+e2: no full-size simulator run exists (quick sizes only locally): not compared

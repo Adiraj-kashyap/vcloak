@@ -44,6 +44,7 @@ STAGE_GROUPS = {  # device stages of write_epoch, grouped so that four hues and 
 
 
 M08_BEGIN, M08_END = "<!-- BEGIN M08 OBLIVIOUS -->", "<!-- END M08 OBLIVIOUS -->"
+M14_BEGIN, M14_END = "<!-- BEGIN M14 SECURITY -->", "<!-- END M14 SECURITY -->"
 
 
 class ReportError(Exception):
@@ -588,8 +589,9 @@ def generate(kernels: str | Path, cpu: str | Path, crossover: str | Path, pipeli
         Path(notes).parent.mkdir(parents=True, exist_ok=True)
         old = Path(notes).read_text(encoding="utf-8") if Path(notes).exists() else ""
         text = build_notes(runs, prov, root, figures)
-        if M08_BEGIN in old and M08_END in old:  # the obliviousness section belongs to report_oblivious: keep it
-            text = text.rstrip("\n") + "\n\n" + old[old.index(M08_BEGIN):old.index(M08_END) + len(M08_END)] + "\n"
+        for begin, end in ((M08_BEGIN, M08_END), (M14_BEGIN, M14_END)):  # sections of the other generators: keep
+            if begin in old and end in old:
+                text = text.rstrip("\n") + "\n\n" + old[old.index(begin):old.index(end) + len(end)] + "\n"
         Path(notes).write_text(text, encoding="utf-8")
     return summary
 

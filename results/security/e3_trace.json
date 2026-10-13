@@ -1,0 +1,115 @@
+{
+  "stage": "S5",
+  "seed": 2026,
+  "sort": {
+    "n": 1024,
+    "seed": 2026,
+    "digest": "sha256, first 128 bits",
+    "rows": [
+      {
+        "input": "all-identical",
+        "launches": 3,
+        "stages": 55,
+        "device_trace_sha256": "288a7ca25ae483083cbe1c0206839468",
+        "oracle_trace_sha256": "288a7ca25ae483083cbe1c0206839468",
+        "merge_sort_trace_sha256": "4d1ec758a044ae46df71d3b35051ab81",
+        "device_result_equals_oracle": true
+      },
+      {
+        "input": "sorted",
+        "launches": 3,
+        "stages": 55,
+        "device_trace_sha256": "288a7ca25ae483083cbe1c0206839468",
+        "oracle_trace_sha256": "288a7ca25ae483083cbe1c0206839468",
+        "merge_sort_trace_sha256": "4d1ec758a044ae46df71d3b35051ab81",
+        "device_result_equals_oracle": true
+      },
+      {
+        "input": "reverse-sorted",
+        "launches": 3,
+        "stages": 55,
+        "device_trace_sha256": "288a7ca25ae483083cbe1c0206839468",
+        "oracle_trace_sha256": "288a7ca25ae483083cbe1c0206839468",
+        "merge_sort_trace_sha256": "f585912b23121ea03e327021fdad1c1a",
+        "device_result_equals_oracle": true
+      },
+      {
+        "input": "random",
+        "launches": 3,
+        "stages": 55,
+        "device_trace_sha256": "288a7ca25ae483083cbe1c0206839468",
+        "oracle_trace_sha256": "288a7ca25ae483083cbe1c0206839468",
+        "merge_sort_trace_sha256": "51e9869abbc21c9596b3004282e0191a",
+        "device_result_equals_oracle": true
+      },
+      {
+        "input": "two-value skew",
+        "launches": 3,
+        "stages": 55,
+        "device_trace_sha256": "288a7ca25ae483083cbe1c0206839468",
+        "oracle_trace_sha256": "288a7ca25ae483083cbe1c0206839468",
+        "merge_sort_trace_sha256": "dfcde07f57bd429c5ea38dc26194124c",
+        "device_result_equals_oracle": true
+      }
+    ],
+    "device_distinct_traces": 1,
+    "merge_sort_distinct_traces": 4,
+    "gates": {
+      "device_trace_identical_for_every_input": true,
+      "merge_sort_trace_depends_on_the_input": true,
+      "device_trace_equals_oracle_trace": true,
+      "device_result_equals_oracle": true
+    }
+  },
+  "write_epoch": {
+    "slots": 64,
+    "seed": 2026,
+    "rows": [
+      {
+        "batch": "full, contents A",
+        "n_real": 64,
+        "rows_out": 64,
+        "launches": 2,
+        "launch_list_sha256": "26e4b7dca85f0711b6d32b63d20cc615",
+        "pair_schedule_sha256": "f115a559a7b9b6a76777d98ae9aa2e51"
+      },
+      {
+        "batch": "full, contents B",
+        "n_real": 64,
+        "rows_out": 64,
+        "launches": 2,
+        "launch_list_sha256": "26e4b7dca85f0711b6d32b63d20cc615",
+        "pair_schedule_sha256": "f115a559a7b9b6a76777d98ae9aa2e51"
+      },
+      {
+        "batch": "half full",
+        "n_real": 32,
+        "rows_out": 32,
+        "launches": 2,
+        "launch_list_sha256": "26e4b7dca85f0711b6d32b63d20cc615",
+        "pair_schedule_sha256": "f115a559a7b9b6a76777d98ae9aa2e51"
+      },
+      {
+        "batch": "one row",
+        "n_real": 1,
+        "rows_out": 1,
+        "launches": 2,
+        "launch_list_sha256": "26e4b7dca85f0711b6d32b63d20cc615",
+        "pair_schedule_sha256": "f115a559a7b9b6a76777d98ae9aa2e51"
+      },
+      {
+        "batch": "empty",
+        "n_real": 0,
+        "rows_out": 0,
+        "launches": 2,
+        "launch_list_sha256": "26e4b7dca85f0711b6d32b63d20cc615",
+        "pair_schedule_sha256": "f115a559a7b9b6a76777d98ae9aa2e51"
+      }
+    ],
+    "gates": {
+      "launch_list_identical_for_every_batch": true,
+      "pair_schedule_identical_for_every_batch": true
+    }
+  },
+  "note": "the logical trace only: which pairs are compared. Timing is the dudect work of M08."
+}
