@@ -1,0 +1,21 @@
+Kaggle internet check for the ISSUE-12 rerun (job spec bench/jobs/M07_issue12k.json). Generated, not typed.
+
+commands of the job: nvidia_smi, cpu_info, pytest_engine_regression, pipeline, nvidia_smi_after
+stack_up in the job: False
+stack_up in bench/jobs/M14.json: True
+stack_up in bench/jobs/M14_s6.json: True
+results_20261011-014756_M00.zip: runner kaggle, cpu_count 2, cuda_runtime 13000, driver 580.82.07, requirements installed [], failed []
+results_20261011-173759_M03.zip: runner kaggle, cpu_count 2, cuda_runtime 13000, driver 580.82.07, requirements installed [], failed []
+results_20261011-183051_M04.zip: runner kaggle, cpu_count 2, cuda_runtime 13000, driver 580.82.07, requirements installed [], failed []
+results_20261011-193547_M05.zip: runner kaggle, cpu_count 4, cuda_runtime 12090, driver 580.178.04, requirements installed [], failed []
+results_20261011-215111_M06.zip: runner kaggle, cpu_count 4, cuda_runtime 12090, driver 580.178.04, requirements installed [], failed []
+results_20261011-224124_M07.zip: runner kaggle, cpu_count 4, cuda_runtime 12090, driver 580.178.04, requirements installed [], failed []
+results_20261012-041010_M08.zip: runner kaggle, cpu_count 4, cuda_runtime 12090, driver 580.178.04, requirements installed [], failed []
+results_20261012-113437_M08_issue17.zip: runner kaggle, cpu_count 4, cuda_runtime 12090, driver 580.178.04, requirements installed [], failed []
+results_20261012-191630_M08_issue25.zip: runner kaggle, cpu_count 4, cuda_runtime 12090, driver 580.178.04, requirements installed [], failed []
+results_20261013-005946_M08_issue25k.zip: runner kaggle, cpu_count 4, cuda_runtime 12090, driver 580.178.04, requirements installed [], failed []
+results_20261013-105517_M14.zip: runner colab, cpu_count 2, cuda_runtime 13000, driver 580.82.07, requirements installed [], failed []
+results_20261013-125843_M14_s6.zip: runner colab, cpu_count 2, cuda_runtime 13000, driver 580.82.07, requirements installed [], failed []
+results_20261013-163732_M07_issue12.zip: runner colab, cpu_count 2, cuda_runtime 13000, driver 580.82.07, requirements installed [], failed []
+
+requirements-gpu.txt: cupy-cuda12x, nvidia-ml-py, cryptography

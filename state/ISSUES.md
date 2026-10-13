@@ -236,8 +236,8 @@ read_window is stable at all seven K (largest CV of the indexed attempts 0.086).
 pipeline run, as in the smoke run; it is recorded with every P-* metric. The five quick-tagged smoke rows stay in
 the index as history and are not results.
 
-### ISSUE-12 [OPEN] write_epoch is dominated by host work; at SLOTS 65536 the p99 is above EPOCH_MS
-BLOCKS: none (was M15 until the ingest of session 43; now a measured limitation)   SEVERITY: high   OPENED: 2026-10-11 session 12
+### ISSUE-12 [OPEN] write_epoch is dominated by host work; at SLOTS 65536 the whole call is UNMEASURED under valid conditions since the row-id change (it missed EPOCH_MS before it)
+BLOCKS: none (M15 gives no verdict for 65536 slots before the Kaggle rerun of ISSUE-45 is ingested; the limitation is NOT accepted yet)   SEVERITY: high   OPENED: 2026-10-11 session 12
 Symptom: in runs/20261011-163049_M06_pipeline_smoke_quick the `host` stage is 199.78 ms of a 208.11 ms median total
 at SLOTS 65536 (9.64 of 10.84 ms at 4096; 0.51 of 1.57 ms at 64). The device stages together are about 8 ms at
 65536 (d2h 5.7 ms, sort 0.88, compact 0.77, h2d 0.57). EPOCH_MS is 200.
@@ -270,31 +270,38 @@ What was NOT done: the rows are still one `StoredRow` object per message (the in
 repository, ADR-014, returns a list of them), so the host stage still grows with the batch. No timing exists yet: the
 laptop has no GPU and a simulator time is not a result. Whether p99 < EPOCH_MS now holds at 65536 slots is what job
 20261013-163732_M07_issue12 measures (ISSUE-44). Stays OPEN, and keeps blocking M15, until that job is ingested.
-Update session 43 (ingest, 698dff2; runs/20261013-111612_M07_pipeline, job 20261013-163732_M07_issue12, 5 of 5 commands exit 0;
-every value below is read from its summary.json by runs/20261013-165216_M07_issue12_ingest_checks/gates.txt):
-- The real-time gate still FAILS for the whole call at SLOTS 65536, and the measurement is UNSTABLE: p99 of the whole
-  call 333.3035 ms (attempt 1) and 329.9052 ms (attempt 2) against EPOCH_MS 200; CV of the whole call 0.2842 and 0.2707
-  against the limit 0.1. The device part passes (p99 10.7982 and 9.1214 ms). The gate passes at 64 to 16384 slots, on
-  UNSTABLE measurements. All 12 configurations of this run are UNSTABLE, so all 60 rows it indexed carry UNSTABLE and
-  no value (ANN-3 in METRICS_INDEX): none of the numbers of this update is a reportable metric.
-- What the fix did, as far as this run shows: `uuid.py __init__` is no longer in host_profile.txt (196608 calls in
+Update session 43 (ingest, 698dff2; runs/20261013-111612_M07_pipeline, job 20261013-163732_M07_issue12, 5 of 5 commands exit 0).
+Text corrected in session 44 at the request of the owner: the first version of this update quoted the attempt
+values of an UNSTABLE run and called the result "measured and failing". That was wrong by gpu-bench rule 5.
+- All 12 configurations of this run are UNSTABLE (CV of the whole call above the limit 0.1 on both attempts), so
+  its 60 indexed rows are not values (ANN-3 in METRICS_INDEX) and the run gives NO gate verdict at any size. State
+  of the question: whether the whole call meets EPOCH_MS at 65536 slots after the row-id change is UNMEASURED under
+  valid conditions. The raw attempts stay in the run dir and in runs/20261013-165216_M07_issue12_ingest_checks/gates.txt;
+  no number from them is quoted here, in the notes or in the report. They point in the direction of a miss; a
+  direction is not a result.
+- What the run does establish (not timings): `uuid.py __init__` is no longer in host_profile.txt (196608 calls in
   the M07 profile), the engine tests pass on the device (154 passed) and write_epoch equals the oracle at every size
-  (0 mismatches). The median of the host stage at 65536 is 157.4747 and 158.0399 ms, the median of the whole call
-  163.6934 and 164.3661 ms: the median is under EPOCH_MS, the tail is not (p95 290.9970 and 292.8551 ms).
-- What this run does NOT show: a before/after speed-up. The M07 numbers (host median 233.7088 ms, p99 279.5451 ms)
-  came from Kaggle with 4 vCPU and CUDA 12090; this job ran on Colab with 2 vCPU and CUDA 13000 (ISSUE-3). The host
-  stage is Python on the CPU of the runner, so the two runs differ in the thing being measured. Never write "the fix
-  made the host stage N % faster" from these two runs.
-- Cause of the tail: not profiled. The host stage is still 96 % of the median call (one `StoredRow` object per
-  message), and the telemetry thread of the bench shares 2 vCPU with it; which of the two makes the tail is unknown.
-- Standing after this ingest (as ISSUE-44 announced): a measured limitation, no longer a blocker. M15 starts and must
-  say that on the free runner a full epoch of 2^16 slots does not meet EPOCH_MS because of the host path, and must
-  not use 65536 slots as a size that "fits"; M16/M20 quote the gate from both runs with their runners. The generated
-  M07 section of docs/REPORT_CH4_NOTES.md still describes the M07 session (uuid per row) and was not regenerated:
-  `vcloak.bench.report` takes four runs of one runner session, and this run is a session of its own.
-- Open for a decision of the owner (Aditya), none of it done: (a) run the same job on Kaggle (4 vCPU) for numbers
-  comparable with M07; (b) column arrays instead of `StoredRow` objects, which changes ARCHITECTURE §4 and ADR-014
-  and needs its own unit and job; (c) accept the limitation as it stands.
+  (0 mismatches).
+- What it cannot establish: a before/after of the fix. The M07 numbers came from Kaggle with 4 vCPU and CUDA 12090;
+  this job ran on Colab with 2 vCPU and CUDA 13000 (ISSUE-3). The host stage is Python on the CPU of the runner, so
+  the two runs differ in the thing being measured. Packing a job on another platform than its before-measurement
+  was the defect; ADR-024 now forbids it.
+- Cause of the instability: not profiled (the host stage and the telemetry thread of the bench share 2 vCPU).
+- The generated M07 section of docs/REPORT_CH4_NOTES.md was not regenerated (`vcloak.bench.report` takes four runs
+  of one runner session); its paragraph on the uuid constructor is marked STALE in place (session 44).
+Update session 44 (decision of the owner, Aditya): option (a). The same measurement is packed again for Kaggle
+(4 vCPU), job in ISSUE-45. It settles two things at once: whether 65536 slots miss EPOCH_MS on 4 vCPU or the Colab
+result was a runner artifact, and a before/after for the row-id change on the platform of the M07 before-measurement.
+Column arrays (b) are NOT started and the limitation (c) is NOT accepted yet. Internet is not needed for this job:
+it has no `stack_up` step (that step belongs to the M14 jobs), and the Kaggle M07 run installed no package
+(result.json of gpujobs/done/results_20261011-224124_M07.zip: requirements installed [], skipped all three); the check is
+runs/20261013-171026_M16_prefixes/kaggle_internet_check.txt. Comparability still depends on the runner image: the
+ingest must compare vCPU count, CUDA runtime and driver of the new run with those of session 20261011-213139 and say
+so if they differ (ADR-024). A valid before/after exists only if the new run is not UNSTABLE.
+Framing for docs/RESULTS_ANALYSIS.md once valid numbers exist (owner, session 44): the device part of write_epoch
+against EPOCH_MS is the result of the contribution (the oblivious shuffle runs there) and is stated first; the
+whole-call figure at 65536 slots is host-side row marshalling in Python on a free-tier cloud VM. State both, and
+state which part is the oblivious shuffle. Numbers only from valid (not UNSTABLE) rows.
 
 ### ISSUE-13 [CLOSED 9ae9ba5] HUMAN ACTION REQUIRED — GPU JOB READY: M07 performance sweeps (job 20261011-224124_M07)
 BLOCKS: M07   SEVERITY: high   OPENED: 2026-10-11 session 13
@@ -1117,7 +1124,7 @@ Then type: continue
 Update 2026-10-13 session 34: the results zip was in gpujobs/inbox/ and is ingested (runs/20261013-084838_M08_i25k_ingest/ingest.txt;
   the bundle is in gpujobs/done/). CLOSED. Nothing further is needed from the human for this job.
 
-### ISSUE-36 [OPEN] M08 kernel-only window: the positive control was mostly unqueued, and all windows are below 50 us
+### ISSUE-36 [CLOSED session 44] M08 kernel-only window: the positive control was mostly unqueued, and all windows are below 50 us
 BLOCKS: none   SEVERITY: medium   OPENED: 2026-10-13 session 34
 Found at the ingest of job 20261013-005946_M08_issue25k (runs/20261013-084838_M08_i25k_ingest/gates.txt).
 1. control_leak_q: 19749 of 20000 measurements unqueued. `run_dudect.py` fits the blocker of a target once, before
@@ -1134,6 +1141,15 @@ session 32 excludes a further job, so no fix job is proposed. If a job is ever a
 r after the warm-up at the measuring clock, re-fit when the unqueued share of a chunk exceeds 5%, and mark
 clock_reset optional.
 Until decided: M14 and M20 quote the result only together with limits 1 and 2.
+Decided session 44 (owner): all eight kernel-only series (tags_kernel, tags_kernel_null, compact_kernel,
+compact_kernel_null, seeds 8 and 10) are recorded as NOT_MEASURED. Done: 16 rows of state/METRICS_INDEX.md (max |t|
+and max |t| without flagged) carry NOT_MEASURED under ANN-4; section 4.O.7 and results/oblivious/kernel_window.csv are
+regenerated with `--kernel-window-not-measured ISSUE-36` (runs/20261013-171026_M16_prefixes/report_command.txt, which replaces
+the command of runs/20261013-091541_M08_issue17_table); the generator refuses to withdraw a FAIL. The raw data stay in the run dirs.
+Consequence for M16, M20, M22: there is NO dudect timing result for the tags and compaction kernels against their
+own data. Never write "no dependence detected" for tags or compact; P3 for these kernels rests on the SASS reading
+(ISSUE-19) and on the logical trace, and the report says that the timing test of them is NOT_MEASURED. Point 3
+(clock_reset marked required) is moot: no further dudect job (timebox of session 32).
 
 ### ISSUE-37 [OPEN] M08 residual of ISSUE-17: the S2 dudect series were never measured again with symmetric staging
 BLOCKS: none   SEVERITY: low   OPENED: 2026-10-13 session 36

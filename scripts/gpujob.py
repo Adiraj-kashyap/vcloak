@@ -121,6 +121,10 @@ def pack(module: str, *, quick: bool = False, params: dict[str, str] | None = No
         "bundle_sha256": content_sha256(files), "n_files": len(files),
         "commands": commands,
     }
+    # ADR-024: a job whose numbers are compared with an earlier run names the platform of that run.
+    for key in ("runner_required", "cpu_count_required"):
+        if key in spec:
+            job[key] = spec[key]
     out_dir = root / "gpujobs" / "out" / job_id
     out_dir.mkdir(parents=True, exist_ok=False)
     zip_path = out_dir / "job.zip"

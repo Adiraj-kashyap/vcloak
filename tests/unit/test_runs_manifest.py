@@ -77,3 +77,17 @@ def test_probe_runs_on_numpy_and_measures_nothing(tmp_path, monkeypatch):
     assert summary["vector_add"]["correct"] is True
     assert {m["id"]: m["value"] for m in summary["metrics"]} == dict.fromkeys(
         ("ENV-PEAK-BW", "ENV-D2D-BW", "ENV-MAX-LOG2N", "ENV-VRAM-FREE"), "NOT_MEASURED")
+
+
+def test_runner_vcpu_comes_from_the_manifest_or_the_ingested_bundle_never_a_guess(tmp_path):
+    import zipfile
+
+    man = {"env": {"session_id": "S1"}, "gpu_job": {"job_id": "J1"}}
+    assert runs.runner_vcpu(man, tmp_path) is None
+    done = tmp_path / "gpujobs" / "done"
+    done.mkdir(parents=True)
+    with zipfile.ZipFile(done / "results_J1.zip", "w") as z:
+        z.writestr("result.json", json.dumps({"env": {"session_id": "S1", "cpu_count": "4"}}))
+    assert runs.runner_vcpu(man, tmp_path) == 4
+    assert runs.runner_vcpu({"env": {"session_id": "S2"}, "gpu_job": {"job_id": "J1"}}, tmp_path) is None
+    assert runs.runner_vcpu({"env": {"session_id": "S1", "cpu_count": 2}, "gpu_job": {"job_id": "J1"}}, tmp_path) == 2

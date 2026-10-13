@@ -15,3 +15,12 @@ Follow `ai/GPU_GUIDE.md §4–§7`. Minimum procedure:
 6. Add every reported number to `state/METRICS_INDEX.md` with its run dir.
 7. Never compare GPU and CPU numbers taken under different power states. Plug the laptop in and
    record the power state in the manifest.
+8. Before/after and cross-configuration comparisons come from ONE runner platform (ADR-024): the same provider and
+   the same vCPU count, and the same image (CUDA runtime, driver) or the difference stated beside the numbers. Pack
+   the after-job for the platform of the before-measurement and name that platform in the GPU JOB READY issue. If
+   the bundle comes back from another platform, ingest it, index it, and record the comparison as `NOT_MEASURED`.
+9. Every provenance line names the vCPU count beside the GPU name (`Tesla T4, 4 vCPU`). The manifest `env` carries
+   `cpu_count`; for older runs `vcloak.runs.runner_vcpu` reads it from the ingested result bundle. Never type it.
+10. An `UNSTABLE` configuration is not a value: do not quote its attempts as numbers in an issue, the notes or the
+   report, and do not read a gate verdict from them. The state of such a question is "unmeasured under valid conditions".
+

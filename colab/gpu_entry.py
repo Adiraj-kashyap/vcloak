@@ -27,7 +27,6 @@ import hashlib
 import json
 import os
 import platform
-import shutil
 import subprocess
 import sys
 import zipfile
@@ -162,6 +161,18 @@ def main() -> int:
 
     env_info = _probe_env()
     print(json.dumps({k: env_info.get(k) for k in ("gpu", "driver", "cupy", "nvcc", "ncu", "runner")}, indent=1))
+    # ADR-024: a comparison job runs only on the platform of the run it is compared with. Refusing here costs a
+    # minute; a bundle from the wrong platform costs a session and gives numbers that cannot be compared.
+    want_runner, want_cpus = job.get("runner_required"), job.get("cpu_count_required")
+    if want_runner and env_info.get("runner") != want_runner:
+        print(f"\n!! This job must run on {want_runner}; this is {env_info.get('runner')}. Nothing was run."
+              f"\n   Its numbers are compared with a run taken on {want_runner} (ai/DECISIONS.md ADR-024).\n")
+        return 1
+    if want_cpus and str(env_info.get("cpu_count")) != str(want_cpus):
+        print(f"\n!! This job needs {want_cpus} vCPU; this runner has {env_info.get('cpu_count')}. Nothing was run."
+              "\n   Choose the accelerator named in the job instructions and re-run this cell.\n")
+        return 1
+
     if env_info.get("gpu") == "NONE":
         print("\n!! No GPU visible. In Colab: Runtime > Change runtime type > T4 GPU."
               "\n   In Kaggle: Settings > Accelerator > GPU. Then re-run this cell.\n")

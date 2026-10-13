@@ -4,6 +4,7 @@ The "results" here are test fixtures built inside tmp_path. They never touch the
 METRICS_INDEX.md, and their GPU is named TEST-FIXTURE so they cannot be mistaken for evidence.
 """
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -92,6 +93,25 @@ def test_pack_produces_a_runnable_bundle(repo, tmp_path, capsys):
     p = subprocess.run([sys.executable, "gpu_entry.py", "--job", "job.json", "--dry-run"],
                        cwd=tmp_path / "unz", capture_output=True, text=True)
     assert p.returncode == 0 and "[1] python bench/run.py --quick --out runs" in p.stdout
+
+
+def test_comparison_job_names_its_platform_and_the_runner_refuses_another(repo, tmp_path):
+    """ADR-024: the after-measurement of a comparison runs on the platform of the before-measurement."""
+    spec_path = repo / "bench" / "jobs" / "M99.json"
+    spec = json.loads(spec_path.read_text(encoding="utf-8"))
+    spec.update({"runner_required": "kaggle", "cpu_count_required": 4})
+    spec_path.write_text(json.dumps(spec), encoding="utf-8")
+    subprocess.run(["git", "commit", "-qam", "platform"], cwd=repo, check=True)
+    zip_path = gpujob.pack("M99", root=repo)
+    with zipfile.ZipFile(zip_path) as z:
+        job = json.loads(z.read("job.json"))
+        z.extractall(tmp_path / "unz")
+    assert job["runner_required"] == "kaggle" and job["cpu_count_required"] == 4
+    env = {**os.environ, "VCLOAK_RUNNER": "colab"}
+    p = subprocess.run([sys.executable, "gpu_entry.py", "--job", "job.json"], cwd=tmp_path / "unz",
+                       capture_output=True, text=True, env=env)
+    assert p.returncode == 1 and "must run on kaggle; this is colab. Nothing was run." in p.stdout
+    assert not list((tmp_path / "unz" / "runs").glob("*")) and not (tmp_path / "unz" / "result.json").exists()
 
 
 def test_pack_refuses_uncommitted_code(repo):

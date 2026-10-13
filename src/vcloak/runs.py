@@ -11,6 +11,7 @@ import os
 import platform
 import re
 import subprocess
+import zipfile
 from pathlib import Path
 from typing import Any
 
@@ -61,7 +62,31 @@ def build_env(backend: Backend) -> dict[str, Any]:
         env["driver"] = telemetry.snapshot().get("driver")
     else:
         env["cpu"] = info.get("cpu")
+    # ADR-024: the host stages are Python on the runner's CPU, so the vCPU count is part of every provenance.
+    env["cpu_count"] = os.cpu_count()
     return env
+
+
+def runner_vcpu(manifest: dict[str, Any], root: str | Path = ".") -> int | None:
+    """vCPU count of the machine a run was taken on (ADR-024), or None when no record of it exists.
+
+    Runs made before ADR-024 have no `cpu_count` in their manifest; for an ingested GPU job the runner wrote it into
+    the `env` of `result.json`, which is kept in `gpujobs/done/results_<job>.zip`. Never guessed from the platform.
+    """
+    try:
+        if manifest["env"].get("cpu_count") is not None:
+            return int(manifest["env"]["cpu_count"])
+        job_id = (manifest.get("gpu_job") or {}).get("job_id")
+        bundle = Path(root) / "gpujobs" / "done" / f"results_{job_id}.zip"
+        if not job_id or not bundle.exists():
+            return None
+        with zipfile.ZipFile(bundle) as z:
+            env = json.loads(z.read("result.json")).get("env", {})
+        if env.get("session_id") != manifest["env"].get("session_id"):
+            return None
+        return int(env["cpu_count"])
+    except (KeyError, TypeError, ValueError, OSError, zipfile.BadZipFile):
+        return None
 
 
 def new_run(module: str, name: str, *, step: str, owner: str, command: str, seed: int = 0,

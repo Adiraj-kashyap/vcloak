@@ -10,7 +10,8 @@ Rules, per row of the index:
   3. the row's Backend / Runner / Quick columns agree with that manifest;
   4. a GPU metric (performance, side channel or device property) must have backend cupy, a `gpu_job`
      block in its manifest, and a non-local runner - unless its value is NOT_MEASURED;
-  5. if the run has a summary.json listing metrics, the indexed value must equal the value in it.
+  5. if the run has a summary.json listing metrics, the indexed value must equal the value in it, or be
+     NOT_MEASURED: a value may be withdrawn by a recorded decision (an ANN note of the index), never changed.
 The frontend literal scan (ADR-013) is added to this script when the dashboard is wired (M13/M18).
 """
 from __future__ import annotations
@@ -103,7 +104,7 @@ def check(index: Path, root: Path) -> list[str]:
             listed = {x.get("id"): x for x in json.loads(summary.read_text(encoding="utf-8")).get("metrics", [])}
             if r["id"] not in listed:
                 errs.append(f"{where}: not present in {r['run_dir']}/summary.json")
-            elif not _same_value(listed[r["id"]].get("value"), r["value"]):
+            elif r["value"] != NOT_MEASURED and not _same_value(listed[r["id"]].get("value"), r["value"]):
                 errs.append(f"{where}: index value {r['value']} != summary.json value {listed[r['id']].get('value')}")
         elif r["value"] != NOT_MEASURED:
             errs.append(f"{where}: run dir has no summary.json to back the value")

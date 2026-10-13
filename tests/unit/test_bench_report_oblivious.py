@@ -229,6 +229,25 @@ def test_kernel_window_section_copies_verdicts_and_names_the_weak_control(tree: 
     assert "8,tags_kernel,50,2.0,PASS,PASS,1.0,30,30,0,1590,40.0,1,0,T-DUDECT-MAXT-TAGS-KERNEL" in csv_text
 
 
+def test_kernel_window_recorded_as_not_measured_prints_no_t_value_and_no_reading(tree: dict[str, Path]) -> None:
+    notes = tree["root"] / "notes.md"
+    s = _generate(tree, notes=notes, kernel_window={**_kw_tree(tree), "withdrawn": "ISSUE-W"})
+    part = notes.read_text(encoding="utf-8").split("## 4.O.7")[1]
+    assert "NOT_MEASURED<!--M:T-DUDECT-MAXT-TAGS-KERNEL-->" in part
+    assert "2.0<!--M:T-DUDECT-MAXT-TAGS-KERNEL-->" not in part
+    assert "Decision of the owner (ISSUE-W)" in part and "no dependence detected" not in part
+    assert "(below 50 us)" in part and "960 of its 1000 measurements were not queued" in part
+    assert s["kernel_window"]["not_measured"] == "ISSUE-W"
+    csv_text = (tree["root"] / "out" / "kernel_window.csv").read_text(encoding="utf-8")
+    assert "8,tags_kernel,50,NOT_MEASURED,NOT_MEASURED,PASS,NOT_MEASURED,30,30,0,1590,40.0,1,0," in csv_text
+
+
+def test_kernel_window_fail_is_never_recorded_as_not_measured(tree: dict[str, Path]) -> None:
+    kw = {**_kw_tree(tree, tags_verdicts=("FAIL", "PASS")), "withdrawn": "ISSUE-W"}
+    with pytest.raises(ReportError, match="FAIL is never recorded"):
+        _generate(tree, kernel_window=kw)
+
+
 @pytest.mark.parametrize(("tags", "null", "expect"), [
     (("FAIL", "FAIL"), "PASS", "rule i"), (("FAIL", "PASS"), "PASS", "rule j"), (("FAIL", "FAIL"), "FAIL", "rule h")])
 def test_kernel_window_fail_is_read_by_the_rules_never_softened(tree: dict[str, Path], tags: tuple[str, str], null: str,

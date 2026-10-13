@@ -303,3 +303,28 @@ is what ISSUE-25 measures. M14 and the report must state the scope in these word
 against an adversary who sees the store and no timing. A reader who assumes a co-located or network timing
 attacker is told that this is outside the model, not that it was defeated. This ADR does not change any verdict or
 any row of `state/METRICS_INDEX.md`.
+
+## ADR-024 — Performance comparisons come from one runner platform; every provenance line carries the vCPU count — ACCEPTED — 2026-10-13
+Context: the before-measurement of the row-id change of ISSUE-12 was taken on Kaggle (4 vCPU, session 20261011-213139);
+the job for the after-measurement (20261013-163732_M07_issue12) was packed without naming a platform and was run on
+Colab (2 vCPU). The host stage of `write_epoch` is Python on the CPU of the runner, so the two runs cannot be
+compared, the run was UNSTABLE in all 12 configurations, and a session was spent on numbers that are not values.
+The owner decided the rule on 2026-10-13 (session 44), as reported in the session request; the agent records it.
+Decision:
+1. A before/after comparison, and any comparison between configurations, is made only between runs of the same
+   runner platform: the same provider (colab or kaggle) and the same vCPU count. If the image differs (CUDA
+   runtime, driver), the difference is stated beside the numbers. A comparison across platforms is recorded as
+   NOT_MEASURED; an ID that occurs in two sessions names two measurements, never a before and an after.
+2. A job whose numbers will be compared with an earlier run names the platform of that run in its spec
+   (`runner_required`, `cpu_count_required`). `scripts/gpujob.py pack` copies both keys into job.json and
+   `colab/gpu_entry.py` refuses to run the job on another platform, before any command starts. The GPU JOB READY
+   issue names the platform first.
+3. The provenance line of every generated section names the vCPU count beside the GPU name. New run manifests
+   carry `env.cpu_count` (`vcloak.runs.build_env`); for runs taken before this ADR `vcloak.runs.runner_vcpu` reads
+   the count the runner wrote into `result.json` of the ingested bundle (`gpujobs/done/`). Where neither exists the
+   line says NOT_MEASURED. The count is never typed by hand.
+4. An UNSTABLE configuration is not a value (gpu-bench rule 5): its attempts are not quoted as numbers in an issue,
+   the notes or the report, and no gate verdict is read from them.
+Consequences: gpu-bench rules 8 to 10 (`.claude/skills/gpu-bench/SKILL.md`). The M07 section already printed the
+CPU as `<model> x<count>`; the M08 and M14 sections were regenerated with the count
+(runs/20261013-171026_M16_prefixes/report_command.txt). This ADR changes no measured value.

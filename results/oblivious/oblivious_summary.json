@@ -3,6 +3,7 @@
     "session_id": "20261012-031230",
     "runner": "kaggle",
     "gpu": "Tesla T4",
+    "vcpu": "4 vCPU",
     "driver": "580.178.04",
     "cuda": "12090",
     "cupy": "14.0.1",
@@ -65,6 +66,7 @@
   "generated_by": "python -m vcloak.bench.report_oblivious",
   "kernel_window": {
     "issue": "ISSUE-25",
+    "not_measured": "ISSUE-36",
     "selftest": "runs/20261013-022000_M08_i25k_selftest_quick",
     "seeds": [
       "runs/20261013-022124_M08_dudect_i25k_s8",
