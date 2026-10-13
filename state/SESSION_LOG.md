@@ -1002,6 +1002,6 @@
   (same output)
 - Not verified: S6 on the device; report_security does not yet take the S6 run (a second runner session), so the
   notes still say NOT_MEASURED for S6; one seed, one replay per population; the runner time of the job
-- Commit: 9c0e7f6 (code), b042dc8 (simulator run, checks), records PENDING_HASH
+- Commit: 9c0e7f6 (code), b042dc8 (simulator run, checks), records 966e0ab
 - Next: M14 ingest of 20261013-125843_M14_s6, then the S6 section and the module audit ; human action: ISSUE-42 (run the
   job, or say "S6 on the simulator"); ISSUE-41 and ISSUE-36 are still undecided
