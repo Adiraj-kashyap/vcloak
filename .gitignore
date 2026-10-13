@@ -16,3 +16,9 @@ gpujobs/inbox/*.zip
 gpujobs/done/*.zip
 runs/**/*.npz
 .pgdev/
+
+# PC runner kit (ADR-025): the scripts are tracked, the copied job zips and anything run there are not
+pc_runner/jobs/*.zip
+pc_runner/work/
+pc_runner/results/
+pc_runner/.venv/

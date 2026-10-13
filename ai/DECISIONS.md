@@ -328,3 +328,26 @@ Decision:
 Consequences: gpu-bench rules 8 to 10 (`.claude/skills/gpu-bench/SKILL.md`). The M07 section already printed the
 CPU as `<model> x<count>`; the M08 and M14 sections were regenerated with the count
 (runs/20261013-171026_M16_prefixes/report_command.txt). This ADR changes no measured value.
+
+## ADR-025 — A PC with a discrete NVIDIA GPU is a third runner under the job protocol, named `pc-<gpu>` — ACCEPTED — 2026-10-13
+Context: Kaggle refuses the GPU performance counters (ISSUE-18), and that is a setting of the machine that owns the
+GPU. The owner has access to a PC with a discrete NVIDIA GPU and decided on 2026-10-13 (session 46, in the session
+request) to use it as a runner. The project does not move there: the laptop stays the place of all development,
+packing and ingest. The agent records the decision.
+Decision:
+1. The PC is a runner like Colab and Kaggle (ai/GPU_RUNNER.md section 4): the same `gpu_entry.py` from inside the
+   job zip, the same results zip, the same ingest checks. The kit that starts it is `pc_runner/` (SETUP.txt, RUN.txt,
+   `check_setup.py`, `run_job.py`, `verify_result.py`); it is not part of a job bundle.
+2. Its runner name is `pc-<gpu>`, derived by the kit from the GPU that nvidia-smi reports, and never `local`.
+   `local` stays the GPU-less laptop, whose numbers are never a GPU result (`scripts/check_metrics.py`).
+   `vcloak.runs.validate_manifest` accepts `colab`, `kaggle`, `local`, `unknown` and `pc-<gpu>`.
+3. ADR-024 applies unchanged: the PC is a platform of its own (another GPU model, CPU, driver and operating
+   system). Nothing measured there is compared with, pooled with, or put in one figure with a Colab or Kaggle run,
+   and no existing T4 number is replaced by a PC number.
+4. The `runner` block of STATE.md and docs/ENV.md describe the Kaggle T4 of the M00 probe. A probe from the PC is
+   ingested as a run of its own; whether `scripts/record_env.py` is run for it is decided at that ingest.
+5. Hard rule 2 of CLAUDE.md says the GPU is remote and names Colab and Kaggle. Read with this ADR: the measurement
+   device is a runner reached through the job protocol, and no GPU metric exists outside an ingested bundle.
+Consequences: `bench/jobs/M08_ncu.json` (the ncu step alone, for ISSUE-18). `bench/run_ncu.py` and `gpu_entry.py`
+start `ncu` by the path `shutil.which` resolves, because on Windows it is a .bat file. This ADR changes no
+measured value. The Windows and WSL2 paths of the kit have not been run by the project when this is written.

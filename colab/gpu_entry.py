@@ -27,6 +27,7 @@ import hashlib
 import json
 import os
 import platform
+import shutil
 import subprocess
 import sys
 import zipfile
@@ -75,7 +76,8 @@ def _probe_env() -> dict:
     rc, out = _run(["nvcc", "--version"], timeout=60)
     env["nvcc"] = out.strip().splitlines()[-1].strip() if rc == 0 and out.strip() else "absent"
 
-    rc, out = _run(["ncu", "--version"], timeout=60)
+    # resolved path: on Windows ncu is a .bat, which a bare name does not find
+    rc, out = _run([shutil.which("ncu") or "ncu", "--version"], timeout=60)
     env["ncu"] = out.strip().splitlines()[0].strip() if rc == 0 and out.strip() else "absent"
 
     rc, out = _run([sys.executable, "-c",

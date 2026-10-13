@@ -55,6 +55,9 @@ def test_validation_catches_problems(tmp_path):
         return " ".join(runs.validate_manifest(d))
 
     assert "status" in errs(status="GREAT")
+    # ADR-025: a PC runner is named pc-<gpu>; anything else outside the fixed names is refused
+    assert "env.runner" in errs(env_runner="my-desktop") and "env.runner" in errs(env_runner="pc-")
+    assert "env.runner" not in errs(env_runner="pc-rtx3060") and "env.runner" not in errs(env_runner="pc-rtx-4070-ti")
     assert "listed output missing" in errs(outputs=["nope.csv"])
     assert "git_sha unknown" in errs(git_sha="unknown")
     assert "does not match directory" in errs(run_id="20000101-000000_M00_other")

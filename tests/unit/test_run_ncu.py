@@ -104,7 +104,8 @@ def fake_ncu(monkeypatch: pytest.MonkeyPatch, profile_output: str) -> None:
             return 0, "NVIDIA (R) Nsight Compute Command Line Profiler\nVersion fake\n"
         if "--query-metrics" in cmd:
             return 0, QUERY
-        assert cmd[:3] == ["ncu", "--csv", "--metrics"] and DIV in cmd[3]
+        # the path `which` resolved, never the bare name (a .bat on Windows)
+        assert cmd[:3] == ["/usr/bin/ncu", "--csv", "--metrics"] and DIV in cmd[3]
         return 0, profile_output
 
     monkeypatch.setattr(rn, "get_backend", fakecupy.backend)

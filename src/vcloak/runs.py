@@ -25,6 +25,8 @@ ENV_REQUIRED = ("os", "python", "backend", "runner", "session_id")
 GPU_ENV_REQUIRED = ("gpu", "cc", "cuda", "cupy")
 STATUSES = ("OK", "UNSTABLE", "NOT_MEASURED", "FAIL")
 RUNNERS = ("colab", "kaggle", "local", "unknown")
+# ADR-025: a PC with a discrete NVIDIA GPU is a runner of its own, named after its GPU; it is never "local".
+PC_RUNNER_RE = re.compile(r"^pc-[a-z0-9]+(?:-[a-z0-9]+)*$")
 _SESSION_START = _dt.datetime.now().strftime("%Y%m%d-%H%M%S")
 
 
@@ -171,8 +173,8 @@ def validate_manifest(run_dir: str | Path) -> list[str]:
     errs += [f"missing env field: {k}" for k in ENV_REQUIRED if k not in env]
     if env.get("backend") not in ("cupy", "numpy"):
         errs.append(f"env.backend {env.get('backend')!r} must be cupy or numpy")
-    if env.get("runner") not in RUNNERS:
-        errs.append(f"env.runner {env.get('runner')!r} not in {RUNNERS}")
+    if env.get("runner") not in RUNNERS and not PC_RUNNER_RE.match(str(env.get("runner"))):
+        errs.append(f"env.runner {env.get('runner')!r} not in {RUNNERS} and not pc-<gpu>")
     if env.get("backend") == "cupy":
         errs += [f"backend cupy but env.{k} missing" for k in GPU_ENV_REQUIRED if not env.get(k)]
         if "gpu_job" not in m:

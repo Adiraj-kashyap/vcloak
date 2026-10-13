@@ -164,15 +164,16 @@ def main(argv: list[str] | None = None) -> int:
     version = None
     if not backend.is_gpu:
         reason = "numpy backend: no GPU on this machine"
-    elif shutil.which("ncu") is None:
+    elif (ncu := shutil.which("ncu")) is None:
         reason = "ncu (Nsight Compute) is not installed on this runner"
     else:
-        _, version = _run(["ncu", "--version"], 120)
-        rc, query = _run(["ncu", "--query-metrics"], 600)
+        # the resolved path, not the bare name: on Windows ncu is a .bat, which CreateProcess does not look up
+        _, version = _run([ncu, "--version"], 120)
+        rc, query = _run([ncu, "--query-metrics"], 600)
         (run_dir / "ncu_query_metrics.txt").write_text(query, encoding="utf-8")
         names = branch_metric_names(query) if rc == 0 else []
         select = ["--metrics", ",".join(names)] if names else ["--section", FALLBACK_SECTION]
-        profile_cmd = ["ncu", "--csv", *select, sys.executable, str(ROOT / "bench" / "ncu_workload.py"),
+        profile_cmd = [ncu, "--csv", *select, sys.executable, str(ROOT / "bench" / "ncu_workload.py"),
                        "--log2n", str(a.log2n), "--seed", str(a.seed)]
         rc, out = _run(profile_cmd, a.timeout)
         (run_dir / "ncu_profile_raw.txt").write_text(out, encoding="utf-8")
