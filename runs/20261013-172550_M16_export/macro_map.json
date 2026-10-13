@@ -26,7 +26,7 @@
  },
  "entries": [
   {
-   "file": "macros.tex",
+   "target": "macros.tex",
    "name": "\\resMsgs",
    "value": "24733",
    "kind": "metric",
@@ -39,25 +39,27 @@
    "runner": "colab"
   },
   {
-   "file": "s1_traffic.json",
+   "target": "macros.tex",
    "name": "\\resConvs",
    "value": "200",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261013-054644_M14_security_s1",
+   "file": "s1_traffic.json",
    "path": "params.n_conv"
   },
   {
-   "file": "s1_traffic.json",
+   "target": "macros.tex",
    "name": "\\resDuration",
    "value": "900",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261013-054644_M14_security_s1",
+   "file": "s1_traffic.json",
    "path": "params.duration_s"
   },
   {
-   "file": "macros.tex",
+   "target": "macros.tex",
    "name": "\\resMeanPerEpoch",
    "value": "5.50",
    "kind": "derived",
@@ -86,7 +88,7 @@
    ]
   },
   {
-   "file": "macros.tex",
+   "target": "macros.tex",
    "name": "\\resTauConvGlobal",
    "value": "1.000",
    "kind": "metric",
@@ -99,7 +101,7 @@
    "runner": "colab"
   },
   {
-   "file": "macros.tex",
+   "target": "macros.tex",
    "name": "\\resTauConvWithin",
    "value": "1.000",
    "kind": "metric",
@@ -112,7 +114,7 @@
    "runner": "colab"
   },
   {
-   "file": "macros.tex",
+   "target": "macros.tex",
    "name": "\\resTauEpochGlobal",
    "value": "1.000",
    "kind": "metric",
@@ -125,7 +127,7 @@
    "runner": "colab"
   },
   {
-   "file": "macros.tex",
+   "target": "macros.tex",
    "name": "\\resTauEpochWithin",
    "value": "0.000",
    "kind": "metric",
@@ -138,7 +140,7 @@
    "runner": "colab"
   },
   {
-   "file": "macros.tex",
+   "target": "macros.tex",
    "name": "\\resRestoreOK",
    "value": "60",
    "kind": "metric",
@@ -151,16 +153,17 @@
    "runner": "colab"
   },
   {
-   "file": "e0_restoration.json",
+   "target": "macros.tex",
    "name": "\\resRestoreN",
    "value": "60",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261013-054727_M14_security_e0e1",
+   "file": "e0_restoration.json",
    "path": "conversations_checked"
   },
   {
-   "file": "macros.tex",
+   "target": "macros.tex",
    "name": "\\resChiSq",
    "value": "3854.6",
    "kind": "metric",
@@ -173,16 +176,17 @@
    "runner": "colab"
   },
   {
-   "file": "e2_uniformity.json",
+   "target": "macros.tex",
    "name": "\\resChiDof",
    "value": "3969",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
+   "file": "e2_uniformity.json",
    "path": "chi2.dof"
   },
   {
-   "file": "macros.tex",
+   "target": "macros.tex",
    "name": "\\resChiP",
    "value": "0.901",
    "kind": "metric",
@@ -195,25 +199,27 @@
    "runner": "colab"
   },
   {
-   "file": "e2_uniformity.json",
+   "target": "macros.tex",
    "name": "\\resTVD",
    "value": "0.0219",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
+   "file": "e2_uniformity.json",
    "path": "chi2.mean_tvd"
   },
   {
-   "file": "e2_uniformity.json",
+   "target": "macros.tex",
    "name": "\\resChiIdeal",
    "value": "3826.2",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
+   "file": "e2_uniformity.json",
    "path": "chi2.ideal_sampler.chi2_first"
   },
   {
-   "file": "macros.tex",
+   "target": "macros.tex",
    "name": "\\resChiPIdeal",
    "value": "0.947",
    "kind": "metric",
@@ -226,70 +232,77 @@
    "runner": "colab"
   },
   {
-   "file": "e2_uniformity.json",
+   "target": "macros.tex",
    "name": "\\resTVDIdeal",
    "value": "0.0220",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
+   "file": "e2_uniformity.json",
    "path": "chi2.ideal_sampler.mean_tvd_first"
   },
   {
-   "file": "e2_uniformity.json",
+   "target": "macros.tex",
    "name": "\\resUnifEpochs",
    "value": "20000",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
+   "file": "e2_uniformity.json",
    "path": "params.reps"
   },
   {
-   "file": "e2_uniformity.json",
+   "target": "macros.tex",
    "name": "\\resTauN",
    "value": "65536",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
+   "file": "e2_uniformity.json",
    "path": "params.n_tau"
   },
   {
-   "file": "e2_uniformity.json",
+   "target": "macros.tex",
    "name": "\\resTauEpochs",
    "value": "1000",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
+   "file": "e2_uniformity.json",
    "path": "params.epochs_tau"
   },
   {
-   "file": "e2_uniformity.json",
+   "target": "macros.tex",
    "name": "\\resTauSigma",
    "value": "0.00260",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
+   "file": "e2_uniformity.json",
    "path": "tau_band.sigma_theory"
   },
   {
-   "file": "e2_uniformity.json",
+   "target": "macros.tex",
    "name": "\\resTauBand",
    "value": "0.0078",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
+   "file": "e2_uniformity.json",
    "path": "tau_band.band_3sigma"
   },
   {
-   "file": "e2_uniformity.json",
+   "target": "macros.tex",
    "name": "\\resTauMean",
    "value": "-2.91e-05",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
+   "file": "e2_uniformity.json",
    "path": "tau_band.mean_tau"
   },
   {
-   "file": "macros.tex",
+   "target": "macros.tex",
    "name": "\\resTauStd",
    "value": "0.00265",
    "kind": "metric",
@@ -302,16 +315,17 @@
    "runner": "colab"
   },
   {
-   "file": "e2_uniformity.json",
+   "target": "macros.tex",
    "name": "\\resTauMaxAbs",
    "value": "0.0099",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
+   "file": "e2_uniformity.json",
    "path": "tau_band.max_abs_tau"
   },
   {
-   "file": "macros.tex",
+   "target": "macros.tex",
    "name": "\\resTauInBand",
    "value": "99.7",
    "kind": "metric",
@@ -324,7 +338,7 @@
    "runner": "colab"
   },
   {
-   "file": "macros.tex",
+   "target": "macros.tex",
    "name": "\\resAESus",
    "value": "\\pending",
    "kind": "pending",
@@ -332,7 +346,7 @@
    "reason": "ADR-003: the server profile is ChaCha20/Poly1305; no AES time exists in this build"
   },
   {
-   "file": "macros.tex",
+   "target": "macros.tex",
    "name": "\\resCandK",
    "value": "128",
    "kind": "metric",
@@ -345,7 +359,7 @@
    "runner": "colab"
   },
   {
-   "file": "macros.tex",
+   "target": "macros.tex",
    "name": "\\resMaxOcc",
    "value": "91",
    "kind": "metric",
@@ -358,7 +372,7 @@
    "runner": "colab"
   },
   {
-   "file": "macros.tex",
+   "target": "macros.tex",
    "name": "\\resMeanOcc",
    "value": "26.8",
    "kind": "metric",
@@ -371,16 +385,17 @@
    "runner": "colab"
   },
   {
-   "file": "e1_attack.json",
+   "target": "macros.tex",
    "name": "\\resBuckets",
    "value": "64",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261013-054727_M14_security_e0e1",
+   "file": "e1_attack.json",
    "path": "params.buckets"
   },
   {
-   "file": "macros.tex",
+   "target": "macros.tex",
    "name": "\\resBitonicTraces",
    "value": "1",
    "kind": "metric",
@@ -393,7 +408,7 @@
    "runner": "colab"
   },
   {
-   "file": "macros.tex",
+   "target": "macros.tex",
    "name": "\\resMergeTraces",
    "value": "4",
    "kind": "metric",
@@ -406,7 +421,7 @@
    "runner": "colab"
   },
   {
-   "file": "macros.tex",
+   "target": "macros.tex",
    "name": "\\resTurnConv",
    "value": "100.0",
    "kind": "metric",
@@ -419,7 +434,7 @@
    "runner": "colab"
   },
   {
-   "file": "macros.tex",
+   "target": "macros.tex",
    "name": "\\resSameConv",
    "value": "88.9",
    "kind": "metric",
@@ -432,7 +447,7 @@
    "runner": "colab"
   },
   {
-   "file": "macros.tex",
+   "target": "macros.tex",
    "name": "\\resTauGConv",
    "value": "1.000",
    "kind": "metric",
@@ -445,7 +460,7 @@
    "runner": "colab"
   },
   {
-   "file": "macros.tex",
+   "target": "macros.tex",
    "name": "\\resTurnEpoch",
    "value": "98.2",
    "kind": "metric",
@@ -458,7 +473,7 @@
    "runner": "colab"
   },
   {
-   "file": "macros.tex",
+   "target": "macros.tex",
    "name": "\\resSameEpoch",
    "value": "3.6",
    "kind": "metric",
@@ -471,7 +486,7 @@
    "runner": "colab"
   },
   {
-   "file": "macros.tex",
+   "target": "macros.tex",
    "name": "\\resTauGEpoch",
    "value": "1.000",
    "kind": "metric",
@@ -484,7 +499,7 @@
    "runner": "colab"
   },
   {
-   "file": "macros.tex",
+   "target": "macros.tex",
    "name": "\\resTurnWTen",
    "value": "68.7",
    "kind": "metric",
@@ -497,7 +512,7 @@
    "runner": "colab"
   },
   {
-   "file": "macros.tex",
+   "target": "macros.tex",
    "name": "\\resSameWTen",
    "value": "62.9",
    "kind": "metric",
@@ -510,7 +525,7 @@
    "runner": "colab"
   },
   {
-   "file": "macros.tex",
+   "target": "macros.tex",
    "name": "\\resTauGWTen",
    "value": "0.989",
    "kind": "metric",
@@ -523,7 +538,7 @@
    "runner": "colab"
   },
   {
-   "file": "macros.tex",
+   "target": "macros.tex",
    "name": "\\resTurnWSixty",
    "value": "55.6",
    "kind": "metric",
@@ -536,7 +551,7 @@
    "runner": "colab"
   },
   {
-   "file": "macros.tex",
+   "target": "macros.tex",
    "name": "\\resSameWSixty",
    "value": "88.9",
    "kind": "metric",
@@ -549,7 +564,7 @@
    "runner": "colab"
   },
   {
-   "file": "macros.tex",
+   "target": "macros.tex",
    "name": "\\resTauGWSixty",
    "value": "0.933",
    "kind": "metric",
@@ -562,7 +577,7 @@
    "runner": "colab"
   },
   {
-   "file": "macros.tex",
+   "target": "macros.tex",
    "name": "\\resTurnWThreeHundred",
    "value": "50.7",
    "kind": "metric",
@@ -575,7 +590,7 @@
    "runner": "colab"
   },
   {
-   "file": "macros.tex",
+   "target": "macros.tex",
    "name": "\\resSameWThreeHundred",
    "value": "98.4",
    "kind": "metric",
@@ -588,7 +603,7 @@
    "runner": "colab"
   },
   {
-   "file": "macros.tex",
+   "target": "macros.tex",
    "name": "\\resTauGWThreeHundred",
    "value": "0.666",
    "kind": "metric",
@@ -601,7 +616,7 @@
    "runner": "colab"
   },
   {
-   "file": "attack_table.tex",
+   "target": "attack_table.tex",
    "name": "\\attackrows row 1 col 2",
    "value": "1.000",
    "kind": "metric",
@@ -614,7 +629,7 @@
    "runner": "colab"
   },
   {
-   "file": "attack_table.tex",
+   "target": "attack_table.tex",
    "name": "\\attackrows row 1 col 3",
    "value": "1.000",
    "kind": "metric",
@@ -627,7 +642,7 @@
    "runner": "colab"
   },
   {
-   "file": "attack_table.tex",
+   "target": "attack_table.tex",
    "name": "\\attackrows row 1 col 4",
    "value": "100.0",
    "kind": "metric",
@@ -640,7 +655,7 @@
    "runner": "colab"
   },
   {
-   "file": "attack_table.tex",
+   "target": "attack_table.tex",
    "name": "\\attackrows row 1 col 5",
    "value": "88.9",
    "kind": "metric",
@@ -653,7 +668,7 @@
    "runner": "colab"
   },
   {
-   "file": "attack_table.tex",
+   "target": "attack_table.tex",
    "name": "\\attackrows row 2 col 2",
    "value": "1.000",
    "kind": "metric",
@@ -666,7 +681,7 @@
    "runner": "colab"
   },
   {
-   "file": "attack_table.tex",
+   "target": "attack_table.tex",
    "name": "\\attackrows row 2 col 3",
    "value": "0.000",
    "kind": "metric",
@@ -679,7 +694,7 @@
    "runner": "colab"
   },
   {
-   "file": "attack_table.tex",
+   "target": "attack_table.tex",
    "name": "\\attackrows row 2 col 4",
    "value": "98.2",
    "kind": "metric",
@@ -692,7 +707,7 @@
    "runner": "colab"
   },
   {
-   "file": "attack_table.tex",
+   "target": "attack_table.tex",
    "name": "\\attackrows row 2 col 5",
    "value": "3.6",
    "kind": "metric",
@@ -705,7 +720,7 @@
    "runner": "colab"
   },
   {
-   "file": "attack_table.tex",
+   "target": "attack_table.tex",
    "name": "\\attackrows row 3 col 2",
    "value": "0.999",
    "kind": "metric",
@@ -718,7 +733,7 @@
    "runner": "colab"
   },
   {
-   "file": "attack_table.tex",
+   "target": "attack_table.tex",
    "name": "\\attackrows row 3 col 3",
    "value": "0.001",
    "kind": "metric",
@@ -731,7 +746,7 @@
    "runner": "colab"
   },
   {
-   "file": "attack_table.tex",
+   "target": "attack_table.tex",
    "name": "\\attackrows row 3 col 4",
    "value": "92.0",
    "kind": "metric",
@@ -744,7 +759,7 @@
    "runner": "colab"
   },
   {
-   "file": "attack_table.tex",
+   "target": "attack_table.tex",
    "name": "\\attackrows row 3 col 5",
    "value": "15.9",
    "kind": "metric",
@@ -757,7 +772,7 @@
    "runner": "colab"
   },
   {
-   "file": "attack_table.tex",
+   "target": "attack_table.tex",
    "name": "\\attackrows row 4 col 2",
    "value": "0.989",
    "kind": "metric",
@@ -770,7 +785,7 @@
    "runner": "colab"
   },
   {
-   "file": "attack_table.tex",
+   "target": "attack_table.tex",
    "name": "\\attackrows row 4 col 3",
    "value": "0.000",
    "kind": "metric",
@@ -783,7 +798,7 @@
    "runner": "colab"
   },
   {
-   "file": "attack_table.tex",
+   "target": "attack_table.tex",
    "name": "\\attackrows row 4 col 4",
    "value": "68.7",
    "kind": "metric",
@@ -796,7 +811,7 @@
    "runner": "colab"
   },
   {
-   "file": "attack_table.tex",
+   "target": "attack_table.tex",
    "name": "\\attackrows row 4 col 5",
    "value": "62.9",
    "kind": "metric",
@@ -809,7 +824,7 @@
    "runner": "colab"
   },
   {
-   "file": "attack_table.tex",
+   "target": "attack_table.tex",
    "name": "\\attackrows row 5 col 2",
    "value": "0.933",
    "kind": "metric",
@@ -822,7 +837,7 @@
    "runner": "colab"
   },
   {
-   "file": "attack_table.tex",
+   "target": "attack_table.tex",
    "name": "\\attackrows row 5 col 3",
    "value": "-0.006",
    "kind": "metric",
@@ -835,7 +850,7 @@
    "runner": "colab"
   },
   {
-   "file": "attack_table.tex",
+   "target": "attack_table.tex",
    "name": "\\attackrows row 5 col 4",
    "value": "55.6",
    "kind": "metric",
@@ -848,7 +863,7 @@
    "runner": "colab"
   },
   {
-   "file": "attack_table.tex",
+   "target": "attack_table.tex",
    "name": "\\attackrows row 5 col 5",
    "value": "88.9",
    "kind": "metric",
@@ -861,7 +876,7 @@
    "runner": "colab"
   },
   {
-   "file": "attack_table.tex",
+   "target": "attack_table.tex",
    "name": "\\attackrows row 6 col 2",
    "value": "0.666",
    "kind": "metric",
@@ -874,7 +889,7 @@
    "runner": "colab"
   },
   {
-   "file": "attack_table.tex",
+   "target": "attack_table.tex",
    "name": "\\attackrows row 6 col 3",
    "value": "-0.001",
    "kind": "metric",
@@ -887,7 +902,7 @@
    "runner": "colab"
   },
   {
-   "file": "attack_table.tex",
+   "target": "attack_table.tex",
    "name": "\\attackrows row 6 col 4",
    "value": "50.7",
    "kind": "metric",
@@ -900,7 +915,7 @@
    "runner": "colab"
   },
   {
-   "file": "attack_table.tex",
+   "target": "attack_table.tex",
    "name": "\\attackrows row 6 col 5",
    "value": "98.4",
    "kind": "metric",
@@ -913,142 +928,157 @@
    "runner": "colab"
   },
   {
-   "file": "e3_trace.json",
+   "target": "trace_table.tex",
    "name": "\\tracerows row 1 col 1",
    "value": "all-identical",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261013-055444_M14_security_e3",
+   "file": "e3_trace.json",
    "path": "sort.rows.0.input"
   },
   {
-   "file": "e3_trace.json",
+   "target": "trace_table.tex",
    "name": "\\tracerows row 1 col 2",
    "value": "\\texttt{288a7ca25ae483083cbe1c0206839468}",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261013-055444_M14_security_e3",
+   "file": "e3_trace.json",
    "path": "sort.rows.0.device_trace_sha256"
   },
   {
-   "file": "e3_trace.json",
+   "target": "trace_table.tex",
    "name": "\\tracerows row 1 col 3",
    "value": "\\texttt{4d1ec758a044ae46df71d3b35051ab81}",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261013-055444_M14_security_e3",
+   "file": "e3_trace.json",
    "path": "sort.rows.0.merge_sort_trace_sha256"
   },
   {
-   "file": "e3_trace.json",
+   "target": "trace_table.tex",
    "name": "\\tracerows row 2 col 1",
    "value": "sorted",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261013-055444_M14_security_e3",
+   "file": "e3_trace.json",
    "path": "sort.rows.1.input"
   },
   {
-   "file": "e3_trace.json",
+   "target": "trace_table.tex",
    "name": "\\tracerows row 2 col 2",
    "value": "\\texttt{288a7ca25ae483083cbe1c0206839468}",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261013-055444_M14_security_e3",
+   "file": "e3_trace.json",
    "path": "sort.rows.1.device_trace_sha256"
   },
   {
-   "file": "e3_trace.json",
+   "target": "trace_table.tex",
    "name": "\\tracerows row 2 col 3",
    "value": "\\texttt{4d1ec758a044ae46df71d3b35051ab81}",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261013-055444_M14_security_e3",
+   "file": "e3_trace.json",
    "path": "sort.rows.1.merge_sort_trace_sha256"
   },
   {
-   "file": "e3_trace.json",
+   "target": "trace_table.tex",
    "name": "\\tracerows row 3 col 1",
    "value": "reverse-sorted",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261013-055444_M14_security_e3",
+   "file": "e3_trace.json",
    "path": "sort.rows.2.input"
   },
   {
-   "file": "e3_trace.json",
+   "target": "trace_table.tex",
    "name": "\\tracerows row 3 col 2",
    "value": "\\texttt{288a7ca25ae483083cbe1c0206839468}",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261013-055444_M14_security_e3",
+   "file": "e3_trace.json",
    "path": "sort.rows.2.device_trace_sha256"
   },
   {
-   "file": "e3_trace.json",
+   "target": "trace_table.tex",
    "name": "\\tracerows row 3 col 3",
    "value": "\\texttt{f585912b23121ea03e327021fdad1c1a}",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261013-055444_M14_security_e3",
+   "file": "e3_trace.json",
    "path": "sort.rows.2.merge_sort_trace_sha256"
   },
   {
-   "file": "e3_trace.json",
+   "target": "trace_table.tex",
    "name": "\\tracerows row 4 col 1",
    "value": "random",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261013-055444_M14_security_e3",
+   "file": "e3_trace.json",
    "path": "sort.rows.3.input"
   },
   {
-   "file": "e3_trace.json",
+   "target": "trace_table.tex",
    "name": "\\tracerows row 4 col 2",
    "value": "\\texttt{288a7ca25ae483083cbe1c0206839468}",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261013-055444_M14_security_e3",
+   "file": "e3_trace.json",
    "path": "sort.rows.3.device_trace_sha256"
   },
   {
-   "file": "e3_trace.json",
+   "target": "trace_table.tex",
    "name": "\\tracerows row 4 col 3",
    "value": "\\texttt{51e9869abbc21c9596b3004282e0191a}",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261013-055444_M14_security_e3",
+   "file": "e3_trace.json",
    "path": "sort.rows.3.merge_sort_trace_sha256"
   },
   {
-   "file": "e3_trace.json",
+   "target": "trace_table.tex",
    "name": "\\tracerows row 5 col 1",
    "value": "two-value skew",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261013-055444_M14_security_e3",
+   "file": "e3_trace.json",
    "path": "sort.rows.4.input"
   },
   {
-   "file": "e3_trace.json",
+   "target": "trace_table.tex",
    "name": "\\tracerows row 5 col 2",
    "value": "\\texttt{288a7ca25ae483083cbe1c0206839468}",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261013-055444_M14_security_e3",
+   "file": "e3_trace.json",
    "path": "sort.rows.4.device_trace_sha256"
   },
   {
-   "file": "e3_trace.json",
+   "target": "trace_table.tex",
    "name": "\\tracerows row 5 col 3",
    "value": "\\texttt{dfcde07f57bd429c5ea38dc26194124c}",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261013-055444_M14_security_e3",
+   "file": "e3_trace.json",
    "path": "sort.rows.4.merge_sort_trace_sha256"
   },
   {
-   "file": "throughput.dat",
+   "target": "throughput.dat",
    "name": "log2n 10 ms",
    "value": "4.958",
    "kind": "metric",
@@ -1061,7 +1091,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "throughput.dat",
+   "target": "throughput.dat",
    "name": "log2n 10 kps",
    "value": "206.5",
    "kind": "derived",
@@ -1083,7 +1113,7 @@
    ]
   },
   {
-   "file": "throughput.dat",
+   "target": "throughput.dat",
    "name": "log2n 11 ms",
    "value": "7.820",
    "kind": "metric",
@@ -1096,7 +1126,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "throughput.dat",
+   "target": "throughput.dat",
    "name": "log2n 11 kps",
    "value": "261.9",
    "kind": "derived",
@@ -1118,7 +1148,7 @@
    ]
   },
   {
-   "file": "throughput.dat",
+   "target": "throughput.dat",
    "name": "log2n 12 ms",
    "value": "15.61",
    "kind": "metric",
@@ -1131,7 +1161,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "throughput.dat",
+   "target": "throughput.dat",
    "name": "log2n 12 kps",
    "value": "262.5",
    "kind": "derived",
@@ -1153,7 +1183,7 @@
    ]
   },
   {
-   "file": "throughput.dat",
+   "target": "throughput.dat",
    "name": "log2n 13 ms",
    "value": "30.46",
    "kind": "metric",
@@ -1166,7 +1196,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "throughput.dat",
+   "target": "throughput.dat",
    "name": "log2n 13 kps",
    "value": "268.9",
    "kind": "derived",
@@ -1188,7 +1218,7 @@
    ]
   },
   {
-   "file": "throughput.dat",
+   "target": "throughput.dat",
    "name": "log2n 14 ms",
    "value": "65.00",
    "kind": "metric",
@@ -1201,7 +1231,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "throughput.dat",
+   "target": "throughput.dat",
    "name": "log2n 14 kps",
    "value": "252.1",
    "kind": "derived",
@@ -1223,7 +1253,7 @@
    ]
   },
   {
-   "file": "throughput.dat",
+   "target": "throughput.dat",
    "name": "log2n 15 ms",
    "value": "141.6",
    "kind": "metric",
@@ -1236,7 +1266,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "throughput.dat",
+   "target": "throughput.dat",
    "name": "log2n 15 kps",
    "value": "231.5",
    "kind": "derived",
@@ -1258,7 +1288,7 @@
    ]
   },
   {
-   "file": "throughput.dat",
+   "target": "throughput.dat",
    "name": "log2n 16 ms",
    "value": "327.8",
    "kind": "metric",
@@ -1271,7 +1301,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "throughput.dat",
+   "target": "throughput.dat",
    "name": "log2n 16 kps",
    "value": "199.9",
    "kind": "derived",
@@ -1293,7 +1323,7 @@
    ]
   },
   {
-   "file": "throughput.dat",
+   "target": "throughput.dat",
    "name": "log2n 17 ms",
    "value": "755.2",
    "kind": "metric",
@@ -1306,7 +1336,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "throughput.dat",
+   "target": "throughput.dat",
    "name": "log2n 17 kps",
    "value": "173.6",
    "kind": "derived",
@@ -1328,7 +1358,7 @@
    ]
   },
   {
-   "file": "throughput.dat",
+   "target": "throughput.dat",
    "name": "log2n 18 ms",
    "value": "1834",
    "kind": "metric",
@@ -1341,7 +1371,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "throughput.dat",
+   "target": "throughput.dat",
    "name": "log2n 18 kps",
    "value": "142.9",
    "kind": "derived",
@@ -1363,7 +1393,7 @@
    ]
   },
   {
-   "file": "throughput.dat",
+   "target": "throughput.dat",
    "name": "log2n 19 ms",
    "value": "4176",
    "kind": "metric",
@@ -1376,7 +1406,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "throughput.dat",
+   "target": "throughput.dat",
    "name": "log2n 19 kps",
    "value": "125.5",
    "kind": "derived",
@@ -1398,7 +1428,7 @@
    ]
   },
   {
-   "file": "throughput.dat",
+   "target": "throughput.dat",
    "name": "log2n 20 ms",
    "value": "10197",
    "kind": "metric",
@@ -1411,7 +1441,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "throughput.dat",
+   "target": "throughput.dat",
    "name": "log2n 20 kps",
    "value": "102.8",
    "kind": "derived",
@@ -1433,7 +1463,7 @@
    ]
   },
   {
-   "file": "throughput.dat",
+   "target": "throughput.dat",
    "name": "log2n 21 ms",
    "value": "23880",
    "kind": "metric",
@@ -1446,7 +1476,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "throughput.dat",
+   "target": "throughput.dat",
    "name": "log2n 21 kps",
    "value": "87.8",
    "kind": "derived",
@@ -1468,7 +1498,7 @@
    ]
   },
   {
-   "file": "throughput.dat",
+   "target": "throughput.dat",
    "name": "log2n 22 ms",
    "value": "56583",
    "kind": "metric",
@@ -1481,7 +1511,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "throughput.dat",
+   "target": "throughput.dat",
    "name": "log2n 22 kps",
    "value": "74.1",
    "kind": "derived",
@@ -1503,7 +1533,7 @@
    ]
   },
   {
-   "file": "throughput_table.tex",
+   "target": "throughput_table.tex",
    "name": "\\throughputrows row 1 col 3",
    "value": "4.958",
    "kind": "metric",
@@ -1516,7 +1546,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "throughput_table.tex",
+   "target": "throughput_table.tex",
    "name": "\\throughputrows row 1 col 4",
    "value": "206.5",
    "kind": "derived",
@@ -1538,7 +1568,7 @@
    ]
   },
   {
-   "file": "throughput_table.tex",
+   "target": "throughput_table.tex",
    "name": "\\throughputrows row 1 col 5",
    "value": "\\unstable",
    "kind": "pending",
@@ -1549,7 +1579,7 @@
    "reason": "UNSTABLE"
   },
   {
-   "file": "throughput_table.tex",
+   "target": "throughput_table.tex",
    "name": "\\throughputrows row 2 col 3",
    "value": "7.820",
    "kind": "metric",
@@ -1562,7 +1592,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "throughput_table.tex",
+   "target": "throughput_table.tex",
    "name": "\\throughputrows row 2 col 4",
    "value": "261.9",
    "kind": "derived",
@@ -1584,7 +1614,7 @@
    ]
   },
   {
-   "file": "throughput_table.tex",
+   "target": "throughput_table.tex",
    "name": "\\throughputrows row 2 col 5",
    "value": "\\unstable",
    "kind": "pending",
@@ -1595,7 +1625,7 @@
    "reason": "UNSTABLE"
   },
   {
-   "file": "throughput_table.tex",
+   "target": "throughput_table.tex",
    "name": "\\throughputrows row 3 col 3",
    "value": "15.61",
    "kind": "metric",
@@ -1608,7 +1638,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "throughput_table.tex",
+   "target": "throughput_table.tex",
    "name": "\\throughputrows row 3 col 4",
    "value": "262.5",
    "kind": "derived",
@@ -1630,7 +1660,7 @@
    ]
   },
   {
-   "file": "throughput_table.tex",
+   "target": "throughput_table.tex",
    "name": "\\throughputrows row 3 col 5",
    "value": "0.215",
    "kind": "metric",
@@ -1643,7 +1673,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "throughput_table.tex",
+   "target": "throughput_table.tex",
    "name": "\\throughputrows row 4 col 3",
    "value": "30.46",
    "kind": "metric",
@@ -1656,7 +1686,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "throughput_table.tex",
+   "target": "throughput_table.tex",
    "name": "\\throughputrows row 4 col 4",
    "value": "268.9",
    "kind": "derived",
@@ -1678,7 +1708,7 @@
    ]
   },
   {
-   "file": "throughput_table.tex",
+   "target": "throughput_table.tex",
    "name": "\\throughputrows row 4 col 5",
    "value": "0.292",
    "kind": "metric",
@@ -1691,7 +1721,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "throughput_table.tex",
+   "target": "throughput_table.tex",
    "name": "\\throughputrows row 5 col 3",
    "value": "65.00",
    "kind": "metric",
@@ -1704,7 +1734,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "throughput_table.tex",
+   "target": "throughput_table.tex",
    "name": "\\throughputrows row 5 col 4",
    "value": "252.1",
    "kind": "derived",
@@ -1726,7 +1756,7 @@
    ]
   },
   {
-   "file": "throughput_table.tex",
+   "target": "throughput_table.tex",
    "name": "\\throughputrows row 5 col 5",
    "value": "0.374",
    "kind": "metric",
@@ -1739,7 +1769,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "throughput_table.tex",
+   "target": "throughput_table.tex",
    "name": "\\throughputrows row 6 col 3",
    "value": "141.6",
    "kind": "metric",
@@ -1752,7 +1782,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "throughput_table.tex",
+   "target": "throughput_table.tex",
    "name": "\\throughputrows row 6 col 4",
    "value": "231.5",
    "kind": "derived",
@@ -1774,7 +1804,7 @@
    ]
   },
   {
-   "file": "throughput_table.tex",
+   "target": "throughput_table.tex",
    "name": "\\throughputrows row 6 col 5",
    "value": "0.498",
    "kind": "metric",
@@ -1787,7 +1817,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "throughput_table.tex",
+   "target": "throughput_table.tex",
    "name": "\\throughputrows row 7 col 3",
    "value": "327.8",
    "kind": "metric",
@@ -1800,7 +1830,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "throughput_table.tex",
+   "target": "throughput_table.tex",
    "name": "\\throughputrows row 7 col 4",
    "value": "199.9",
    "kind": "derived",
@@ -1822,7 +1852,7 @@
    ]
   },
   {
-   "file": "throughput_table.tex",
+   "target": "throughput_table.tex",
    "name": "\\throughputrows row 7 col 5",
    "value": "0.704",
    "kind": "metric",
@@ -1835,7 +1865,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "throughput_table.tex",
+   "target": "throughput_table.tex",
    "name": "\\throughputrows row 8 col 3",
    "value": "755.2",
    "kind": "metric",
@@ -1848,7 +1878,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "throughput_table.tex",
+   "target": "throughput_table.tex",
    "name": "\\throughputrows row 8 col 4",
    "value": "173.6",
    "kind": "derived",
@@ -1870,7 +1900,7 @@
    ]
   },
   {
-   "file": "throughput_table.tex",
+   "target": "throughput_table.tex",
    "name": "\\throughputrows row 8 col 5",
    "value": "1.214",
    "kind": "metric",
@@ -1883,7 +1913,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "throughput_table.tex",
+   "target": "throughput_table.tex",
    "name": "\\throughputrows row 9 col 3",
    "value": "1834",
    "kind": "metric",
@@ -1896,7 +1926,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "throughput_table.tex",
+   "target": "throughput_table.tex",
    "name": "\\throughputrows row 9 col 4",
    "value": "142.9",
    "kind": "derived",
@@ -1918,7 +1948,7 @@
    ]
   },
   {
-   "file": "throughput_table.tex",
+   "target": "throughput_table.tex",
    "name": "\\throughputrows row 9 col 5",
    "value": "4.550",
    "kind": "metric",
@@ -1931,7 +1961,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "throughput_table.tex",
+   "target": "throughput_table.tex",
    "name": "\\throughputrows row 10 col 3",
    "value": "4176",
    "kind": "metric",
@@ -1944,7 +1974,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "throughput_table.tex",
+   "target": "throughput_table.tex",
    "name": "\\throughputrows row 10 col 4",
    "value": "125.5",
    "kind": "derived",
@@ -1966,7 +1996,7 @@
    ]
   },
   {
-   "file": "throughput_table.tex",
+   "target": "throughput_table.tex",
    "name": "\\throughputrows row 10 col 5",
    "value": "10.10",
    "kind": "metric",
@@ -1979,7 +2009,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "throughput_table.tex",
+   "target": "throughput_table.tex",
    "name": "\\throughputrows row 11 col 3",
    "value": "10197",
    "kind": "metric",
@@ -1992,7 +2022,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "throughput_table.tex",
+   "target": "throughput_table.tex",
    "name": "\\throughputrows row 11 col 4",
    "value": "102.8",
    "kind": "derived",
@@ -2014,7 +2044,7 @@
    ]
   },
   {
-   "file": "throughput_table.tex",
+   "target": "throughput_table.tex",
    "name": "\\throughputrows row 11 col 5",
    "value": "22.78",
    "kind": "metric",
@@ -2027,7 +2057,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "throughput_table.tex",
+   "target": "throughput_table.tex",
    "name": "\\throughputrows row 12 col 3",
    "value": "23880",
    "kind": "metric",
@@ -2040,7 +2070,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "throughput_table.tex",
+   "target": "throughput_table.tex",
    "name": "\\throughputrows row 12 col 4",
    "value": "87.8",
    "kind": "derived",
@@ -2062,7 +2092,7 @@
    ]
   },
   {
-   "file": "throughput_table.tex",
+   "target": "throughput_table.tex",
    "name": "\\throughputrows row 12 col 5",
    "value": "51.90",
    "kind": "metric",
@@ -2075,7 +2105,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "throughput_table.tex",
+   "target": "throughput_table.tex",
    "name": "\\throughputrows row 13 col 3",
    "value": "56583",
    "kind": "metric",
@@ -2088,7 +2118,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "throughput_table.tex",
+   "target": "throughput_table.tex",
    "name": "\\throughputrows row 13 col 4",
    "value": "74.1",
    "kind": "derived",
@@ -2110,7 +2140,7 @@
    ]
   },
   {
-   "file": "throughput_table.tex",
+   "target": "throughput_table.tex",
    "name": "\\throughputrows row 13 col 5",
    "value": "\\unstable",
    "kind": "pending",
@@ -2121,7 +2151,7 @@
    "reason": "UNSTABLE"
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 1 col 2",
    "value": "\\unstable",
    "kind": "pending",
@@ -2132,7 +2162,7 @@
    "reason": "UNSTABLE"
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 1 col 3",
    "value": "\\unstable",
    "kind": "pending",
@@ -2143,7 +2173,7 @@
    "reason": "UNSTABLE"
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 1 col 4",
    "value": "1.105",
    "kind": "metric",
@@ -2156,7 +2186,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 1 col 5",
    "value": "\\unstable",
    "kind": "pending",
@@ -2188,7 +2218,7 @@
    "reason": "UNSTABLE"
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 2 col 2",
    "value": "0.086",
    "kind": "metric",
@@ -2201,7 +2231,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 2 col 3",
    "value": "\\unstable",
    "kind": "pending",
@@ -2212,7 +2242,7 @@
    "reason": "UNSTABLE"
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 2 col 4",
    "value": "1.591",
    "kind": "metric",
@@ -2225,7 +2255,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 2 col 5",
    "value": "\\unstable",
    "kind": "pending",
@@ -2257,7 +2287,7 @@
    "reason": "UNSTABLE"
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 3 col 2",
    "value": "\\unstable",
    "kind": "pending",
@@ -2268,7 +2298,7 @@
    "reason": "UNSTABLE"
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 3 col 3",
    "value": "0.215",
    "kind": "metric",
@@ -2281,7 +2311,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 3 col 4",
    "value": "2.380",
    "kind": "metric",
@@ -2294,7 +2324,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 3 col 5",
    "value": "11.0",
    "kind": "derived",
@@ -2327,7 +2357,7 @@
    ]
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 4 col 2",
    "value": "0.195",
    "kind": "metric",
@@ -2340,7 +2370,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 4 col 3",
    "value": "0.292",
    "kind": "metric",
@@ -2353,7 +2383,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 4 col 4",
    "value": "3.755",
    "kind": "metric",
@@ -2366,7 +2396,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 4 col 5",
    "value": "12.9",
    "kind": "derived",
@@ -2399,7 +2429,7 @@
    ]
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 5 col 2",
    "value": "0.257",
    "kind": "metric",
@@ -2412,7 +2442,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 5 col 3",
    "value": "0.374",
    "kind": "metric",
@@ -2425,7 +2455,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 5 col 4",
    "value": "6.392",
    "kind": "metric",
@@ -2438,7 +2468,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 5 col 5",
    "value": "17.1",
    "kind": "derived",
@@ -2471,7 +2501,7 @@
    ]
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 6 col 2",
    "value": "0.345",
    "kind": "metric",
@@ -2484,7 +2514,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 6 col 3",
    "value": "0.498",
    "kind": "metric",
@@ -2497,7 +2527,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 6 col 4",
    "value": "14.11",
    "kind": "metric",
@@ -2510,7 +2540,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 6 col 5",
    "value": "28.3",
    "kind": "derived",
@@ -2543,7 +2573,7 @@
    ]
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 7 col 2",
    "value": "0.441",
    "kind": "metric",
@@ -2556,7 +2586,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 7 col 3",
    "value": "0.704",
    "kind": "metric",
@@ -2569,7 +2599,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 7 col 4",
    "value": "24.35",
    "kind": "metric",
@@ -2582,7 +2612,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 7 col 5",
    "value": "34.6",
    "kind": "derived",
@@ -2615,7 +2645,7 @@
    ]
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 8 col 2",
    "value": "0.684",
    "kind": "metric",
@@ -2628,7 +2658,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 8 col 3",
    "value": "1.214",
    "kind": "metric",
@@ -2641,7 +2671,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 8 col 4",
    "value": "52.04",
    "kind": "metric",
@@ -2654,7 +2684,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 8 col 5",
    "value": "42.9",
    "kind": "derived",
@@ -2687,7 +2717,7 @@
    ]
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 9 col 2",
    "value": "3.531",
    "kind": "metric",
@@ -2700,7 +2730,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 9 col 3",
    "value": "4.550",
    "kind": "metric",
@@ -2713,7 +2743,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 9 col 4",
    "value": "105.3",
    "kind": "metric",
@@ -2726,7 +2756,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 9 col 5",
    "value": "23.1",
    "kind": "derived",
@@ -2759,7 +2789,7 @@
    ]
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 10 col 2",
    "value": "8.338",
    "kind": "metric",
@@ -2772,7 +2802,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 10 col 3",
    "value": "10.10",
    "kind": "metric",
@@ -2785,7 +2815,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 10 col 4",
    "value": "232.9",
    "kind": "metric",
@@ -2798,7 +2828,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 10 col 5",
    "value": "23.1",
    "kind": "derived",
@@ -2831,7 +2861,7 @@
    ]
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 11 col 2",
    "value": "\\unstable",
    "kind": "pending",
@@ -2842,7 +2872,7 @@
    "reason": "UNSTABLE"
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 11 col 3",
    "value": "22.78",
    "kind": "metric",
@@ -2855,7 +2885,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 11 col 4",
    "value": "495.7",
    "kind": "metric",
@@ -2868,7 +2898,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 11 col 5",
    "value": "21.8",
    "kind": "derived",
@@ -2901,7 +2931,7 @@
    ]
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 12 col 2",
    "value": "44.15",
    "kind": "metric",
@@ -2914,7 +2944,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 12 col 3",
    "value": "51.90",
    "kind": "metric",
@@ -2927,7 +2957,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 12 col 4",
    "value": "1090",
    "kind": "metric",
@@ -2940,7 +2970,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 12 col 5",
    "value": "21.0",
    "kind": "derived",
@@ -2973,7 +3003,7 @@
    ]
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 13 col 2",
    "value": "\\unstable",
    "kind": "pending",
@@ -2984,7 +3014,7 @@
    "reason": "UNSTABLE"
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 13 col 3",
    "value": "\\unstable",
    "kind": "pending",
@@ -2995,7 +3025,7 @@
    "reason": "UNSTABLE"
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 13 col 4",
    "value": "2416",
    "kind": "metric",
@@ -3008,7 +3038,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "gpu_kernels_table.tex",
+   "target": "gpu_kernels_table.tex",
    "name": "\\gpukernelrows row 13 col 5",
    "value": "\\unstable",
    "kind": "pending",
@@ -3040,709 +3070,787 @@
    "reason": "UNSTABLE"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 1 col 1",
    "value": "Valid token + fresh DPoP proof",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.0.scenario"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 1 col 2",
    "value": "200",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.0.expected"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 1 col 3",
    "value": "200",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.0.observed"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 2 col 1",
    "value": "Replayed proof (same jti)",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.1.scenario"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 2 col 2",
    "value": "401 (jti)",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.1.expected"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 2 col 3",
    "value": "401 (jti) (jti)",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.1.observed"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 3 col 1",
    "value": "Stolen token, attacker's own key",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.2.scenario"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 3 col 2",
    "value": "401 (key\\_binding)",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.2.expected"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 3 col 3",
    "value": "401 (key\\_binding) (key\\_binding)",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.2.observed"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 4 col 1",
    "value": "Proof for different URL (htu)",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.3.scenario"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 4 col 2",
    "value": "401 (htu)",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.3.expected"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 4 col 3",
    "value": "401 (htu) (htu)",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.3.observed"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 5 col 1",
    "value": "Proof for different method (htm)",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.4.scenario"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 5 col 2",
    "value": "401 (htm)",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.4.expected"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 5 col 3",
    "value": "401 (htm) (htm)",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.4.observed"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 6 col 1",
    "value": "Stale proof (iat -5 min)",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.5.scenario"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 6 col 2",
    "value": "401 (iat)",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.5.expected"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 6 col 3",
    "value": "401 (iat) (iat)",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.5.observed"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 7 col 1",
    "value": "Tampered access token",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.6.scenario"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 7 col 2",
    "value": "401 (token\\_mac)",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.6.expected"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 7 col 3",
    "value": "401 (token\\_mac) (token\\_mac)",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.6.observed"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 8 col 1",
    "value": "Proof made for another access token (ath)",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.7.scenario"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 8 col 2",
    "value": "401 (ath)",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.7.expected"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 8 col 3",
    "value": "401 (ath) (ath)",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.7.observed"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 9 col 1",
    "value": "Stolen token sent as a bearer token, no proof",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.8.scenario"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 9 col 2",
    "value": "401 (proof\\_format)",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.8.expected"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 9 col 3",
    "value": "401 (proof\\_format) (proof\\_format)",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.8.observed"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 10 col 1",
    "value": "Proof with the owner's public key, signed by the attacker",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.9.scenario"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 10 col 2",
    "value": "401 (signature)",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.9.expected"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 10 col 3",
    "value": "401 (signature) (signature)",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.9.observed"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 11 col 1",
    "value": "Proof that declares another algorithm (HS256)",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.10.scenario"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 11 col 2",
    "value": "401 (alg)",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.10.expected"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 11 col 3",
    "value": "401 (alg) (alg)",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.10.observed"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 12 col 1",
    "value": "Valid ticket + proof of the same key",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.11.scenario"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 12 col 2",
    "value": "open (ready)",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.11.expected"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 12 col 3",
    "value": "open (ready)",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.11.observed"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 13 col 1",
    "value": "Ticket reused",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.12.scenario"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 13 col 2",
    "value": "close 4401 (ticket\\_unused)",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.12.expected"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 13 col 3",
    "value": "close 4401 (ticket\\_unused) (ticket\\_unused)",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.12.observed"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 14 col 1",
    "value": "Ticket presented with a different key",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.13.scenario"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 14 col 2",
    "value": "close 4401 (ticket\\_key)",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.13.expected"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 14 col 3",
    "value": "close 4401 (ticket\\_key) (ticket\\_key)",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.13.observed"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 15 col 1",
    "value": "Ticket presented after 31 s",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.14.scenario"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 15 col 2",
    "value": "close 4401 (ticket\\_exp)",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.14.expected"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 15 col 3",
    "value": "close 4401 (ticket\\_exp) (ticket\\_exp)",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.14.observed"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 16 col 1",
    "value": "Expired access token",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.15.scenario"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 16 col 2",
    "value": "401 (token\\_exp)",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.15.expected"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 16 col 3",
    "value": "401 (token\\_exp) (token\\_exp)",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.15.observed"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 17 col 1",
    "value": "Refresh-token rotation",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.16.scenario"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 17 col 2",
    "value": "200",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.16.expected"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 17 col 3",
    "value": "200",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.16.observed"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 18 col 1",
    "value": "Refresh token presented with the attacker's key",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.17.scenario"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 18 col 2",
    "value": "401 (key\\_binding)",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.17.expected"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 18 col 3",
    "value": "401 (key\\_binding) (key\\_binding)",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.17.observed"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 19 col 1",
    "value": "Old refresh token reused",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.18.scenario"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 19 col 2",
    "value": "401 (reuse)",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.18.expected"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 19 col 3",
    "value": "401 (reuse) (reuse)",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.18.observed"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 20 col 1",
    "value": "Rotated token after reuse detected",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.19.scenario"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 20 col 2",
    "value": "401 (family\\_revoked)",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.19.expected"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 20 col 3",
    "value": "401 (family\\_revoked) (family\\_revoked)",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.19.observed"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 21 col 1",
    "value": "Access token of the revoked family",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.20.scenario"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 21 col 2",
    "value": "401 (token\\_revoked)",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.20.expected"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 21 col 3",
    "value": "401 (token\\_revoked) (token\\_revoked)",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.20.observed"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 22 col 1",
    "value": "Logout while a socket is open",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.21.scenario"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 22 col 2",
    "value": "close 4001 (session\\_ended)",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.21.expected"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 22 col 3",
    "value": "close 4001 (session\\_ended) (session\\_ended)",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.21.observed"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 23 col 1",
    "value": "Access token after logout",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.22.scenario"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 23 col 2",
    "value": "401 (token\\_revoked)",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.22.expected"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 23 col 3",
    "value": "401 (token\\_revoked) (token\\_revoked)",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.22.observed"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 24 col 1",
    "value": "Login brute force: sixth guess on one account",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.23.scenario"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 24 col 2",
    "value": "429 (rate\\_limited)",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.23.expected"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 24 col 3",
    "value": "429 (rate\\_limited) (rate\\_limited)",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.23.observed"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 25 col 1",
    "value": "Login brute force: the right password while the limit holds",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.24.scenario"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 25 col 2",
    "value": "429 (rate\\_limited)",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.24.expected"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 25 col 3",
    "value": "429 (rate\\_limited) (rate\\_limited)",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.24.observed"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 26 col 1",
    "value": "X25519+HKDF content key agreement",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.25.scenario"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 26 col 2",
    "value": "keys equal",
    "kind": "param",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.25.expected"
   },
   {
-   "file": "e5_matrix.json",
+   "target": "session_table.tex",
    "name": "\\sessionrows row 26 col 3",
    "value": "keys equal",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261012-160139_M11_session_matrix",
+   "file": "e5_matrix.json",
    "path": "rows.25.observed"
   },
   {
-   "file": "window_ablation.dat",
+   "target": "window_ablation.dat",
    "name": "W 1 col 2",
    "value": "0.998878",
    "kind": "metric",
@@ -3755,7 +3863,7 @@
    "runner": "colab"
   },
   {
-   "file": "window_ablation.dat",
+   "target": "window_ablation.dat",
    "name": "W 1 col 3",
    "value": "0.000683",
    "kind": "metric",
@@ -3768,7 +3876,7 @@
    "runner": "colab"
   },
   {
-   "file": "window_ablation.dat",
+   "target": "window_ablation.dat",
    "name": "W 1 col 4",
    "value": "0.920230",
    "kind": "metric",
@@ -3781,7 +3889,7 @@
    "runner": "colab"
   },
   {
-   "file": "window_ablation.dat",
+   "target": "window_ablation.dat",
    "name": "W 1 col 5",
    "value": "0.158807",
    "kind": "metric",
@@ -3794,7 +3902,7 @@
    "runner": "colab"
   },
   {
-   "file": "window_ablation.dat",
+   "target": "window_ablation.dat",
    "name": "W 10 col 2",
    "value": "0.988813",
    "kind": "metric",
@@ -3807,7 +3915,7 @@
    "runner": "colab"
   },
   {
-   "file": "window_ablation.dat",
+   "target": "window_ablation.dat",
    "name": "W 10 col 3",
    "value": "-0.000448",
    "kind": "metric",
@@ -3820,7 +3928,7 @@
    "runner": "colab"
   },
   {
-   "file": "window_ablation.dat",
+   "target": "window_ablation.dat",
    "name": "W 10 col 4",
    "value": "0.686748",
    "kind": "metric",
@@ -3833,7 +3941,7 @@
    "runner": "colab"
   },
   {
-   "file": "window_ablation.dat",
+   "target": "window_ablation.dat",
    "name": "W 10 col 5",
    "value": "0.628786",
    "kind": "metric",
@@ -3846,7 +3954,7 @@
    "runner": "colab"
   },
   {
-   "file": "window_ablation.dat",
+   "target": "window_ablation.dat",
    "name": "W 60 col 2",
    "value": "0.932874",
    "kind": "metric",
@@ -3859,7 +3967,7 @@
    "runner": "colab"
   },
   {
-   "file": "window_ablation.dat",
+   "target": "window_ablation.dat",
    "name": "W 60 col 3",
    "value": "-0.005945",
    "kind": "metric",
@@ -3872,7 +3980,7 @@
    "runner": "colab"
   },
   {
-   "file": "window_ablation.dat",
+   "target": "window_ablation.dat",
    "name": "W 60 col 4",
    "value": "0.556027",
    "kind": "metric",
@@ -3885,7 +3993,7 @@
    "runner": "colab"
   },
   {
-   "file": "window_ablation.dat",
+   "target": "window_ablation.dat",
    "name": "W 60 col 5",
    "value": "0.889414",
    "kind": "metric",
@@ -3898,7 +4006,7 @@
    "runner": "colab"
   },
   {
-   "file": "window_ablation.dat",
+   "target": "window_ablation.dat",
    "name": "W 300 col 2",
    "value": "0.665902",
    "kind": "metric",
@@ -3911,7 +4019,7 @@
    "runner": "colab"
   },
   {
-   "file": "window_ablation.dat",
+   "target": "window_ablation.dat",
    "name": "W 300 col 3",
    "value": "-0.000660",
    "kind": "metric",
@@ -3924,7 +4032,7 @@
    "runner": "colab"
   },
   {
-   "file": "window_ablation.dat",
+   "target": "window_ablation.dat",
    "name": "W 300 col 4",
    "value": "0.506787",
    "kind": "metric",
@@ -3937,7 +4045,7 @@
    "runner": "colab"
   },
   {
-   "file": "window_ablation.dat",
+   "target": "window_ablation.dat",
    "name": "W 300 col 5",
    "value": "0.983695",
    "kind": "metric",
@@ -3950,223 +4058,247 @@
    "runner": "colab"
   },
   {
-   "file": "e2_uniformity.json",
+   "target": "tau_hist.dat",
    "name": "bin 1 count",
    "value": "1",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
+   "file": "e2_uniformity.json",
    "path": "tau_band.histogram.counts.0"
   },
   {
-   "file": "e2_uniformity.json",
+   "target": "tau_hist.dat",
    "name": "bin 2 count",
    "value": "2",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
+   "file": "e2_uniformity.json",
    "path": "tau_band.histogram.counts.1"
   },
   {
-   "file": "e2_uniformity.json",
+   "target": "tau_hist.dat",
    "name": "bin 3 count",
    "value": "0",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
+   "file": "e2_uniformity.json",
    "path": "tau_band.histogram.counts.2"
   },
   {
-   "file": "e2_uniformity.json",
+   "target": "tau_hist.dat",
    "name": "bin 4 count",
    "value": "5",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
+   "file": "e2_uniformity.json",
    "path": "tau_band.histogram.counts.3"
   },
   {
-   "file": "e2_uniformity.json",
+   "target": "tau_hist.dat",
    "name": "bin 5 count",
    "value": "6",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
+   "file": "e2_uniformity.json",
    "path": "tau_band.histogram.counts.4"
   },
   {
-   "file": "e2_uniformity.json",
+   "target": "tau_hist.dat",
    "name": "bin 6 count",
    "value": "15",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
+   "file": "e2_uniformity.json",
    "path": "tau_band.histogram.counts.5"
   },
   {
-   "file": "e2_uniformity.json",
+   "target": "tau_hist.dat",
    "name": "bin 7 count",
    "value": "21",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
+   "file": "e2_uniformity.json",
    "path": "tau_band.histogram.counts.6"
   },
   {
-   "file": "e2_uniformity.json",
+   "target": "tau_hist.dat",
    "name": "bin 8 count",
    "value": "38",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
+   "file": "e2_uniformity.json",
    "path": "tau_band.histogram.counts.7"
   },
   {
-   "file": "e2_uniformity.json",
+   "target": "tau_hist.dat",
    "name": "bin 9 count",
    "value": "69",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
+   "file": "e2_uniformity.json",
    "path": "tau_band.histogram.counts.8"
   },
   {
-   "file": "e2_uniformity.json",
+   "target": "tau_hist.dat",
    "name": "bin 10 count",
    "value": "91",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
+   "file": "e2_uniformity.json",
    "path": "tau_band.histogram.counts.9"
   },
   {
-   "file": "e2_uniformity.json",
+   "target": "tau_hist.dat",
    "name": "bin 11 count",
    "value": "122",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
+   "file": "e2_uniformity.json",
    "path": "tau_band.histogram.counts.10"
   },
   {
-   "file": "e2_uniformity.json",
+   "target": "tau_hist.dat",
    "name": "bin 12 count",
    "value": "139",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
+   "file": "e2_uniformity.json",
    "path": "tau_band.histogram.counts.11"
   },
   {
-   "file": "e2_uniformity.json",
+   "target": "tau_hist.dat",
    "name": "bin 13 count",
    "value": "136",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
+   "file": "e2_uniformity.json",
    "path": "tau_band.histogram.counts.12"
   },
   {
-   "file": "e2_uniformity.json",
+   "target": "tau_hist.dat",
    "name": "bin 14 count",
    "value": "111",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
+   "file": "e2_uniformity.json",
    "path": "tau_band.histogram.counts.13"
   },
   {
-   "file": "e2_uniformity.json",
+   "target": "tau_hist.dat",
    "name": "bin 15 count",
    "value": "84",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
+   "file": "e2_uniformity.json",
    "path": "tau_band.histogram.counts.14"
   },
   {
-   "file": "e2_uniformity.json",
+   "target": "tau_hist.dat",
    "name": "bin 16 count",
    "value": "65",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
+   "file": "e2_uniformity.json",
    "path": "tau_band.histogram.counts.15"
   },
   {
-   "file": "e2_uniformity.json",
+   "target": "tau_hist.dat",
    "name": "bin 17 count",
    "value": "45",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
+   "file": "e2_uniformity.json",
    "path": "tau_band.histogram.counts.16"
   },
   {
-   "file": "e2_uniformity.json",
+   "target": "tau_hist.dat",
    "name": "bin 18 count",
    "value": "23",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
+   "file": "e2_uniformity.json",
    "path": "tau_band.histogram.counts.17"
   },
   {
-   "file": "e2_uniformity.json",
+   "target": "tau_hist.dat",
    "name": "bin 19 count",
    "value": "15",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
+   "file": "e2_uniformity.json",
    "path": "tau_band.histogram.counts.18"
   },
   {
-   "file": "e2_uniformity.json",
+   "target": "tau_hist.dat",
    "name": "bin 20 count",
    "value": "8",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
+   "file": "e2_uniformity.json",
    "path": "tau_band.histogram.counts.19"
   },
   {
-   "file": "e2_uniformity.json",
+   "target": "tau_hist.dat",
    "name": "bin 21 count",
    "value": "4",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
+   "file": "e2_uniformity.json",
    "path": "tau_band.histogram.counts.20"
   },
   {
-   "file": "e2_uniformity.json",
+   "target": "tau_hist.dat",
    "name": "bin 22 count",
    "value": "0",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
+   "file": "e2_uniformity.json",
    "path": "tau_band.histogram.counts.21"
   },
   {
-   "file": "e2_uniformity.json",
+   "target": "tau_hist.dat",
    "name": "bin 23 count",
    "value": "0",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
+   "file": "e2_uniformity.json",
    "path": "tau_band.histogram.counts.22"
   },
   {
-   "file": "e2_uniformity.json",
+   "target": "tau_hist.dat",
    "name": "bin 24 count",
    "value": "0",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261013-055417_M14_security_e2",
+   "file": "e2_uniformity.json",
    "path": "tau_band.histogram.counts.23"
   },
   {
-   "file": "dudect_table.tex",
+   "target": "dudect_table.tex",
    "name": "\\dudectrows row 1 col 2",
    "value": "100000",
    "kind": "metric",
@@ -4179,7 +4311,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "dudect_table.tex",
+   "target": "dudect_table.tex",
    "name": "\\dudectrows row 1 col 3",
    "value": "2.08",
    "kind": "metric",
@@ -4192,16 +4324,17 @@
    "runner": "kaggle"
   },
   {
-   "file": "summary.json",
+   "target": "dudect_table.tex",
    "name": "\\dudectrows row 1 col 4",
    "value": "PASS",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261012-031331_M08_dudect",
+   "file": "summary.json",
    "path": "targets.0.series.ms.verdict"
   },
   {
-   "file": "dudect_table.tex",
+   "target": "dudect_table.tex",
    "name": "\\dudectrows row 2 col 2",
    "value": "100000",
    "kind": "metric",
@@ -4214,7 +4347,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "dudect_table.tex",
+   "target": "dudect_table.tex",
    "name": "\\dudectrows row 2 col 3",
    "value": "1.27",
    "kind": "metric",
@@ -4227,16 +4360,17 @@
    "runner": "kaggle"
   },
   {
-   "file": "summary.json",
+   "target": "dudect_table.tex",
    "name": "\\dudectrows row 2 col 4",
    "value": "PASS",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261012-031331_M08_dudect",
+   "file": "summary.json",
    "path": "targets.1.series.ms.verdict"
   },
   {
-   "file": "dudect_table.tex",
+   "target": "dudect_table.tex",
    "name": "\\dudectrows row 3 col 2",
    "value": "100000",
    "kind": "metric",
@@ -4249,7 +4383,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "dudect_table.tex",
+   "target": "dudect_table.tex",
    "name": "\\dudectrows row 3 col 3",
    "value": "2.70",
    "kind": "metric",
@@ -4262,16 +4396,17 @@
    "runner": "kaggle"
   },
   {
-   "file": "summary.json",
+   "target": "dudect_table.tex",
    "name": "\\dudectrows row 3 col 4",
    "value": "PASS",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261012-031331_M08_dudect",
+   "file": "summary.json",
    "path": "targets.2.series.ms.verdict"
   },
   {
-   "file": "dudect_table.tex",
+   "target": "dudect_table.tex",
    "name": "\\dudectrows row 4 col 2",
    "value": "100000",
    "kind": "metric",
@@ -4284,7 +4419,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "dudect_table.tex",
+   "target": "dudect_table.tex",
    "name": "\\dudectrows row 4 col 3",
    "value": "2.76",
    "kind": "metric",
@@ -4297,16 +4432,17 @@
    "runner": "kaggle"
   },
   {
-   "file": "summary.json",
+   "target": "dudect_table.tex",
    "name": "\\dudectrows row 4 col 4",
    "value": "PASS",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261012-031331_M08_dudect",
+   "file": "summary.json",
    "path": "targets.3.series.device_ms.verdict"
   },
   {
-   "file": "dudect_table.tex",
+   "target": "dudect_table.tex",
    "name": "\\dudectrows row 5 col 2",
    "value": "100000",
    "kind": "metric",
@@ -4319,7 +4455,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "dudect_table.tex",
+   "target": "dudect_table.tex",
    "name": "\\dudectrows row 5 col 3",
    "value": "8.28",
    "kind": "metric",
@@ -4332,16 +4468,17 @@
    "runner": "kaggle"
   },
   {
-   "file": "summary.json",
+   "target": "dudect_table.tex",
    "name": "\\dudectrows row 5 col 4",
    "value": "FAIL",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261012-031331_M08_dudect",
+   "file": "summary.json",
    "path": "targets.3.series.call_ms.verdict"
   },
   {
-   "file": "dudect_table.tex",
+   "target": "dudect_table.tex",
    "name": "\\dudectrows row 6 col 2",
    "value": "100000",
    "kind": "metric",
@@ -4354,7 +4491,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "dudect_table.tex",
+   "target": "dudect_table.tex",
    "name": "\\dudectrows row 6 col 3",
    "value": "6.24",
    "kind": "metric",
@@ -4367,16 +4504,17 @@
    "runner": "kaggle"
   },
   {
-   "file": "summary.json",
+   "target": "dudect_table.tex",
    "name": "\\dudectrows row 6 col 4",
    "value": "FAIL",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261012-031331_M08_dudect",
+   "file": "summary.json",
    "path": "targets.4.series.ms.verdict"
   },
   {
-   "file": "dudect_table.tex",
+   "target": "dudect_table.tex",
    "name": "\\dudectrows row 7 col 2",
    "value": "100000",
    "kind": "metric",
@@ -4389,7 +4527,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "dudect_table.tex",
+   "target": "dudect_table.tex",
    "name": "\\dudectrows row 7 col 3",
    "value": "11.64",
    "kind": "metric",
@@ -4402,16 +4540,17 @@
    "runner": "kaggle"
   },
   {
-   "file": "summary.json",
+   "target": "dudect_table.tex",
    "name": "\\dudectrows row 7 col 4",
    "value": "FAIL",
    "kind": "field",
    "metric_ids": [],
    "run_dir": "runs/20261012-031331_M08_dudect",
+   "file": "summary.json",
    "path": "targets.5.series.ms.verdict"
   },
   {
-   "file": "dudect_table.tex",
+   "target": "dudect_table.tex",
    "name": "\\dudectrows row 8 col 2",
    "value": "100000",
    "kind": "metric",
@@ -4424,7 +4563,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "dudect_table.tex",
+   "target": "dudect_table.tex",
    "name": "\\dudectrows row 8 col 3",
    "value": "\\notmeasured",
    "kind": "pending",
@@ -4435,7 +4574,7 @@
    "reason": "NOT_MEASURED"
   },
   {
-   "file": "dudect_table.tex",
+   "target": "dudect_table.tex",
    "name": "\\dudectrows row 8 col 4",
    "value": "\\notmeasured",
    "kind": "pending",
@@ -4446,7 +4585,7 @@
    "reason": "recorded as NOT_MEASURED (ISSUE-36)"
   },
   {
-   "file": "dudect_table.tex",
+   "target": "dudect_table.tex",
    "name": "\\dudectrows row 9 col 2",
    "value": "100000",
    "kind": "metric",
@@ -4459,7 +4598,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "dudect_table.tex",
+   "target": "dudect_table.tex",
    "name": "\\dudectrows row 9 col 3",
    "value": "\\notmeasured",
    "kind": "pending",
@@ -4470,7 +4609,7 @@
    "reason": "NOT_MEASURED"
   },
   {
-   "file": "dudect_table.tex",
+   "target": "dudect_table.tex",
    "name": "\\dudectrows row 9 col 4",
    "value": "\\notmeasured",
    "kind": "pending",
@@ -4481,7 +4620,7 @@
    "reason": "recorded as NOT_MEASURED (ISSUE-36)"
   },
   {
-   "file": "dudect_table.tex",
+   "target": "dudect_table.tex",
    "name": "\\dudectrows row 10 col 2",
    "value": "100000",
    "kind": "metric",
@@ -4494,7 +4633,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "dudect_table.tex",
+   "target": "dudect_table.tex",
    "name": "\\dudectrows row 10 col 3",
    "value": "\\notmeasured",
    "kind": "pending",
@@ -4505,7 +4644,7 @@
    "reason": "NOT_MEASURED"
   },
   {
-   "file": "dudect_table.tex",
+   "target": "dudect_table.tex",
    "name": "\\dudectrows row 10 col 4",
    "value": "\\notmeasured",
    "kind": "pending",
@@ -4516,7 +4655,7 @@
    "reason": "recorded as NOT_MEASURED (ISSUE-36)"
   },
   {
-   "file": "dudect_table.tex",
+   "target": "dudect_table.tex",
    "name": "\\dudectrows row 11 col 2",
    "value": "100000",
    "kind": "metric",
@@ -4529,7 +4668,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "dudect_table.tex",
+   "target": "dudect_table.tex",
    "name": "\\dudectrows row 11 col 3",
    "value": "\\notmeasured",
    "kind": "pending",
@@ -4540,7 +4679,7 @@
    "reason": "NOT_MEASURED"
   },
   {
-   "file": "dudect_table.tex",
+   "target": "dudect_table.tex",
    "name": "\\dudectrows row 11 col 4",
    "value": "\\notmeasured",
    "kind": "pending",
@@ -4551,7 +4690,7 @@
    "reason": "recorded as NOT_MEASURED (ISSUE-36)"
   },
   {
-   "file": "sidechannel_table.tex",
+   "target": "sidechannel_table.tex",
    "name": "\\sidechannelrows row 1 col 2",
    "value": "4",
    "kind": "metric",
@@ -4564,7 +4703,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "sidechannel_table.tex",
+   "target": "sidechannel_table.tex",
    "name": "\\sidechannelrows row 1 col 3",
    "value": "\\notmeasured",
    "kind": "pending",
@@ -4575,7 +4714,7 @@
    "reason": "NOT_MEASURED"
   },
   {
-   "file": "sidechannel_table.tex",
+   "target": "sidechannel_table.tex",
    "name": "\\sidechannelrows row 2 col 2",
    "value": "2",
    "kind": "metric",
@@ -4588,7 +4727,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "sidechannel_table.tex",
+   "target": "sidechannel_table.tex",
    "name": "\\sidechannelrows row 2 col 3",
    "value": "\\notmeasured",
    "kind": "pending",
@@ -4599,7 +4738,7 @@
    "reason": "NOT_MEASURED"
   },
   {
-   "file": "sidechannel_table.tex",
+   "target": "sidechannel_table.tex",
    "name": "\\sidechannelrows row 3 col 2",
    "value": "4",
    "kind": "metric",
@@ -4612,7 +4751,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "sidechannel_table.tex",
+   "target": "sidechannel_table.tex",
    "name": "\\sidechannelrows row 3 col 3",
    "value": "\\notmeasured",
    "kind": "pending",
@@ -4623,7 +4762,7 @@
    "reason": "NOT_MEASURED"
   },
   {
-   "file": "sidechannel_table.tex",
+   "target": "sidechannel_table.tex",
    "name": "\\sidechannelrows row 4 col 2",
    "value": "6",
    "kind": "metric",
@@ -4636,7 +4775,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "sidechannel_table.tex",
+   "target": "sidechannel_table.tex",
    "name": "\\sidechannelrows row 4 col 3",
    "value": "\\notmeasured",
    "kind": "pending",
@@ -4647,7 +4786,7 @@
    "reason": "NOT_MEASURED"
   },
   {
-   "file": "sidechannel_table.tex",
+   "target": "sidechannel_table.tex",
    "name": "\\sidechannelrows row 5 col 2",
    "value": "3",
    "kind": "metric",
@@ -4660,7 +4799,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "sidechannel_table.tex",
+   "target": "sidechannel_table.tex",
    "name": "\\sidechannelrows row 5 col 3",
    "value": "\\notmeasured",
    "kind": "pending",
@@ -4671,7 +4810,7 @@
    "reason": "NOT_MEASURED: the ncu job has no series for this kernel"
   },
   {
-   "file": "sidechannel_table.tex",
+   "target": "sidechannel_table.tex",
    "name": "\\sidechannelrows row 6 col 2",
    "value": "3",
    "kind": "metric",
@@ -4684,7 +4823,7 @@
    "runner": "kaggle"
   },
   {
-   "file": "sidechannel_table.tex",
+   "target": "sidechannel_table.tex",
    "name": "\\sidechannelrows row 6 col 3",
    "value": "\\notmeasured",
    "kind": "pending",
@@ -4695,7 +4834,7 @@
    "reason": "NOT_MEASURED: the ncu job has no series for this kernel"
   },
   {
-   "file": "e2e_table.tex",
+   "target": "e2e_table.tex",
    "name": "\\etoerows row 1 col 1",
    "value": "\\pending",
    "kind": "pending",
@@ -4703,7 +4842,7 @@
    "reason": "M15 (end-to-end performance) has not run"
   },
   {
-   "file": "e2e_table.tex",
+   "target": "e2e_table.tex",
    "name": "\\etoerows row 1 col 2",
    "value": "\\pending",
    "kind": "pending",
@@ -4711,7 +4850,7 @@
    "reason": "M15 (end-to-end performance) has not run"
   },
   {
-   "file": "e2e_table.tex",
+   "target": "e2e_table.tex",
    "name": "\\etoerows row 1 col 3",
    "value": "\\pending",
    "kind": "pending",
@@ -4719,7 +4858,7 @@
    "reason": "M15 (end-to-end performance) has not run"
   },
   {
-   "file": "e2e_table.tex",
+   "target": "e2e_table.tex",
    "name": "\\etoerows row 1 col 4",
    "value": "\\pending",
    "kind": "pending",
@@ -4727,7 +4866,7 @@
    "reason": "M15 (end-to-end performance) has not run"
   },
   {
-   "file": "pipeline_breakdown.dat",
+   "target": "pipeline_breakdown.dat",
    "name": "all rows",
    "value": "\\pending",
    "kind": "pending",

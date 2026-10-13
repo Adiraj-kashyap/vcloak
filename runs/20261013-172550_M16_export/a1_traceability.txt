@@ -1,0 +1,21 @@
+A1: source kind of every exported value, per file (generated from results/paper/macro_map.json)
+  all files: derived from metrics only 36, derived, uses a field or param 1, field 75, metric 163, param 64, pending 33
+  macros.tex: derived, uses a field or param 1, field 8, metric 31, param 7, pending 1
+  attack_table.tex: metric 24
+  trace_table.tex: field 10, param 5
+  throughput.dat: derived from metrics only 13, metric 13
+  throughput_table.tex: derived from metrics only 13, metric 23, pending 3
+  gpu_kernels_table.tex: derived from metrics only 10, metric 32, pending 10
+  session_table.tex: field 26, param 52
+  window_ablation.dat: metric 16
+  tau_hist.dat: field 24
+  dudect_table.tex: field 7, metric 18, pending 8
+  sidechannel_table.tex: metric 6, pending 6
+  e2e_table.tex: pending 4
+  pipeline_breakdown.dat: pending 1
+macros.tex by kind:
+  metric (31): resMsgs resTauConvGlobal resTauConvWithin resTauEpochGlobal resTauEpochWithin resRestoreOK resChiSq resChiP resChiPIdeal resTauStd resTauInBand resCandK resMaxOcc resMeanOcc resBitonicTraces resMergeTraces resTurnConv resSameConv resTauGConv resTurnEpoch resSameEpoch resTauGEpoch resTurnWTen resSameWTen resTauGWTen resTurnWSixty resSameWSixty resTauGWSixty resTurnWThreeHundred resSameWThreeHundred resTauGWThreeHundred
+  param (7): resConvs resDuration resChiDof resUnifEpochs resTauN resTauEpochs resBuckets
+  derived, uses a field or param (1): resMeanPerEpoch
+  field (8): resRestoreN resTVD resChiIdeal resTVDIdeal resTauSigma resTauBand resTauMean resTauMaxAbs
+  pending (1): resAESus

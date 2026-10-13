@@ -23,8 +23,24 @@
     "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
     "ts": 1791892550.736976
   },
-  "telemetry_end": null,
-  "outputs": [],
-  "status": "NOT_MEASURED",
-  "notes": "run started; not finalised"
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791892923.6319158
+  },
+  "outputs": [
+    "a1_traceability.txt",
+    "capture_terminal.json",
+    "check_metrics.txt",
+    "check_oblivious.txt",
+    "check_secrets.txt",
+    "deliverables.txt",
+    "export_check.txt",
+    "export_stdout.txt",
+    "macro_map.json",
+    "pytest_all.txt",
+    "ruff.txt"
+  ],
+  "status": "OK",
+  "notes": "session 44"
 }

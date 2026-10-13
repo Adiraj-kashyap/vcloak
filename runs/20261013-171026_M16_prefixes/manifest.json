@@ -23,8 +23,21 @@
     "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
     "ts": 1791891626.8771937
   },
-  "telemetry_end": null,
-  "outputs": [],
-  "status": "NOT_MEASURED",
-  "notes": "run started; not finalised"
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791892923.9122667
+  },
+  "outputs": [
+    "check_metrics.txt",
+    "check_oblivious.txt",
+    "check_secrets.txt",
+    "kaggle_internet_check.txt",
+    "pytest_all.txt",
+    "report_command.txt",
+    "report_stdout.txt",
+    "ruff_code.txt"
+  ],
+  "status": "OK",
+  "notes": "session 44"
 }
