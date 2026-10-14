@@ -1457,5 +1457,5 @@
 - Deviations from spec: "on the current database" is not possible with a score (no ground truth on the server):
   the run uses a new store built from the seed traffic, stated on screen and in DEMO.md.
 - Not verified: the endpoint while the service is under chat load (the replay shares the process's CPU).
-- Commit: see git log (M18 S4)
+- Commit: cdd7560
 - Next: M18 S5 (Logs view, /v1/logs with the allow-list) ; human action: none
