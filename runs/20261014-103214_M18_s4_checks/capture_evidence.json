@@ -1,0 +1,139 @@
+{
+ "module": "M18",
+ "run": "runs/20261014-103214_M18_s4_checks (git a5c6e64, dirty)",
+ "date": "2026-10-14",
+ "views": {
+  "dashboard": {
+   "state": "measured",
+   "dashboard": {
+    "source": "metrics-index",
+    "session": "20261014-013736",
+    "quick": false,
+    "tiles": 22,
+    "charts": 8,
+    "not_measured": 1,
+    "chip": "GENERATED"
+   },
+   "files": {
+    "light": {
+     "file": "screens/M18_dashboard_light_20261014.png",
+     "width": 1440,
+     "height": 5357,
+     "bytes": 743526,
+     "sha256": "39c7a9ed21e8e3903a264834350f42f14ad9188e7689219cd1b46c0f50d66618"
+    },
+    "dark": {
+     "file": "screens/M18_dashboard_dark_20261014.png",
+     "width": 1440,
+     "height": 5357,
+     "bytes": 758517,
+     "sha256": "1d810914a08ceb4299960e75b50248a91879eda9457c00ef008e28e6231deca3"
+    }
+   }
+  },
+  "experiments": {
+   "state": "measured",
+   "source_line": "Turn-order accuracy · this live run",
+   "live": true,
+   "match": {
+    "identical": true,
+    "text": "Against the stored S-TURNACC-W300 (cupy/colab)\n✓ identical\nlive   0.5067867769942527\nstored 0.5067867769942527\nruns/20261013-054727_M14_security_e0e1"
+   },
+   "layout": "W300",
+   "dashboard_source": "metrics-index",
+   "files": {
+    "light": {
+     "file": "screens/M18_experiments_light_20261014.png",
+     "width": 1440,
+     "height": 1712,
+     "bytes": 159986,
+     "sha256": "b4f5c38cac49afd0a60557d96806b3eced1ac5cbbcd73d6a9535d50f5413829d"
+    },
+    "dark": {
+     "file": "screens/M18_experiments_dark_20261014.png",
+     "width": 1440,
+     "height": 1712,
+     "bytes": 163606,
+     "sha256": "cb0029a3cc89bfa3dd63ed4ee22a7521b844c36a4ea4ce22cc5c0c62980eb823"
+    }
+   }
+  }
+ },
+ "checks": {
+  "the page is live, in dev mode, with a mode switch": true,
+  "dashboard: the view was the one on screen": true,
+  "experiments: the view was the one on screen": true,
+  "no exception, console error or blocked request in the page": true
+ },
+ "serve_argv": [
+  "--dev",
+  "--compare",
+  "--sessions",
+  "--store",
+  "sqlite",
+  "--window-s",
+  "5",
+  "--epoch-ms",
+  "200"
+ ],
+ "viewport": [
+  1440,
+  900
+ ],
+ "browser": "Chrome/154.0.8037.98",
+ "live_ready": true,
+ "conn": "live · dev",
+ "stats_live": {
+  "mode": "vcloak",
+  "dev": true,
+  "sessions": true,
+  "win": 358390943,
+  "window_s": 5,
+  "epoch_ms": 200,
+  "slots": 64,
+  "queued": 0,
+  "epochs": 4,
+  "payload_len": 4124,
+  "switchable": true,
+  "now_ms": 1791954718658,
+  "epoch": 8959773593,
+  "last_epoch": 8959773592,
+  "last_write_ms": 14.3,
+  "gpu": {
+   "backend": "numpy",
+   "runner": "local",
+   "device": "12th Gen Intel(R) Core(TM) i7-1255U",
+   "util": null
+  }
+ },
+ "errors": [],
+ "ok": true,
+ "superseded": [
+  {
+   "id": "SCR-M18-DASHBOARD-LIGHT",
+   "file": "screens/M18_dashboard_light_20261014.png",
+   "kept_as": "superseded/M18_dashboard_light_20261014.20261014-100120.png"
+  },
+  {
+   "id": "SCR-M18-DASHBOARD-DARK",
+   "file": "screens/M18_dashboard_dark_20261014.png",
+   "kept_as": "superseded/M18_dashboard_dark_20261014.20261014-100120.png"
+  }
+ ],
+ "index_rows": [
+  "SCR-M18-DASHBOARD-LIGHT",
+  "SCR-M18-DASHBOARD-DARK",
+  "SCR-M18-EXPERIMENTS-LIGHT",
+  "SCR-M18-EXPERIMENTS-DARK",
+  "TERM-M18-S4-TERMINAL",
+  "TERM-M18-S4-PYTEST-ALL"
+ ],
+ "files_written": [
+  "screens/M18_dashboard_light_20261014.png",
+  "screens/M18_dashboard_dark_20261014.png",
+  "screens/M18_experiments_light_20261014.png",
+  "screens/M18_experiments_dark_20261014.png",
+  "terminal/M18_S4_terminal.txt",
+  "terminal/M18_S4_pytest_all.txt"
+ ]
+}

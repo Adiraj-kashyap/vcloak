@@ -1,0 +1,47 @@
+{
+  "run_id": "20261014-102648_M18_s4_live_attack",
+  "module": "M18",
+  "step": "S4",
+  "owner": "Abhishek",
+  "git_sha": "a5c6e6474f9da8165e8eadd804b746a5c689dadc",
+  "dirty": true,
+  "command": "python scripts/check_live_attack.py ",
+  "seed": 0,
+  "quick": false,
+  "params": {
+    "layouts": [
+      "BASELINE",
+      "EPOCH",
+      "W1",
+      "W10",
+      "W60",
+      "W300"
+    ],
+    "serve": "--dev --sessions --store sqlite",
+    "compared_with": "web\\data\\dashboard.json"
+  },
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261014-102648",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U",
+    "cpu_count": 12
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791953808.6370897
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791954092.4086661
+  },
+  "outputs": [
+    "live_attack.json"
+  ],
+  "status": "PASS",
+  "notes": "correctness check of /v1/eval/attack against the indexed S-TURNACC values; no metric"
+}

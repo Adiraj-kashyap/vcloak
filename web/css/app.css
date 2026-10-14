@@ -321,6 +321,22 @@ svg.chart .hit { fill: transparent; cursor: crosshair; }
 .seqcell.hit { background: var(--crit); color: #fff; border-color: transparent; }
 .seqcell.miss { background: var(--good-wash); color: var(--ink-2); }
 .seqlabel { font-size: 12px; color: var(--ink-2); margin-bottom: 2px; }
+.seqcell.same { box-shadow: inset 0 -3px 0 var(--ink); }
+.seqcell.dump { width: 30px; }
+.seqcell.inplace { background: var(--s1-wash); color: var(--ink); }
+.seqcell.moved { background: var(--plane); color: var(--ink); border-color: var(--s1); }
+.legend i.k-hit { background: var(--crit); }
+.legend i.k-miss { background: var(--good-wash); border: 1px solid var(--grid); }
+.legend i.k-same { background: var(--plane); box-shadow: inset 0 -3px 0 var(--ink); }
+.bigstat .v.small { font-size: 18px; }
+.bigstat .k.mono { font: 11px/1.55 var(--mono); color: var(--muted); margin-top: 6px; word-break: break-all; }
+.bigstat.match { border-color: var(--good); }
+.bigstat.nomatch { border-color: var(--crit); }
+.chancebar .track { position: relative; height: 10px; border-radius: 5px; background: var(--plane); margin: 10px 0 16px; }
+.chancebar .fill { height: 100%; border-radius: 5px; background: var(--s1); }
+.chancebar .chance { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--ink); }
+.chancebar .chance span { position: absolute; top: 15px; left: -24px; font-size: 10.5px; color: var(--ink-2); white-space: nowrap; }
+.attacknote { padding: 0 16px 14px; margin: 0; }
 
 /* ── logs ───────────────────────────────────────────── */
 .logbox {

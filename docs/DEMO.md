@@ -143,3 +143,29 @@ correctness only, never a GPU result; hover for the device).
   second. It is a count at the moment of the answer, not a load figure.
 - Not on the strip: the time of the last write. The API gives it with `--dev` (`last_write_ms`), a host wall clock
   on the numpy engine; it is not a performance number and is kept off the screen and out of the pictures.
+
+## 2. The order-recovery attack, live (M18 S4)
+
+Start the app with `python -m vcloak.cli serve --dev --store sqlite`, open **Experiments**, pick a layout and press
+**Run attack**. On a first visit the view shows the stored result straight away; a live run starts only from the button.
+
+What the button does: `POST /v1/eval/attack` (dev only, 403 otherwise) replays the M14 seed traffic (seed, number of
+conversations and simulated duration are printed in the "This run" panel) through a second service into a new,
+empty in-memory store of that layout, dumps the store in physical order and runs the attack of the oracle on the
+dump. The page polls `GET /v1/eval/attack` and then shows:
+
+- **The dump**: rows of one visible round in the order the store holds them, each numbered with when it was really
+  sent among the rows shown. That order is all the attacker has inside a round.
+- **The attacker's guess**: the first 24 turns of the replay, each right (✓) or wrong (✗); underlined when both
+  messages fall in one visible round.
+- **Turn-order accuracy** over all turns, against the 50 % chance mark, and the comparison with the stored
+  `S-TURNACC-<layout>` of `web/data/dashboard.json`: same seed and sizes, so the two must be **identical**, not close.
+
+Say why it is a new store: the store the chat uses cannot be scored, because the server does not know the true
+order; that is what it hides. The live run computes on the numpy backend (one thread owns the service's engine,
+ADR-015); the stored values came from the GPU runner and are the same on both backends.
+
+Checking it before the review: `python scripts/check_live_attack.py` runs all six layouts through the served endpoint
+and fails unless each is identical to the stored value (first run: runs/20261014-102648_M18_s4_live_attack).
+Without `--dev` or from `file://`, the view shows the stored value with its provenance and an illustration that says
+it is one.

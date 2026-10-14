@@ -309,10 +309,13 @@ def view_state(page: Any, view: str) -> dict[str, Any]:
     if view == "dashboard":
         return {"state": from_dash, "dashboard": dash}
     if view == "experiments":
-        source = page.evaluate("""(Array.from(document.querySelectorAll('#attackStats .bigstat'))
-            .filter(b => b.firstChild.textContent === 'Source').map(b => b.lastChild.textContent)[0]) || null""")
-        live = source is not None and "demo" not in source
-        return {"state": from_dash if live else "seed", "source_line": source,
+        # M18 S4: the first line of the first panel says whether the number is a live run or the stored one
+        source = page.evaluate("(document.querySelector('#attackStats .bigstat .k') || {}).textContent || null")
+        live = source is not None and "live run" in source
+        match = page.evaluate("""(b => b ? {identical: b.classList.contains('match'), text: b.innerText} : null)
+            (document.querySelector('#attackStats .bigstat.match, #attackStats .bigstat.nomatch'))""")
+        return {"state": from_dash, "source_line": source, "live": live, "match": match,
+                "layout": page.evaluate("document.getElementById('expW').value"),
                 "dashboard_source": dash and dash["source"]}
     if view == "logs":
         demo = page.evaluate("VC.api.logs('session', 5).then(r => !!r.demo)")
@@ -342,10 +345,27 @@ def describe_chat(mode: str, chat: dict[str, Any], backend: str) -> str:
 def describe_view(view: str, info: dict[str, Any]) -> str:
     if view == "arch":
         return f"{PLAIN_VIEWS[view]}: the data-state flow and the leakage table, a drawing with no data in it"
+    if view == "experiments" and info.get("live"):
+        m = info.get("match") or {}
+        return (f"{PLAIN_VIEWS[view]} after a live run of the attack on layout {info['layout']} through "
+                f"/v1/eval/attack (numpy backend, new SQLite store), compared with the stored value: "
+                f"{'identical' if m.get('identical') else 'NOT identical'}")
     if info["state"] == "seed":
         return (f"{PLAIN_VIEWS[view]} as the page shows it with the bundled sample data (SEED DATA): "
                 "the interface, never a result")
     return f"{PLAIN_VIEWS[view]} as the page shows it from generated data"
+
+
+LIVE_LAYOUT = "W300"  # the layout the picture of the experiments view is taken on
+
+
+def live_attack(page: Any, timeout: float = 300) -> None:
+    """Press Run attack on LIVE_LAYOUT and wait for the live result and its comparison with the stored one."""
+    page.evaluate(f"(document.getElementById('expW').value = {js(LIVE_LAYOUT)}, "
+                  "document.getElementById('runAttack').click(), true)")
+    page.wait_for("!!document.querySelector('#attackStats .bigstat.match, #attackStats .bigstat.nomatch') "
+                  "&& !document.getElementById('runAttack').disabled", timeout=timeout)
+    settle(page, "#view-experiments")
 
 
 def capture(module: str, views: list[str], tmp: Path, date: str) -> dict[str, Any]:
@@ -375,6 +395,8 @@ def capture(module: str, views: list[str], tmp: Path, date: str) -> dict[str, An
                 page.evaluate(f"(document.querySelector('.tab[data-view={view}]').click(), true)")
                 page.wait_for(f"!document.getElementById('view-{view}').hidden")
                 settle(page, f"#view-{view}")
+                if view == "experiments":
+                    live_attack(page)
                 info = view_state(page, view)
                 info["files"] = shoot(page, tmp, module, view, date)
                 out["views"][view] = info

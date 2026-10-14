@@ -1,0 +1,7 @@
+ok   BASELINE: live 1.0 stored 1.0 (S-TURNACC-BASELINE, cupy/colab) in 20.5 s
+ok   EPOCH: live 0.9819834508621041 stored 0.9819834508621041 (S-TURNACC-EPOCH, cupy/colab) in 51.2 s
+ok   W1: live 0.9202298944279135 stored 0.9202298944279135 (S-TURNACC-W1, cupy/colab) in 55.6 s
+ok   W10: live 0.6867484612562671 stored 0.6867484612562671 (S-TURNACC-W10, cupy/colab) in 51.2 s
+ok   W60: live 0.5560265764480495 stored 0.5560265764480495 (S-TURNACC-W60, cupy/colab) in 50.8 s
+ok   W300: live 0.5067867769942527 stored 0.5067867769942527 (S-TURNACC-W300, cupy/colab) in 51.4 s
+PASS: 6 of 6 identical -> D:\PJT\vcloak\runs\20261014-102648_M18_s4_live_attack

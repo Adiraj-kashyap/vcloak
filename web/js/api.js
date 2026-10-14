@@ -135,8 +135,14 @@
       });
     },
 
-    attack: function (layout) {
-      return post("/v1/eval/attack", { layout: layout }).catch(function () { return null; });
+    /* The live attack (M18 S4, dev only). Both resolve to {status, body}; null when no server answers. */
+    attackStart: function (layout) {
+      if (!canFetch) return Promise.resolve(null);
+      return raw("POST", "/v1/eval/attack", { layout: layout }).catch(function () { return null; });
+    },
+    attackState: function () {
+      if (!canFetch) return Promise.resolve(null);
+      return raw("GET", "/v1/eval/attack").catch(function () { return null; });
     }
   };
 

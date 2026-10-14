@@ -1,0 +1,46 @@
+{
+  "run_id": "20261014-103214_M18_s4_checks",
+  "module": "M18",
+  "step": "S4",
+  "owner": "Abhishek",
+  "git_sha": "a5c6e6474f9da8165e8eadd804b746a5c689dadc",
+  "dirty": true,
+  "command": "python scripts/export_dashboard.py [--check]; pytest -q; check_metrics, check_secrets, check_oblivious, export_results --check; A1 greps",
+  "seed": 0,
+  "quick": false,
+  "params": {},
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261014-103214",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U",
+    "cpu_count": 12
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791954134.533872
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791954909.4194424
+  },
+  "outputs": [
+    "a1_js_numbers.txt",
+    "a_terms_grep.txt",
+    "capture.txt",
+    "capture_evidence.json",
+    "check_metrics.txt",
+    "check_oblivious.txt",
+    "check_secrets.txt",
+    "dashboard.json",
+    "export_check.txt",
+    "export_results_check.txt",
+    "pytest_all.txt"
+  ],
+  "status": "PASS",
+  "notes": "M18 S4 checks: full suite, exporter --check, check_metrics/secrets/oblivious, export_results --check, A1 and terminology greps, evidence capture with a live W300 run"
+}

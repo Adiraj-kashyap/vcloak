@@ -55,3 +55,33 @@ def occupancy(rows: Sequence[Any]) -> dict[str, float]:
     if not occ:
         return {"bucket_windows": 0, "peak": 0, "mean": float("nan")}
     return {"bucket_windows": len(occ), "peak": max(occ.values()), "mean": float(np.mean(list(occ.values())))}
+
+
+def sample(rows: Sequence[Any], by_digest: Mapping[bytes, traffic.Event], n: int = 24) -> dict[str, Any]:
+    """What the Experiments view animates (M18 S4), from the same dump and the same guess as `attack_dump`.
+
+    `turns`: the first `n` turns of the replay (two consecutive messages of one conversation, in the order the
+    later one arrived): whether the attacker's order is right, and whether both messages share a visible round.
+    `round`: up to `n` rows of the first visible round holding at least `n // 3` rows, in physical order (the
+    attacker's guess inside a round), each with its true arrival rank among the rows shown (1 = first sent).
+    No conversation index and no ciphertext leaves this function."""
+    wins, truth, conv = dump_columns(rows, by_digest)
+    guess = np.argsort(wins, kind="stable")
+    t, w, c = truth[guess], wins[guess], conv[guess]
+    by_conv = np.lexsort((t, c))
+    a, b = by_conv[:-1], by_conv[1:]
+    turn = c[a] == c[b]
+    a, b = a[turn], b[turn]
+    first = np.argsort(t[b], kind="stable")[:n]
+    turns = [{"hit": bool(a[i] < b[i]), "same_round": bool(w[a[i]] == w[b[i]])} for i in first]
+
+    excerpt: dict[str, Any] = {"win": None, "rows_in_round": 0, "rows": []}
+    rounds, counts = np.unique(w, return_counts=True)
+    full = rounds[counts >= max(2, n // 3)]
+    if len(full):
+        pos = np.flatnonzero(w == full[0])
+        shown = t[pos[:n]]
+        rank = np.argsort(np.argsort(shown, kind="stable"), kind="stable") + 1
+        excerpt = {"win": int(full[0]), "rows_in_round": int(len(pos)),
+                   "rows": [{"pos": i, "rank": int(r)} for i, r in enumerate(rank)]}
+    return {"turns": turns, "turns_total": int(turn.sum()), "round": excerpt}

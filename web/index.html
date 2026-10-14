@@ -133,12 +133,12 @@
       <div class="panel-actions">
         <label class="field"><span>Visible window W</span>
           <select id="expW">
-            <option value="conventional">Conventional schema</option>
-            <option value="epoch">V-cloak, 200 ms round (Review-1)</option>
-            <option value="1">V-cloak, W = 1 s</option>
-            <option value="10">V-cloak, W = 10 s</option>
-            <option value="60">V-cloak, W = 60 s</option>
-            <option value="300" selected>V-cloak, W = 300 s</option>
+            <option value="BASELINE">Conventional schema (arrival order)</option>
+            <option value="EPOCH">V-cloak, 200 ms round (Review-1)</option>
+            <option value="W1">V-cloak, W = 1 s</option>
+            <option value="W10">V-cloak, W = 10 s</option>
+            <option value="W60">V-cloak, W = 60 s</option>
+            <option value="W300" selected>V-cloak, W = 300 s</option>
           </select></label>
         <button class="btn btn-primary" id="runAttack">Run attack</button>
       </div>
@@ -147,6 +147,7 @@
       <div class="attackviz" id="attackViz"></div>
       <div class="attackstats" id="attackStats"></div>
     </div>
+    <p class="note attacknote" id="attackNote"></p>
   </div>
   <div class="panel" id="ablationPanel"></div>
 </section>

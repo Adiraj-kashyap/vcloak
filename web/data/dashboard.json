@@ -4003,6 +4003,128 @@
    "users": 200
   }
  ],
+ "experiments": {
+  "attack": {
+   "endpoint": "/v1/eval/attack",
+   "id": "attack",
+   "layouts": [
+    {
+     "backend": "cupy",
+     "label": "Arrival order",
+     "layout": "BASELINE",
+     "metric_id": "S-TURNACC-BASELINE",
+     "params": {
+      "buckets": 64,
+      "duration_s": 900,
+      "n_conv": 200,
+      "rate": 0.05
+     },
+     "predicted": null,
+     "quick": false,
+     "run": "runs/20261013-054727_M14_security_e0e1",
+     "runner": "colab",
+     "seed": 2026,
+     "stat": "seed 2026, one replay",
+     "value": 1.0
+    },
+    {
+     "backend": "cupy",
+     "label": "Per epoch",
+     "layout": "EPOCH",
+     "metric_id": "S-TURNACC-EPOCH",
+     "params": {
+      "buckets": 64,
+      "duration_s": 900,
+      "n_conv": 200,
+      "rate": 0.05
+     },
+     "predicted": 0.9818815473036319,
+     "quick": false,
+     "run": "runs/20261013-054727_M14_security_e0e1",
+     "runner": "colab",
+     "seed": 2026,
+     "stat": "seed 2026, one replay",
+     "value": 0.9819834508621041
+    },
+    {
+     "backend": "cupy",
+     "label": "W = 1 s",
+     "layout": "W1",
+     "metric_id": "S-TURNACC-W1",
+     "params": {
+      "buckets": 64,
+      "duration_s": 900,
+      "n_conv": 200,
+      "rate": 0.05
+     },
+     "predicted": 0.9205967472384136,
+     "quick": false,
+     "run": "runs/20261013-054727_M14_security_e0e1",
+     "runner": "colab",
+     "seed": 2026,
+     "stat": "seed 2026, one replay",
+     "value": 0.9202298944279135
+    },
+    {
+     "backend": "cupy",
+     "label": "W = 10 s",
+     "layout": "W10",
+     "metric_id": "S-TURNACC-W10",
+     "params": {
+      "buckets": 64,
+      "duration_s": 900,
+      "n_conv": 200,
+      "rate": 0.05
+     },
+     "predicted": 0.6856071414013778,
+     "quick": false,
+     "run": "runs/20261013-054727_M14_security_e0e1",
+     "runner": "colab",
+     "seed": 2026,
+     "stat": "seed 2026, one replay",
+     "value": 0.6867484612562671
+    },
+    {
+     "backend": "cupy",
+     "label": "W = 60 s",
+     "layout": "W60",
+     "metric_id": "S-TURNACC-W60",
+     "params": {
+      "buckets": 64,
+      "duration_s": 900,
+      "n_conv": 200,
+      "rate": 0.05
+     },
+     "predicted": 0.5552928708270493,
+     "quick": false,
+     "run": "runs/20261013-054727_M14_security_e0e1",
+     "runner": "colab",
+     "seed": 2026,
+     "stat": "seed 2026, one replay",
+     "value": 0.5560265764480495
+    },
+    {
+     "backend": "cupy",
+     "label": "W = 300 s",
+     "layout": "W300",
+     "metric_id": "S-TURNACC-W300",
+     "params": {
+      "buckets": 64,
+      "duration_s": 900,
+      "n_conv": 200,
+      "rate": 0.05
+     },
+     "predicted": 0.508152284677781,
+     "quick": false,
+     "run": "runs/20261013-054727_M14_security_e0e1",
+     "runner": "colab",
+     "seed": 2026,
+     "stat": "seed 2026, one replay",
+     "value": 0.5067867769942527
+    }
+   ]
+  }
+ },
  "framing": [
   {
    "id": "gpu_utilisation",

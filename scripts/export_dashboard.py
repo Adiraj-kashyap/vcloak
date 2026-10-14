@@ -188,6 +188,26 @@ def attack_chart(best: dict[str, dict[str, str]], root: Path) -> dict[str, Any]:
             "metric_ids": ids, "runs": sorted({r["run_dir"] for r in rows if r})}
 
 
+def attack_experiment(best: dict[str, dict[str, str]], root: Path) -> dict[str, Any]:
+    """What the Experiments view compares a live run with (M18 S4): per layout the stored turn-order accuracy at
+    full precision, its row and the replay it came from (seed and sizes from the run's manifest). A layout
+    with no usable row has `value: null`: the page then has nothing to replay against and says NOT MEASURED."""
+    out = []
+    for key, label in ATTACK_LAYOUTS:
+        mid = f"S-TURNACC-{key}"
+        row = best.get(mid)
+        x: dict[str, Any] = {"layout": key, "label": label, "metric_id": mid, "value": None, "predicted": None}
+        if row is not None and _num(row["value"]) is not None:
+            m = _manifest(root, row["run_dir"])
+            lay = {r["layout"]: r for r in _json(root, row["run_dir"], "e1_attack.json")["layouts"]}.get(key, {})
+            pred = (lay.get("attack") or {}).get("predicted_turn_accuracy") if lay.get("mode") == "vcloak" else None
+            x.update(value=float(row["value"]), predicted=pred, run=row["run_dir"], backend=row["backend"],
+                     runner=row["runner"], stat=row["stat"], quick=row["quick"] != "no", seed=m.get("seed"),
+                     params={k: m["params"].get(k) for k in ("n_conv", "duration_s", "buckets", "rate")})
+        out.append(x)
+    return {"id": "attack", "endpoint": "/v1/eval/attack", "layouts": out}
+
+
 def gpu_util_chart(best: dict[str, dict[str, str]], valid: list[int]) -> dict[str, Any]:
     def vals(pattern: str) -> list[Any]:
         return [_num(best[pattern.format(u=u)]["value"]) if pattern.format(u=u) in best else None for u in valid]
@@ -406,6 +426,7 @@ def build(index: Path, root: Path) -> dict[str, Any]:
                     "note": "The claim is obliviousness of the server-side kernels against an adversary who sees "
                             "the store and no timing (ADR-023)."}],
         "framing": [gpu_framing(best, valid)],
+        "experiments": {"attack": attack_experiment(best, root)},
         "tiles": tiles,
         "charts": charts,
         "missing": missing,

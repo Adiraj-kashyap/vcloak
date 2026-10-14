@@ -1,0 +1,26 @@
+web/js/experiments.js:6: * first 24 turns scored right or wrong, and the accuracy against chance. The live number is then compared
+web/js/experiments.js:15:  var POLL_MS = 1000, STEP_MS = 55, N = 24;
+web/js/experiments.js:34:  function pct(x) { return (x * 100).toFixed(1) + "%"; }
+web/js/experiments.js:39:    /* accuracy on a 0..100 track; the chance mark is a coin flip, a public reference */
+web/js/experiments.js:41:    w.innerHTML = "<div class='track'><div class='fill' style='width:" + (acc * 100).toFixed(2) + "%'></div>" +
+web/js/experiments.js:42:      "<div class='chance' style='left:50%'><span>chance 50%</span></div></div>";
+web/js/experiments.js:48:    var verdict = acc > 0.9 ? "the order is recovered" : acc > 0.6 ? "partly recovered" : "close to a coin flip";
+web/js/experiments.js:52:      "<div class='v'>" + pct(acc) + "</div><div class='k'>" + esc(verdict) + " · 50% = coin flip</div>";
+web/js/experiments.js:190:      var s = ans && ans.status === 200 ? ans.body : null;
+web/js/experiments.js:228:    /* An illustration, not a sample: the stored rate applied to 24 cells (the count is exact, the positions
+web/js/experiments.js:234:      s = (s * 1103515245 + 12345) % 2147483648;
+web/js/experiments.js:235:      var b = Math.floor(s / 2147483648 * (a + 1)), t = hits[a];
+web/js/experiments.js:240:    viz.querySelector(".seqlabel").innerHTML = "<b>Illustration.</b> The stored rate applied to 24 turns; these " +
+web/js/experiments.js:246:        " applied to 24 turns.";
+web/js/experiments.js:274:      if (ans && (ans.status === 202 || ans.status === 409)) {
+web/js/experiments.js:275:        if (ans.status === 409 && ans.body && ans.body.layout !== layout) {
+web/js/experiments.js:314:      "<div class='k'>not run yet · 50% would be a coin flip</div></div>";
+web/js/experiments.js:336:    }, 250);
+web/js/api.js:16:    var timer = setTimeout(function () { ctl.abort(); }, 4000);
+web/js/api.js:37:    var timer = setTimeout(function () { ctl.abort(); }, 20000);
+web/js/api.js:90:        return { now_ms: t, epoch_ms: 200, epoch: Math.floor(t / 200), win: 41, slots: 64,
+web/js/api.js:91:                 queued: Math.floor((t / 200) % 7), mode: VC.state.mode,
+web/js/api.js:103:      return get("/v1/dump?limit=" + (limit || 50) + (windows ? "&windows=" + windows : "")).catch(function () {
+web/js/api.js:109:          d.rows.forEach(function (r, i) { r.row_id = String(1000 + i); });
+web/js/api.js:117:      return get("/v1/logs?kind=" + kind + "&tail=" + (tail || 400)).catch(function () {
+web/js/api.js:130:        if (r.status !== 200 || !r.body || !r.body.mode) {

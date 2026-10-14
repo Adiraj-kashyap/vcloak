@@ -1432,3 +1432,30 @@
   shown (it predates later changes; the note names its code).
 - Commit: see git log (M18 S3)
 - Next: M18 S4 (Experiments view: live attack through /v1/eval/attack) ; human action: none
+
+## Session 57 — 2026-10-14 — M18 S4: the Experiments view, the order-recovery attack live — owner:Abhishek
+- Steps: S4 (status after: IN_PROGRESS, current_step S5)
+- Did: `POST/GET /v1/eval/attack` (dev only; src/vcloak/service/evalapi.py): one run at a time in its own thread
+  replays the M14 seed traffic into a new in-memory store of the chosen layout, dumps it and runs the oracle's
+  attack; 409 while busy, 403 without --dev, errors as type names only. The live store of the chat cannot be
+  scored (the server has no ground truth), and the view says so. The M14 layout runner moved to
+  src/vcloak/eval/ablation.py (bench re-exports it); `run_layout(sample=n)` and `attack.sample` give the real
+  per-turn hits and one visible round of the dump. The exporter adds `experiments.attack` (per layout the indexed
+  S-TURNACC value at full precision, run, seed, sizes). experiments.js polls the run, animates the dump and the
+  24 turns, shows accuracy vs chance and compares live with stored (identical / different / not comparable);
+  without the endpoint it shows the stored value and a labelled illustration. Fixed: the old view looked up
+  "Conventional"/"Review-1", which the chart never had, so two layouts showed NOT MEASURED in demo mode.
+  scripts/check_live_attack.py; capture_evidence presses Run attack on W300 before the picture; docs/DEMO.md section 2.
+- Result: 6 of 6 layouts live through the served endpoint are identical to the stored S-TURNACC values (cupy/colab).
+- Evidence: runs/20261014-102648_M18_s4_live_attack, runs/20261014-103214_M18_s4_checks (pytest_all.txt,
+  check_*.txt, export_check.txt, a1_js_numbers.txt, a_terms_grep.txt, capture.txt), evidence/screens/
+  M18_experiments_{light,dark}_20261014.png, M18_dashboard_* (earlier pair superseded), evidence/terminal/M18_S4_*
+- Metrics added: none (the live run is a numpy correctness check)
+- Decisions: by the agent: the live run uses the numpy backend whatever the service runs (ADR-015, one engine
+  thread); a live run starts only from the button (a full replay is long), a first visit shows the stored value.
+- Issues: none opened or closed
+- Deviations from spec: "on the current database" is not possible with a score (no ground truth on the server):
+  the run uses a new store built from the seed traffic, stated on screen and in DEMO.md.
+- Not verified: the endpoint while the service is under chat load (the replay shares the process's CPU).
+- Commit: see git log (M18 S4)
+- Next: M18 S5 (Logs view, /v1/logs with the allow-list) ; human action: none

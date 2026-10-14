@@ -208,3 +208,22 @@ def test_attack_prediction_is_the_runs_own_and_absent_for_arrival_order():
     run = json.loads((ROOT / a["runs"][0] / "e1_attack.json").read_text(encoding="utf-8"))
     w300 = next(x for x in run["layouts"] if x["layout"] == "W300")
     assert pred["values"][-1] == round(w300["attack"]["predicted_turn_accuracy"] * 100, 1)
+
+
+def test_experiment_layouts_carry_the_indexed_value_at_full_precision_and_the_replay(tmp_path):
+    """M18 S4: the live run is compared with these, so the value is the index's own, unrounded, with the seed
+    and sizes of the run that produced it; a deleted row leaves nothing to compare with."""
+    ed = _module()
+    exp = ed.build(INDEX, ROOT)["experiments"]["attack"]
+    assert exp["endpoint"] == "/v1/eval/attack"
+    rows, _ = ed.check_metrics.parse_index(INDEX)
+    for x in exp["layouts"]:
+        assert any(r["id"] == x["metric_id"] and float(r["value"]) == x["value"] and r["run_dir"] == x["run"]
+                   for r in rows)
+        man = json.loads((ROOT / x["run"] / "manifest.json").read_text(encoding="utf-8"))
+        assert x["seed"] == man["seed"] and x["params"]["n_conv"] == man["params"]["n_conv"]
+        assert (x["predicted"] is None) == (x["layout"] == "BASELINE")
+    mid = "S-TURNACC-W60"
+    idx = _doctored(tmp_path, lambda ln: None if ln.startswith(f"| {mid} |") else ln)
+    gone = next(x for x in ed.build(idx, ROOT)["experiments"]["attack"]["layouts"] if x["metric_id"] == mid)
+    assert gone["value"] is None and "run" not in gone

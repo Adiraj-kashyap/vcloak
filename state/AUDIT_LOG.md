@@ -1663,3 +1663,27 @@ Notes:
 - ISSUE-12 wording: the pipeline chart shows device stages only, from the one run with the most valid sizes; host and
   whole call are not drawn and the note says why. ISSUE-15: UNSTABLE kernel sizes are gaps, never points.
 - E6 CDFs: valid user counts only, repetitions drawn apart (never pooled), as in results/e2e.
+
+## Audit — M18 S4 — 2026-10-14 — session 57 — PASS (step audit; module audit at the end of M18)
+RUN is runs/20261014-103214_M18_s4_checks. LIVE is runs/20261014-102648_M18_s4_live_attack.
+| Item | Result | Evidence |
+|---|---|---|
+| S4 check: live run matches the stored number | PASS | LIVE/live_attack.json and terminal.txt: all six layouts through the served `/v1/eval/attack` (real HTTP, `--dev`, SQLite), each live turn_order_accuracy identical (==, full precision) to the indexed S-TURNACC value from the Colab cupy run, with the same seed and sizes; all run checks ok. The W300 screenshot shows the same comparison on screen |
+| A1 no result literal in web/js | PASS | RUN/a1_js_numbers.txt: experiments.js literals are a poll/step interval, the 24-cell sample size, the 50 % chance mark, the verdict thresholds, PRNG constants and HTTP status codes; api.js lines 90-91 are the unchanged demo fallback. The typed "about a minute" was removed before capture |
+| A2 tiles/charts carry indexed METRIC-IDs | PASS | experiments.attack names S-TURNACC-<layout> per layout with its run (test_experiment_layouts_carry_the_indexed_value_...); RUN/check_metrics.txt 895 rows, 0 problems |
+| A3 missing → NOT MEASURED | PASS | deleting S-TURNACC-W60 leaves value null (same test); the view then renders NOT MEASURED with the M14 command |
+| A4 logs endpoint redaction | N/A | S5. The eval endpoint serves no conversation index, ciphertext, digest, token, bucket or row id (test_quick_run_matches_...: key scan) and errors as type names only |
+| A5 both themes | PASS | evidence/screens/M18_experiments_{light,dark}_20261014.png (light opened and read); dashboard re-captured, earlier pair moved to evidence/superseded/ |
+| G1 | PASS | RUN/pytest_all.txt 2211 passed, 675 skipped (CUDA-only, same count as S3), browser tests ran; 6 tests added |
+| G2 / G2b | PASS | no metric added; the live run is a numpy correctness check, recorded as such, never indexed |
+| G3 | PASS | RUN/check_oblivious.txt 0 findings; no kernel changed |
+| G4 | PASS | RUN/check_secrets.txt after the evidence copies (2437 files, 0) |
+| G5 | N/A | no GPU twin |
+| G6 | PASS | src/vcloak/service/evalapi.py, src/vcloak/eval/ablation.py (moved from bench, re-exported), attack.sample, exporter block, experiments.js/api.js/index.html/app.css, scripts/check_live_attack.py, capture_evidence live step, tests/integration/test_eval_api.py, docs/DEMO.md section 2 |
+| G7 | PASS | the session commit, owner Abhishek |
+| G8 | PASS | STATE: session 57, M18 at S5, sessions 4 |
+| G9 | PASS | SESSION_LOG session 57, this entry; no issue opened or closed |
+| G10 | PASS | export_dashboard --check current (RUN/export_check.txt); export_results --check 0 would change; check_live_attack.py reruns the S4 check |
+Notes:
+- The M14 eval tests (50) pass after the move of the layout runner; M14 output is unchanged (the bench re-exports the names).
+- No "ORAM" or "grouping" in the changed files (RUN/a_terms_grep.txt).
