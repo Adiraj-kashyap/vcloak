@@ -1299,3 +1299,35 @@
   580.178.04, CUDA 12090) is not the image of the `runner` block or of M07: no timing is compared across them.
 - Commit: 29a77d7 (ingested runs, evidence), records in the next commit
 - Next: M15 S3 (metrics from the 12 cells) ; human action: none required; ISSUE-51 if the default (a) should change
+
+## Session 52 — 2026-10-14 — M15 S3: ISSUE-51 decided (a), evaluated scale 10 and 50 users, 66 E2E rows indexed — owner:Divyansh
+- Steps: S3 (status after: IN_PROGRESS, current_step S4, gpu_job.pending null)
+- Did: recorded the owner's decision on ISSUE-51 (ADR-028, module Amendments, docs/REFINEMENTS.md). Read the lost
+  sends in the ingested cells (lost_send.py) and ran one local 200-user cell to reproduce them. Changed the
+  generator: `achieved_msgs_s` counts answers that arrived in the measured interval; a send that fails without
+  an answer keeps being looked for (`errors_readable`, `error_ms`). Wrote `vcloak.bench.report_e2e` (derive,
+  render) and check_metrics rule 6 for derivation runs. Derived and indexed the metrics, rendered results/e2e and
+  section 4.E of the notes.
+- Result: 10 and 50 users, both modes, are valid; every send acknowledged and read back, no epoch overflow. The
+  22 rows of 200 users are UNSTABLE by cause and in no table. Of the 44 rows at 10 and 50 users, 5 are UNSTABLE:
+  the baseline ack p99 repetitions are apart at both counts (and p95 at 10 users), so the added ack p99 is
+  UNSTABLE too. The lost send is an httpx ReadError (broken connection), not a timeout; no acknowledged send was
+  ever left unread; whether an unanswered send was stored cannot be read from the files (ISSUE-52).
+- Evidence: runs/20261014-081645_M15_e2e_metrics (summary.json, cells.csv), runs/20261014-081739_M15_s3_checks
+  (lost_send.py/.txt, pytest_all.txt, check_*.txt, export_check.txt, ruff.txt), results/e2e,
+  runs/20261014-080401_M15_vcloak_u200_r1_quick (local, numpy, no metric), evidence/terminal/M15_S3_*,
+  evidence/gpu/M15_e2e_metrics.csv
+- Metrics added: 66 rows E2E-* (P50/P95/P99, READABLE-P50/P95/P99 and TPUT per mode; ADDED-*, OVERFLOW, GPUUTIL,
+  GPUUTIL-P95, POWER-W per user count; U10, U50, U200), all from runs/20261014-081645_M15_e2e_metrics
+- Decisions: by the owner: ISSUE-51 (a) and its wording. By the agent: the rule that marks a user count
+  (generator above 100 % of a core), derivation runs and check_metrics rule 6, UNSTABLE inputs make UNSTABLE
+  outputs, the extra metric ids (all in ADR-028).
+- Issues: closed ISSUE-51 (ff4f587); opened ISSUE-52 (unanswered sends at 200 users, low)
+- Deviations from spec: the metrics are computed on the laptop from ingested files, not on the runner (ADR-028).
+  "Within budget" is written as "no epoch overflow", with the missed boundaries beside it (15 and 1 at 10 users,
+  0 and 1 at 50): the owner's wording is kept and defined, not widened. S4 not started (one step this session).
+- Not verified: which part of the path before the scheduler queue held the 200-user sends (generator, connection
+  or the HTTP layer of the service); the cause of the ReadError; the one invalid_dpop_proof; why two V-cloak
+  schemas have 5 tables. The exporter does not read derivation runs: no E6 value is in results/paper yet.
+- Commit: ff4f587 (code, ADR, amendment), records in the next commit
+- Next: M15 S4 (plots: valid user counts only, no line through them) ; human action: none required

@@ -4,6 +4,7 @@
                                              [--index state/METRICS_INDEX.md]
     python -m vcloak.bench.report_e2e render --metrics runs/<..._M15_e2e_metrics> [--out results/e2e]
                                              [--notes docs/REPORT_CH4_NOTES.md] [--issue-scale ISSUE-51]
+                                             [--issue-lost ISSUE-52]
 
 `derive` reads the cells of one driver run of `bench/run_e2e_cells.py` (samples.csv, cpu.csv, telemetry.csv and
 summary.json of every cell) and writes a derivation run: `summary.json` with the E2E-* metrics and `cells.csv`
@@ -268,7 +269,7 @@ def _md_table(header: list[str], rows: list[list[str]]) -> list[str]:
             *("| " + " | ".join(str(x) for x in r) + " |" for r in rows)]
 
 
-def build_section(run: dict[str, Any], issue_scale: str) -> str:
+def build_section(run: dict[str, Any], issue_scale: str, issue_lost: str = "no issue") -> str:
     s, prov, val = run["summary"], run["summary"]["provenance"], run["summary"]["validity"]
     c = prov["conditions"]
 
@@ -331,27 +332,49 @@ def build_section(run: dict[str, Any], issue_scale: str) -> str:
          "served; they are not a capacity.",
          "- Epoch overflow counts submissions left for a later epoch because their epoch was full. A missed "
          "boundary is an epoch boundary that passed while an earlier epoch was still being written; it is read "
-         "from the service counters of each V-cloak cell and is not an indexed metric.", "",
+         "from the service counters of each V-cloak cell and is not an indexed metric.",
+         "- GPU utilisation and power are NVML samples at 10 Hz inside the measured interval of the V-cloak "
+         "cells; NVML reports utilisation in whole percent.", "",
          "## 4.E.5 What these cells show",
          f"- In every valid cell ({pop} users, both modes, both repetitions) every scheduled send was "
          f"acknowledged and read back by its peer: {sum(x['stats']['scheduled'] for x in cells)} sends counted "
          f"over {len(cells)} cells, {sum(sum(x['stats']['errors'].values()) for x in cells)} send errors, "
          f"{sum(x['stats']['readable_missing'] for x in cells)} acknowledged sends not read back, "
          f"{sum(sum(x['reads']['errors'].values()) for x in cells)} read errors.",
-         f"- The claim these cells support: V-cloak is demonstrated correct and within its epoch budget (no "
-         f"submission overflowed an epoch) at {pop} concurrent users in two-party conversations, on this runner, "
-         "at this send rate.",
-         f"- **Scaling behaviour is untested.** {len(valid)} user counts are not a scaling curve: no trend is "
+         f"- The claim these cells support: V-cloak is demonstrated correct and within budget at {pop} "
+         "concurrent users in two-party conversations, on this runner, at this send rate. Within budget means "
+         "that no submission overflowed its epoch (4.E.4). It does not mean that every epoch was written inside "
+         "EPOCH_MS: at the missed boundaries of 4.E.4 an earlier epoch was still being written.",
+         f"- **Scaling behaviour is untested.** {_count(len(valid))} user counts are not a scaling curve: no "
+         "trend is "
          "drawn through them, nothing is extrapolated from them, and they do not show how the system behaves as "
          "the number of users grows.", ""]
     if excluded:
         L += ["## 4.E.6 Excluded from every table"]
         for u in excluded:
             v = val[str(u)]
+            mine = [x for x in s["cells"] if x["users"] == u]
+            svc = [x["service_cpu_pct"] for x in mine if x["mode"] == "vcloak" and x["service_cpu_pct"] is not None]
+            gen = [x["generator_cpu_pct"] for x in mine if x["generator_cpu_pct"] is not None]
+            errs: dict[str, int] = {}
+            for x in mine:
+                for k, n in x["stats"]["errors"].items():
+                    errs[k] = errs.get(k, 0) + n
             L.append(f"- **{u} users (two per conversation): `UNSTABLE`.** Cause: {v['cause']}. The latencies of "
                      "these cells contain the generator's own queueing, so the limit was the measuring harness "
                      f"and not the system; the rows stay in the run record as `UNSTABLE` ({issue_scale}) and in "
                      "no table or figure. They were not measured again and no cell was added.")
+            if gen and svc:
+                L.append(f"  - What the cause rests on: the generator process used {min(gen):.0f} to {max(gen):.0f} % "
+                         f"of one core in the {len(mine)} cells, and the service process {min(svc):.0f} to "
+                         f"{max(svc):.0f} % of a core in the V-cloak cells (psutil, 2 Hz, measured interval).")
+            L.append(f"  - Correctness in these cells: "
+                     f"{sum(x['stats']['readable_missing'] for x in mine)} acknowledged sends were not read back. "
+                     + (f"{sum(errs.values())} sends of the measured interval got no answer "
+                        f"({', '.join(f'{n} {k}' for k, n in sorted(errs.items()))}: the connection broke, the "
+                        "request did not time out). They were never acknowledged, and whether the service stored "
+                        f"them is not known from these runs ({issue_lost})." if errs else
+                        "No send failed."))
         L += [""]
     L += [f"## 4.E.{7 if excluded else 6} Limitations",
           f"- Two populations ({pop} users), one send rate, one runner session, two repetitions per cell. "
@@ -362,6 +385,10 @@ def build_section(run: dict[str, Any], issue_scale: str) -> str:
           "- The client and the service share the CPU of one machine: the latencies include that contention.",
           "- Two-party conversations only (ADR-027).", M15_END]
     return "\n".join(L) + "\n"
+
+
+def _count(n: int) -> str:
+    return {1: "One", 2: "Two", 3: "Three", 4: "Four"}.get(n, str(n))
 
 
 def merge_notes(path: Path, section: str) -> None:
@@ -376,7 +403,7 @@ def merge_notes(path: Path, section: str) -> None:
 
 
 def render(metrics_run: str | Path, out: str | Path = "results/e2e", notes: str | Path | None = None,
-           issue_scale: str = "no issue", root: str | Path = ".") -> dict[str, Any]:
+           issue_scale: str = "no issue", root: str | Path = ".", issue_lost: str = "no issue") -> dict[str, Any]:
     root, out = Path(root), Path(out)
     run = load_run(metrics_run)
     s = run["summary"]
@@ -404,7 +431,7 @@ def render(metrics_run: str | Path, out: str | Path = "results/e2e", notes: str 
                "generated_by": "python -m vcloak.bench.report_e2e render"}
     (out / "e2e_summary.json").write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
     if notes:
-        merge_notes(Path(notes), build_section(run, issue_scale))
+        merge_notes(Path(notes), build_section(run, issue_scale, issue_lost))
     return summary
 
 
@@ -420,6 +447,7 @@ def main(argv: list[str] | None = None) -> int:
     r.add_argument("--out", default="results/e2e")
     r.add_argument("--notes", default=None, help="merge the M15 section into these notes")
     r.add_argument("--issue-scale", default="no issue", help="issue quoted for an excluded user count")
+    r.add_argument("--issue-lost", default="no issue", help="issue quoted for sends that got no answer")
     a = ap.parse_args(argv)
     try:
         if a.cmd == "derive":
@@ -431,7 +459,7 @@ def main(argv: list[str] | None = None) -> int:
             for u, v in s["validity"].items():
                 print(f"  {u} users: {'valid' if v['valid'] else UNSTABLE + ' - ' + str(v['cause'])}")
             return 0
-        s = render(a.metrics, a.out, a.notes, a.issue_scale)
+        s = render(a.metrics, a.out, a.notes, a.issue_scale, issue_lost=a.issue_lost)
     except ReportError as e:
         print(f"report_e2e: {NM} - {e}")
         return 1

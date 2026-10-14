@@ -125,7 +125,7 @@ def test_a_user_count_whose_generator_was_above_one_core_is_unstable_and_in_no_t
     at200 = [x for k, x in m.items() if "-U200" in k]
     assert at200 and all(x["value"] == UNSTABLE and "load generator at its limit" in x["cause"] for x in at200)
     assert m["E2E-P50-U10-vcloak"]["value"] == 105.0
-    s = report_e2e.render(run_dir, root / "results" / "e2e", root / "notes.md", "ISSUE-51", root)
+    s = report_e2e.render(run_dir, root / "results" / "e2e", root / "notes.md", "ISSUE-51", root, "ISSUE-52")
     assert s["users_valid"] == [10] and s["excluded"]["200"]["status"] == UNSTABLE
     with (root / "results" / "e2e" / "e2e_cells.csv").open(newline="") as f:
         assert {r["users"] for r in csv.DictReader(f)} == {"10"}
@@ -133,7 +133,10 @@ def test_a_user_count_whose_generator_was_above_one_core_is_unstable_and_in_no_t
     notes = (root / "notes.md").read_text()
     assert "E2E-P50-U10-vcloak-->" in notes and "U200" not in notes
     assert "**200 users (two per conversation): `UNSTABLE`.**" in notes and "ISSUE-51" in notes
-    assert "Scaling behaviour is untested" in notes and "not a scaling curve" in notes
+    assert "Scaling behaviour is untested" in notes and "One user counts are not a scaling curve" in notes
+    assert "1 sends of the measured interval got no answer (1 ReadError" in notes and "(ISSUE-52)" in notes
+    assert "0 acknowledged sends were not read back" in notes and "30 to 121 % of one core" in notes
+    assert "It does not mean that every epoch was written inside" in notes
     assert "several generator processes" in notes and "CAND_K sizing rule" in notes
 
 

@@ -1,0 +1,19 @@
+{
+ "module": "M15",
+ "run": "runs/20261014-081739_M15_s3_checks (git ff4f587, dirty)",
+ "date": "2026-10-14",
+ "views": {},
+ "checks": {},
+ "ok": true,
+ "superseded": [],
+ "index_rows": [
+  "TERM-M15-S3-LOST-SEND",
+  "TERM-M15-S3-CHECK-METRICS",
+  "TERM-M15-S3-PYTEST-ALL"
+ ],
+ "files_written": [
+  "terminal/M15_S3_lost_send.txt",
+  "terminal/M15_S3_check_metrics.txt",
+  "terminal/M15_S3_pytest_all.txt"
+ ]
+}

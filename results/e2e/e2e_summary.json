@@ -1,0 +1,67 @@
+{
+  "provenance": {
+    "backend": "cupy",
+    "runner": "kaggle",
+    "session_id": "20261014-013736",
+    "gpu": "Tesla T4",
+    "cuda": "12090",
+    "cupy": "14.0.1",
+    "driver": "580.178.04",
+    "cpu_count": 4,
+    "job_id": "20261014-065041_M15",
+    "git_sha": "c64ec321271a55c68228f4406a99659aa0c4856b",
+    "seed": 15,
+    "quick": false,
+    "driver_run": "runs/20261014-013858_M15_e2e_cells",
+    "conditions": {
+      "ack": "stored",
+      "sessions": true,
+      "ws_sockets": 0,
+      "store": "pg",
+      "users_per_conversation": 2,
+      "rate_per_user_s": 0.15,
+      "duration_s": 120.0,
+      "warmup_s": 20.0,
+      "drain_s": 5.0,
+      "poll_ms": 500.0,
+      "clock": "time.monotonic() in the generator process; client and service on one machine"
+    },
+    "slots": 256,
+    "epoch_ms": 200,
+    "window_s": 60
+  },
+  "metrics_run": "runs/20261014-081645_M15_e2e_metrics",
+  "users_valid": [
+    10,
+    50
+  ],
+  "users_per_conversation": 2,
+  "excluded": {
+    "200": {
+      "status": "UNSTABLE",
+      "cause": "load generator at its limit: the single-process generator used more than one core (above 100 % of a core) inside the measured interval",
+      "cells": [
+        "runs/20261014-014912_M15_baseline_u200_r1",
+        "runs/20261014-020539_M15_baseline_u200_r2",
+        "runs/20261014-015212_M15_vcloak_u200_r1",
+        "runs/20261014-020839_M15_vcloak_u200_r2"
+      ],
+      "issue": "ISSUE-51"
+    }
+  },
+  "metrics": 44,
+  "metrics_unstable": [
+    "E2E-ADDED-P99-U10",
+    "E2E-ADDED-P99-U50",
+    "E2E-P95-U10-baseline",
+    "E2E-P99-U10-baseline",
+    "E2E-P99-U50-baseline"
+  ],
+  "scaling": "untested: the valid user counts are not a scaling curve; no trend, no extrapolation",
+  "files": [
+    "e2e_cells.csv",
+    "e2e_metrics.csv",
+    "e2e_summary.json"
+  ],
+  "generated_by": "python -m vcloak.bench.report_e2e render"
+}

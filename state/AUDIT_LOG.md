@@ -1528,3 +1528,29 @@ The module audit is due after S4. A1 and A2 are read here on the ingested cells;
 Notes:
 - RUN is runs/20261014-074636_M15_s2_ingest_checks.
 - No file under ai/ changed. No code changed: the only new script is the reading inside RUN.
+
+## Audit — session 52 — 2026-10-14 — M15 S3 (checkpoint, module IN_PROGRESS) — RESULT: PASS (step), module not audited
+The module audit is due after S4. A3 is recorded here as metrics.
+| Check | Result | Evidence |
+|---|---|---|
+| A1 both modes under identical conditions | PASS | `report_e2e derive` refuses anything but one environment, one set of conditions and one job over the driver and the 12 cells (load_cells); it ran. Pinned by test_refuses_cells_that_are_not_one_ingested_device_session |
+| A2 warm-up excluded consistently | PASS | every statistic is recomputed from samples.csv by `e2e.summarise` over the sends scheduled in the measured interval; the throughput counts answers that arrived in the same interval (ADR-028 (4)) |
+| A3 repetitions within 15% or UNSTABLE | PASS | DER/summary.json: 66 rows, each with both repetitions and their spread. At 10 and 50 users 5 of 44 are UNSTABLE (baseline ack p95 at 10 users, baseline ack p99 at 10 and 50, and the two added ack p99 made from them). The 22 rows of 200 users are UNSTABLE by cause (generator above one core), the owner's decision on ISSUE-51 |
+| G1 | PASS | RUN/pytest_all.txt (2186 passed, 675 skipped: 674 need a CUDA device, 1 is the M02 reference placeholder; no database skip) |
+| G2 | PASS | RUN/check_metrics.txt (895 rows, 0 problems; 66 added). Tagged values of section 4.E are index rows; untagged counts are read from the cell runs through DER (results/e2e/e2e_cells.csv). RUN/export_check.txt: 0 would change |
+| G2b | PASS | the 66 rows point at a derivation run whose 13 sources are cupy, with a gpu_job block, runner kaggle, one session, one job (check_metrics rule 6, new in this session, with tests). The derivation's own manifest says numpy/local, which is what it is |
+| G3 | PASS | RUN/check_oblivious.txt (0 findings); no kernel changed |
+| G4 | PASS | RUN/check_secrets.txt (2327 files, 0 key-like runs) |
+| G5 | N/A | no GPU twin |
+| G6 | PARTIAL (S4) | bench/run_e2e.py, results/e2e/*.csv and *.json, section 4.E of docs/REPORT_CH4_NOTES.md exist; the PNG figures are S4 |
+| G7 | PASS | ff4f587 (code) and the records commit, owner Divyansh; review/publication/ stays untracked |
+| G8 | PASS | STATE: session 52, M15 IN_PROGRESS at S4, sessions 4, gpu_job.pending null |
+| G9 | PASS | SESSION_LOG session 52, this entry, ISSUE-51 closed, ISSUE-52 opened |
+| G10 | PASS | DER and RUN validate (`new_run.py --validate`); `report_e2e derive` on the same cells gave the same 66 values in a dry run before the indexed one; lost_send.py re-runs from the repository root |
+Notes:
+- DER is runs/20261014-081645_M15_e2e_metrics, RUN is runs/20261014-081739_M15_s3_checks.
+- The audit tool was changed in the session that needed it: check_metrics rule 6 (ADR-028 (3)). It adds a path, it
+  loosens none: a derivation is accepted only when every run it names passes the old rule 4. Flagged for the owner.
+- Hard rule 8: ai/ was changed only by ADR-028 and the Amendments of M15.
+- The cause recorded for the 200-user rows is the owner's reading. What the files add: the seconds were spent before
+  the scheduler queue. They do not separate the generator from the HTTP layer of the service (ISSUE-51, closing note).

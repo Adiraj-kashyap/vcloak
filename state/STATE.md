@@ -3,13 +3,13 @@
 ```yaml
 project: v-cloak
 kit_version: 1.0
-last_session: 51
+last_session: 52
 last_session_date: 2026-10-14
 current_module: M15
-current_step: S3
+current_step: S4
 status: IN_PROGRESS           # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
 next_unit: M15
-last_checkpoint: 2026-10-14 session 51: M15 S2 done, job 20261014-065041_M15 ingested (12 cells); 200 users ran at the generator's limit (ISSUE-51); next: S3
+last_checkpoint: 2026-10-14 session 52: M15 S3 done, 66 E2E rows indexed (runs/20261014-081645_M15_e2e_metrics); valid scale 10 and 50 users, 200 UNSTABLE (ISSUE-51 closed, ADR-028); next: S4 plots
 quick_mode_default: false
 local:                      # the laptop (no GPU) — filled by M00 S7
   os: "Windows-11-10.0.26200-SP0"
@@ -56,7 +56,7 @@ gpu_job:                    # set by the gpu-job skill
 | M12 | Client SDK & CLI | Abhishek | M11 | no | DONE | S4 | 1 |
 | M13 | Frontend: chat + server view | Abhishek | M12 | no | DONE | S6 | 5 |
 | M14 | Security evaluation (E0–E2, anon set) | Abhishek | M08, M10 | no | DONE | S7 | 6 |
-| M15 | End-to-end performance (E6) | Divyansh | M10, M11 | no | IN_PROGRESS | S3 | 3 |
+| M15 | End-to-end performance (E6) | Divyansh | M10, M11 | no | IN_PROGRESS | S4 | 4 |
 | M16 | Results export | Abhishek | M07, M08, M14 | no | DONE | S4 | 2 |
 | M18 | Frontend: dashboard, experiments, logs | Abhishek | M13, M14 | no | NOT_STARTED | S1 | 0 |
 | M17 | Final audit & demo (Review 3 close-out) | Team | all required | no | NOT_STARTED | S1 | 0 |
@@ -138,7 +138,12 @@ Keep this file under 120 lines: one or two lines per note, the detail lives in t
   messages per user per second (at 0.2 the 200-user cell can exceed CAND_K), SLOTS 256, two repetitions:
   `python bench/run_e2e_cells.py`. No statement about 1000 users end to end. Never shrink, drop or retry a cell:
   report which and why to the owner first. Cell run names stay under 43 characters (check_secrets).
-- M15 cells are ingested (session 51: Kaggle T4, 4 vCPU, driver 580.178.04, one runner session; cells in
-  runs/20261014-013858_M15_e2e_cells/cells.csv). ISSUE-51: at 200 users the generator was above one core in both
-  modes; default (a): those rows are UNSTABLE, no added latency and no verdict for 200 users. Never index
-  `achieved_msgs_s` (it counts by scheduled time): S3 derives throughput from completion times in samples.csv.
+- M15 S3 (ADR-028, ISSUE-51 closed): valid scale is 10 and 50 users (two per conversation); the 200-user rows are
+  UNSTABLE by cause (generator above one core, service at 25 to 32 %) and in no table or figure. Claim: correct and
+  within budget at 10 and 50 users. Never a trend line, an extrapolation or "how it scales": scaling is untested,
+  future work (multi-process harness, CAND_K sizing rule; docs/REFINEMENTS.md). No 100-user cell, no rerun of 200.
+- E6 numbers: `python -m vcloak.bench.report_e2e derive|render` (section 4.E and results/e2e are generated). The
+  rows live in the derivation run runs/20261014-081645_M15_e2e_metrics (check_metrics rule 6). Added ack p99 is
+  UNSTABLE at both counts (baseline p99 repetitions apart): never quote it. "Within budget" = no epoch overflow;
+  say the missed boundaries beside it. The exporter does not know derivation runs yet (M16 work before E6 values
+  enter the paper tables). ISSUE-52: three unanswered sends at 200 users, cause not found.

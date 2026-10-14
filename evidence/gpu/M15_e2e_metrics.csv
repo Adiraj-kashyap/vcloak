@@ -1,0 +1,45 @@
+metric_id,users,users_per_conversation,value,unit,stat,run_dir
+E2E-P50-U10-baseline,10,2,4.768,ms,"p50 of submit to ack (ack: stored), mean of 2 repetitions",runs/20261014-081645_M15_e2e_metrics
+E2E-P95-U10-baseline,10,2,UNSTABLE,ms,"p95 of submit to ack (ack: stored), mean of 2 repetitions",runs/20261014-081645_M15_e2e_metrics
+E2E-P99-U10-baseline,10,2,UNSTABLE,ms,"p99 of submit to ack (ack: stored), mean of 2 repetitions",runs/20261014-081645_M15_e2e_metrics
+E2E-READABLE-P50-U10-baseline,10,2,257.25,ms,"p50 of submit to readable by the peer, mean of 2 repetitions",runs/20261014-081645_M15_e2e_metrics
+E2E-READABLE-P95-U10-baseline,10,2,471.123,ms,"p95 of submit to readable by the peer, mean of 2 repetitions",runs/20261014-081645_M15_e2e_metrics
+E2E-READABLE-P99-U10-baseline,10,2,499.979,ms,"p99 of submit to readable by the peer, mean of 2 repetitions",runs/20261014-081645_M15_e2e_metrics
+E2E-TPUT-U10-baseline,10,2,1.408,msgs/s,"acks that arrived in the measured interval over its seconds, mean of 2 repetitions",runs/20261014-081645_M15_e2e_metrics
+E2E-P50-U10-vcloak,10,2,105.469,ms,"p50 of submit to ack (ack: stored), mean of 2 repetitions",runs/20261014-081645_M15_e2e_metrics
+E2E-P95-U10-vcloak,10,2,199.467,ms,"p95 of submit to ack (ack: stored), mean of 2 repetitions",runs/20261014-081645_M15_e2e_metrics
+E2E-P99-U10-vcloak,10,2,205.701,ms,"p99 of submit to ack (ack: stored), mean of 2 repetitions",runs/20261014-081645_M15_e2e_metrics
+E2E-READABLE-P50-U10-vcloak,10,2,365.226,ms,"p50 of submit to readable by the peer, mean of 2 repetitions",runs/20261014-081645_M15_e2e_metrics
+E2E-READABLE-P95-U10-vcloak,10,2,620.579,ms,"p95 of submit to readable by the peer, mean of 2 repetitions",runs/20261014-081645_M15_e2e_metrics
+E2E-READABLE-P99-U10-vcloak,10,2,673.008,ms,"p99 of submit to readable by the peer, mean of 2 repetitions",runs/20261014-081645_M15_e2e_metrics
+E2E-TPUT-U10-vcloak,10,2,1.408,msgs/s,"acks that arrived in the measured interval over its seconds, mean of 2 repetitions",runs/20261014-081645_M15_e2e_metrics
+E2E-ADDED-P50-U10,10,2,100.701,ms,"vcloak minus baseline, p50, each the mean of 2 repetitions",runs/20261014-081645_M15_e2e_metrics
+E2E-ADDED-P99-U10,10,2,UNSTABLE,ms,"vcloak minus baseline, p99, each the mean of 2 repetitions",runs/20261014-081645_M15_e2e_metrics
+E2E-ADDED-READABLE-P50-U10,10,2,107.976,ms,"vcloak minus baseline, p50, each the mean of 2 repetitions",runs/20261014-081645_M15_e2e_metrics
+E2E-ADDED-READABLE-P99-U10,10,2,173.029,ms,"vcloak minus baseline, p99, each the mean of 2 repetitions",runs/20261014-081645_M15_e2e_metrics
+E2E-OVERFLOW-U10,10,2,0,submissions,"left for a later epoch, sum of 2 repetitions",runs/20261014-081645_M15_e2e_metrics
+E2E-GPUUTIL-U10,10,2,0.0,%,"median of NVML utilisation at 10 Hz in the measured interval, vcloak cells, mean of 2 repetitions",runs/20261014-081645_M15_e2e_metrics
+E2E-GPUUTIL-P95-U10,10,2,1.0,%,"p95 of NVML utilisation at 10 Hz in the measured interval, vcloak cells, mean of 2 repetitions",runs/20261014-081645_M15_e2e_metrics
+E2E-POWER-W-U10,10,2,29.123,W,"median NVML power draw at 10 Hz in the measured interval, vcloak cells, mean of 2 repetitions",runs/20261014-081645_M15_e2e_metrics
+E2E-P50-U50-baseline,50,2,4.712,ms,"p50 of submit to ack (ack: stored), mean of 2 repetitions",runs/20261014-081645_M15_e2e_metrics
+E2E-P95-U50-baseline,50,2,8.3,ms,"p95 of submit to ack (ack: stored), mean of 2 repetitions",runs/20261014-081645_M15_e2e_metrics
+E2E-P99-U50-baseline,50,2,UNSTABLE,ms,"p99 of submit to ack (ack: stored), mean of 2 repetitions",runs/20261014-081645_M15_e2e_metrics
+E2E-READABLE-P50-U50-baseline,50,2,252.962,ms,"p50 of submit to readable by the peer, mean of 2 repetitions",runs/20261014-081645_M15_e2e_metrics
+E2E-READABLE-P95-U50-baseline,50,2,484.471,ms,"p95 of submit to readable by the peer, mean of 2 repetitions",runs/20261014-081645_M15_e2e_metrics
+E2E-READABLE-P99-U50-baseline,50,2,508.14,ms,"p99 of submit to readable by the peer, mean of 2 repetitions",runs/20261014-081645_M15_e2e_metrics
+E2E-TPUT-U50-baseline,50,2,7.875,msgs/s,"acks that arrived in the measured interval over its seconds, mean of 2 repetitions",runs/20261014-081645_M15_e2e_metrics
+E2E-P50-U50-vcloak,50,2,110.296,ms,"p50 of submit to ack (ack: stored), mean of 2 repetitions",runs/20261014-081645_M15_e2e_metrics
+E2E-P95-U50-vcloak,50,2,199.928,ms,"p95 of submit to ack (ack: stored), mean of 2 repetitions",runs/20261014-081645_M15_e2e_metrics
+E2E-P99-U50-vcloak,50,2,209.619,ms,"p99 of submit to ack (ack: stored), mean of 2 repetitions",runs/20261014-081645_M15_e2e_metrics
+E2E-READABLE-P50-U50-vcloak,50,2,364.522,ms,"p50 of submit to readable by the peer, mean of 2 repetitions",runs/20261014-081645_M15_e2e_metrics
+E2E-READABLE-P95-U50-vcloak,50,2,628.556,ms,"p95 of submit to readable by the peer, mean of 2 repetitions",runs/20261014-081645_M15_e2e_metrics
+E2E-READABLE-P99-U50-vcloak,50,2,674.967,ms,"p99 of submit to readable by the peer, mean of 2 repetitions",runs/20261014-081645_M15_e2e_metrics
+E2E-TPUT-U50-vcloak,50,2,7.875,msgs/s,"acks that arrived in the measured interval over its seconds, mean of 2 repetitions",runs/20261014-081645_M15_e2e_metrics
+E2E-ADDED-P50-U50,50,2,105.584,ms,"vcloak minus baseline, p50, each the mean of 2 repetitions",runs/20261014-081645_M15_e2e_metrics
+E2E-ADDED-P99-U50,50,2,UNSTABLE,ms,"vcloak minus baseline, p99, each the mean of 2 repetitions",runs/20261014-081645_M15_e2e_metrics
+E2E-ADDED-READABLE-P50-U50,50,2,111.56,ms,"vcloak minus baseline, p50, each the mean of 2 repetitions",runs/20261014-081645_M15_e2e_metrics
+E2E-ADDED-READABLE-P99-U50,50,2,166.827,ms,"vcloak minus baseline, p99, each the mean of 2 repetitions",runs/20261014-081645_M15_e2e_metrics
+E2E-OVERFLOW-U50,50,2,0,submissions,"left for a later epoch, sum of 2 repetitions",runs/20261014-081645_M15_e2e_metrics
+E2E-GPUUTIL-U50,50,2,1.0,%,"median of NVML utilisation at 10 Hz in the measured interval, vcloak cells, mean of 2 repetitions",runs/20261014-081645_M15_e2e_metrics
+E2E-GPUUTIL-P95-U50,50,2,1.0,%,"p95 of NVML utilisation at 10 Hz in the measured interval, vcloak cells, mean of 2 repetitions",runs/20261014-081645_M15_e2e_metrics
+E2E-POWER-W-U50,50,2,29.758,W,"median NVML power draw at 10 Hz in the measured interval, vcloak cells, mean of 2 repetitions",runs/20261014-081645_M15_e2e_metrics

@@ -1,0 +1,1568 @@
+{
+  "metrics": [
+    {
+      "id": "E2E-P50-U10-baseline",
+      "value": 4.768,
+      "unit": "ms",
+      "stat": "p50 of submit to ack (ack: stored), mean of 2 repetitions",
+      "reps": [
+        4.688,
+        4.849
+      ],
+      "spread_pct": 3.43
+    },
+    {
+      "id": "E2E-P95-U10-baseline",
+      "value": "UNSTABLE",
+      "unit": "ms",
+      "stat": "p95 of submit to ack (ack: stored), mean of 2 repetitions",
+      "reps": [
+        12.79,
+        6.848
+      ],
+      "spread_pct": 86.77,
+      "cause": "the two repetitions are more than 15 % apart (A3)"
+    },
+    {
+      "id": "E2E-P99-U10-baseline",
+      "value": "UNSTABLE",
+      "unit": "ms",
+      "stat": "p99 of submit to ack (ack: stored), mean of 2 repetitions",
+      "reps": [
+        20.012,
+        9.477
+      ],
+      "spread_pct": 111.17,
+      "cause": "the two repetitions are more than 15 % apart (A3)"
+    },
+    {
+      "id": "E2E-READABLE-P50-U10-baseline",
+      "value": 257.25,
+      "unit": "ms",
+      "stat": "p50 of submit to readable by the peer, mean of 2 repetitions",
+      "reps": [
+        252.418,
+        262.082
+      ],
+      "spread_pct": 3.83
+    },
+    {
+      "id": "E2E-READABLE-P95-U10-baseline",
+      "value": 471.123,
+      "unit": "ms",
+      "stat": "p95 of submit to readable by the peer, mean of 2 repetitions",
+      "reps": [
+        472.92,
+        469.326
+      ],
+      "spread_pct": 0.77
+    },
+    {
+      "id": "E2E-READABLE-P99-U10-baseline",
+      "value": 499.979,
+      "unit": "ms",
+      "stat": "p99 of submit to readable by the peer, mean of 2 repetitions",
+      "reps": [
+        506.044,
+        493.913
+      ],
+      "spread_pct": 2.46
+    },
+    {
+      "id": "E2E-TPUT-U10-baseline",
+      "value": 1.408,
+      "unit": "msgs/s",
+      "stat": "acks that arrived in the measured interval over its seconds, mean of 2 repetitions",
+      "reps": [
+        1.408,
+        1.408
+      ],
+      "spread_pct": 0.0
+    },
+    {
+      "id": "E2E-P50-U10-vcloak",
+      "value": 105.469,
+      "unit": "ms",
+      "stat": "p50 of submit to ack (ack: stored), mean of 2 repetitions",
+      "reps": [
+        106.577,
+        104.362
+      ],
+      "spread_pct": 2.12
+    },
+    {
+      "id": "E2E-P95-U10-vcloak",
+      "value": 199.467,
+      "unit": "ms",
+      "stat": "p95 of submit to ack (ack: stored), mean of 2 repetitions",
+      "reps": [
+        199.102,
+        199.831
+      ],
+      "spread_pct": 0.37
+    },
+    {
+      "id": "E2E-P99-U10-vcloak",
+      "value": 205.701,
+      "unit": "ms",
+      "stat": "p99 of submit to ack (ack: stored), mean of 2 repetitions",
+      "reps": [
+        205.502,
+        205.899
+      ],
+      "spread_pct": 0.19
+    },
+    {
+      "id": "E2E-READABLE-P50-U10-vcloak",
+      "value": 365.226,
+      "unit": "ms",
+      "stat": "p50 of submit to readable by the peer, mean of 2 repetitions",
+      "reps": [
+        353.516,
+        376.936
+      ],
+      "spread_pct": 6.62
+    },
+    {
+      "id": "E2E-READABLE-P95-U10-vcloak",
+      "value": 620.579,
+      "unit": "ms",
+      "stat": "p95 of submit to readable by the peer, mean of 2 repetitions",
+      "reps": [
+        630.995,
+        610.162
+      ],
+      "spread_pct": 3.41
+    },
+    {
+      "id": "E2E-READABLE-P99-U10-vcloak",
+      "value": 673.008,
+      "unit": "ms",
+      "stat": "p99 of submit to readable by the peer, mean of 2 repetitions",
+      "reps": [
+        667.249,
+        678.766
+      ],
+      "spread_pct": 1.73
+    },
+    {
+      "id": "E2E-TPUT-U10-vcloak",
+      "value": 1.408,
+      "unit": "msgs/s",
+      "stat": "acks that arrived in the measured interval over its seconds, mean of 2 repetitions",
+      "reps": [
+        1.408,
+        1.408
+      ],
+      "spread_pct": 0.0
+    },
+    {
+      "id": "E2E-ADDED-P50-U10",
+      "value": 100.701,
+      "unit": "ms",
+      "stat": "vcloak minus baseline, p50, each the mean of 2 repetitions",
+      "reps": null,
+      "spread_pct": null
+    },
+    {
+      "id": "E2E-ADDED-P99-U10",
+      "value": "UNSTABLE",
+      "unit": "ms",
+      "stat": "vcloak minus baseline, p99, each the mean of 2 repetitions",
+      "reps": null,
+      "spread_pct": null,
+      "cause": "made from an UNSTABLE value (baseline p99: repetitions more than 15 % apart)"
+    },
+    {
+      "id": "E2E-ADDED-READABLE-P50-U10",
+      "value": 107.976,
+      "unit": "ms",
+      "stat": "vcloak minus baseline, p50, each the mean of 2 repetitions",
+      "reps": null,
+      "spread_pct": null
+    },
+    {
+      "id": "E2E-ADDED-READABLE-P99-U10",
+      "value": 173.029,
+      "unit": "ms",
+      "stat": "vcloak minus baseline, p99, each the mean of 2 repetitions",
+      "reps": null,
+      "spread_pct": null
+    },
+    {
+      "id": "E2E-OVERFLOW-U10",
+      "value": 0,
+      "unit": "submissions",
+      "stat": "left for a later epoch, sum of 2 repetitions",
+      "reps": [
+        0,
+        0
+      ],
+      "spread_pct": null
+    },
+    {
+      "id": "E2E-GPUUTIL-U10",
+      "value": 0.0,
+      "unit": "%",
+      "stat": "median of NVML utilisation at 10 Hz in the measured interval, vcloak cells, mean of 2 repetitions",
+      "reps": [
+        0.0,
+        0.0
+      ],
+      "spread_pct": 0.0
+    },
+    {
+      "id": "E2E-GPUUTIL-P95-U10",
+      "value": 1.0,
+      "unit": "%",
+      "stat": "p95 of NVML utilisation at 10 Hz in the measured interval, vcloak cells, mean of 2 repetitions",
+      "reps": [
+        1.0,
+        1.0
+      ],
+      "spread_pct": 0.0
+    },
+    {
+      "id": "E2E-POWER-W-U10",
+      "value": 29.123,
+      "unit": "W",
+      "stat": "median NVML power draw at 10 Hz in the measured interval, vcloak cells, mean of 2 repetitions",
+      "reps": [
+        28.241,
+        30.005
+      ],
+      "spread_pct": 6.25
+    },
+    {
+      "id": "E2E-P50-U50-baseline",
+      "value": 4.712,
+      "unit": "ms",
+      "stat": "p50 of submit to ack (ack: stored), mean of 2 repetitions",
+      "reps": [
+        4.671,
+        4.753
+      ],
+      "spread_pct": 1.76
+    },
+    {
+      "id": "E2E-P95-U50-baseline",
+      "value": 8.3,
+      "unit": "ms",
+      "stat": "p95 of submit to ack (ack: stored), mean of 2 repetitions",
+      "reps": [
+        8.329,
+        8.271
+      ],
+      "spread_pct": 0.71
+    },
+    {
+      "id": "E2E-P99-U50-baseline",
+      "value": "UNSTABLE",
+      "unit": "ms",
+      "stat": "p99 of submit to ack (ack: stored), mean of 2 repetitions",
+      "reps": [
+        11.968,
+        16.353
+      ],
+      "spread_pct": 36.64,
+      "cause": "the two repetitions are more than 15 % apart (A3)"
+    },
+    {
+      "id": "E2E-READABLE-P50-U50-baseline",
+      "value": 252.962,
+      "unit": "ms",
+      "stat": "p50 of submit to readable by the peer, mean of 2 repetitions",
+      "reps": [
+        252.912,
+        253.012
+      ],
+      "spread_pct": 0.04
+    },
+    {
+      "id": "E2E-READABLE-P95-U50-baseline",
+      "value": 484.471,
+      "unit": "ms",
+      "stat": "p95 of submit to readable by the peer, mean of 2 repetitions",
+      "reps": [
+        487.28,
+        481.662
+      ],
+      "spread_pct": 1.17
+    },
+    {
+      "id": "E2E-READABLE-P99-U50-baseline",
+      "value": 508.14,
+      "unit": "ms",
+      "stat": "p99 of submit to readable by the peer, mean of 2 repetitions",
+      "reps": [
+        509.082,
+        507.199
+      ],
+      "spread_pct": 0.37
+    },
+    {
+      "id": "E2E-TPUT-U50-baseline",
+      "value": 7.875,
+      "unit": "msgs/s",
+      "stat": "acks that arrived in the measured interval over its seconds, mean of 2 repetitions",
+      "reps": [
+        7.875,
+        7.875
+      ],
+      "spread_pct": 0.0
+    },
+    {
+      "id": "E2E-P50-U50-vcloak",
+      "value": 110.296,
+      "unit": "ms",
+      "stat": "p50 of submit to ack (ack: stored), mean of 2 repetitions",
+      "reps": [
+        113.386,
+        107.205
+      ],
+      "spread_pct": 5.77
+    },
+    {
+      "id": "E2E-P95-U50-vcloak",
+      "value": 199.928,
+      "unit": "ms",
+      "stat": "p95 of submit to ack (ack: stored), mean of 2 repetitions",
+      "reps": [
+        199.743,
+        200.112
+      ],
+      "spread_pct": 0.18
+    },
+    {
+      "id": "E2E-P99-U50-vcloak",
+      "value": 209.619,
+      "unit": "ms",
+      "stat": "p99 of submit to ack (ack: stored), mean of 2 repetitions",
+      "reps": [
+        209.961,
+        209.277
+      ],
+      "spread_pct": 0.33
+    },
+    {
+      "id": "E2E-READABLE-P50-U50-vcloak",
+      "value": 364.522,
+      "unit": "ms",
+      "stat": "p50 of submit to readable by the peer, mean of 2 repetitions",
+      "reps": [
+        363.129,
+        365.915
+      ],
+      "spread_pct": 0.77
+    },
+    {
+      "id": "E2E-READABLE-P95-U50-vcloak",
+      "value": 628.556,
+      "unit": "ms",
+      "stat": "p95 of submit to readable by the peer, mean of 2 repetitions",
+      "reps": [
+        630.062,
+        627.051
+      ],
+      "spread_pct": 0.48
+    },
+    {
+      "id": "E2E-READABLE-P99-U50-vcloak",
+      "value": 674.967,
+      "unit": "ms",
+      "stat": "p99 of submit to readable by the peer, mean of 2 repetitions",
+      "reps": [
+        671.857,
+        678.078
+      ],
+      "spread_pct": 0.93
+    },
+    {
+      "id": "E2E-TPUT-U50-vcloak",
+      "value": 7.875,
+      "unit": "msgs/s",
+      "stat": "acks that arrived in the measured interval over its seconds, mean of 2 repetitions",
+      "reps": [
+        7.875,
+        7.875
+      ],
+      "spread_pct": 0.0
+    },
+    {
+      "id": "E2E-ADDED-P50-U50",
+      "value": 105.584,
+      "unit": "ms",
+      "stat": "vcloak minus baseline, p50, each the mean of 2 repetitions",
+      "reps": null,
+      "spread_pct": null
+    },
+    {
+      "id": "E2E-ADDED-P99-U50",
+      "value": "UNSTABLE",
+      "unit": "ms",
+      "stat": "vcloak minus baseline, p99, each the mean of 2 repetitions",
+      "reps": null,
+      "spread_pct": null,
+      "cause": "made from an UNSTABLE value (baseline p99: repetitions more than 15 % apart)"
+    },
+    {
+      "id": "E2E-ADDED-READABLE-P50-U50",
+      "value": 111.56,
+      "unit": "ms",
+      "stat": "vcloak minus baseline, p50, each the mean of 2 repetitions",
+      "reps": null,
+      "spread_pct": null
+    },
+    {
+      "id": "E2E-ADDED-READABLE-P99-U50",
+      "value": 166.827,
+      "unit": "ms",
+      "stat": "vcloak minus baseline, p99, each the mean of 2 repetitions",
+      "reps": null,
+      "spread_pct": null
+    },
+    {
+      "id": "E2E-OVERFLOW-U50",
+      "value": 0,
+      "unit": "submissions",
+      "stat": "left for a later epoch, sum of 2 repetitions",
+      "reps": [
+        0,
+        0
+      ],
+      "spread_pct": null
+    },
+    {
+      "id": "E2E-GPUUTIL-U50",
+      "value": 1.0,
+      "unit": "%",
+      "stat": "median of NVML utilisation at 10 Hz in the measured interval, vcloak cells, mean of 2 repetitions",
+      "reps": [
+        1.0,
+        1.0
+      ],
+      "spread_pct": 0.0
+    },
+    {
+      "id": "E2E-GPUUTIL-P95-U50",
+      "value": 1.0,
+      "unit": "%",
+      "stat": "p95 of NVML utilisation at 10 Hz in the measured interval, vcloak cells, mean of 2 repetitions",
+      "reps": [
+        1.0,
+        1.0
+      ],
+      "spread_pct": 0.0
+    },
+    {
+      "id": "E2E-POWER-W-U50",
+      "value": 29.758,
+      "unit": "W",
+      "stat": "median NVML power draw at 10 Hz in the measured interval, vcloak cells, mean of 2 repetitions",
+      "reps": [
+        29.511,
+        30.005
+      ],
+      "spread_pct": 1.67
+    },
+    {
+      "id": "E2E-P50-U200-baseline",
+      "value": "UNSTABLE",
+      "unit": "ms",
+      "stat": "p50 of submit to ack (ack: stored), mean of 2 repetitions",
+      "reps": [
+        98.255,
+        113.05
+      ],
+      "spread_pct": 15.06,
+      "cause": "load generator at its limit: the single-process generator used more than one core (above 100 % of a core) inside the measured interval"
+    },
+    {
+      "id": "E2E-P95-U200-baseline",
+      "value": "UNSTABLE",
+      "unit": "ms",
+      "stat": "p95 of submit to ack (ack: stored), mean of 2 repetitions",
+      "reps": [
+        751.659,
+        1061.366
+      ],
+      "spread_pct": 41.2,
+      "cause": "load generator at its limit: the single-process generator used more than one core (above 100 % of a core) inside the measured interval"
+    },
+    {
+      "id": "E2E-P99-U200-baseline",
+      "value": "UNSTABLE",
+      "unit": "ms",
+      "stat": "p99 of submit to ack (ack: stored), mean of 2 repetitions",
+      "reps": [
+        1514.011,
+        2321.452
+      ],
+      "spread_pct": 53.33,
+      "cause": "load generator at its limit: the single-process generator used more than one core (above 100 % of a core) inside the measured interval"
+    },
+    {
+      "id": "E2E-READABLE-P50-U200-baseline",
+      "value": "UNSTABLE",
+      "unit": "ms",
+      "stat": "p50 of submit to readable by the peer, mean of 2 repetitions",
+      "reps": [
+        477.654,
+        522.83
+      ],
+      "spread_pct": 9.46,
+      "cause": "load generator at its limit: the single-process generator used more than one core (above 100 % of a core) inside the measured interval"
+    },
+    {
+      "id": "E2E-READABLE-P95-U200-baseline",
+      "value": "UNSTABLE",
+      "unit": "ms",
+      "stat": "p95 of submit to readable by the peer, mean of 2 repetitions",
+      "reps": [
+        1460.856,
+        1963.97
+      ],
+      "spread_pct": 34.44,
+      "cause": "load generator at its limit: the single-process generator used more than one core (above 100 % of a core) inside the measured interval"
+    },
+    {
+      "id": "E2E-READABLE-P99-U200-baseline",
+      "value": "UNSTABLE",
+      "unit": "ms",
+      "stat": "p99 of submit to readable by the peer, mean of 2 repetitions",
+      "reps": [
+        2586.744,
+        3613.999
+      ],
+      "spread_pct": 39.71,
+      "cause": "load generator at its limit: the single-process generator used more than one core (above 100 % of a core) inside the measured interval"
+    },
+    {
+      "id": "E2E-TPUT-U200-baseline",
+      "value": "UNSTABLE",
+      "unit": "msgs/s",
+      "stat": "acks that arrived in the measured interval over its seconds, mean of 2 repetitions",
+      "reps": [
+        30.508,
+        30.5
+      ],
+      "spread_pct": 0.03,
+      "cause": "load generator at its limit: the single-process generator used more than one core (above 100 % of a core) inside the measured interval"
+    },
+    {
+      "id": "E2E-P50-U200-vcloak",
+      "value": "UNSTABLE",
+      "unit": "ms",
+      "stat": "p50 of submit to ack (ack: stored), mean of 2 repetitions",
+      "reps": [
+        3191.695,
+        4243.833
+      ],
+      "spread_pct": 32.96,
+      "cause": "load generator at its limit: the single-process generator used more than one core (above 100 % of a core) inside the measured interval"
+    },
+    {
+      "id": "E2E-P95-U200-vcloak",
+      "value": "UNSTABLE",
+      "unit": "ms",
+      "stat": "p95 of submit to ack (ack: stored), mean of 2 repetitions",
+      "reps": [
+        12047.644,
+        18430.068
+      ],
+      "spread_pct": 52.98,
+      "cause": "load generator at its limit: the single-process generator used more than one core (above 100 % of a core) inside the measured interval"
+    },
+    {
+      "id": "E2E-P99-U200-vcloak",
+      "value": "UNSTABLE",
+      "unit": "ms",
+      "stat": "p99 of submit to ack (ack: stored), mean of 2 repetitions",
+      "reps": [
+        17942.046,
+        30342.678
+      ],
+      "spread_pct": 69.11,
+      "cause": "load generator at its limit: the single-process generator used more than one core (above 100 % of a core) inside the measured interval"
+    },
+    {
+      "id": "E2E-READABLE-P50-U200-vcloak",
+      "value": "UNSTABLE",
+      "unit": "ms",
+      "stat": "p50 of submit to readable by the peer, mean of 2 repetitions",
+      "reps": [
+        7331.607,
+        10758.534
+      ],
+      "spread_pct": 46.74,
+      "cause": "load generator at its limit: the single-process generator used more than one core (above 100 % of a core) inside the measured interval"
+    },
+    {
+      "id": "E2E-READABLE-P95-U200-vcloak",
+      "value": "UNSTABLE",
+      "unit": "ms",
+      "stat": "p95 of submit to readable by the peer, mean of 2 repetitions",
+      "reps": [
+        20454.827,
+        32663.826
+      ],
+      "spread_pct": 59.69,
+      "cause": "load generator at its limit: the single-process generator used more than one core (above 100 % of a core) inside the measured interval"
+    },
+    {
+      "id": "E2E-READABLE-P99-U200-vcloak",
+      "value": "UNSTABLE",
+      "unit": "ms",
+      "stat": "p99 of submit to readable by the peer, mean of 2 repetitions",
+      "reps": [
+        28267.708,
+        44713.215
+      ],
+      "spread_pct": 58.18,
+      "cause": "load generator at its limit: the single-process generator used more than one core (above 100 % of a core) inside the measured interval"
+    },
+    {
+      "id": "E2E-TPUT-U200-vcloak",
+      "value": "UNSTABLE",
+      "unit": "msgs/s",
+      "stat": "acks that arrived in the measured interval over its seconds, mean of 2 repetitions",
+      "reps": [
+        30.183,
+        30.392
+      ],
+      "spread_pct": 0.69,
+      "cause": "load generator at its limit: the single-process generator used more than one core (above 100 % of a core) inside the measured interval"
+    },
+    {
+      "id": "E2E-ADDED-P50-U200",
+      "value": "UNSTABLE",
+      "unit": "ms",
+      "stat": "vcloak minus baseline, p50, each the mean of 2 repetitions",
+      "reps": null,
+      "spread_pct": null,
+      "cause": "load generator at its limit: the single-process generator used more than one core (above 100 % of a core) inside the measured interval"
+    },
+    {
+      "id": "E2E-ADDED-P99-U200",
+      "value": "UNSTABLE",
+      "unit": "ms",
+      "stat": "vcloak minus baseline, p99, each the mean of 2 repetitions",
+      "reps": null,
+      "spread_pct": null,
+      "cause": "load generator at its limit: the single-process generator used more than one core (above 100 % of a core) inside the measured interval"
+    },
+    {
+      "id": "E2E-ADDED-READABLE-P50-U200",
+      "value": "UNSTABLE",
+      "unit": "ms",
+      "stat": "vcloak minus baseline, p50, each the mean of 2 repetitions",
+      "reps": null,
+      "spread_pct": null,
+      "cause": "load generator at its limit: the single-process generator used more than one core (above 100 % of a core) inside the measured interval"
+    },
+    {
+      "id": "E2E-ADDED-READABLE-P99-U200",
+      "value": "UNSTABLE",
+      "unit": "ms",
+      "stat": "vcloak minus baseline, p99, each the mean of 2 repetitions",
+      "reps": null,
+      "spread_pct": null,
+      "cause": "load generator at its limit: the single-process generator used more than one core (above 100 % of a core) inside the measured interval"
+    },
+    {
+      "id": "E2E-OVERFLOW-U200",
+      "value": "UNSTABLE",
+      "unit": "submissions",
+      "stat": "left for a later epoch, sum of 2 repetitions",
+      "reps": [
+        0,
+        0
+      ],
+      "spread_pct": null,
+      "cause": "load generator at its limit: the single-process generator used more than one core (above 100 % of a core) inside the measured interval"
+    },
+    {
+      "id": "E2E-GPUUTIL-U200",
+      "value": "UNSTABLE",
+      "unit": "%",
+      "stat": "median of NVML utilisation at 10 Hz in the measured interval, vcloak cells, mean of 2 repetitions",
+      "reps": [
+        0.0,
+        0.0
+      ],
+      "spread_pct": 0.0,
+      "cause": "load generator at its limit: the single-process generator used more than one core (above 100 % of a core) inside the measured interval"
+    },
+    {
+      "id": "E2E-GPUUTIL-P95-U200",
+      "value": "UNSTABLE",
+      "unit": "%",
+      "stat": "p95 of NVML utilisation at 10 Hz in the measured interval, vcloak cells, mean of 2 repetitions",
+      "reps": [
+        1.0,
+        1.0
+      ],
+      "spread_pct": 0.0,
+      "cause": "load generator at its limit: the single-process generator used more than one core (above 100 % of a core) inside the measured interval"
+    },
+    {
+      "id": "E2E-POWER-W-U200",
+      "value": "UNSTABLE",
+      "unit": "W",
+      "stat": "median NVML power draw at 10 Hz in the measured interval, vcloak cells, mean of 2 repetitions",
+      "reps": [
+        30.005,
+        30.005
+      ],
+      "spread_pct": 0.0,
+      "cause": "load generator at its limit: the single-process generator used more than one core (above 100 % of a core) inside the measured interval"
+    }
+  ],
+  "provenance": {
+    "backend": "cupy",
+    "runner": "kaggle",
+    "session_id": "20261014-013736",
+    "gpu": "Tesla T4",
+    "cuda": "12090",
+    "cupy": "14.0.1",
+    "driver": "580.178.04",
+    "cpu_count": 4,
+    "job_id": "20261014-065041_M15",
+    "git_sha": "c64ec321271a55c68228f4406a99659aa0c4856b",
+    "seed": 15,
+    "quick": false,
+    "driver_run": "runs/20261014-013858_M15_e2e_cells",
+    "conditions": {
+      "ack": "stored",
+      "sessions": true,
+      "ws_sockets": 0,
+      "store": "pg",
+      "users_per_conversation": 2,
+      "rate_per_user_s": 0.15,
+      "duration_s": 120.0,
+      "warmup_s": 20.0,
+      "drain_s": 5.0,
+      "poll_ms": 500.0,
+      "clock": "time.monotonic() in the generator process; client and service on one machine"
+    },
+    "slots": 256,
+    "epoch_ms": 200,
+    "window_s": 60
+  },
+  "validity": {
+    "10": {
+      "valid": true,
+      "cause": null,
+      "users_per_conversation": 2,
+      "generator_cpu_pct": [
+        24.3,
+        24.4,
+        24.3,
+        24.2
+      ],
+      "service_cpu_pct": [
+        3.5,
+        3.7,
+        11.2,
+        11.0
+      ],
+      "cells": [
+        "runs/20261014-013859_M15_baseline_u10_r1",
+        "runs/20261014-015528_M15_baseline_u10_r2",
+        "runs/20261014-014128_M15_vcloak_u10_r1",
+        "runs/20261014-015757_M15_vcloak_u10_r2"
+      ]
+    },
+    "50": {
+      "valid": true,
+      "cause": null,
+      "users_per_conversation": 2,
+      "generator_cpu_pct": [
+        39.5,
+        39.4,
+        40.6,
+        40.1
+      ],
+      "service_cpu_pct": [
+        17.0,
+        17.1,
+        52.4,
+        52.3
+      ],
+      "cells": [
+        "runs/20261014-014359_M15_baseline_u50_r1",
+        "runs/20261014-020026_M15_baseline_u50_r2",
+        "runs/20261014-014635_M15_vcloak_u50_r1",
+        "runs/20261014-020302_M15_vcloak_u50_r2"
+      ]
+    },
+    "200": {
+      "valid": false,
+      "cause": "load generator at its limit: the single-process generator used more than one core (above 100 % of a core) inside the measured interval",
+      "users_per_conversation": 2,
+      "generator_cpu_pct": [
+        118.4,
+        119.6,
+        120.7,
+        121.0
+      ],
+      "service_cpu_pct": [
+        53.6,
+        50.4,
+        31.7,
+        25.0
+      ],
+      "cells": [
+        "runs/20261014-014912_M15_baseline_u200_r1",
+        "runs/20261014-020539_M15_baseline_u200_r2",
+        "runs/20261014-015212_M15_vcloak_u200_r1",
+        "runs/20261014-020839_M15_vcloak_u200_r2"
+      ]
+    }
+  },
+  "cells": [
+    {
+      "users": 10,
+      "users_per_conversation": 2,
+      "mode": "baseline",
+      "rep": 1,
+      "run_dir": "runs/20261014-013859_M15_baseline_u10_r1",
+      "stats": {
+        "scheduled": 169,
+        "acked": 169,
+        "errors": {},
+        "errors_readable": 0,
+        "offered_msgs_s": 1.4083333333333334,
+        "completed": 169,
+        "achieved_msgs_s": 1.4083333333333334,
+        "ack_ms": {
+          "n": 169,
+          "p50": 4.688,
+          "p95": 12.7902,
+          "p99": 20.012479999999996,
+          "mean": 5.943704142011835,
+          "max": 22.473
+        },
+        "readable_ms": {
+          "n": 169,
+          "p50": 252.418,
+          "p95": 472.91999999999996,
+          "p99": 506.04431999999997,
+          "mean": 251.9078579881657,
+          "max": 514.393
+        },
+        "readable_missing": 0,
+        "send_lag_ms": {
+          "n": 169,
+          "p50": 1.0950000000065074,
+          "p95": 1.7165999999917856,
+          "p99": 2.2387199999994314,
+          "mean": 1.1099585798812999,
+          "max": 2.425000000002342
+        },
+        "excluded_warmup": 33,
+        "excluded_after": 0
+      },
+      "reads": {
+        "requests": 2754,
+        "errors": {}
+      },
+      "delta": {
+        "epochs": 0,
+        "overflow": 0,
+        "missed": 0
+      },
+      "epoch_ms": 200,
+      "generator_cpu_pct": 24.3063025210084,
+      "service_cpu_pct": 3.46218487394958,
+      "machine_cpu_pct": 7.994957983193277,
+      "cpu_samples": 238,
+      "telemetry_samples": 944,
+      "gpu_util_median": 0.0,
+      "gpu_util_p95": 0.0,
+      "power_w_median": 27.45
+    },
+    {
+      "users": 10,
+      "users_per_conversation": 2,
+      "mode": "vcloak",
+      "rep": 1,
+      "run_dir": "runs/20261014-014128_M15_vcloak_u10_r1",
+      "stats": {
+        "scheduled": 169,
+        "acked": 169,
+        "errors": {},
+        "errors_readable": 0,
+        "offered_msgs_s": 1.4083333333333334,
+        "completed": 169,
+        "achieved_msgs_s": 1.4083333333333334,
+        "ack_ms": {
+          "n": 169,
+          "p50": 106.577,
+          "p95": 199.10219999999998,
+          "p99": 205.50223999999997,
+          "mean": 105.25093491124262,
+          "max": 212.421
+        },
+        "readable_ms": {
+          "n": 169,
+          "p50": 353.516,
+          "p95": 630.9953999999999,
+          "p99": 667.24916,
+          "mean": 355.9941952662722,
+          "max": 685.662
+        },
+        "readable_missing": 0,
+        "send_lag_ms": {
+          "n": 169,
+          "p50": 1.1750000000034788,
+          "p95": 2.1889999999999072,
+          "p99": 2.3203199999973374,
+          "mean": 1.1844911242600942,
+          "max": 2.539999999996212
+        },
+        "excluded_warmup": 33,
+        "excluded_after": 0
+      },
+      "reads": {
+        "requests": 2727,
+        "errors": {}
+      },
+      "delta": {
+        "epochs": 693,
+        "overflow": 0,
+        "missed": 15
+      },
+      "epoch_ms": 200,
+      "generator_cpu_pct": 24.323109243697477,
+      "service_cpu_pct": 11.218487394957982,
+      "machine_cpu_pct": 9.981092436974789,
+      "cpu_samples": 238,
+      "telemetry_samples": 947,
+      "gpu_util_median": 0.0,
+      "gpu_util_p95": 1.0,
+      "power_w_median": 28.241
+    },
+    {
+      "users": 50,
+      "users_per_conversation": 2,
+      "mode": "baseline",
+      "rep": 1,
+      "run_dir": "runs/20261014-014359_M15_baseline_u50_r1",
+      "stats": {
+        "scheduled": 943,
+        "acked": 943,
+        "errors": {},
+        "errors_readable": 0,
+        "offered_msgs_s": 7.858333333333333,
+        "completed": 945,
+        "achieved_msgs_s": 7.875,
+        "ack_ms": {
+          "n": 943,
+          "p50": 4.671,
+          "p95": 8.329399999999998,
+          "p99": 11.968140000000023,
+          "mean": 5.3027804878048785,
+          "max": 22.614
+        },
+        "readable_ms": {
+          "n": 943,
+          "p50": 252.912,
+          "p95": 487.28000000000003,
+          "p99": 509.08182000000005,
+          "mean": 253.61581654294807,
+          "max": 516.367
+        },
+        "readable_missing": 0,
+        "send_lag_ms": {
+          "n": 943,
+          "p50": 1.0120000000028995,
+          "p95": 2.070699999995895,
+          "p99": 2.5119000000002245,
+          "mean": 1.0733722163308443,
+          "max": 3.689999999998861
+        },
+        "excluded_warmup": 146,
+        "excluded_after": 0
+      },
+      "reads": {
+        "requests": 13840,
+        "errors": {}
+      },
+      "delta": {
+        "epochs": 0,
+        "overflow": 0,
+        "missed": 0
+      },
+      "epoch_ms": 200,
+      "generator_cpu_pct": 39.54393305439331,
+      "service_cpu_pct": 17.022175732217573,
+      "machine_cpu_pct": 16.189958158995815,
+      "cpu_samples": 239,
+      "telemetry_samples": 947,
+      "gpu_util_median": 0.0,
+      "gpu_util_p95": 0.0,
+      "power_w_median": 29.017
+    },
+    {
+      "users": 50,
+      "users_per_conversation": 2,
+      "mode": "vcloak",
+      "rep": 1,
+      "run_dir": "runs/20261014-014635_M15_vcloak_u50_r1",
+      "stats": {
+        "scheduled": 943,
+        "acked": 943,
+        "errors": {},
+        "errors_readable": 0,
+        "offered_msgs_s": 7.858333333333333,
+        "completed": 945,
+        "achieved_msgs_s": 7.875,
+        "ack_ms": {
+          "n": 943,
+          "p50": 113.386,
+          "p95": 199.7432,
+          "p99": 209.96082,
+          "mean": 113.09137433722164,
+          "max": 218.658
+        },
+        "readable_ms": {
+          "n": 943,
+          "p50": 363.129,
+          "p95": 630.0616,
+          "p99": 671.8572,
+          "mean": 369.9120551431601,
+          "max": 713.079
+        },
+        "readable_missing": 0,
+        "send_lag_ms": {
+          "n": 943,
+          "p50": 0.9559999999950719,
+          "p95": 1.840899999986334,
+          "p99": 2.188600000006887,
+          "mean": 1.001217391304222,
+          "max": 4.533000000009224
+        },
+        "excluded_warmup": 146,
+        "excluded_after": 0
+      },
+      "reads": {
+        "requests": 13794,
+        "errors": {}
+      },
+      "delta": {
+        "epochs": 744,
+        "overflow": 0,
+        "missed": 0
+      },
+      "epoch_ms": 200,
+      "generator_cpu_pct": 40.627500000000005,
+      "service_cpu_pct": 52.42541666666667,
+      "machine_cpu_pct": 25.802083333333332,
+      "cpu_samples": 240,
+      "telemetry_samples": 948,
+      "gpu_util_median": 1.0,
+      "gpu_util_p95": 1.0,
+      "power_w_median": 29.511
+    },
+    {
+      "users": 200,
+      "users_per_conversation": 2,
+      "mode": "baseline",
+      "rep": 1,
+      "run_dir": "runs/20261014-014912_M15_baseline_u200_r1",
+      "stats": {
+        "scheduled": 3660,
+        "acked": 3660,
+        "errors": {},
+        "errors_readable": 0,
+        "offered_msgs_s": 30.5,
+        "completed": 3661,
+        "achieved_msgs_s": 30.508333333333333,
+        "ack_ms": {
+          "n": 3660,
+          "p50": 98.2555,
+          "p95": 751.6592499999996,
+          "p99": 1514.010889999997,
+          "mean": 206.2008322404371,
+          "max": 3471.79
+        },
+        "readable_ms": {
+          "n": 3660,
+          "p50": 477.6545,
+          "p95": 1460.856149999998,
+          "p99": 2586.743839999999,
+          "mean": 587.6620390710383,
+          "max": 5157.378
+        },
+        "readable_missing": 0,
+        "send_lag_ms": {
+          "n": 3660,
+          "p50": 9.62749999999879,
+          "p95": 21.967249999996596,
+          "p99": 32.661569999999344,
+          "mean": 10.469769672131218,
+          "max": 54.5099999999934
+        },
+        "excluded_warmup": 602,
+        "excluded_after": 0
+      },
+      "reads": {
+        "requests": 41914,
+        "errors": {}
+      },
+      "delta": {
+        "epochs": 0,
+        "overflow": 0,
+        "missed": 0
+      },
+      "epoch_ms": 200,
+      "generator_cpu_pct": 118.4493670886076,
+      "service_cpu_pct": 53.62531645569621,
+      "machine_cpu_pct": 48.442194092827,
+      "cpu_samples": 237,
+      "telemetry_samples": 925,
+      "gpu_util_median": 0.0,
+      "gpu_util_p95": 0.0,
+      "power_w_median": 29.808
+    },
+    {
+      "users": 200,
+      "users_per_conversation": 2,
+      "mode": "vcloak",
+      "rep": 1,
+      "run_dir": "runs/20261014-015212_M15_vcloak_u200_r1",
+      "stats": {
+        "scheduled": 3660,
+        "acked": 3659,
+        "errors": {
+          "ReadError": 1
+        },
+        "errors_readable": 0,
+        "offered_msgs_s": 30.5,
+        "completed": 3622,
+        "achieved_msgs_s": 30.183333333333334,
+        "ack_ms": {
+          "n": 3659,
+          "p50": 3191.695,
+          "p95": 12047.643799999998,
+          "p99": 17942.046100000003,
+          "mean": 4285.860478272752,
+          "max": 29076.285
+        },
+        "readable_ms": {
+          "n": 3659,
+          "p50": 7331.607,
+          "p95": 20454.827299999997,
+          "p99": 28267.708180000005,
+          "mean": 8651.2219576387,
+          "max": 39027.132
+        },
+        "readable_missing": 0,
+        "send_lag_ms": {
+          "n": 3660,
+          "p50": 76.45400000000535,
+          "p95": 251.54585000000463,
+          "p99": 749.9344500000002,
+          "mean": 104.80389098360669,
+          "max": 1199.733000000002
+        },
+        "excluded_warmup": 602,
+        "excluded_after": 0
+      },
+      "reads": {
+        "requests": 7387,
+        "errors": {
+          "ReadError": 1
+        }
+      },
+      "delta": {
+        "epochs": 919,
+        "overflow": 0,
+        "missed": 23
+      },
+      "epoch_ms": 200,
+      "generator_cpu_pct": 120.65659574468084,
+      "service_cpu_pct": 31.70553191489362,
+      "machine_cpu_pct": 40.61234042553191,
+      "cpu_samples": 235,
+      "telemetry_samples": 919,
+      "gpu_util_median": 0.0,
+      "gpu_util_p95": 1.0,
+      "power_w_median": 30.005
+    },
+    {
+      "users": 10,
+      "users_per_conversation": 2,
+      "mode": "baseline",
+      "rep": 2,
+      "run_dir": "runs/20261014-015528_M15_baseline_u10_r2",
+      "stats": {
+        "scheduled": 169,
+        "acked": 169,
+        "errors": {},
+        "errors_readable": 0,
+        "offered_msgs_s": 1.4083333333333334,
+        "completed": 169,
+        "achieved_msgs_s": 1.4083333333333334,
+        "ack_ms": {
+          "n": 169,
+          "p50": 4.849,
+          "p95": 6.8481999999999985,
+          "p99": 9.477039999999985,
+          "mean": 5.146816568047337,
+          "max": 11.436
+        },
+        "readable_ms": {
+          "n": 169,
+          "p50": 262.082,
+          "p95": 469.32599999999996,
+          "p99": 493.91292,
+          "mean": 248.47137278106507,
+          "max": 503.806
+        },
+        "readable_missing": 0,
+        "send_lag_ms": {
+          "n": 169,
+          "p50": 1.0630000000020345,
+          "p95": 2.051400000003411,
+          "p99": 2.408919999999738,
+          "mean": 1.1112958579882164,
+          "max": 2.5159999999999627
+        },
+        "excluded_warmup": 33,
+        "excluded_after": 0
+      },
+      "reads": {
+        "requests": 2755,
+        "errors": {}
+      },
+      "delta": {
+        "epochs": 0,
+        "overflow": 0,
+        "missed": 0
+      },
+      "epoch_ms": 200,
+      "generator_cpu_pct": 24.363025210084032,
+      "service_cpu_pct": 3.697478991596639,
+      "machine_cpu_pct": 8.039495798319328,
+      "cpu_samples": 238,
+      "telemetry_samples": 947,
+      "gpu_util_median": 0.0,
+      "gpu_util_p95": 0.0,
+      "power_w_median": 30.005
+    },
+    {
+      "users": 10,
+      "users_per_conversation": 2,
+      "mode": "vcloak",
+      "rep": 2,
+      "run_dir": "runs/20261014-015757_M15_vcloak_u10_r2",
+      "stats": {
+        "scheduled": 169,
+        "acked": 169,
+        "errors": {},
+        "errors_readable": 0,
+        "offered_msgs_s": 1.4083333333333334,
+        "completed": 169,
+        "achieved_msgs_s": 1.4083333333333334,
+        "ack_ms": {
+          "n": 169,
+          "p50": 104.362,
+          "p95": 199.83139999999997,
+          "p99": 205.89891999999998,
+          "mean": 108.94894082840236,
+          "max": 208.604
+        },
+        "readable_ms": {
+          "n": 169,
+          "p50": 376.936,
+          "p95": 610.162,
+          "p99": 678.7658799999998,
+          "mean": 360.413100591716,
+          "max": 702.26
+        },
+        "readable_missing": 0,
+        "send_lag_ms": {
+          "n": 169,
+          "p50": 1.1280000000013501,
+          "p95": 2.3307999999985896,
+          "p99": 2.4600399999974334,
+          "mean": 1.2132426035510846,
+          "max": 2.715999999992391
+        },
+        "excluded_warmup": 33,
+        "excluded_after": 0
+      },
+      "reads": {
+        "requests": 2734,
+        "errors": {}
+      },
+      "delta": {
+        "epochs": 704,
+        "overflow": 0,
+        "missed": 1
+      },
+      "epoch_ms": 200,
+      "generator_cpu_pct": 24.213865546218486,
+      "service_cpu_pct": 11.008403361344538,
+      "machine_cpu_pct": 9.899579831932773,
+      "cpu_samples": 238,
+      "telemetry_samples": 947,
+      "gpu_util_median": 0.0,
+      "gpu_util_p95": 1.0,
+      "power_w_median": 30.005
+    },
+    {
+      "users": 50,
+      "users_per_conversation": 2,
+      "mode": "baseline",
+      "rep": 2,
+      "run_dir": "runs/20261014-020026_M15_baseline_u50_r2",
+      "stats": {
+        "scheduled": 943,
+        "acked": 943,
+        "errors": {},
+        "errors_readable": 0,
+        "offered_msgs_s": 7.858333333333333,
+        "completed": 945,
+        "achieved_msgs_s": 7.875,
+        "ack_ms": {
+          "n": 943,
+          "p50": 4.753,
+          "p95": 8.270999999999999,
+          "p99": 16.35286000000001,
+          "mean": 5.374208907741251,
+          "max": 23.305
+        },
+        "readable_ms": {
+          "n": 943,
+          "p50": 253.012,
+          "p95": 481.66229999999996,
+          "p99": 507.1986800000001,
+          "mean": 256.97772640509015,
+          "max": 510.628
+        },
+        "readable_missing": 0,
+        "send_lag_ms": {
+          "n": 943,
+          "p50": 0.9880000000066502,
+          "p95": 2.141500000003304,
+          "p99": 2.516399999997533,
+          "mean": 1.082038176033982,
+          "max": 25.680999999998733
+        },
+        "excluded_warmup": 146,
+        "excluded_after": 0
+      },
+      "reads": {
+        "requests": 13838,
+        "errors": {}
+      },
+      "delta": {
+        "epochs": 0,
+        "overflow": 0,
+        "missed": 0
+      },
+      "epoch_ms": 200,
+      "generator_cpu_pct": 39.410460251046025,
+      "service_cpu_pct": 17.09958158995816,
+      "machine_cpu_pct": 16.176987447698746,
+      "cpu_samples": 239,
+      "telemetry_samples": 949,
+      "gpu_util_median": 0.0,
+      "gpu_util_p95": 0.0,
+      "power_w_median": 30.005
+    },
+    {
+      "users": 50,
+      "users_per_conversation": 2,
+      "mode": "vcloak",
+      "rep": 2,
+      "run_dir": "runs/20261014-020302_M15_vcloak_u50_r2",
+      "stats": {
+        "scheduled": 943,
+        "acked": 943,
+        "errors": {},
+        "errors_readable": 0,
+        "offered_msgs_s": 7.858333333333333,
+        "completed": 945,
+        "achieved_msgs_s": 7.875,
+        "ack_ms": {
+          "n": 943,
+          "p50": 107.205,
+          "p95": 200.1121,
+          "p99": 209.2766,
+          "mean": 110.3156394485684,
+          "max": 215.832
+        },
+        "readable_ms": {
+          "n": 943,
+          "p50": 365.915,
+          "p95": 627.0507,
+          "p99": 678.0777,
+          "mean": 364.1562396606575,
+          "max": 709.362
+        },
+        "readable_missing": 0,
+        "send_lag_ms": {
+          "n": 943,
+          "p50": 0.9579999999971278,
+          "p95": 1.8123999999986038,
+          "p99": 2.331900000012297,
+          "mean": 1.004959703075456,
+          "max": 2.962000000003684
+        },
+        "excluded_warmup": 146,
+        "excluded_after": 0
+      },
+      "reads": {
+        "requests": 13777,
+        "errors": {}
+      },
+      "delta": {
+        "epochs": 742,
+        "overflow": 0,
+        "missed": 1
+      },
+      "epoch_ms": 200,
+      "generator_cpu_pct": 40.0575,
+      "service_cpu_pct": 52.29666666666666,
+      "machine_cpu_pct": 25.526666666666664,
+      "cpu_samples": 240,
+      "telemetry_samples": 951,
+      "gpu_util_median": 1.0,
+      "gpu_util_p95": 1.0,
+      "power_w_median": 30.005
+    },
+    {
+      "users": 200,
+      "users_per_conversation": 2,
+      "mode": "baseline",
+      "rep": 2,
+      "run_dir": "runs/20261014-020539_M15_baseline_u200_r2",
+      "stats": {
+        "scheduled": 3660,
+        "acked": 3660,
+        "errors": {},
+        "errors_readable": 0,
+        "offered_msgs_s": 30.5,
+        "completed": 3660,
+        "achieved_msgs_s": 30.5,
+        "ack_ms": {
+          "n": 3660,
+          "p50": 113.0505,
+          "p95": 1061.3655999999992,
+          "p99": 2321.452299999998,
+          "mean": 270.0632366120219,
+          "max": 5636.078
+        },
+        "readable_ms": {
+          "n": 3660,
+          "p50": 522.8299999999999,
+          "p95": 1963.9695999999992,
+          "p99": 3613.99917999999,
+          "mean": 698.7671762295082,
+          "max": 6020.221
+        },
+        "readable_missing": 0,
+        "send_lag_ms": {
+          "n": 3660,
+          "p50": 10.107999999995343,
+          "p95": 30.00444999999841,
+          "p99": 61.27757000000307,
+          "mean": 12.714858743169577,
+          "max": 86.72699999999622
+        },
+        "excluded_warmup": 602,
+        "excluded_after": 0
+      },
+      "reads": {
+        "requests": 39993,
+        "errors": {}
+      },
+      "delta": {
+        "epochs": 0,
+        "overflow": 0,
+        "missed": 0
+      },
+      "epoch_ms": 200,
+      "generator_cpu_pct": 119.5632911392405,
+      "service_cpu_pct": 50.41983122362869,
+      "machine_cpu_pct": 47.97637130801687,
+      "cpu_samples": 237,
+      "telemetry_samples": 920,
+      "gpu_util_median": 0.0,
+      "gpu_util_p95": 0.0,
+      "power_w_median": 30.005
+    },
+    {
+      "users": 200,
+      "users_per_conversation": 2,
+      "mode": "vcloak",
+      "rep": 2,
+      "run_dir": "runs/20261014-020839_M15_vcloak_u200_r2",
+      "stats": {
+        "scheduled": 3660,
+        "acked": 3659,
+        "errors": {
+          "ReadError": 1
+        },
+        "errors_readable": 0,
+        "offered_msgs_s": 30.5,
+        "completed": 3647,
+        "achieved_msgs_s": 30.391666666666666,
+        "ack_ms": {
+          "n": 3659,
+          "p50": 4243.833,
+          "p95": 18430.0684,
+          "p99": 30342.677920000002,
+          "mean": 6244.499484285324,
+          "max": 47714.933
+        },
+        "readable_ms": {
+          "n": 3659,
+          "p50": 10758.534,
+          "p95": 32663.826199999996,
+          "p99": 44713.214800000016,
+          "mean": 13231.79939109046,
+          "max": 82928.112
+        },
+        "readable_missing": 0,
+        "send_lag_ms": {
+          "n": 3660,
+          "p50": 106.62299999999902,
+          "p95": 340.8168000000038,
+          "p99": 616.1071500000041,
+          "mean": 140.03222978142097,
+          "max": 1025.2410000000082
+        },
+        "excluded_warmup": 602,
+        "excluded_after": 0
+      },
+      "reads": {
+        "requests": 5872,
+        "errors": {
+          "ReadError": 3,
+          "invalid_dpop_proof": 1
+        }
+      },
+      "delta": {
+        "epochs": 911,
+        "overflow": 0,
+        "missed": 19
+      },
+      "epoch_ms": 200,
+      "generator_cpu_pct": 121.00769230769231,
+      "service_cpu_pct": 25.026923076923076,
+      "machine_cpu_pct": 38.63547008547009,
+      "cpu_samples": 234,
+      "telemetry_samples": 909,
+      "gpu_util_median": 0.0,
+      "gpu_util_p95": 1.0,
+      "power_w_median": 30.005
+    }
+  ],
+  "note": "derived from the ingested cells named in the manifest (derived_from); nothing was measured here",
+  "generated_by": "python -m vcloak.bench.report_e2e derive"
+}

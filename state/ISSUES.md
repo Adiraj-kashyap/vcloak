@@ -1630,7 +1630,7 @@ Then type: continue
 Closed session 51: the bundle came back from Kaggle (T4, 4 vCPU, runner session 20261014-013736) and is ingested;
 7 commands exit 0, 12 cells and the driver run under runs/. The reading of the 200-user cells is ISSUE-51.
 
-### ISSUE-51 [OPEN] DECISION OF THE OWNER — the 200-user cells ran with the load generator at its limit: how are they reported?
+### ISSUE-51 [CLOSED ff4f587] DECISION OF THE OWNER — the 200-user cells ran with the load generator at its limit: how are they reported?
 BLOCKS: none (S3 goes ahead; the default below applies to the 200-user rows until the owner says otherwise)   SEVERITY: high   OPENED: 2026-10-14 session 51
 What came back (runs/20261014-074636_M15_s2_ingest_checks/cell_reading.txt; a reading of the ingested cells, none of it is an indexed metric):
 - All 12 cells completed with exit 0 and no epoch overflow. At 10 and 50 users both modes sent on time (send lag
@@ -1657,3 +1657,38 @@ Options (ADR-027: nothing is shrunk, dropped or retried without the owner):
   Kaggle job of the 4 cells, about 15 minutes of runner time. This is a retry in the sense of ADR-027.
 - (c) Add a cell between 50 and 200 users (for example 100) to find where the sends stop being on time: a new job.
 To choose: tell the agent "ISSUE-51: a", "b" or "c" at the start of a session. Saying nothing means (a).
+
+Closed session 52: the owner chose (a) and fixed the wording (ADR-028). The evaluated scale is 10 and 50 users, both
+modes; no 100-user cell, no second run of 200. The 200-user rows are indexed as UNSTABLE with the cause and are in no
+table (runs/20261014-081645_M15_e2e_metrics; section 4.E.6 of the notes). The claim, the "not a scaling curve"
+sentence and the future work are in the module Amendments, section 4.E.5 and 4.E.7 of docs/REPORT_CH4_NOTES.md and
+docs/REFINEMENTS.md. `achieved_msgs_s` now counts the acknowledgements that arrived inside the measured interval.
+The lost send (runs/20261014-081739_M15_s3_checks/lost_send.txt): it is neither of the two cases asked about.
+- Not a generator timeout: the three failed sends (one in r1, two in r2, one of them in the warm-up) are httpx
+  `ReadError`, a connection that broke while the answer was awaited; a timeout would be `ReadTimeout` after 30 s.
+  The reads of the same cells show the same error (1 and 3), so it is not particular to the message path.
+- Not "accepted and never readable": in all 12 cells no acknowledged send was left unread by its peer. The failed
+  sends were never acknowledged, and only `ack: stored` (201) means durable (ADR-016).
+- Not known: whether the service stored a send whose answer never arrived. The generator dropped such a payload
+  from its watch list, and the rows per closed window bracket the stored rows only to within 114 to 296 sends.
+  A local 200-user run (numpy, quick: runs/20261014-080401_M15_vcloak_u200_r1_quick) had no failed send, so the
+  error is not reproduced. The generator now keeps watching such a payload (`errors_readable`). Carried by ISSUE-52.
+- A reading that came out of the same file: the rows stored before each window boundary sit at the lower end of
+  the bracket, so a send entered the service's queue shortly before its answer, not when it was submitted. The
+  seconds were spent before the scheduler queue: in the generator, in the connection, or in the HTTP layer of the
+  service before `submit()`. The epoch path is not where they went. Which of the three is not separated; the CPU
+  figures (generator 118 to 121 % of a core, service 25 to 32 % in the V-cloak cells) are what the owner's cause
+  rests on.
+
+### ISSUE-52 [OPEN] Three sends of the 200-user V-cloak cells got no answer (httpx ReadError): cause not found, and whether they were stored is not known
+BLOCKS: none (the cells are excluded from every table by ISSUE-51; no valid cell has a failed send or a failed read)   SEVERITY: low   OPENED: 2026-10-14 session 52
+What: runs/20261014-015212_M15_vcloak_u200_r1 (user 69, submitted 27.56 s) and runs/20261014-020839_M15_vcloak_u200_r2
+(user 193 at 4.41 s, in the warm-up; user 2 at 69.43 s). Each `POST /v1/messages` ended in `ReadError` with no HTTP
+status. The same cells have 1 and 3 `ReadError` on reads and one read refused with `invalid_dpop_proof` (r2). The
+service log of both cells holds no error line. Evidence: runs/20261014-081739_M15_s3_checks/lost_send.txt.
+Not a correctness defect on this evidence: nothing acknowledged was lost. What stays open is (1) why a connection
+broke under this load (not reproduced on the laptop), (2) whether such a send is stored without the client
+learning it, which would give a duplicate when a client retries, (3) the one `invalid_dpop_proof`.
+How to settle it: any later 200-user run with the current generator reports `errors_readable` and `error_ms` for
+such a send; that answers (2) in the run that shows the error. No job is asked for: the owner decided that 200
+users is not run again (ISSUE-51), so this waits for the multi-process harness of the future work.

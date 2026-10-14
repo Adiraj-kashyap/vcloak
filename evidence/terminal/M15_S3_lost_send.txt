@@ -1,0 +1,28 @@
+1. every cell of the job: failed sends, and acknowledged sends the peer never read
+   u10  baseline r1 sends   202 failed 0  acknowledged and never read 0 read errors 
+   u10  vcloak   r1 sends   202 failed 0  acknowledged and never read 0 read errors 
+   u50  baseline r1 sends  1089 failed 0  acknowledged and never read 0 read errors 
+   u50  vcloak   r1 sends  1089 failed 0  acknowledged and never read 0 read errors 
+   u200 baseline r1 sends  4262 failed 0  acknowledged and never read 0 read errors 
+   u200 vcloak   r1 sends  4262 failed 1 ['ReadError'] acknowledged and never read 0 read errors {'ReadError': 1}
+   u10  baseline r2 sends   202 failed 0  acknowledged and never read 0 read errors 
+   u10  vcloak   r2 sends   202 failed 0  acknowledged and never read 0 read errors 
+   u50  baseline r2 sends  1089 failed 0  acknowledged and never read 0 read errors 
+   u50  vcloak   r2 sends  1089 failed 0  acknowledged and never read 0 read errors 
+   u200 baseline r2 sends  4262 failed 0  acknowledged and never read 0 read errors 
+   u200 vcloak   r2 sends  4262 failed 2 ['ReadError'] acknowledged and never read 0 read errors {'ReadError': 3, 'invalid_dpop_proof': 1}
+2. the two cells with failed sends: rows per closed window against the sends
+   runs/20261014-015212_M15_vcloak_u200_r1  (request timeout of the generator: 30 s; httpx reports a timeout as ReadTimeout)
+     failed: user 69 scheduled 27.40 s submitted 27.56 s error ReadError status 0 counted 1
+     window 29865712 closes at   13.55 s: rows stored so far 299; acknowledged sends answered before it 290, submitted before it 406 (bracket 116 wide); failed sends before it 0
+     window 29865713 closes at   73.55 s: rows stored so far 2144; acknowledged sends answered before it 2140, submitted before it 2269 (bracket 129 wide); failed sends before it 1
+     window 29865714 closes at  133.55 s: rows stored so far 3919; acknowledged sends answered before it 3915, submitted before it 4053 (bracket 138 wide); failed sends before it 1
+     -> the rows sit just above the lower end of the bracket: a send entered the service's queue shortly before its answer, not when the generator submitted it.
+     -> the bracket is far wider than one row: these files cannot say whether a failed send was stored.
+   runs/20261014-020839_M15_vcloak_u200_r2  (request timeout of the generator: 30 s; httpx reports a timeout as ReadTimeout)
+     failed: user 193 scheduled 4.32 s submitted 4.41 s error ReadError status 0 counted 0
+     failed: user 2 scheduled 69.25 s submitted 69.43 s error ReadError status 0 counted 1
+     window 29865729 closes at   45.75 s: rows stored so far 1273; acknowledged sends answered before it 1271, submitted before it 1385 (bracket 114 wide); failed sends before it 1
+     window 29865730 closes at  105.75 s: rows stored so far 2942; acknowledged sends answered before it 2934, submitted before it 3230 (bracket 296 wide); failed sends before it 2
+     -> the rows sit just above the lower end of the bracket: a send entered the service's queue shortly before its answer, not when the generator submitted it.
+     -> the bracket is far wider than one row: these files cannot say whether a failed send was stored.

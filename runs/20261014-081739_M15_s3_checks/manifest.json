@@ -1,0 +1,44 @@
+{
+  "run_id": "20261014-081739_M15_s3_checks",
+  "module": "M15",
+  "step": "S3",
+  "owner": "Divyansh",
+  "git_sha": "ff4f587b35655c6574cee5a0c9384a958f5177c3",
+  "dirty": true,
+  "command": "python runs/<this dir>/lost_send.py; pytest -q; ruff check src tests bench scripts; check_metrics, check_oblivious, check_secrets; scripts/export_results.py --check; report_e2e render",
+  "seed": 0,
+  "quick": false,
+  "params": {},
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261014-081738",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U",
+    "cpu_count": 12
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791946059.1914988
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791946481.7151744
+  },
+  "outputs": [
+    "capture_terminal.json",
+    "check_metrics.txt",
+    "check_oblivious.txt",
+    "check_secrets.txt",
+    "export_check.txt",
+    "lost_send.py",
+    "lost_send.txt",
+    "pytest_all.txt",
+    "ruff.txt"
+  ],
+  "status": "OK",
+  "notes": "S3 checks: lost-send reading of the ingested cells (no metric), full pytest, ruff, check_metrics, check_oblivious, check_secrets, export --check"
+}

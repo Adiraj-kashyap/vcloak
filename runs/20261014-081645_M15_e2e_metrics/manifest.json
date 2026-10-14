@@ -1,0 +1,61 @@
+{
+  "run_id": "20261014-081645_M15_e2e_metrics",
+  "module": "M15",
+  "step": "S3",
+  "owner": "Divyansh",
+  "git_sha": "ff4f587b35655c6574cee5a0c9384a958f5177c3",
+  "dirty": true,
+  "command": "python -m vcloak.bench.report_e2e derive --cells runs/20261014-013858_M15_e2e_cells",
+  "seed": 15,
+  "quick": false,
+  "params": {
+    "a3_gate_pct": 15.0,
+    "generator_core_limit_pct": 100.0
+  },
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261014-081645",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U",
+    "cpu_count": 12
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791946005.877359
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791946005.8899019
+  },
+  "outputs": [
+    "cells.csv",
+    "summary.json"
+  ],
+  "status": "OK",
+  "notes": "66 metrics derived from 12 ingested cells of job 20261014-065041_M15; 27 are UNSTABLE",
+  "derived_from": {
+    "runs": [
+      "runs/20261014-013858_M15_e2e_cells",
+      "runs/20261014-013859_M15_baseline_u10_r1",
+      "runs/20261014-014128_M15_vcloak_u10_r1",
+      "runs/20261014-014359_M15_baseline_u50_r1",
+      "runs/20261014-014635_M15_vcloak_u50_r1",
+      "runs/20261014-014912_M15_baseline_u200_r1",
+      "runs/20261014-015212_M15_vcloak_u200_r1",
+      "runs/20261014-015528_M15_baseline_u10_r2",
+      "runs/20261014-015757_M15_vcloak_u10_r2",
+      "runs/20261014-020026_M15_baseline_u50_r2",
+      "runs/20261014-020302_M15_vcloak_u50_r2",
+      "runs/20261014-020539_M15_baseline_u200_r2",
+      "runs/20261014-020839_M15_vcloak_u200_r2"
+    ],
+    "backend": "cupy",
+    "runner": "kaggle",
+    "session_id": "20261014-013736",
+    "job_id": "20261014-065041_M15"
+  }
+}
