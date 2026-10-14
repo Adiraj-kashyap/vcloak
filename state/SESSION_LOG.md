@@ -1502,5 +1502,5 @@
 - Issues: none opened or closed
 - Deviations from spec: none
 - Not verified: the view at phone width (the SVG scrolls sideways at 760 px minimum, as before).
-- Commit: (next)
+- Commit: 252c98f
 - Next: M18 S6b (paper-ready figure export) ; human action: none
