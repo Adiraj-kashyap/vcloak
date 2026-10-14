@@ -1,0 +1,107 @@
+{
+ "module": "M18",
+ "run": "runs/20261014-093346_M18_s2_checks (git 7590ae3, dirty)",
+ "date": "2026-10-14",
+ "views": {
+  "dashboard": {
+   "state": "measured",
+   "dashboard": {
+    "source": "metrics-index",
+    "session": "20261014-013736",
+    "quick": false,
+    "tiles": 22,
+    "charts": 2,
+    "not_measured": 1,
+    "chip": "GENERATED"
+   },
+   "files": {
+    "light": {
+     "file": "screens/M18_dashboard_light_20261014.png",
+     "width": 1440,
+     "height": 2889,
+     "bytes": 384701,
+     "sha256": "57a996053711d786c9d78585e6d6b10cee00e34dcbedd4cc5916d8658afc93e3"
+    },
+    "dark": {
+     "file": "screens/M18_dashboard_dark_20261014.png",
+     "width": 1440,
+     "height": 2889,
+     "bytes": 389068,
+     "sha256": "34aa6913a8c6fc938cc62aad483cb4c896133d285cb855816b35f1a2a09e05bc"
+    }
+   }
+  }
+ },
+ "checks": {
+  "the page is live, in dev mode, with a mode switch": true,
+  "dashboard: the view was the one on screen": true,
+  "no exception, console error or blocked request in the page": true
+ },
+ "serve_argv": [
+  "--dev",
+  "--compare",
+  "--sessions",
+  "--store",
+  "sqlite",
+  "--window-s",
+  "5",
+  "--epoch-ms",
+  "200"
+ ],
+ "viewport": [
+  1440,
+  900
+ ],
+ "browser": "Chrome/154.0.8037.98",
+ "live_ready": true,
+ "conn": "live · dev",
+ "stats_live": {
+  "mode": "vcloak",
+  "dev": true,
+  "sessions": true,
+  "win": 358390277,
+  "window_s": 5,
+  "epoch_ms": 200,
+  "slots": 64,
+  "queued": 0,
+  "epochs": 4,
+  "payload_len": 4124,
+  "switchable": true,
+  "now_ms": 1791951389709,
+  "epoch": 8959756948,
+  "last_epoch": 8959756947,
+  "last_write_ms": 7.8,
+  "gpu": {
+   "backend": "numpy",
+   "runner": "local",
+   "device": "12th Gen Intel(R) Core(TM) i7-1255U",
+   "util": null
+  }
+ },
+ "errors": [],
+ "ok": true,
+ "superseded": [
+  {
+   "id": "SCR-M18-DASHBOARD-LIGHT",
+   "file": "screens/M18_dashboard_light_20261014.png",
+   "kept_as": "superseded/M18_dashboard_light_20261014.20261014-092058.png"
+  },
+  {
+   "id": "SCR-M18-DASHBOARD-DARK",
+   "file": "screens/M18_dashboard_dark_20261014.png",
+   "kept_as": "superseded/M18_dashboard_dark_20261014.20261014-092058.png"
+  }
+ ],
+ "index_rows": [
+  "SCR-M18-DASHBOARD-LIGHT",
+  "SCR-M18-DASHBOARD-DARK",
+  "TERM-M18-S2-PYTEST-ALL",
+  "TERM-M18-S2-EXPORT"
+ ],
+ "files_written": [
+  "screens/M18_dashboard_light_20261014.png",
+  "screens/M18_dashboard_dark_20261014.png",
+  "terminal/M18_S2_pytest_all.txt",
+  "terminal/M18_S2_export.txt"
+ ]
+}

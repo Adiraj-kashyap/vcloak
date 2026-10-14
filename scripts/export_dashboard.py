@@ -29,6 +29,7 @@ sys.path.insert(0, str(ROOT / "src"))
 import check_metrics  # noqa: E402
 
 from vcloak import config  # noqa: E402
+from vcloak.bench import dudect  # noqa: E402
 
 OUT = ROOT / "web" / "data" / "dashboard.json"
 NO_VALUE = ("UNSTABLE", check_metrics.NOT_MEASURED)
@@ -65,6 +66,14 @@ SECURITY = (
      "M14 · python bench/run_security_eval.py --stage trace"),
     ("SEC-E5-PASS", "Session-security scenarios behaving as expected", 1, 0, "",
      "M11 · python bench/run_session_matrix.py"),
+)
+DUDECT_HOW = "M08 · python bench/run_dudect.py --targets control_null,targets --seed 8 --out runs on the GPU runner"
+# dudect max |t| against the threshold of vcloak.bench.dudect. The kernel rows carry the claim of ADR-023; the
+# whole-call row is shown beside them because it FAILs: host timing is outside the claim, and the page says so.
+DUDECT = (
+    ("T-DUDECT-MAXT-BITONIC-EQUAL", "dudect max |t|: shuffle kernel, 2^16, equal vs random tags", "kernel"),
+    ("T-DUDECT-MAXT-BITONIC-SORTED", "dudect max |t|: shuffle kernel, 2^16, sorted vs random tags", "kernel"),
+    ("T-DUDECT-MAXT-WRITE-EPOCH-CALL", "dudect max |t|: whole write_epoch call, host code included", "host"),
 )
 ATTACK_LAYOUTS = (("BASELINE", "Arrival order"), ("EPOCH", "Per epoch"), ("W1", "W = 1 s"), ("W10", "W = 10 s"),
                   ("W60", "W = 60 s"), ("W300", "W = 300 s"))
@@ -114,6 +123,20 @@ def tile(best: dict[str, dict[str, str]], mid: str, label: str, scale: float, di
         return t
     t.update(value=_shown(row, scale, digits), raw=row["value"], state="", quick=row["quick"] != "no")
     t["headline"] = not t["quick"]
+    return t
+
+
+def dudect_tile(best: dict[str, dict[str, str]], mid: str, label: str, scope: str,
+                missing: list[dict[str, str]]) -> dict[str, Any]:
+    t = tile(best, mid, label, 1, 2, "", DUDECT_HOW, "timing", missing)
+    if t["value"] is None:
+        return t
+    passed = abs(float(t["raw"])) < dudect.T_THRESHOLD
+    t["state"] = "good" if passed else "crit"
+    t["sub"] = (f"{'PASS' if passed else 'FAIL'}: threshold |t| < {dudect.T_THRESHOLD}. " +
+                ("Kernel-level claim (ADR-023): a pass of this test, not a proof." if scope == "kernel" else
+                 "Host timing is outside the claim (ADR-023): reported, not hidden."))
+    t["headline"] = t["headline"] and scope == "kernel"
     return t
 
 
@@ -198,6 +221,7 @@ def build(index: Path, root: Path) -> dict[str, Any]:
              for u in valid for p, lab, s, d, unit in GPU_PER_USERS]
     tiles += [tile(best, *spec, group="gpu", missing=missing) for spec in GPU_FIXED]
     tiles += [tile(best, *spec, group="security", missing=missing) for spec in SECURITY]
+    tiles += [dudect_tile(best, mid, label, scope, missing) for mid, label, scope in DUDECT]
     charts = [gpu_util_chart(best, valid), attack_chart(best)]
     return {
         "generated_at": max(r["date"] for r in rows),
@@ -205,7 +229,15 @@ def build(index: Path, root: Path) -> dict[str, Any]:
         "index_sha256": hashlib.sha256(index.read_bytes()).hexdigest(),
         "source": "metrics-index",
         "provenance": provenance(best, root),
-        "groups": [{"id": "gpu", "title": "The GPU under load"}, {"id": "security", "title": "Order privacy"}],
+        "groups": [{"id": "gpu", "title": "The GPU under load", "framing": "gpu_utilisation"},
+                   {"id": "security", "title": "Order privacy",
+                    "note": "Against a passive adversary holding a snapshot of the store. Still visible to that "
+                            "adversary (ai/PROJECT_BRIEF.md section 5): window ids, the number of real messages per "
+                            "window, the epoch order of the newest data until its window closes, and shared "
+                            "buckets (partial conversation identity)."},
+                   {"id": "timing", "title": "Kernel timing (dudect, on the GPU runner)",
+                    "note": "The claim is obliviousness of the server-side kernels against an adversary who sees "
+                            "the store and no timing (ADR-023)."}],
         "framing": [gpu_framing(best, valid)],
         "tiles": tiles,
         "charts": charts,

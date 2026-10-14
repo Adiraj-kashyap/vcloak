@@ -1,0 +1,4 @@
+PASS  the page is live, in dev mode, with a mode switch
+PASS  dashboard: the view was the one on screen
+PASS  no exception, console error or blocked request in the page
+4 files, 4 index rows; record: runs/20261014-093346_M18_s2_checks/capture_evidence.json

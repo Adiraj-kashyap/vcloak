@@ -1723,3 +1723,16 @@ formats the value 0 of E2E-GPUUTIL-U10 in exponent form on the bar label. dashbo
 the page. Neither changes a value.
 Closed when: M18 S2 renders the framing above the GPU group and the excluded user counts with their cause, and S3
 fixes the label; checked by a new capture in both themes.
+Update 2026-10-14 session 55: S2 renders the framing above the GPU group, the group notes, and the excluded 200-user
+count with its cause (evidence/screens/M18_dashboard_{light,dark}_20261014.png, runs/20261014-093346_M18_s2_checks). The 0.0e+0% label remains: S3.
+
+### ISSUE-55 [OPEN] Two trace tests of test_eval_security failed once inside the full suite and passed alone and on rerun
+BLOCKS: none   SEVERITY: medium   OPENED: 2026-10-14 session 55
+What was found (runs/20261014-093346_M18_s2_checks/pytest_all_first_jsbug.txt): TestTrace.test_write_epoch_issues_the_same_launches_for_every_batch
+reported launch_list_identical_for_every_batch and pair_schedule_identical_for_every_batch False, and the trace stage
+of TestCli returned 1. The same full run also had 8 browser failures from a JS syntax error of this session (fixed).
+Alone (5 passed) and in the full rerun (runs/20261014-093346_M18_s2_checks/pytest_all.txt, 2198 passed) both pass. Cause not found: a shared state
+between tests (an in-process server of the browser tests while the trace hooks record launches) is a guess, not shown.
+These are simulator (numpy) gates of E3, not GPU results; no metric changes.
+Closed when: the cause is found (e.g. pytest -p no:randomly order, or the browser tests then the trace tests in one
+process, repeated) and fixed, or 5 full-suite runs pass with the result recorded.

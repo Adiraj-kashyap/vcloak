@@ -1,0 +1,510 @@
+{
+ "charts": [
+  {
+   "categories": [
+    "10 users",
+    "50 users"
+   ],
+   "id": "e2e_gpu_util",
+   "kind": "groupedBar",
+   "metric_ids": [
+    "E2E-GPUUTIL-U10",
+    "E2E-GPUUTIL-U50",
+    "E2E-GPUUTIL-P95-U10",
+    "E2E-GPUUTIL-P95-U50"
+   ],
+   "note": "Two users per conversation. Categories, not a trend: no line joins two user counts (ADR-028).",
+   "runs": [
+    "runs/20261014-081645_M15_e2e_metrics"
+   ],
+   "series": [
+    {
+     "name": "median",
+     "slot": 1,
+     "values": [
+      0.0,
+      1.0
+     ]
+    },
+    {
+     "name": "p95",
+     "slot": 3,
+     "values": [
+      1.0,
+      1.0
+     ]
+    }
+   ],
+   "title": "GPU utilisation during the E6 cells",
+   "unit": "%",
+   "yMax": 100,
+   "yMin": 0
+  },
+  {
+   "categories": [
+    "Arrival order",
+    "Per epoch",
+    "W = 1 s",
+    "W = 10 s",
+    "W = 60 s",
+    "W = 300 s"
+   ],
+   "id": "attack_ablation",
+   "kind": "groupedBar",
+   "metric_ids": [
+    "S-TURNACC-BASELINE",
+    "S-TURNACC-EPOCH",
+    "S-TURNACC-W1",
+    "S-TURNACC-W10",
+    "S-TURNACC-W60",
+    "S-TURNACC-W300"
+   ],
+   "note": "Turn-order accuracy: for two consecutive messages of a conversation, does the dump order them correctly? 50 % is chance.",
+   "refLine": {
+    "label": "chance",
+    "value": 50
+   },
+   "runs": [
+    "runs/20261013-054727_M14_security_e0e1"
+   ],
+   "series": [
+    {
+     "name": "Measured",
+     "slot": 1,
+     "values": [
+      100.0,
+      98.2,
+      92.0,
+      68.7,
+      55.6,
+      50.7
+     ]
+    }
+   ],
+   "title": "Order-recovery attack vs visible window",
+   "unit": "%",
+   "yMax": 100,
+   "yMin": 0
+  }
+ ],
+ "excluded": [
+  {
+   "reason": "UNSTABLE by cause: the load generator ran above one core (ADR-028); no rerun (ADR-027)",
+   "users": 200
+  }
+ ],
+ "framing": [
+  {
+   "id": "gpu_utilisation",
+   "metric_ids": [
+    "E2E-GPUUTIL-U10",
+    "E2E-GPUUTIL-U50",
+    "E2E-ADDED-P50-U10",
+    "E2E-ADDED-P50-U50"
+   ],
+   "points": [
+    "Utilisation is the share of NVML sample periods in which a kernel was running (median of NVML utilisation at 10 Hz in the measured interval, vcloak cells, mean of 2 repetitions).",
+    "The GPU works in one short burst per epoch of 200 ms (config.EPOCH_MS), so a low value describes this load, not a capacity.",
+    "NVML reports utilisation in whole percent, so a series near the bottom of the scale is at the resolution of the counter.",
+    "The ack latency V-cloak adds comes from waiting for the epoch to close, not from GPU compute (docs/REPORT_CH4_NOTES.md section 4.E.3).",
+    "Low utilisation is not evidence of headroom or of how the system scales: scaling is untested (ADR-028).",
+    "Populations are users in two-party conversations, two users per conversation (ADR-027)."
+   ],
+   "title": "What the GPU does under the measured load"
+  }
+ ],
+ "generated_at": "20261014",
+ "git_sha": null,
+ "groups": [
+  {
+   "framing": "gpu_utilisation",
+   "id": "gpu",
+   "title": "The GPU under load"
+  },
+  {
+   "id": "security",
+   "note": "Against a passive adversary holding a snapshot of the store. Still visible to that adversary (ai/PROJECT_BRIEF.md section 5): window ids, the number of real messages per window, the epoch order of the newest data until its window closes, and shared buckets (partial conversation identity).",
+   "title": "Order privacy"
+  },
+  {
+   "id": "timing",
+   "note": "The claim is obliviousness of the server-side kernels against an adversary who sees the store and no timing (ADR-023).",
+   "title": "Kernel timing (dudect, on the GPU runner)"
+  }
+ ],
+ "index_sha256": "b1c581c896f846ec0f7ccb4a5a825390d20484ba908d0860f435222450904e5b",
+ "missing": [
+  {
+   "how": "UNSTABLE in runs/20261011-215652_M07_crossover. M07 · GPU and CPU baselines from one runner session",
+   "metric_id": "X-CROSSOVER-N"
+  }
+ ],
+ "provenance": {
+  "backend": "cupy",
+  "cpu_count": 4,
+  "date": "20261014",
+  "gpu": "Tesla T4",
+  "note": "GPU numbers come from a free shared cloud runner; timings vary between its sessions.",
+  "run": "runs/20261014-081645_M15_e2e_metrics",
+  "runner": "kaggle",
+  "session_id": "20261014-013736"
+ },
+ "source": "metrics-index",
+ "tiles": [
+  {
+   "backend": "cupy",
+   "group": "gpu",
+   "headline": true,
+   "id": "t-e2e-gpuutil-u10",
+   "label": "GPU utilisation, median, 10 users (2 per conversation)",
+   "metric_id": "E2E-GPUUTIL-U10",
+   "quick": false,
+   "raw": "0.0",
+   "run": "runs/20261014-081645_M15_e2e_metrics",
+   "runner": "kaggle",
+   "stat": "median of NVML utilisation at 10 Hz in the measured interval, vcloak cells, mean of 2 repetitions",
+   "state": "",
+   "unit": "%",
+   "value": 0.0
+  },
+  {
+   "backend": "cupy",
+   "group": "gpu",
+   "headline": true,
+   "id": "t-e2e-gpuutil-p95-u10",
+   "label": "GPU utilisation, p95, 10 users (2 per conversation)",
+   "metric_id": "E2E-GPUUTIL-P95-U10",
+   "quick": false,
+   "raw": "1.0",
+   "run": "runs/20261014-081645_M15_e2e_metrics",
+   "runner": "kaggle",
+   "stat": "p95 of NVML utilisation at 10 Hz in the measured interval, vcloak cells, mean of 2 repetitions",
+   "state": "",
+   "unit": "%",
+   "value": 1.0
+  },
+  {
+   "backend": "cupy",
+   "group": "gpu",
+   "headline": true,
+   "id": "t-e2e-power-w-u10",
+   "label": "GPU power, median, 10 users (2 per conversation)",
+   "metric_id": "E2E-POWER-W-U10",
+   "quick": false,
+   "raw": "29.123",
+   "run": "runs/20261014-081645_M15_e2e_metrics",
+   "runner": "kaggle",
+   "stat": "median NVML power draw at 10 Hz in the measured interval, vcloak cells, mean of 2 repetitions",
+   "state": "",
+   "unit": "W",
+   "value": 29.1
+  },
+  {
+   "backend": "cupy",
+   "group": "gpu",
+   "headline": true,
+   "id": "t-e2e-added-p50-u10",
+   "label": "Ack latency added by V-cloak, p50, 10 users (2 per conversation)",
+   "metric_id": "E2E-ADDED-P50-U10",
+   "quick": false,
+   "raw": "100.701",
+   "run": "runs/20261014-081645_M15_e2e_metrics",
+   "runner": "kaggle",
+   "stat": "vcloak minus baseline, p50, each the mean of 2 repetitions",
+   "state": "",
+   "unit": "ms",
+   "value": 100.7
+  },
+  {
+   "backend": "cupy",
+   "group": "gpu",
+   "headline": true,
+   "id": "t-e2e-overflow-u10",
+   "label": "Submissions that overflowed their epoch, 10 users (2 per conversation)",
+   "metric_id": "E2E-OVERFLOW-U10",
+   "quick": false,
+   "raw": "0",
+   "run": "runs/20261014-081645_M15_e2e_metrics",
+   "runner": "kaggle",
+   "stat": "left for a later epoch, sum of 2 repetitions",
+   "state": "",
+   "unit": "",
+   "value": 0
+  },
+  {
+   "backend": "cupy",
+   "group": "gpu",
+   "headline": true,
+   "id": "t-e2e-gpuutil-u50",
+   "label": "GPU utilisation, median, 50 users (2 per conversation)",
+   "metric_id": "E2E-GPUUTIL-U50",
+   "quick": false,
+   "raw": "1.0",
+   "run": "runs/20261014-081645_M15_e2e_metrics",
+   "runner": "kaggle",
+   "stat": "median of NVML utilisation at 10 Hz in the measured interval, vcloak cells, mean of 2 repetitions",
+   "state": "",
+   "unit": "%",
+   "value": 1.0
+  },
+  {
+   "backend": "cupy",
+   "group": "gpu",
+   "headline": true,
+   "id": "t-e2e-gpuutil-p95-u50",
+   "label": "GPU utilisation, p95, 50 users (2 per conversation)",
+   "metric_id": "E2E-GPUUTIL-P95-U50",
+   "quick": false,
+   "raw": "1.0",
+   "run": "runs/20261014-081645_M15_e2e_metrics",
+   "runner": "kaggle",
+   "stat": "p95 of NVML utilisation at 10 Hz in the measured interval, vcloak cells, mean of 2 repetitions",
+   "state": "",
+   "unit": "%",
+   "value": 1.0
+  },
+  {
+   "backend": "cupy",
+   "group": "gpu",
+   "headline": true,
+   "id": "t-e2e-power-w-u50",
+   "label": "GPU power, median, 50 users (2 per conversation)",
+   "metric_id": "E2E-POWER-W-U50",
+   "quick": false,
+   "raw": "29.758",
+   "run": "runs/20261014-081645_M15_e2e_metrics",
+   "runner": "kaggle",
+   "stat": "median NVML power draw at 10 Hz in the measured interval, vcloak cells, mean of 2 repetitions",
+   "state": "",
+   "unit": "W",
+   "value": 29.8
+  },
+  {
+   "backend": "cupy",
+   "group": "gpu",
+   "headline": true,
+   "id": "t-e2e-added-p50-u50",
+   "label": "Ack latency added by V-cloak, p50, 50 users (2 per conversation)",
+   "metric_id": "E2E-ADDED-P50-U50",
+   "quick": false,
+   "raw": "105.584",
+   "run": "runs/20261014-081645_M15_e2e_metrics",
+   "runner": "kaggle",
+   "stat": "vcloak minus baseline, p50, each the mean of 2 repetitions",
+   "state": "",
+   "unit": "ms",
+   "value": 105.6
+  },
+  {
+   "backend": "cupy",
+   "group": "gpu",
+   "headline": true,
+   "id": "t-e2e-overflow-u50",
+   "label": "Submissions that overflowed their epoch, 50 users (2 per conversation)",
+   "metric_id": "E2E-OVERFLOW-U50",
+   "quick": false,
+   "raw": "0",
+   "run": "runs/20261014-081645_M15_e2e_metrics",
+   "runner": "kaggle",
+   "stat": "left for a later epoch, sum of 2 repetitions",
+   "state": "",
+   "unit": "",
+   "value": 0
+  },
+  {
+   "backend": "cupy",
+   "group": "gpu",
+   "headline": true,
+   "id": "t-k-bitonic-fused-ms-2^16",
+   "label": "Bitonic shuffle kernel, 2^16 slots (GPU)",
+   "metric_id": "K-BITONIC-FUSED-MS-2^16",
+   "quick": false,
+   "raw": "0.44131",
+   "run": "runs/20261011-213207_M07_kernel_sweep",
+   "runner": "kaggle",
+   "stat": "median",
+   "state": "",
+   "unit": "ms",
+   "value": 0.441
+  },
+  {
+   "backend": "cupy",
+   "group": "gpu",
+   "headline": false,
+   "how": "UNSTABLE in runs/20261011-215652_M07_crossover. M07 · GPU and CPU baselines from one runner session",
+   "id": "t-x-crossover-n",
+   "label": "GPU beats the CPU above n =",
+   "metric_id": "X-CROSSOVER-N",
+   "quick": false,
+   "run": "runs/20261011-215652_M07_crossover",
+   "runner": "kaggle",
+   "stat": "upper-bound",
+   "state": "na",
+   "unit": "",
+   "value": null
+  },
+  {
+   "backend": "cupy",
+   "group": "security",
+   "headline": true,
+   "id": "t-s-turnacc-baseline",
+   "label": "Turn order recovered: arrival order, no shuffle",
+   "metric_id": "S-TURNACC-BASELINE",
+   "quick": false,
+   "raw": "1.0",
+   "run": "runs/20261013-054727_M14_security_e0e1",
+   "runner": "colab",
+   "stat": "seed 2026, one replay",
+   "state": "",
+   "unit": "%",
+   "value": 100.0
+  },
+  {
+   "backend": "cupy",
+   "group": "security",
+   "headline": true,
+   "id": "t-s-turnacc-epoch",
+   "label": "Turn order recovered: shuffle per epoch only",
+   "metric_id": "S-TURNACC-EPOCH",
+   "quick": false,
+   "raw": "0.9819834508621041",
+   "run": "runs/20261013-054727_M14_security_e0e1",
+   "runner": "colab",
+   "stat": "seed 2026, one replay",
+   "state": "",
+   "unit": "%",
+   "value": 98.2
+  },
+  {
+   "backend": "cupy",
+   "group": "security",
+   "headline": true,
+   "id": "t-s-turnacc-w300",
+   "label": "Turn order recovered: window W = 300 s",
+   "metric_id": "S-TURNACC-W300",
+   "quick": false,
+   "raw": "0.5067867769942527",
+   "run": "runs/20261013-054727_M14_security_e0e1",
+   "runner": "colab",
+   "stat": "seed 2026, one replay",
+   "state": "",
+   "unit": "%",
+   "value": 50.7
+  },
+  {
+   "backend": "cupy",
+   "group": "security",
+   "headline": true,
+   "id": "t-s-e0-restore",
+   "label": "Conversations restored in exact order",
+   "metric_id": "S-E0-RESTORE",
+   "quick": false,
+   "raw": "60",
+   "run": "runs/20261013-054727_M14_security_e0e1",
+   "runner": "colab",
+   "stat": "of 60 conversations, layout W60, seed 2026, one replay",
+   "state": "",
+   "unit": "",
+   "value": 60
+  },
+  {
+   "backend": "cupy",
+   "group": "security",
+   "headline": true,
+   "id": "t-s-chi2-p",
+   "label": "Permutation uniformity, χ² p-value",
+   "metric_id": "S-CHI2-P",
+   "quick": false,
+   "raw": "0.9013404415190159",
+   "run": "runs/20261013-055417_M14_security_e2",
+   "runner": "colab",
+   "stat": "p-value, n 64, 20000 epochs",
+   "state": "",
+   "unit": "",
+   "value": 0.901
+  },
+  {
+   "backend": "cupy",
+   "group": "security",
+   "headline": true,
+   "id": "t-s-trace-distinct-device",
+   "label": "Distinct comparator traces over adversarial inputs",
+   "metric_id": "S-TRACE-DISTINCT-DEVICE",
+   "quick": false,
+   "raw": "1",
+   "run": "runs/20261013-055444_M14_security_e3",
+   "runner": "colab",
+   "stat": "over 5 inputs, n 1024",
+   "state": "",
+   "unit": "",
+   "value": 1
+  },
+  {
+   "backend": "numpy",
+   "group": "security",
+   "headline": true,
+   "id": "t-sec-e5-pass",
+   "label": "Session-security scenarios behaving as expected",
+   "metric_id": "SEC-E5-PASS",
+   "quick": false,
+   "raw": "26/26",
+   "run": "runs/20261012-160139_M11_session_matrix",
+   "runner": "local",
+   "stat": "as expected",
+   "state": "",
+   "unit": "",
+   "value": "26/26"
+  },
+  {
+   "backend": "cupy",
+   "group": "timing",
+   "headline": true,
+   "id": "t-t-dudect-maxt-bitonic-equal",
+   "label": "dudect max |t|: shuffle kernel, 2^16, equal vs random tags",
+   "metric_id": "T-DUDECT-MAXT-BITONIC-EQUAL",
+   "quick": false,
+   "raw": "1.2708",
+   "run": "runs/20261012-031331_M08_dudect",
+   "runner": "kaggle",
+   "stat": "max abs(t)",
+   "state": "good",
+   "sub": "PASS: threshold |t| < 4.5. Kernel-level claim (ADR-023): a pass of this test, not a proof.",
+   "unit": "",
+   "value": 1.27
+  },
+  {
+   "backend": "cupy",
+   "group": "timing",
+   "headline": true,
+   "id": "t-t-dudect-maxt-bitonic-sorted",
+   "label": "dudect max |t|: shuffle kernel, 2^16, sorted vs random tags",
+   "metric_id": "T-DUDECT-MAXT-BITONIC-SORTED",
+   "quick": false,
+   "raw": "2.6965",
+   "run": "runs/20261012-031331_M08_dudect",
+   "runner": "kaggle",
+   "stat": "max abs(t)",
+   "state": "good",
+   "sub": "PASS: threshold |t| < 4.5. Kernel-level claim (ADR-023): a pass of this test, not a proof.",
+   "unit": "",
+   "value": 2.7
+  },
+  {
+   "backend": "cupy",
+   "group": "timing",
+   "headline": false,
+   "id": "t-t-dudect-maxt-write-epoch-call",
+   "label": "dudect max |t|: whole write_epoch call, host code included",
+   "metric_id": "T-DUDECT-MAXT-WRITE-EPOCH-CALL",
+   "quick": false,
+   "raw": "8.5822",
+   "run": "runs/20261012-080629_M08_dudect_issue17_s9",
+   "runner": "kaggle",
+   "stat": "max abs(t)",
+   "state": "crit",
+   "sub": "FAIL: threshold |t| < 4.5. Host timing is outside the claim (ADR-023): reported, not hidden.",
+   "unit": "",
+   "value": 8.58
+  }
+ ]
+}

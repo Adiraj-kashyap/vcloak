@@ -1,0 +1,531 @@
+.s.............................................sssssssssssssssssssssssss [  2%]
+ssssssssssssssssssss.s.s.....................sssssssssssssssssssss...... [  5%]
+...sssssssss.....sssss.........sssssssss...sss.s............ssssssssssss [  7%]
+........................................................................ [ 10%]
+........................................................................ [ 12%]
+.....sssssssssssssssssssss........................ssssssssssssssssssssss [ 15%]
+ss.......sssssss...sss.s..ssssssssssssssssssssssssssss.................. [ 17%]
+....................s.s...............sssssssssssssss................... [ 20%]
+.................ssssssssssssssssssssssssssssssssssss..................s [ 22%]
+sssssssssssssssss.s.s......ssssss....................................... [ 25%]
+.......sssssssssssssssssssssssssssssssssssssssssssss.........sssssssss.. [ 27%]
+.............s.......ssssssssssss....................................... [ 30%]
+...........................s.s.s.......................s.s...........sss [ 32%]
+ssssss...................................................sssssssssssssss [ 35%]
+sssssssssssssssssssssssssssssssssss..................................... [ 37%]
+........................................................................ [ 40%]
+...........sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss [ 42%]
+sssssssssssssssssssssssssssssssssssssssssssssssssssssssssss.s........... [ 45%]
+...........................................sssssssssssssssssssssssssssss [ 47%]
+sssssssssssssssssssssssss..................ssssssssssssssssss.ssssssssss [ 50%]
+sssss.........sssssssss.....sssss......ssssss.....sssss.s.s............s [ 52%]
+sssssssssss.........sssssssss.s.s.sssssssssssss......................... [ 55%]
+........................................................................ [ 57%]
+........................................................................ [ 60%]
+....................F.FFF.FFF.F......................................... [ 62%]
+........................................................................ [ 65%]
+........................................................................ [ 67%]
+........................................................................ [ 70%]
+........................................................................ [ 72%]
+........................................................................ [ 75%]
+........................................................................ [ 77%]
+..............................................................FF........ [ 80%]
+........................................................................ [ 82%]
+........................................................................ [ 85%]
+.......................................................s................ [ 87%]
+........................................................................ [ 90%]
+........................................................................ [ 92%]
+...................................................................s.... [ 95%]
+........................................................................ [ 97%]
+.................................................................        [100%]
+================================== FAILURES ===================================
+_________________ test_both_panes_sign_in_with_their_own_key __________________
+
+page = <headless.Page object at 0x000001CED10C6F90>
+server = <demo_two_users.LocalServer object at 0x000001CED1042B10>
+
+    @needs_browser
+    def test_both_panes_sign_in_with_their_own_key(page: Page, server: LocalServer) -> None:
+        """S2: two independent sessions in one page, each bound to a key of its own."""
+        info = page.evaluate("""['A','B'].map(u => { const c = VC.chat.panes[u].client;
+            return {name: c.username, jkt: c.device.jkt, token: c.conv.token, fp: c.conv.fingerprint,
+                    role: c.conv.role, label: document.getElementById('key' + u).textContent}; })""")
+        a, b = info
+        assert a["name"].startswith("alice_") and b["name"].startswith("bob_")
+        assert a["jkt"] != b["jkt"] and len(a["jkt"]) == 43
+        assert a["token"] == b["token"] and re.fullmatch(r"[A-Za-z0-9_-]{32}", a["token"])
+        assert a["fp"] == b["fp"] and re.fullmatch(r"(\d{5} ){5}\d{5}", a["fp"])
+        assert {a["role"], b["role"]} == {0, 1}
+        assert a["name"] in a["label"] and a["jkt"][:6] in a["label"]
+        assert a["name"] in server.sessions.accounts and b["name"] in server.sessions.accounts
+        assert page.evaluate("VC.state.live && VC.state.dev && VC.state.sessions") is True
+        assert page.evaluate("document.getElementById('conn').textContent") == "live · dev"
+        assert "equal" in page.evaluate("document.getElementById('fingerprint').textContent")
+>       assert page.errors() == []  # no exception, no console error, nothing blocked by the CSP
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: assert ['exception: ...in.js:109:20'] == []
+E         
+E         Left contains 2 more items, first extra item: 'exception: SyntaxError: Invalid or unexpected token'
+E         Use -v to get more diff
+
+tests\integration\test_web_app.py:397: AssertionError
+_________________ test_thirty_messages_two_users_exact_order __________________
+
+page = <headless.Page object at 0x000001CED10C6F90>
+server = <demo_two_users.LocalServer object at 0x000001CED1042B10>
+
+    @needs_browser
+    def test_thirty_messages_two_users_exact_order(page: Page, server: LocalServer) -> None:
+        """S3 and A1: 30 messages over at least two windows come back in the order they were sent, at both
+        panes, and the store holds none of the text."""
+        before = len(transcript(page, "A"))
+        marker = uuid.uuid4().hex[:8]
+        sent = []
+        for i in range(30):
+            user = "AB"[(i * 7 + i // 3) % 2]
+            text = f"{marker} message {i:02d} from {user} \xb7 \xfcn\xefcode \u2713"
+            number = page.evaluate(f"VC.chat.send({js(user)}, {js(text)})")
+            sent.append((user, text, number))
+        wait_transcripts(page, before + 30)
+        names = page.evaluate("({A: VC.chat.panes.A.client.username, B: VC.chat.panes.B.client.username})")
+        for pane in "AB":
+            got = [m for m in transcript(page, pane) if m["text"].startswith(marker)]
+            assert [m["text"] for m in got] == [text for _, text, _ in sent]
+            assert [m["sender"] for m in got] == [names[user] for user, _, _ in sent]
+            assert [m["number"] for m in got] == [number for _, _, number in sent]
+            assert [m["mine"] for m in got] == [user == pane for user, _, _ in sent]
+            assert len({m["win"] for m in got}) >= 2, "the round trip must cross a window boundary"
+        for user in "AB":  # each sender's numbers are 0, 1, 2, ... without a hole
+            numbers = [n for u, _, n in sent if u == user]
+            assert numbers == list(range(numbers[0], numbers[0] + len(numbers)))
+        assert page.evaluate("['A','B'].map(u => VC.chat.panes[u].alert + VC.chat.panes[u].halted).join('')") == ""
+        assert page.evaluate("document.querySelectorAll('#msgsA .bub').length") >= 30
+    
+        # A1: what the server stored is ciphertext of one size; none of the text is in it
+        rows = server.backend.repo.dump()
+        assert len(rows) >= 30
+        needles = [marker.encode(), b"message", "ünïcode".encode(), names["A"].encode(), names["B"].encode()]
+        for row in rows:
+            assert len(row.payload) == PAYLOAD_LEN
+            blob = row.payload + row.seq_enc + row.row_id.bytes
+            assert not any(n in blob for n in needles)
+>       assert page.errors() == []
+E       AssertionError: assert ['exception: ...in.js:109:20'] == []
+E         
+E         Left contains 2 more items, first extra item: 'exception: SyntaxError: Invalid or unexpected token'
+E         Use -v to get more diff
+
+tests\integration\test_web_app.py:465: AssertionError
+________ test_the_server_view_shows_the_stored_rows_and_the_true_order ________
+
+page = <headless.Page object at 0x000001CED10C6F90>
+server = <demo_two_users.LocalServer object at 0x000001CED1042B10>
+
+    @needs_browser
+    def test_the_server_view_shows_the_stored_rows_and_the_true_order(page: Page, server: LocalServer) -> None:
+        """S4: the panel is the store in physical order; with the reveal switch each row carries the position
+        of its message in the conversation, which the panes worked out themselves. In a closed window that
+        order is not the order of sending."""
+        marker = uuid.uuid4().hex[:8]
+        texts = [f"{marker} row {i:02d}" for i in range(24)]
+        for i, text in enumerate(texts):
+            page.evaluate(f"VC.chat.send({js('AB'[i % 2])}, {js(text)})")
+        page.wait_for(f"VC.chat.transcript('A').filter(m => m.text.startsWith({js(marker)})).length === 24", timeout=30)
+        assert page.evaluate("document.getElementById('revealSwitch').disabled") is False
+        assert page.evaluate("document.getElementById('modeSwitch').disabled") is True  # no --compare: nothing to switch
+        assert page.evaluate("getComputedStyle(document.querySelector('th.clear-col')).display") == "none"
+        assert page.evaluate("getComputedStyle(document.querySelector('th.reveal-col')).display") == "none"
+        page.evaluate("document.getElementById('revealSwitch').click()")
+        assert page.evaluate("getComputedStyle(document.querySelector('th.reveal-col')).display") == "table-cell"
+    
+        # every message of this test in a closed, re-shuffled window, and read by the panel
+        mine = f"VC.chat.transcript('A').map((m, i) => [m, i + 1]).filter(x => x[0].text.startsWith({js(marker)}))"
+        page.wait_for(f"""(() => {{ const want = new Set({mine}.map(x => x[1]));
+            const got = VC.chat.serverView().rows.filter(r => want.has(r.n));
+            return got.length === 24 && got.every(r => r.state === 'reshuffled'); }})()""", timeout=30)
+        view = page.evaluate("VC.chat.serverView()")
+        known = {n: m for m, n in page.evaluate(mine)}
+        rows = [r for r in view["rows"] if r["n"] in known]
+        assert view["mode"] == "vcloak" and len(rows) == 24
+    
+        # the panel is the store: the same rows in the same order
+        stored = [r for w in view["windows"] for r in server.backend.repo.window_rows(w["win"])]
+        assert [r["row_id"] for r in view["rows"]] == [str(r.row_id) for r in stored][-len(view["rows"]):]
+        by_id = {str(r.row_id): r for r in stored}
+        # the overlay is the client's sequence: row -> n -> the text sent as number n of the test
+        assert [known[n]["text"] for n in sorted(known)] == texts
+        for r in rows:
+            m = known[r["n"]]
+            assert base64.b64decode(m["stored"]) == by_id[r["row_id"]].payload
+            assert r["who"] == "AB"[texts.index(m["text"]) % 2] and r["number"] == m["number"] and r["win"] == m["win"]
+        # physical order against send order: the windows are in order, the rows inside them are not
+        shown = [r["n"] for r in rows]
+        assert [r["win"] for r in rows] == sorted(r["win"] for r in rows)
+        assert shown != sorted(shown), "the stored order is the order of sending"
+        assert max(sum(1 for r in rows if r["win"] == w) for w in {r["win"] for r in rows}) >= 6
+    
+        # what the audience sees: one table line per row, the truncated fields, the overlay
+        table = page.evaluate("""Array.from(document.querySelectorAll('#dumpBody tr')).map(tr =>
+            Array.from(tr.cells).map(td => td.textContent))""")
+        assert len(table) == len(view["rows"])
+        for line, r in zip(table, view["rows"], strict=True):
+            assert line[1] == r["row_id"][:8] + "…" and line[5].startswith(str(r["win"]))
+            assert line[2] == line[3] == "—"  # ts, conv: columns of the baseline table, hidden here
+            assert re.fullmatch(r"[0-9a-f]{8}…[0-9a-f]{4} \(44 B\)", line[6])
+            assert re.fullmatch(rf"[0-9a-f]{{8}}…[0-9a-f]{{4}} \({PAYLOAD_LEN} B\)", line[7])
+            assert line[8] == (f"#{r['n']} {r['who']}" if r["n"] else "—")
+        note = page.evaluate("document.getElementById('serverNote').textContent")
+        assert "the server did not supply it" in note and "number of rows per window" in note
+        assert marker not in json.dumps(table)
+        page.evaluate("document.getElementById('revealSwitch').click()")
+        assert page.evaluate("getComputedStyle(document.querySelector('th.reveal-col')).display") == "none"
+>       assert page.errors() == []
+E       AssertionError: assert ['exception: ...in.js:109:20'] == []
+E         
+E         Left contains 2 more items, first extra item: 'exception: SyntaxError: Invalid or unexpected token'
+E         Use -v to get more diff
+
+tests\integration\test_web_app.py:526: AssertionError
+_________ test_the_mode_switch_shows_the_same_conversation_both_ways __________
+
+browser = <headless.Browser object at 0x000001CED10C70E0>
+
+    @needs_browser
+    def test_the_mode_switch_shows_the_same_conversation_both_ways(browser: Browser) -> None:
+        """S5: on `serve --dev --compare` the switch exchanges the store that answers and the panel repaints.
+        With the true order revealed, the baseline rows are in the order of sending and the V-cloak rows of a
+        closed window are not; the panes go on reading across the switch without a gap or a repeat."""
+        with LocalServer([*ARGV, "--compare"], config=session_config()) as srv:
+            page = open_app(browser, srv)
+            try:
+                switch = "document.getElementById('modeSwitch')"
+    
+                def shown_as(cls: str) -> str:
+                    return str(page.evaluate(f"getComputedStyle(document.querySelector('th.{cls}')).display"))
+    
+                def note() -> str:
+                    return str(page.evaluate("document.getElementById('serverNote').textContent"))
+    
+                assert page.evaluate("VC.state.switchable") is True and page.evaluate(switch + ".disabled") is False
+                texts = [f"cmp {i:02d}" for i in range(24)]
+                for i, text in enumerate(texts):
+                    page.evaluate(f"VC.chat.send({js('AB'[i % 2])}, {js(text)})")
+                wait_transcripts(page, 24)
+                page.evaluate("document.getElementById('revealSwitch').click()")
+                page.wait_for("""(() => { const got = VC.chat.serverView().rows.filter(r => r.n);
+                    return got.length === 24 && got.every(r => r.state === 'reshuffled'); })()""", timeout=30)
+                cloak = page.evaluate("VC.chat.serverView()")
+                shown = [r["n"] for r in cloak["rows"]]
+                assert cloak["mode"] == "vcloak" and sorted(shown) == list(range(1, 25))
+                assert shown != sorted(shown), "the V-cloak rows are in the order of sending"
+                assert all(r["ts"] is None and r["conv"] is None for r in cloak["rows"])
+                assert shown_as("clear-col") == "none" and shown_as("cloak-col") == "table-cell"
+                assert "--compare" in note()
+    
+                # the switch: the same 24 messages, now in the order they were sent, with a time and a conversation id
+                page.evaluate(switch + ".click()")
+                page.wait_for("(v => v.mode === 'baseline' && v.rows.length === 24)(VC.chat.serverView())", timeout=20)
+                plain = page.evaluate("VC.chat.serverView()")
+                assert [r["n"] for r in plain["rows"]] == list(range(1, 25)), "the baseline rows are not in send order"
+                assert {r["payload_b64"] for r in plain["rows"]} == {r["payload_b64"] for r in cloak["rows"]}
+                assert [int(r["row_id"]) for r in plain["rows"]] == sorted(int(r["row_id"]) for r in plain["rows"])
+                assert len({r["conv"] for r in plain["rows"]}) == 1 and all(r["ts"] for r in plain["rows"])
+                assert page.evaluate(switch + ".checked") is True and page.evaluate("VC.state.mode") == "baseline"
+                assert page.evaluate("document.getElementById('ls-mode').textContent") == "baseline"
+                # S6: the baseline has no epochs and computes nothing, and the strip says so at once
+                page.wait_for("document.getElementById('ls-epoch').textContent === '—'", timeout=5)
+                hidden = "['ls-noepoch', 'ls-fillnote'].map(i => document.getElementById(i).hidden)"
+                assert page.evaluate(hidden) == [False, True]
+                assert page.evaluate("document.getElementById('ls-backend').textContent") == "none"
+                assert page.evaluate("VC.strip.epoch()") is None
+                assert shown_as("clear-col") == "table-cell" and shown_as("cloak-col") == "none"
+                assert "Unprotected baseline" in note() and "who is in a conversation with whom" in note()
+                assert "--compare" in note()
+                table = page.evaluate("""Array.from(document.querySelectorAll('#dumpBody tr')).map(tr =>
+                    Array.from(tr.cells).map(td => td.textContent))""")
+                assert [line[8] for line in table] == [f"#{i + 1} {'AB'[i % 2]}" for i in range(24)]
+                for line, r in zip(table, plain["rows"], strict=True):
+                    assert line[2] == r["ts"] and line[3] == r["conv"]
+                mode = page.evaluate("VC.api.raw('GET', '/v1/mode').then(r => r.body)")
+                assert mode == {"mode": "baseline", "switchable": True}
+    
+                # the panes read on from the other store: nothing twice, nothing missing, and they still send
+                more = [f"cmp base {i}" for i in range(6)]
+                for i, text in enumerate(more):
+                    page.evaluate(f"VC.chat.send({js('AB'[i % 2])}, {js(text)})")
+                wait_transcripts(page, 30)
+                for user in "AB":
+                    assert [m["text"] for m in transcript(page, user)] == texts + more
+                page.wait_for("VC.chat.serverView().rows.length === 30", timeout=20)
+                assert [r["n"] for r in page.evaluate("VC.chat.serverView()")["rows"]] == list(range(1, 31))
+    
+                # and back: the six messages sent in baseline mode are in the V-cloak store as well
+                page.evaluate(switch + ".click()")
+                page.wait_for("""(() => { const v = VC.chat.serverView(); const got = v.rows.filter(r => r.n);
+                    return v.mode === 'vcloak' && got.length === 30 && got.every(r => r.state === 'reshuffled'); })()""",
+                              timeout=30)
+                back = [r["n"] for r in page.evaluate("VC.chat.serverView()")["rows"]]
+                assert sorted(back) == list(range(1, 31)) and back != sorted(back)
+                assert page.evaluate(switch + ".checked") is False
+                for text in ("cmp after A", "cmp after B"):
+                    page.evaluate(f"VC.chat.send({js(text[-1])}, {js(text)})")
+                wait_transcripts(page, 32)
+                assert [m["text"] for m in transcript(page, "B")] == texts + more + ["cmp after A", "cmp after B"]
+                panes = page.evaluate("['A','B'].map(u => [VC.chat.panes[u].halted, VC.chat.panes[u].alert])")
+                assert panes == [["", ""], ["", ""]]
+                assert len(srv.backend.vcloak.repo.dump()) == len(srv.backend.baseline.store.dump()) == 32
+>               assert page.errors() == []
+E               AssertionError: assert ['exception: ...in.js:109:20'] == []
+E                 
+E                 Left contains 2 more items, first extra item: 'exception: SyntaxError: Invalid or unexpected token'
+E                 Use -v to get more diff
+
+tests\integration\test_web_app.py:613: AssertionError
+_____________ test_the_strip_ticks_with_the_epochs_of_the_server ______________
+
+page = <headless.Page object at 0x000001CED10C6F90>
+server = <demo_two_users.LocalServer object at 0x000001CED1042B10>
+
+    @needs_browser
+    def test_the_strip_ticks_with_the_epochs_of_the_server(page: Page, server: LocalServer) -> None:
+        """S6: the epoch on the strip is the server's open epoch, it moves on with it, and the server writes
+        epochs meanwhile. The clock of the browser's machine has no part in it."""
+>       page.wait_for("VC.strip.epoch() !== null", timeout=10)
+
+tests\integration\test_web_app.py:636: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <headless.Page object at 0x000001CED10C6F90>
+expression = 'VC.strip.epoch() !== null', timeout = 10, poll_s = 0.1
+
+    def wait_for(self, expression: str, timeout: float = 30.0, poll_s: float = 0.1) -> Any:
+        deadline = time.monotonic() + timeout
+        last: Any = None
+        while time.monotonic() < deadline:
+            try:
+                last = self.evaluate(expression, timeout=max(1.0, deadline - time.monotonic()))
+            except PageError as e:
+                last = e
+            else:
+                if last:
+                    return last
+            time.sleep(poll_s)
+>       raise PageError(f"not true after {timeout:.0f} s: {expression} (last: {last!r})")
+E       headless.PageError: not true after 10 s: VC.strip.epoch() !== null (last: False)
+
+scripts\headless.py:119: PageError
+_________________ test_the_strip_stops_when_the_server_stops __________________
+
+browser = <headless.Browser object at 0x000001CED10C70E0>
+
+    @needs_browser
+    def test_the_strip_stops_when_the_server_stops(browser: Browser) -> None:
+        """S6: a live page whose server went away shows no epoch. It never goes on counting by itself."""
+        srv = LocalServer(ARGV, config=session_config()).start()
+        try:
+            page = open_app(browser, srv)
+        except BaseException:
+            srv.stop()
+            raise
+        try:
+>           page.wait_for("VC.strip.epoch() !== null", timeout=10)
+
+tests\integration\test_web_app.py:667: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <headless.Page object at 0x000001CED1256D70>
+expression = 'VC.strip.epoch() !== null', timeout = 10, poll_s = 0.1
+
+    def wait_for(self, expression: str, timeout: float = 30.0, poll_s: float = 0.1) -> Any:
+        deadline = time.monotonic() + timeout
+        last: Any = None
+        while time.monotonic() < deadline:
+            try:
+                last = self.evaluate(expression, timeout=max(1.0, deadline - time.monotonic()))
+            except PageError as e:
+                last = e
+            else:
+                if last:
+                    return last
+            time.sleep(poll_s)
+>       raise PageError(f"not true after {timeout:.0f} s: {expression} (last: {last!r})")
+E       headless.PageError: not true after 10 s: VC.strip.epoch() !== null (last: False)
+
+scripts\headless.py:119: PageError
+_____________ test_without_dev_the_page_has_no_rows_and_no_reveal _____________
+
+browser = <headless.Browser object at 0x000001CED10C70E0>
+
+    @needs_browser
+    def test_without_dev_the_page_has_no_rows_and_no_reveal(browser: Browser) -> None:
+        """A3: a server that is not in dev mode gives the page no stored rows, and the reveal switch stays off."""
+        with LocalServer(ARGV, config=session_config(), dev=False) as plain:
+            page = open_app(browser, plain)
+            try:
+                assert page.evaluate("VC.state.live && !VC.state.dev") is True
+                assert page.evaluate("document.getElementById('conn').textContent") == "live"
+                assert page.evaluate("VC.chat.send('A', 'no rows for the page')") >= 0
+                page.wait_for("VC.chat.transcript('B').some(m => m.text === 'no rows for the page')", timeout=20)
+                page.evaluate("VC.chat.refreshDump()")
+                assert page.evaluate("document.getElementById('revealSwitch').disabled") is True
+                assert page.evaluate("document.getElementById('modeSwitch').disabled") is True
+                assert page.evaluate("document.querySelectorAll('#dumpBody tr').length") == 0
+                assert page.evaluate("VC.chat.serverView().rows.length") == 0
+                assert "--dev only" in page.evaluate("document.getElementById('serverNote').textContent")
+>               assert page.errors() == []  # the page never asked for the rows
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               AssertionError: assert ['exception: ...in.js:109:20'] == []
+E                 
+E                 Left contains 2 more items, first extra item: 'exception: SyntaxError: Invalid or unexpected token'
+E                 Use -v to get more diff
+
+tests\integration\test_web_app.py:694: AssertionError
+_____________________ test_a_pane_talks_to_the_python_sdk _____________________
+
+browser = <headless.Browser object at 0x000001CED10C70E0>
+server = <demo_two_users.LocalServer object at 0x000001CED1042B10>
+
+    @needs_browser
+    def test_a_pane_talks_to_the_python_sdk(browser: Browser, server: LocalServer) -> None:
+        """The browser client and vcloak.client.sdk agree byte for byte: same token, same fingerprint, and
+        each reads and verifies what the other wrote."""
+        page = open_app(browser, server)
+        try:
+            carol_name, tina_name = f"carol_{uuid.uuid4().hex[:8]}", f"tina_{uuid.uuid4().hex[:8]}"
+            carol = sign_in(server.base, carol_name)
+            tina = page.evaluate(f"""(async () => {{
+                const c = new VC.Client('T-' + {js(tina_name)});
+                await c.init();
+                await c.signIn({js(tina_name)}, {js(uuid.uuid4().hex)});
+                await c.start({js(carol_name)}, VC.state.payloadLen);
+                window.tina = c;
+                return {{token: c.conv.token, fp: c.conv.fingerprint, role: c.conv.role, win: c.conv.firstWin}}; }})()""")
+            conv = carol.start_conversation(tina_name, first_win=tina["win"])
+            assert conv.conv_token == tina["token"]
+            assert conv.fingerprint == tina["fp"]
+            assert {conv.role, tina["role"]} == {0, 1}
+    
+            assert page.evaluate("tina.send('from the browser: h\xe9llo \u2713')") == 0
+            assert carol.send("from python: grüße") == 0
+            assert page.evaluate("tina.send('second from the browser')") == 1
+            got = [(m.sender, m.number, m.text) for m in carol.sync()]
+            assert got == [(tina_name, 0, "from the browser: h\xe9llo \u2713"), (carol_name, 0, "from python: gr\xfc\xdfe"),
+                           (tina_name, 1, "second from the browser")]
+            seen = page.evaluate("tina.sync().then(ms => ms.map(m => [m.sender, m.number, m.text, m.mine]))")
+            assert seen == [[tina_name, 0, "from the browser: h\xe9llo \u2713", True], [carol_name, 0, "from python: gr\xfc\xdfe", False],
+                            [tina_name, 1, "second from the browser", True]]
+            carol.conversation.verify_delivered()
+            carol.close()
+>           assert page.errors() == []
+E           AssertionError: assert ['exception: ...in.js:109:20'] == []
+E             
+E             Left contains 2 more items, first extra item: 'exception: SyntaxError: Invalid or unexpected token'
+E             Use -v to get more diff
+
+tests\integration\test_web_app.py:756: AssertionError
+_____ TestTrace.test_write_epoch_issues_the_same_launches_for_every_batch _____
+
+self = <test_eval_security.TestTrace object at 0x000001CED086C640>
+
+    def test_write_epoch_issues_the_same_launches_for_every_batch(self) -> None:
+        engine = GpuEngine(testkeys.dev_keystore(get_backend("numpy")), slots=16, buckets=4)
+        res = trace.engine_traces(engine, 32, 4)
+>       assert all(res["gates"].values()), res["gates"]
+E       AssertionError: {'launch_list_identical_for_every_batch': False, 'pair_schedule_identical_for_every_batch': False}
+E       assert False
+E        +  where False = all(dict_values([False, False]))
+E        +    where dict_values([False, False]) = <built-in method values of dict object at 0x000001CEDA8ADA80>()
+E        +      where <built-in method values of dict object at 0x000001CEDA8ADA80> = {'launch_list_identical_for_every_batch': False, 'pair_schedule_identical_for_every_batch': False}.values
+
+tests\unit\test_eval_security.py:186: AssertionError
+_ TestCli.test_a_stage_writes_a_valid_run_with_the_true_engine[trace-S5-e3_trace.json] _
+
+self = <test_eval_security.TestCli object at 0x000001CED0815E50>
+tmp_path = WindowsPath('C:/Users/HP/AppData/Local/Temp/pytest-of-HP/pytest-245/test_a_stage_writes_a_valid_ru0')
+stage = 'trace', step = 'S5', output = 'e3_trace.json'
+
+    @pytest.mark.parametrize(("stage", "step", "output"), [("trace", "S5", "e3_trace.json"),
+                                                         ("attack", "S3", "e1_attack.json")])
+    def test_a_stage_writes_a_valid_run_with_the_true_engine(self, tmp_path: Path, stage: str, step: str,
+                                                             output: str) -> None:
+>       assert rse.main(["--stage", stage, "--quick", "--store", "sqlite", "--backend", "numpy", "--seed", "11",
+                         "--out", str(tmp_path)]) == 0
+E       AssertionError: assert 1 == 0
+E        +  where 1 = <function main at 0x000001CED07CF530>(['--stage', 'trace', '--quick', '--store', 'sqlite', '--backend', ...])
+E        +    where <function main at 0x000001CED07CF530> = rse.main
+
+tests\unit\test_eval_security.py:196: AssertionError
+---------------------------- Captured stdout call -----------------------------
+FAIL device_trace_identical_for_every_input
+ok   merge_sort_trace_depends_on_the_input
+FAIL device_trace_equals_oracle_trace
+ok   device_result_equals_oracle
+ok   launch_list_identical_for_every_batch
+ok   pair_schedule_identical_for_every_batch
+distinct traces over 5 inputs at n 1024: device 2, merge sort 4
+engine numpy-simulator
+run dir: C:\Users\HP\AppData\Local\Temp\pytest-of-HP\pytest-245\test_a_stage_writes_a_valid_ru0\20261014-093811_M14_security_e3_quick
+============================== warnings summary ===============================
+.venv\Lib\site-packages\fastapi\testclient.py:1
+  D:\PJT\vcloak\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+SKIPPED [4] tests\gpu\test_aead.py: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [45] tests\gpu\test_aead.py:123: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [21] tests\gpu\test_aead.py:172: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [9] tests\gpu\test_aead.py:186: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [5] tests\gpu\test_aead.py:197: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [9] tests\gpu\test_aead.py:205: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [3] tests\gpu\test_aead.py:218: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [9] tests\gpu\test_aead.py:337: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [3] tests\gpu\test_aead.py:364: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [21] tests\gpu\test_bitonic.py:140: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [24] tests\gpu\test_bitonic.py:149: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [7] tests\gpu\test_bitonic.py:158: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [3] tests\gpu\test_bitonic.py:168: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [1] tests\gpu\test_bitonic.py: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [21] tests\gpu\test_bitonic.py:213: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [7] tests\gpu\test_bitonic.py:225: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [5] tests\gpu\test_chacha.py: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [15] tests\gpu\test_chacha.py:119: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [36] tests\gpu\test_chacha.py:131: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [18] tests\gpu\test_chacha.py:142: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [6] tests\gpu\test_chacha.py:175: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [45] tests\gpu\test_chacha.py:193: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [9] tests\gpu\test_chacha.py:204: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [9] tests\gpu\test_chacha.py:316: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [3] tests\gpu\test_chacha.py:335: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [5] tests\gpu\test_engine.py: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [9] tests\gpu\test_planted_leak.py:28: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [50] tests\gpu\test_restore.py:143: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [120] tests\gpu\test_restore.py:153: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [1] tests\gpu\test_restore.py: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [54] tests\gpu\test_restore.py:177: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [18] tests\gpu\test_restore.py:191: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [9] tests\gpu\test_restore.py:227: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [3] tests\gpu\test_restore.py:247: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [3] tests\gpu\test_timing.py: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [9] tests\integration\test_engine_vs_oracle.py:106: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [5] tests\integration\test_engine_vs_oracle.py:114: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [6] tests\integration\test_engine_vs_oracle.py:119: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [5] tests\integration\test_engine_vs_oracle.py:124: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [5] tests\integration\test_engine_vs_oracle.py: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [12] tests\integration\test_engine_vs_oracle.py:161: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [9] tests\integration\test_engine_vs_oracle.py:169: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [9] tests\integration\test_engine_vs_oracle.py:234: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [3] tests\integration\test_engine_vs_oracle.py:254: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+SKIPPED [1] tests\unit\test_oracle_chacha.py:82: M02 references are wired in
+SKIPPED [1] tests\unit\test_runtime_backend.py:94: needs a CUDA device: runs on the Colab/Kaggle runner (ai/GPU_RUNNER.md)
+FAILED tests/integration/test_web_app.py::test_both_panes_sign_in_with_their_own_key
+FAILED tests/integration/test_web_app.py::test_thirty_messages_two_users_exact_order
+FAILED tests/integration/test_web_app.py::test_the_server_view_shows_the_stored_rows_and_the_true_order
+FAILED tests/integration/test_web_app.py::test_the_mode_switch_shows_the_same_conversation_both_ways
+FAILED tests/integration/test_web_app.py::test_the_strip_ticks_with_the_epochs_of_the_server
+FAILED tests/integration/test_web_app.py::test_the_strip_stops_when_the_server_stops
+FAILED tests/integration/test_web_app.py::test_without_dev_the_page_has_no_rows_and_no_reveal
+FAILED tests/integration/test_web_app.py::test_a_pane_talks_to_the_python_sdk
+FAILED tests/unit/test_eval_security.py::TestTrace::test_write_epoch_issues_the_same_launches_for_every_batch
+FAILED tests/unit/test_eval_security.py::TestCli::test_a_stage_writes_a_valid_run_with_the_true_engine[trace-S5-e3_trace.json]
+10 failed, 2188 passed, 675 skipped, 1 warning in 362.77s (0:06:02)

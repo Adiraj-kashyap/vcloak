@@ -3,13 +3,13 @@
 ```yaml
 project: v-cloak
 kit_version: 1.0
-last_session: 54
+last_session: 55
 last_session_date: 2026-10-14
 current_module: M18
-current_step: S2
+current_step: S3
 status: IN_PROGRESS           # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
 next_unit: M18
-last_checkpoint: 2026-10-14 session 54: M18 S1 done (export_dashboard.py, GPU framing first); ADR-030 ORAM wording; review/TOPIC_ALIGNMENT.md; next: M18 S2
+last_checkpoint: 2026-10-14 session 55: M18 S2 done (headline tiles with provenance, dudect under ADR-023, framing rendered); next: M18 S3
 quick_mode_default: false
 local:                      # the laptop (no GPU) — filled by M00 S7
   os: "Windows-11-10.0.26200-SP0"
@@ -58,7 +58,7 @@ gpu_job:                    # set by the gpu-job skill
 | M14 | Security evaluation (E0–E2, anon set) | Abhishek | M08, M10 | no | DONE | S7 | 6 |
 | M15 | End-to-end performance (E6) | Divyansh | M10, M11 | no | DONE | S4 | 5 |
 | M16 | Results export | Abhishek | M07, M08, M14 | no | DONE | S4 | 2 |
-| M18 | Frontend: dashboard, experiments, logs | Abhishek | M13, M14 | no | IN_PROGRESS | S2 | 1 |
+| M18 | Frontend: dashboard, experiments, logs | Abhishek | M13, M14 | no | IN_PROGRESS | S3 | 2 |
 | M17 | Final audit & demo (Review 3 close-out) | Team | all required | no | NOT_STARTED | S1 | 0 |
 | M22 | Draft report (prelim pages, Ch.1–4, similarity) | Team | M16 | no | NOT_STARTED | S1 | 0 |
 | M19 | Publication / IP submission (crit. 9) | Abhishek + team | M16 | no | NOT_STARTED | S1 | 0 |
@@ -156,3 +156,4 @@ Keep this file under 120 lines: one or two lines per note, the detail lives in t
   presenter notes). "Does not fit 200 ms" is a judgement, never a measurement. ADR-029 items 1, 4, 5 stay.
 - M18: `python scripts/export_dashboard.py [--check]` writes web/data/dashboard.json (GPU group and its framing
   first; UNSTABLE user counts in `excluded`). Never add placeholder charts: they render NOT MEASURED for measured ids.
+  dudect tiles: kernel series are the claim, the whole-call FAIL stays visible and is never a headline (S2).

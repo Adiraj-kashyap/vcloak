@@ -117,12 +117,19 @@
  "git_sha": null,
  "groups": [
   {
+   "framing": "gpu_utilisation",
    "id": "gpu",
    "title": "The GPU under load"
   },
   {
    "id": "security",
+   "note": "Against a passive adversary holding a snapshot of the store. Still visible to that adversary (ai/PROJECT_BRIEF.md section 5): window ids, the number of real messages per window, the epoch order of the newest data until its window closes, and shared buckets (partial conversation identity).",
    "title": "Order privacy"
+  },
+  {
+   "id": "timing",
+   "note": "The claim is obliviousness of the server-side kernels against an adversary who sees the store and no timing (ADR-023).",
+   "title": "Kernel timing (dudect, on the GPU runner)"
   }
  ],
  "index_sha256": "b1c581c896f846ec0f7ccb4a5a825390d20484ba908d0860f435222450904e5b",
@@ -447,6 +454,57 @@
    "state": "",
    "unit": "",
    "value": "26/26"
+  },
+  {
+   "backend": "cupy",
+   "group": "timing",
+   "headline": true,
+   "id": "t-t-dudect-maxt-bitonic-equal",
+   "label": "dudect max |t|: shuffle kernel, 2^16, equal vs random tags",
+   "metric_id": "T-DUDECT-MAXT-BITONIC-EQUAL",
+   "quick": false,
+   "raw": "1.2708",
+   "run": "runs/20261012-031331_M08_dudect",
+   "runner": "kaggle",
+   "stat": "max abs(t)",
+   "state": "good",
+   "sub": "PASS: threshold |t| < 4.5. Kernel-level claim (ADR-023): a pass of this test, not a proof.",
+   "unit": "",
+   "value": 1.27
+  },
+  {
+   "backend": "cupy",
+   "group": "timing",
+   "headline": true,
+   "id": "t-t-dudect-maxt-bitonic-sorted",
+   "label": "dudect max |t|: shuffle kernel, 2^16, sorted vs random tags",
+   "metric_id": "T-DUDECT-MAXT-BITONIC-SORTED",
+   "quick": false,
+   "raw": "2.6965",
+   "run": "runs/20261012-031331_M08_dudect",
+   "runner": "kaggle",
+   "stat": "max abs(t)",
+   "state": "good",
+   "sub": "PASS: threshold |t| < 4.5. Kernel-level claim (ADR-023): a pass of this test, not a proof.",
+   "unit": "",
+   "value": 2.7
+  },
+  {
+   "backend": "cupy",
+   "group": "timing",
+   "headline": false,
+   "id": "t-t-dudect-maxt-write-epoch-call",
+   "label": "dudect max |t|: whole write_epoch call, host code included",
+   "metric_id": "T-DUDECT-MAXT-WRITE-EPOCH-CALL",
+   "quick": false,
+   "raw": "8.5822",
+   "run": "runs/20261012-080629_M08_dudect_issue17_s9",
+   "runner": "kaggle",
+   "stat": "max abs(t)",
+   "state": "crit",
+   "sub": "FAIL: threshold |t| < 4.5. Host timing is outside the claim (ADR-023): reported, not hidden.",
+   "unit": "",
+   "value": 8.58
   }
  ]
 }

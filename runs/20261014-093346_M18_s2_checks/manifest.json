@@ -1,0 +1,47 @@
+{
+  "run_id": "20261014-093346_M18_s2_checks",
+  "module": "M18",
+  "step": "S2",
+  "owner": "Abhishek",
+  "git_sha": "7590ae3683e9e7902bdb0139e92bd62bbdcf9325",
+  "dirty": true,
+  "command": "python scripts/export_dashboard.py; pytest -q; checks",
+  "seed": 0,
+  "quick": false,
+  "params": {},
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261014-093346",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U",
+    "cpu_count": 12
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791950626.4079907
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791951410.5342376
+  },
+  "outputs": [
+    "a1_terminology.txt",
+    "capture.txt",
+    "capture_evidence.json",
+    "check_metrics.txt",
+    "check_oblivious.txt",
+    "check_secrets.txt",
+    "dashboard.json",
+    "export.txt",
+    "export_results_check.txt",
+    "pytest_all.txt",
+    "pytest_all_first_jsbug.txt",
+    "pytest_export_dashboard.txt"
+  ],
+  "status": "PASS",
+  "notes": "M18 S2 checks. pytest_all_first_jsbug.txt: first full run, 10 failures (8 browser tests from a JS syntax error introduced and fixed this session; 2 trace tests of test_eval_security failed in the full run and passed alone and in the rerun, ISSUE-55). pytest_all.txt: rerun after the fix, all pass. No metric is produced."
+}

@@ -1383,3 +1383,22 @@
   measured. The ORAM component claim rests on the literature (square-root/hierarchical constructions), not a run.
 - Commit: see git log (M18 S1)
 - Next: M18 S2 (render framing, groups, excluded; headline tiles incl. dudect, stated with ADR-023) ; human action: ISSUE-53
+
+## Session 55 — 2026-10-14 — M18 S2: headline tiles with provenance, dudect stated under ADR-023, framing and exclusions rendered — owner:Abhishek
+- Steps: S2 (status after: IN_PROGRESS, current_step S3)
+- Did: exporter adds three dudect tiles (shuffle kernel 2^16 equal/sorted vs random: PASS; whole write_epoch call:
+  FAIL, shown as outside the claim, never a headline), verdict from vcloak.bench.dudect.T_THRESHOLD; groups carry a
+  framing id or a note (security: the known leakage of PROJECT_BRIEF section 5; timing: the ADR-023 scope).
+  dashboard.js renders groups with headings, the GPU framing above the GPU tiles, the excluded user counts with
+  their cause, and per tile its stat, run dir and backend/runner (also as a hover title). 3 tests.
+- Result: 22 tiles, 21 with values from the index; X-CROSSOVER-N NOT MEASURED (UNSTABLE). No number is new.
+- Evidence: runs/20261014-093346_M18_s2_checks (export.txt, pytest_all.txt, pytest_all_first_jsbug.txt, check_*.txt, a1_terminology.txt,
+  dashboard.json, capture.txt), evidence/screens/M18_dashboard_{light,dark}_20261014.png, evidence/terminal/M18_S2_*
+- Metrics added: none
+- Decisions: by the agent: the "dudect max |t|" headline is the two shuffle-kernel series (the claim of ADR-023);
+  the whole-call row is shown beside them as FAIL. Restoration x/y is shown as value plus the stat "of 60 conversations".
+- Issues: ISSUE-54 updated (framing and exclusions done; label left for S3); opened ISSUE-55 (transient trace-test failure)
+- Deviations from spec: a JS syntax error (a heredoc newline) broke 8 browser tests in the first full run; fixed and rerun.
+- Not verified: the cause of ISSUE-55.
+- Commit: see git log (M18 S2)
+- Next: M18 S3 (charts, incl. the 0.0e+0 label) ; human action: ISSUE-53

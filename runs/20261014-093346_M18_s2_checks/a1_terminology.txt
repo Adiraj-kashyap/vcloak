@@ -1,0 +1,9 @@
+# A1: numeric literals in the changed JS that equal a shown tile value
+literals in dashboard.js: ['0', '013', '1', '1.1', '1.6', '10', '100', '11', '12', '16', '2.1', '5', '5.3', '7', '8']
+overlap with tile values: ['0', '1']
+# terminology
+web/data/dashboard.json:471:   "sub": "PASS: threshold |t| < 4.5. Kernel-level claim (ADR-023); not a proof of constant time.",
+web/data/dashboard.json:488:   "sub": "PASS: threshold |t| < 4.5. Kernel-level claim (ADR-023); not a proof of constant time.",
+exit 0
+# terminology after rewording
+grep exit 1 (1 = none found)

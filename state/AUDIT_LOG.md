@@ -1610,3 +1610,27 @@ Notes:
 - Hard rule 8: ai/ was changed only by ADR-030 (appended).
 - Placeholder charts were removed from the export after the first capture: they rendered NOT MEASURED for metrics
   that exist (FRONTEND section 6). The screens in evidence/ are from the second capture.
+
+## Audit — M18 S2 — 2026-10-14 — session 55 — PASS (step audit; module audit at the end of M18)
+RUN is runs/20261014-093346_M18_s2_checks.
+| Item | Result | Evidence |
+|---|---|---|
+| A1 no result literal in web/js | PASS | RUN/a1_terminology.txt: literals of dashboard.js are SVG path coordinates and an index; the overlap 0, 1 with tile values is those |
+| A2 every tile carries an indexed METRIC-ID | PASS | test_every_shown_value_is_the_indexed_value, test_every_s2_headline_has_a_tile_with_its_provenance; RUN/check_metrics.txt 895 rows, 0 problems |
+| A3 missing NOT MEASURED, QUICK chip | PASS | doctored-index tests (S1) still pass; X-CROSSOVER-N renders NOT MEASURED; a doctored dudect row above the threshold renders FAIL |
+| A4 logs endpoint redaction | N/A | S5 |
+| A5 both themes, Table views, one y-axis | PASS (partial) | evidence/screens/M18_dashboard_{light,dark}_20261014.png (second capture of the day replaces S1's); 0.0e+0% label open (ISSUE-54, S3) |
+| G1 | PASS | RUN/pytest_all.txt 2198 passed, 675 skipped (S1 skips unchanged; 3 tests added). First run failed 10: RUN/pytest_all_first_jsbug.txt, see ISSUE-55 |
+| G2 / G2b | PASS | no metric added |
+| G3 | PASS | RUN/check_oblivious.txt; no kernel changed |
+| G4 | PASS | RUN/check_secrets.txt, after the evidence copies |
+| G5 | N/A | no GPU twin |
+| G6 | PASS | exporter, dashboard.js, app.css, index.html, tests |
+| G7 | PASS | the session commit, owner Abhishek |
+| G8 | PASS | STATE: session 55, M18 at S3, sessions 2 |
+| G9 | PASS | SESSION_LOG session 55, this entry, ISSUE-54 updated, ISSUE-55 opened |
+| G10 | PASS | export_dashboard.py --check current (RUN/export.txt) |
+Notes:
+- Wording (ADR-023, STATE): the dudect tiles name the kernel-level claim; "constant time" appears nowhere in the
+  JSON, the exporter or dashboard.js (RUN/a1_terminology.txt, after one rewording this session). The whole-call FAIL
+  is shown, never a headline. No "ORAM" in the changed files.

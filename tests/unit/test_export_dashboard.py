@@ -84,3 +84,48 @@ def test_committed_json_is_current():
     ed = _module()
     assert ed.OUT.read_text(encoding="utf-8") == ed.render(ed.build(INDEX, ROOT))
     json.loads(ed.OUT.read_text(encoding="utf-8"))
+
+
+# M18 S2: the headline tiles and how they are stated.
+S2_HEADLINES = ("S-TURNACC-BASELINE", "S-TURNACC-EPOCH", "S-TURNACC-W300", "S-E0-RESTORE", "S-CHI2-P",
+                "T-DUDECT-MAXT-BITONIC-EQUAL", "T-DUDECT-MAXT-BITONIC-SORTED", "K-BITONIC-FUSED-MS-2^16",
+                "X-CROSSOVER-N", "SEC-E5-PASS")
+
+
+def test_every_s2_headline_has_a_tile_with_its_provenance():
+    data = _module().build(INDEX, ROOT)
+    groups = {g["id"] for g in data["groups"]}
+    for mid in S2_HEADLINES:
+        t = _tile(data, mid)
+        assert t["group"] in groups
+        if t["value"] is not None:
+            assert t["run"] and t["backend"] and t["runner"] and t["stat"]
+
+
+def test_dudect_verdict_follows_the_threshold_and_host_timing_is_never_a_headline(tmp_path):
+    ed = _module()
+    data = ed.build(INDEX, ROOT)
+    host = _tile(data, "T-DUDECT-MAXT-WRITE-EPOCH-CALL")
+    assert host["headline"] is False and "outside the claim" in host["sub"]
+    for t in data["tiles"]:
+        assert "constant time" not in t.get("sub", "")
+    mid = "T-DUDECT-MAXT-BITONIC-EQUAL"
+
+    def raise_t(ln: str) -> str:
+        if ln.startswith(f"| {mid} |"):
+            cells = ln.split("|")
+            cells[2] = f" {ed.dudect.T_THRESHOLD * 2} "
+            return "|".join(cells)
+        return ln
+    assert _tile(data, mid)["state"] == ("good" if abs(float(_tile(data, mid)["raw"])) < ed.dudect.T_THRESHOLD
+                                         else "crit")
+    doctored = _tile(ed.build(_doctored(tmp_path, raise_t), ROOT), mid)
+    assert doctored["state"] == "crit" and doctored["sub"].startswith("FAIL")
+
+
+def test_groups_name_their_framing_and_the_leakage_is_stated():
+    data = _module().build(INDEX, ROOT)
+    framing = {f["id"] for f in data["framing"]}
+    assert all(g["framing"] in framing for g in data["groups"] if "framing" in g)
+    sec = next(g for g in data["groups"] if g["id"] == "security")
+    assert "window ids" in sec["note"]

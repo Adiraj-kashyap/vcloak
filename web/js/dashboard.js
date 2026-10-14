@@ -32,9 +32,13 @@
                        statusIcon(t.state) + "</span> " + esc(t.sub) + "</div>";
       }
     }
+    if (t.stat) d.innerHTML += "<div class='sub'>" + esc(t.stat) + "</div>";
     if (t.metric_id) {
+      var src = [t.backend, t.runner].filter(Boolean).join(" · ");
       d.innerHTML += "<div class='prov'>" + esc(t.metric_id) +
-                     (t.run ? "<br>" + esc(t.run) : "") + "</div>";
+                     (t.run ? "<br>" + esc(t.run) : "") +
+                     (src ? "<br>backend " + esc(src) : "") + "</div>";
+      d.title = [t.metric_id, t.run, src, t.stat].filter(Boolean).join("\n");
     }
     return d;
   }
@@ -59,7 +63,34 @@
 
     var tiles = document.getElementById("tiles");
     tiles.innerHTML = "";
-    (data.tiles || []).forEach(function (t) { tiles.appendChild(tile(t)); });
+    var framing = {};
+    (data.framing || []).forEach(function (f) { framing[f.id] = f; });
+    var groups = (data.groups || []).length ? data.groups : [{ id: null, title: "" }];
+    groups.forEach(function (g) {
+      var sec = el("section", "tilegroup");
+      if (g.title) sec.innerHTML = "<h2>" + esc(g.title) + "</h2>";
+      var f = g.framing && framing[g.framing];
+      if (f) {
+        var box = el("div", "framing");
+        box.innerHTML = "<h3>" + esc(f.title) + "</h3><ul>" +
+          f.points.map(function (p) { return "<li>" + esc(p) + "</li>"; }).join("") + "</ul>";
+        sec.appendChild(box);
+      }
+      if (g.note) { var n = el("p", "groupnote"); n.textContent = g.note; sec.appendChild(n); }
+      var grid = el("div", "tiles");
+      (data.tiles || []).forEach(function (t) {
+        if (g.id === null || t.group === g.id) grid.appendChild(tile(t));
+      });
+      sec.appendChild(grid);
+      if (g.id === "gpu" && (data.excluded || []).length) {
+        var ex = el("div", "excluded");
+        ex.innerHTML = "<b>Not shown:</b> " + data.excluded.map(function (x) {
+          return esc(x.users) + " users — " + esc(x.reason);
+        }).join("; ");
+        sec.appendChild(ex);
+      }
+      tiles.appendChild(sec);
+    });
 
     var charts = document.getElementById("charts");
     charts.innerHTML = "";
