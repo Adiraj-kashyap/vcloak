@@ -1540,5 +1540,5 @@
 - Issues: none opened or closed
 - Deviations from spec: none (the M17 repro script does not exist yet; it calls `tasks.py dashboard --check`)
 - Not verified: the check on an actual LF clone (M17 S1 does the clean clone); ruff's 16 older findings untouched.
-- Commit: PENDING
+- Commit: 5eaf7d9
 - Next: M19 (calendar-bound, highest priority per STATE notes) ; human action: none
