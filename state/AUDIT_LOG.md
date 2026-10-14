@@ -1736,3 +1736,29 @@ Notes:
 - The old view drew S10 → R1 as if one followed the other and typed its texts in JS; the flow now has a write and a read lane and every parameter comes from config.py.
 - Leak rows are worded from PROJECT_BRIEF section 5 and ADR-031; "order across windows" names 1 − f/2 from docs/REPORT_CH4_NOTES.md section 4.S.3.
 - No "ORAM", "grouping", "unbreakable" or "constant time" in web/ (RUN/a_terms_grep.txt).
+
+## Audit — M18 S6b — 2026-10-14 — session 60 — PASS (step audit; module audit at the end of M18)
+RUN is runs/20261014-113145_M18_s6b_checks.
+| Item | Result | Evidence |
+|---|---|---|
+| S6b every non-pending chart has a PDF and a PNG that open at a legible size | PASS | RUN/capture.txt: 34 of 34 checks; 8 of 8 charts of dashboard.json drawn (none pending); each PNG 300 dpi and 1050 px wide, each PDF page 3.5 in wide, no text under 7 pt, all drawn text on the page and every table cell's text inside its cell; all 8 PNGs opened and read, one PDF opened (vector, real text) |
+| Sidecars name metric ids and run dirs | PASS | evidence/figures/M18_dash_*.json: metric_ids, runs, caption (the chart's note), the sha256 of the dashboard.json drawn from and the capture run |
+| A1 no result literal in web/js | N/A | web/ not changed |
+| A2 values carry indexed METRIC-IDs | PASS | figures draw only the chart specs of dashboard.json (test_the_values_drawn_are_those_of_the_spec); RUN/check_metrics.txt 895 rows, 0 problems |
+| A3 missing → NOT MEASURED | PASS | a pending chart is not drawn (test_a_pending_chart_is_not_drawn); the figure run refuses a stale dashboard.json (export_dashboard --check inside the capture) |
+| A4 logs endpoint | N/A | unchanged since S5 |
+| A5 light theme for print, one y-axis | PASS | colours are the light :root tokens of web/css/app.css; every figure has one y-axis |
+| G1 | PASS | RUN/pytest_all.txt 2231 passed, 675 skipped (all CUDA-only), 5 tests added (tests/unit/test_dashboard_figures.py) |
+| G2 / G2b | PASS | no metric added |
+| G3 | PASS | RUN/check_oblivious.txt 0 findings; no kernel changed |
+| G4 | PASS | RUN/check_secrets.txt after the evidence copies (2507 files, 0) |
+| G5 | N/A | no GPU twin |
+| G6 | PASS | scripts/dashboard_figures.py (new), scripts/capture_evidence.py (--figures), tests/unit/test_dashboard_figures.py, evidence/figures/M18_dash_*, evidence/INDEX.md (8 FIG-M18-DASH rows) |
+| G7 | PASS | the session commit, owner Abhishek |
+| G8 | PASS | STATE: session 60, M18 at S7, sessions 7 |
+| G9 | PASS | SESSION_LOG session 60, this entry; no issue opened or closed |
+| G10 | PASS | export_dashboard --check current; export_results --check 0 would change; `python scripts/capture_evidence.py --module M18 --views none --figures` re-makes the set |
+Notes:
+- The first drafts had a clipped table cell and colliding category labels; the cell check was added because the page-bounds check did not see text a table cell clips. Both fixed before the capture.
+- The figures repeat the dashboard's charts; the M14/M15 figures of results/ stay the ones the exporter makes (same data, other renderer).
+- No "ORAM", "grouping", "unbreakable" or "constant time" in the new files (RUN/a_terms_grep.txt).

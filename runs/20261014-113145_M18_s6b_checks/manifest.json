@@ -1,0 +1,44 @@
+{
+  "run_id": "20261014-113145_M18_s6b_checks",
+  "module": "M18",
+  "step": "S6b",
+  "owner": "Abhishek",
+  "git_sha": "5cb8b388b2c056f1e51ff37d0ce5a5d773f7949c",
+  "dirty": true,
+  "command": "pytest -q; python scripts/capture_evidence.py --module M18 --views none --figures --run <this run>",
+  "seed": 0,
+  "quick": false,
+  "params": {},
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261014-113145",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U",
+    "cpu_count": 12
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791957705.4892032
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791958132.9954953
+  },
+  "outputs": [
+    "a_terms_grep.txt",
+    "capture.txt",
+    "capture_figures.json",
+    "check_metrics.txt",
+    "check_oblivious.txt",
+    "check_secrets.txt",
+    "export_check.txt",
+    "export_results_check.txt",
+    "pytest_all.txt"
+  ],
+  "status": "OK",
+  "notes": "M18 S6b: 8 dashboard charts drawn as paper figures (PDF + 300 dpi PNG, 3.5 in, light) with sidecars into evidence/figures; 34 of 34 figure checks PASS; pytest 2231 passed 675 skipped; nothing measured"
+}

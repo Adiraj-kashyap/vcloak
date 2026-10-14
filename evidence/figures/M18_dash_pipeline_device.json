@@ -1,0 +1,34 @@
+{
+ "id": "pipeline_device",
+ "title": "write_epoch device stages vs the epoch budget",
+ "caption": "CUDA events, sizes whose device time was stable in run runs/20261011-215653_M07_pipeline (kaggle, code c40696b9c); the other sizes were UNSTABLE. Host stage and whole call not drawn: for the current code the whole call at 65536 slots is unmeasured under valid conditions (ISSUE-12).",
+ "kind": "groupedBar",
+ "metric_ids": [
+  "P-WRITE-EPOCH-DEVICE-MS-S64",
+  "P-WRITE-EPOCH-DEVICE-MS-S65536"
+ ],
+ "runs": [
+  "runs/20261011-215653_M07_pipeline"
+ ],
+ "data_state": "measured",
+ "drawn_from": {
+  "path": "web/data/dashboard.json",
+  "sha256": "4eeab338c07edd10a850005d328c8dd9b4fec63287e375b695e9a392436352ba",
+  "git_sha": null,
+  "generated_at": "20261014",
+  "index_sha256": "b1c581c896f846ec0f7ccb4a5a825390d20484ba908d0860f435222450904e5b"
+ },
+ "files": {
+  "pdf": "M18_dash_pipeline_device.pdf",
+  "png": "M18_dash_pipeline_device.png"
+ },
+ "size_in": [
+  3.5,
+  2.6
+ ],
+ "dpi": 300,
+ "min_font_pt": 7.0,
+ "theme": "light",
+ "made_by": "scripts/capture_evidence.py --figures",
+ "capture_run": "runs/20261014-113145_M18_s6b_checks (git 5cb8b38, dirty)"
+}

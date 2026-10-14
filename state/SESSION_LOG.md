@@ -1504,3 +1504,23 @@
 - Not verified: the view at phone width (the SVG scrolls sideways at 760 px minimum, as before).
 - Commit: 252c98f
 - Next: M18 S6b (paper-ready figure export) ; human action: none
+
+## Session 60 — 2026-10-14 — M18 S6b: paper-ready figures of the dashboard charts — owner:Abhishek
+- Steps: S6b (status after: IN_PROGRESS, current_step S7)
+- Did: new scripts/dashboard_figures.py draws every non-pending chart of web/data/dashboard.json again with
+  matplotlib from the same spec (groupedBar, cdf, lineLog, histogram, matrix), 3.5 in wide, light :root tokens of
+  app.css, 8 pt text and nothing under 7 pt, vector PDF + 300 dpi PNG. `capture_evidence.py --figures` refuses a
+  stale dashboard.json, checks each pair (dpi, width, PDF page, smallest font, text on the page and inside table
+  cells), writes evidence/figures/M18_dash_<chart>.{pdf,png,json} and one FIG-M18-DASH row each in INDEX.md; a
+  replaced figure moves all three files to superseded/.
+- Result: 8 of 8 charts drawn, 34 of 34 checks PASS; 5 tests added.
+- Evidence: runs/20261014-113145_M18_s6b_checks (capture.txt, capture_figures.json, pytest_all.txt, check_*.txt,
+  export_*check.txt, a_terms_grep.txt), evidence/figures/M18_dash_*.{pdf,png,json}
+- Metrics added: none
+- Decisions: by the agent: no title inside a figure (the sidecar gives title and caption, as papers use captions);
+  the matrix shows one outcome cell when expected = observed and both otherwise; >4 categories are slanted.
+- Issues: none opened or closed
+- Deviations from spec: none
+- Not verified: the PDFs in a LaTeX build (M22/M19 will include them); fonts other than DejaVu Sans.
+- Commit: (next)
+- Next: M18 S7 (regeneration hook) ; human action: none

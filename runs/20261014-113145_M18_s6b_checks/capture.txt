@@ -1,0 +1,35 @@
+PASS  dashboard.json is current (export_dashboard.py --check)
+PASS  every chart that is not pending has a figure
+PASS  e2e_gpu_util: PNG at 300 dpi, 1050 px wide
+PASS  e2e_gpu_util: PDF page 3.5 in wide
+PASS  e2e_gpu_util: no text under 7 pt
+PASS  e2e_gpu_util: every text on the page
+PASS  e2e_latency_u10: PNG at 300 dpi, 1050 px wide
+PASS  e2e_latency_u10: PDF page 3.5 in wide
+PASS  e2e_latency_u10: no text under 7 pt
+PASS  e2e_latency_u10: every text on the page
+PASS  e2e_latency_u50: PNG at 300 dpi, 1050 px wide
+PASS  e2e_latency_u50: PDF page 3.5 in wide
+PASS  e2e_latency_u50: no text under 7 pt
+PASS  e2e_latency_u50: every text on the page
+PASS  kernel_sweep: PNG at 300 dpi, 1050 px wide
+PASS  kernel_sweep: PDF page 3.5 in wide
+PASS  kernel_sweep: no text under 7 pt
+PASS  kernel_sweep: every text on the page
+PASS  pipeline_device: PNG at 300 dpi, 1050 px wide
+PASS  pipeline_device: PDF page 3.5 in wide
+PASS  pipeline_device: no text under 7 pt
+PASS  pipeline_device: every text on the page
+PASS  attack_ablation: PNG at 300 dpi, 1050 px wide
+PASS  attack_ablation: PDF page 3.5 in wide
+PASS  attack_ablation: no text under 7 pt
+PASS  attack_ablation: every text on the page
+PASS  tau_hist: PNG at 300 dpi, 1050 px wide
+PASS  tau_hist: PDF page 3.5 in wide
+PASS  tau_hist: no text under 7 pt
+PASS  tau_hist: every text on the page
+PASS  session_matrix: PNG at 300 dpi, 1050 px wide
+PASS  session_matrix: PDF page 3.5 in wide
+PASS  session_matrix: no text under 7 pt
+PASS  session_matrix: every text on the page
+24 files, 8 index rows; record: runs/20261014-113145_M18_s6b_checks/capture_figures.json

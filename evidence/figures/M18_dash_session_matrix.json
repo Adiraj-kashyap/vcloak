@@ -1,0 +1,33 @@
+{
+ "id": "session_matrix",
+ "title": "Session-security attack matrix (E5)",
+ "caption": "26/26 scenarios behaved as expected (SEC-E5-PASS). A rejection must fail the expected check: a rejection for another reason counts as a failure. Backend numpy, runner local: this matrix tests protocol logic, not the GPU.",
+ "kind": "matrix",
+ "metric_ids": [
+  "SEC-E5-PASS"
+ ],
+ "runs": [
+  "runs/20261012-160139_M11_session_matrix"
+ ],
+ "data_state": "measured",
+ "drawn_from": {
+  "path": "web/data/dashboard.json",
+  "sha256": "4eeab338c07edd10a850005d328c8dd9b4fec63287e375b695e9a392436352ba",
+  "git_sha": null,
+  "generated_at": "20261014",
+  "index_sha256": "b1c581c896f846ec0f7ccb4a5a825390d20484ba908d0860f435222450904e5b"
+ },
+ "files": {
+  "pdf": "M18_dash_session_matrix.pdf",
+  "png": "M18_dash_session_matrix.png"
+ },
+ "size_in": [
+  3.5,
+  7.3
+ ],
+ "dpi": 300,
+ "min_font_pt": 7.0,
+ "theme": "light",
+ "made_by": "scripts/capture_evidence.py --figures",
+ "capture_run": "runs/20261014-113145_M18_s6b_checks (git 5cb8b38, dirty)"
+}

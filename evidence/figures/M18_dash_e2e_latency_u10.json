@@ -1,0 +1,42 @@
+{
+ "id": "e2e_latency_u10",
+ "title": "Submit to ack, 10 users (2 per conversation)",
+ "caption": "Empirical CDF per cell, ack: stored, sends scheduled in the measured interval. Solid: repetition 1, dashed: repetition 2. V-cloak waits for its epoch to close; the baseline stores at once.",
+ "kind": "cdf",
+ "metric_ids": [
+  "E2E-P50-U10-baseline",
+  "E2E-P95-U10-baseline",
+  "E2E-P99-U10-baseline",
+  "E2E-P50-U10-vcloak",
+  "E2E-P95-U10-vcloak",
+  "E2E-P99-U10-vcloak"
+ ],
+ "runs": [
+  "runs/20261014-081645_M15_e2e_metrics",
+  "runs/20261014-013859_M15_baseline_u10_r1",
+  "runs/20261014-015528_M15_baseline_u10_r2",
+  "runs/20261014-014128_M15_vcloak_u10_r1",
+  "runs/20261014-015757_M15_vcloak_u10_r2"
+ ],
+ "data_state": "measured",
+ "drawn_from": {
+  "path": "web/data/dashboard.json",
+  "sha256": "4eeab338c07edd10a850005d328c8dd9b4fec63287e375b695e9a392436352ba",
+  "git_sha": null,
+  "generated_at": "20261014",
+  "index_sha256": "b1c581c896f846ec0f7ccb4a5a825390d20484ba908d0860f435222450904e5b"
+ },
+ "files": {
+  "pdf": "M18_dash_e2e_latency_u10.pdf",
+  "png": "M18_dash_e2e_latency_u10.png"
+ },
+ "size_in": [
+  3.5,
+  2.8
+ ],
+ "dpi": 300,
+ "min_font_pt": 7.0,
+ "theme": "light",
+ "made_by": "scripts/capture_evidence.py --figures",
+ "capture_run": "runs/20261014-113145_M18_s6b_checks (git 5cb8b38, dirty)"
+}

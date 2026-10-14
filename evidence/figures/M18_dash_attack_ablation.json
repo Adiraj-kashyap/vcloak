@@ -1,0 +1,38 @@
+{
+ "id": "attack_ablation",
+ "title": "Order-recovery attack vs visible window",
+ "caption": "Turn-order accuracy: for two consecutive messages of a conversation, does the dump order them correctly? 50 % is chance. Predicted 1 − f/2, with f the share of turns inside one visible round, is the attack run's own model (e1_attack.json); arrival order has no prediction.",
+ "kind": "groupedBar",
+ "metric_ids": [
+  "S-TURNACC-BASELINE",
+  "S-TURNACC-EPOCH",
+  "S-TURNACC-W1",
+  "S-TURNACC-W10",
+  "S-TURNACC-W60",
+  "S-TURNACC-W300"
+ ],
+ "runs": [
+  "runs/20261013-054727_M14_security_e0e1"
+ ],
+ "data_state": "measured",
+ "drawn_from": {
+  "path": "web/data/dashboard.json",
+  "sha256": "4eeab338c07edd10a850005d328c8dd9b4fec63287e375b695e9a392436352ba",
+  "git_sha": null,
+  "generated_at": "20261014",
+  "index_sha256": "b1c581c896f846ec0f7ccb4a5a825390d20484ba908d0860f435222450904e5b"
+ },
+ "files": {
+  "pdf": "M18_dash_attack_ablation.pdf",
+  "png": "M18_dash_attack_ablation.png"
+ },
+ "size_in": [
+  3.5,
+  2.6
+ ],
+ "dpi": 300,
+ "min_font_pt": 7.0,
+ "theme": "light",
+ "made_by": "scripts/capture_evidence.py --figures",
+ "capture_run": "runs/20261014-113145_M18_s6b_checks (git 5cb8b38, dirty)"
+}

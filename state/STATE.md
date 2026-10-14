@@ -3,13 +3,13 @@
 ```yaml
 project: v-cloak
 kit_version: 1.0
-last_session: 59
+last_session: 60
 last_session_date: 2026-10-14
 current_module: M18
-current_step: S6b
+current_step: S7
 status: IN_PROGRESS           # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
 next_unit: M18
-last_checkpoint: 2026-10-14 session 59: M18 S6 done (Architecture view from the architecture block); next: M18 S6b
+last_checkpoint: 2026-10-14 session 60: M18 S6b done (paper figures of the dashboard charts); next: M18 S7
 quick_mode_default: false
 local:                      # the laptop (no GPU) — filled by M00 S7
   os: "Windows-11-10.0.26200-SP0"
@@ -58,7 +58,7 @@ gpu_job:                    # set by the gpu-job skill
 | M14 | Security evaluation (E0–E2, anon set) | Abhishek | M08, M10 | no | DONE | S7 | 6 |
 | M15 | End-to-end performance (E6) | Divyansh | M10, M11 | no | DONE | S4 | 5 |
 | M16 | Results export | Abhishek | M07, M08, M14 | no | DONE | S4 | 2 |
-| M18 | Frontend: dashboard, experiments, logs | Abhishek | M13, M14 | no | IN_PROGRESS | S6b | 6 |
+| M18 | Frontend: dashboard, experiments, logs | Abhishek | M13, M14 | no | IN_PROGRESS | S7 | 7 |
 | M17 | Final audit & demo (Review 3 close-out) | Team | all required | no | NOT_STARTED | S1 | 0 |
 | M22 | Draft report (prelim pages, Ch.1–4, similarity) | Team | M16 | no | NOT_STARTED | S1 | 0 |
 | M19 | Publication / IP submission (crit. 9) | Abhishek + team | M16 | no | NOT_STARTED | S1 | 0 |
@@ -167,3 +167,5 @@ Keep this file under 120 lines: one or two lines per note, the detail lives in t
   S6: the Architecture view draws the `architecture` block of dashboard.json (flow of ARCHITECTURE section 2,
   parameters from config.py, leak table under the ADR-031 sentence, measured cells from the index). Change the
   wording in export_dashboard.py (ARCH_WRITE/ARCH_READ/LEAK_ROWS), never in arch.js.
+  S6b: `python scripts/capture_evidence.py --module M18 --views none --figures` re-draws the paper figures
+  (evidence/figures/M18_dash_*, scripts/dashboard_figures.py) after any change of dashboard.json.

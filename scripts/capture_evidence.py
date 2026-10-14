@@ -20,6 +20,12 @@ has its old file moved to `evidence/superseded/`. Nothing is written to `evidenc
 passed. `--terminal` copies a file of a run directory to `evidence/terminal/` and indexes it under the
 git sha of that run.
 
+`--figures` (M18 S6b) draws every chart of web/data/dashboard.json that is not pending again as a paper
+figure (scripts/dashboard_figures.py: from the same spec, one column wide, light theme, PDF + 300 dpi PNG)
+into `evidence/figures/<Mxx>_dash_<chart>.{pdf,png}`, with a sidecar `<Mxx>_dash_<chart>.json` naming the
+metric ids, the run directories and the dashboard.json it was drawn from. The JSON must be current
+(`export_dashboard.py --check`): a figure of a stale dashboard is not evidence.
+
 Nothing is measured here: the pictures show what is stored, not how fast.
 """
 from __future__ import annotations
@@ -174,6 +180,52 @@ def terminal_rows(specs: list[str], *, module: str, tag: str, date: str) -> list
                           "what": what, "module": module, "date": date, "source": source_of(src.parent),
                           "state": "measured"}))
     return out
+
+
+# ── the paper figures ────────────────────────────────────────────────────────
+DASHBOARD = ROOT / "web" / "data" / "dashboard.json"
+FIG_SUFFIXES = (".png", ".pdf", ".json")
+
+
+def figure_rows(module: str, tmp: Path, date: str, source: str) -> tuple[list[dict[str, str]], dict[str, Any]]:
+    """Draw the dashboard's charts into `tmp` and return their index rows, and what was checked."""
+    import dashboard_figures as figs
+
+    fresh = subprocess.run([sys.executable, str(ROOT / "scripts" / "export_dashboard.py"), "--check"], cwd=ROOT,
+                           capture_output=True, text=True)
+    raw = DASHBOARD.read_bytes()
+    dash = json.loads(raw)
+    made = figs.render_all(dash, tmp, module)
+    checks: dict[str, bool] = {"dashboard.json is current (export_dashboard.py --check)": fresh.returncode == 0}
+    origin = {"path": DASHBOARD.relative_to(ROOT).as_posix(), "sha256": hashlib.sha256(raw).hexdigest(),
+              "git_sha": dash.get("git_sha"), "generated_at": dash.get("generated_at"),
+              "index_sha256": dash.get("index_sha256")}
+    pending = [c["id"] for c in dash["charts"] if c.get("pending")]
+    checks["every chart that is not pending has a figure"] = (
+        sorted(f["id"] for f in made) == sorted(c["id"] for c in dash["charts"] if not c.get("pending")))
+    rows, record = [], []
+    for f in made:
+        spec = f.pop("spec")
+        checks.update(figs.check(f, tmp))
+        quick = bool(spec.get("quick"))
+        side = {"id": spec["id"], "title": spec["title"], "caption": spec.get("note", ""), "kind": spec["kind"],
+                "metric_ids": spec.get("metric_ids", []), "runs": spec.get("runs", []),
+                "data_state": "quick" if quick else "measured", "drawn_from": origin,
+                "files": {k: f"{f['stem']}.{k}" for k in ("pdf", "png")}, "size_in": f["size_in"], "dpi": f["dpi"],
+                "min_font_pt": f["min_font_pt"], "theme": "light", "made_by": "scripts/capture_evidence.py --figures",
+                "capture_run": source}
+        (tmp / f"{f['stem']}.json").write_text(json.dumps(side, indent=1, ensure_ascii=False) + "\n",
+                                                encoding="utf-8", newline="\n")
+        record.append(side)
+        runs_cell = ", ".join(spec.get("runs", [])) or "no run named"
+        rows.append({"id": f"FIG-{module}-DASH-{spec['id'].replace('_', '-').upper()}",
+                     "file": f"figures/{f['stem']}.png",
+                     "what": (f"+ .pdf ({f['dpi']} dpi, {f['size_in'][0]:g} x {f['size_in'][1]:g} in, light; sidecar "
+                              f"figures/{f['stem']}.json) — the dashboard chart \"{spec['title']}\" drawn again from "
+                              f"web/data/dashboard.json (sha256 {origin['sha256'][:12]}), metric ids "
+                              f"{', '.join(spec.get('metric_ids', [])) or 'none'}, from {runs_cell}"),
+                     "module": module, "date": date, "source": source, "state": "quick" if quick else "measured"})
+    return rows, {"drawn_from": origin, "pending_not_drawn": pending, "figures": record, "checks": checks}
 
 
 # ── the page ─────────────────────────────────────────────────────────────────
@@ -447,6 +499,8 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--tag", default="", help="a step tag for the names of --terminal copies, e.g. S5b")
     ap.add_argument("--terminal", action="append", default=[], metavar="SRC=WHAT",
                     help="copy a file of a run directory to evidence/terminal/ and index it (repeatable)")
+    ap.add_argument("--figures", action="store_true",
+                    help="draw the dashboard's charts as paper figures into evidence/figures/ (M18 S6b)")
     ap.add_argument("--owner", default="unknown", help="owner of a run directory this call creates")
     ap.add_argument("--evidence", default=str(ROOT / "evidence"), help=argparse.SUPPRESS)
     a = ap.parse_args(argv)
@@ -483,32 +537,52 @@ def main(argv: list[str] | None = None) -> int:
             except Exception as e:  # noqa: BLE001 - recorded, and nothing is written to evidence/
                 out["failed"] = f"{type(e).__name__}: {e}"
             rows = rows_of(a.module, out, date_iso, source, backend)
+        fig_rows: list[dict[str, str]] = []
+        if a.figures:
+            try:
+                fig_rows, out["paper_figures"] = figure_rows(a.module, tmp, date_iso, source)
+                out["checks"].update(out["paper_figures"].pop("checks"))
+            except Exception as e:  # noqa: BLE001 - recorded, and nothing is written to evidence/
+                out["failed"] = f"{type(e).__name__}: {e}"
         out["ok"] = "failed" not in out and all(out["checks"].values())
         if out["ok"]:
-            text, replaced = upsert_rows(index.read_text(encoding="utf-8"), rows + [r for _, r in terminal])
+            text, replaced = upsert_rows(index.read_text(encoding="utf-8"),
+                                         rows + fig_rows + [r for _, r in terminal])
             out["superseded"] = []
             for rid, old, name in replaced:  # the old picture is kept, never deleted (ai/EVIDENCE.md rule 2)
-                if (evidence / old).is_file():
-                    (evidence / "superseded").mkdir(exist_ok=True)
-                    shutil.move(evidence / old, evidence / "superseded" / name)
-                    out["superseded"].append({"id": rid, "file": old, "kept_as": "superseded/" + name})
+                # a figure is three files (PNG, PDF, sidecar): all three move together
+                pairs = ([(Path(old).with_suffix(x).as_posix(), Path(name).with_suffix(x).name) for x in FIG_SUFFIXES]
+                         if rid.startswith("FIG-") else [(old, name)])
+                for o, n in pairs:
+                    if (evidence / o).is_file():
+                        (evidence / "superseded").mkdir(exist_ok=True)
+                        shutil.move(evidence / o, evidence / "superseded" / n)
+                        out["superseded"].append({"id": rid, "file": o, "kept_as": "superseded/" + n})
             (evidence / "screens").mkdir(exist_ok=True)
             for r in rows:
                 shutil.copyfile(tmp / Path(r["file"]).name, evidence / r["file"])
+            for r in fig_rows:
+                (evidence / "figures").mkdir(exist_ok=True)
+                for x in FIG_SUFFIXES:
+                    shutil.copyfile(tmp / Path(r["file"]).with_suffix(x).name,
+                                    evidence / Path(r["file"]).with_suffix(x))
             for src, r in terminal:
                 (evidence / "terminal").mkdir(exist_ok=True)
                 shutil.copyfile(src, evidence / r["file"])
             index.write_text(text, encoding="utf-8", newline="\n")
-            out["index_rows"] = [r["id"] for r in rows] + [r["id"] for _, r in terminal]
-            out["files_written"] = [r["file"] for r in rows] + [r["file"] for _, r in terminal]
+            out["index_rows"] = [r["id"] for r in rows + fig_rows] + [r["id"] for _, r in terminal]
+            out["files_written"] = ([r["file"] for r in rows]
+                                    + [Path(r["file"]).with_suffix(x).as_posix() for r in fig_rows for x in FIG_SUFFIXES]
+                                    + [r["file"] for _, r in terminal])
 
     # a call that only copies terminal output must not replace the record of the pictures
-    record = run_dir / ("capture_evidence.json" if views else "capture_terminal.json")
+    record = run_dir / ("capture_evidence.json" if views
+                        else "capture_figures.json" if a.figures else "capture_terminal.json")
     record.write_text(json.dumps(out, indent=1, ensure_ascii=False), encoding="utf-8")
     if own_run:
         runs.finish_run(run_dir, status="OK" if out["ok"] else "FAIL",
-                        notes=f"capture_evidence --module {a.module}: {len(rows)} screens, {len(terminal)} terminal "
-                              "copies; pictures of the app, nothing measured")
+                        notes=f"capture_evidence --module {a.module}: {len(rows)} screens, {len(fig_rows)} paper "
+                              f"figures, {len(terminal)} terminal copies; pictures of the app, nothing measured")
     for name, passed in out["checks"].items():
         print(("PASS  " if passed else "FAIL  ") + name)
     if "failed" in out:
