@@ -1506,3 +1506,25 @@ Notes:
 - Hard rule 8: ai/ was changed only by ADR-027 and by Amendments sections (M15, M20, M22).
 - The job was packed from c64ec32; the records commit changes state/ and scripts/secrets_allowlist.json only, which
   are not in the bundle.
+
+## Audit — session 51 — 2026-10-14 — M15 S2 ingest (checkpoint, module IN_PROGRESS) — RESULT: PASS (step), module not audited
+The module audit is due after S4. A1 and A2 are read here on the ingested cells; A3 is read and handed to S3.
+| Check | Result | Evidence |
+|---|---|---|
+| A1 both modes under identical conditions | PASS | RUN/cell_reading.txt: 1 condition set (ack, sessions, store, rate, duration, warm-up, poll, power source, clock), 1 environment (Kaggle, T4, 4 vCPU, one runner session), one git sha, not dirty, over 12 cells. Identical conditions do not make the 200-user pair a valid comparison: ISSUE-51 |
+| A2 warm-up excluded consistently | PASS | RUN/cell_reading.txt: counted sends start at scheduled 20.01 s in every cell; the same counted and excluded numbers in both modes and both repetitions of a user count |
+| A3 repetitions within 15% or UNSTABLE | OPEN (S3) | read, not yet recorded as metrics: 200 users over the gate on 7 of 8 latency quantiles, baseline ack p99 over it at 10 and 50 users; S3 must mark these UNSTABLE (ISSUE-51) |
+| G1 | PASS | RUN/pytest_all.txt (2169 passed, 1 skipped, 674 deselected, numpy backend) |
+| G2 | PASS | RUN/check_metrics.txt (829 rows, 0 problems). No metric row added. The numbers written in ISSUE-51 and the session log are a reading of RUN/cell_reading.txt, named as such, not results |
+| G2b | PASS | no metric indexed; the 13 ingested manifests carry backend cupy and a gpu_job block |
+| G3 | PASS | RUN/check_oblivious.txt (0 findings; the runner's own check_oblivious exit 0); no kernel changed |
+| G4 | PASS | RUN/check_secrets.txt (2303 files, 0 key-like runs) with the ingested server logs included |
+| G5 | N/A | no GPU twin |
+| G6 | N/A | results/e2e and the notes section are due in S3/S4 |
+| G7 | PASS | 29a77d7 and the records commit, owner Divyansh; review/publication/ stays untracked |
+| G8 | PASS | STATE: session 51, M15 IN_PROGRESS at S3, sessions 3, gpu_job.pending null, last_ingested 20261014-065041_M15 |
+| G9 | PASS | SESSION_LOG session 51, this entry, ISSUE-50 closed, ISSUE-51 opened |
+| G10 | PASS | 13 ingested manifests and RUN validated by the ingest and `new_run.py --validate`; cell_reading.py re-runs from the repository root |
+Notes:
+- RUN is runs/20261014-074636_M15_s2_ingest_checks.
+- No file under ai/ changed. No code changed: the only new script is the reading inside RUN.

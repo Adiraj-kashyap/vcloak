@@ -1593,7 +1593,7 @@ Closed session 50 (the owner's decisions, ADR-027):
   a correctness run, no number of it is a result). On the T4 that is what the cell measures; `send_lag_ms`
   and the read count are in every summary so S3 can tell a slow service from a slow generator.
 
-### ISSUE-50 [OPEN] HUMAN ACTION REQUIRED — GPU JOB READY: the M15 end-to-end cells (job 20261014-065041_M15)
+### ISSUE-50 [CLOSED 29a77d7] HUMAN ACTION REQUIRED — GPU JOB READY: the M15 end-to-end cells (job 20261014-065041_M15)
 BLOCKS: M15   SEVERITY: high   OPENED: 2026-10-14 session 50
 Why: S2 of M15 is the measurement itself: V-cloak and the baseline under load on the T4 with PostgreSQL behind the
 service. Nothing of E6 exists until this job is ingested.
@@ -1626,3 +1626,34 @@ Known risks, none a defect of the job:
   bring the bundle back as it is and the reading goes to the owner (ADR-027).
 Confirm by running: `ls gpujobs/inbox/` shows results_20261014-065041_M15.zip
 Then type: continue
+
+Closed session 51: the bundle came back from Kaggle (T4, 4 vCPU, runner session 20261014-013736) and is ingested;
+7 commands exit 0, 12 cells and the driver run under runs/. The reading of the 200-user cells is ISSUE-51.
+
+### ISSUE-51 [OPEN] DECISION OF THE OWNER — the 200-user cells ran with the load generator at its limit: how are they reported?
+BLOCKS: none (S3 goes ahead; the default below applies to the 200-user rows until the owner says otherwise)   SEVERITY: high   OPENED: 2026-10-14 session 51
+What came back (runs/20261014-074636_M15_s2_ingest_checks/cell_reading.txt; a reading of the ingested cells, none of it is an indexed metric):
+- All 12 cells completed with exit 0 and no epoch overflow. At 10 and 50 users both modes sent on time (send lag
+  p99 at most 3 ms), every send was acknowledged and read back, and the two repetitions agree within 7 % on every
+  p50 and on every V-cloak p99. Only the baseline ack p99 differs between repetitions (a tail of a few ms).
+- At 200 users the generator process used about 1.2 cores in BOTH modes (mean 118 to 121 % of one core inside the
+  measured interval; 24 % at 10 users, 40 % at 50). The instrument was at its limit, so the 200-user latencies
+  contain the generator's own queueing and are not the service's latency alone.
+- 200 users, V-cloak: ack p50 of 3.2 s and 4.2 s in the two repetitions (p99 18 s and 30 s), sends late by
+  76 / 107 ms at p50, one send lost per repetition (ReadError), the readers made 7387 and 5872 requests where
+  the baseline cells made about 40000, one read refused with invalid_dpop_proof in r2, 23 and 19 missed epochs.
+  The service process used 32 % and 25 % of a core: the service CPU was not what was saturated. The cause of
+  the seconds of ack latency is NOT established (generator event loop, the engine thread, or both).
+- 200 users, baseline: also degraded (ack p50 98 / 113 ms against 4.7 ms at 50 users; p99 1.5 s / 2.3 s).
+- A3: every 200-user latency except the baseline readable p50 is more than 15 % apart between repetitions.
+- `achieved_msgs_s` in the summaries counts acknowledged sends by their SCHEDULED time, so it equals the offered
+  rate even when the acks arrive tens of seconds late. It is not a throughput under backlog; S3 must derive
+  E2E-TPUT from the completion times in samples.csv and must not index that field at 200 users.
+Options (ADR-027: nothing is shrunk, dropped or retried without the owner):
+- (a) DEFAULT, applied by S3 unless told otherwise: the 200-user rows are indexed as UNSTABLE with the reason
+  "load generator at its limit in both modes"; no added-latency figure and no verdict for 200 users; the
+  presenter note on GPU load is answered for 200 users from the telemetry with that caveat. No further job.
+- (b) Measure 200 users again with a generator that keeps up (several generator processes): new code, a new
+  Kaggle job of the 4 cells, about 15 minutes of runner time. This is a retry in the sense of ADR-027.
+- (c) Add a cell between 50 and 200 users (for example 100) to find where the sends stop being on time: a new job.
+To choose: tell the agent "ISSUE-51: a", "b" or "c" at the start of a session. Saying nothing means (a).

@@ -1270,3 +1270,32 @@
   of the job; NVML sampling (no NVML here: the code path is the M07 sampler).
 - Commit: c64ec32 (code, tests, evidence, ADR), records in the next commit
 - Next: M15 S2 ingest ; human action: ISSUE-50 (run job 20261014-065041_M15 on Kaggle, put the results in gpujobs/inbox/)
+
+- GPU-JOB 20261014-065041_M15 ingested 2026-10-14 07:43: runner kaggle, gpu Tesla T4, session 20261014-013736, overall exit 0, runs 20261014-013858_M15_e2e_cells, 20261014-013859_M15_baseline_u10_r1, 20261014-014128_M15_vcloak_u10_r1, 20261014-014359_M15_baseline_u50_r1, 20261014-014635_M15_vcloak_u50_r1, 20261014-014912_M15_baseline_u200_r1, 20261014-015212_M15_vcloak_u200_r1, 20261014-015528_M15_baseline_u10_r2, 20261014-015757_M15_vcloak_u10_r2, 20261014-020026_M15_baseline_u50_r2, 20261014-020302_M15_vcloak_u50_r2, 20261014-020539_M15_baseline_u200_r2, 20261014-020839_M15_vcloak_u200_r2, 0 metrics indexed.
+
+## Session 51 — 2026-10-14 — M15 S2 (ingest): the 12 end-to-end cells are in; 200 users ran at the generator's limit — owner:Divyansh
+- Steps: S2 ingest (status after: IN_PROGRESS, current_step S3, gpu_job.pending null)
+- Did: `python scripts/gpujob.py ingest` verified and ingested job 20261014-065041_M15 (Kaggle, Tesla T4, 4 vCPU,
+  driver 580.178.04, runner session 20261014-013736; packed from c64ec32, manifests not dirty): 7 commands exit 0,
+  13 run dirs (the driver and 12 cells). Read the cells against A1, A2 and A3 with
+  runs/20261014-074636_M15_s2_ingest_checks/cell_reading.py (reads summaries, samples.csv, cpu.csv; writes no metric).
+- Result: A1 one set of conditions and one environment over all 12 cells. A2 the same counted window in every
+  cell (scheduled 20.01 s onwards; 169, 943 and 3660 counted sends at 10, 50 and 200 users). 10 and 50 users are
+  clean in both modes. 200 users is not: the generator process was above one core in both modes, V-cloak
+  acknowledged in seconds and lost one send per repetition, and the repetitions are more than 15 % apart
+  (ISSUE-51). No epoch overflow in any cell; missed epochs in the V-cloak cells: 15, 1, 0, 1, 23, 19.
+- Evidence: runs/20261014-013858_M15_e2e_cells (driver, cells.csv), the 12 cell dirs runs/20261014-01*_M15_* and
+  runs/20261014-02*_M15_*, gpujobs/out/20261014-065041_M15 (result.json, logs); runs/20261014-074636_M15_s2_ingest_checks
+  (cell_reading.txt, pytest_all.txt 2169 passed 1 skipped 674 deselected, ruff.txt, check_*.txt, export_check.txt)
+- Metrics added: none. The E2E-* rows are S3 (percentiles, the UNSTABLE marks, throughput); the ingest indexed 0.
+- Decisions: none by the agent beyond the default of ISSUE-51 (a), which changes no data and can be reversed.
+- Issues: closed ISSUE-50 (29a77d7); opened ISSUE-51 (decision of the owner on the 200-user cells)
+- Deviations from spec: S3 was not started in this session although the cells are in: the 200-user reading goes
+  to the owner first (ADR-027), and S3 needs new code (throughput from completion times, see ISSUE-51). No
+  capture-evidence run: web/, results/ and the metrics index did not change.
+- Not verified: why V-cloak acknowledges in seconds at 200 users (generator, engine thread or both); the cause
+  of the lost sends and of the one invalid_dpop_proof; why the V-cloak schema has 5 tables in two cells and 4 in
+  the other four; GPU utilisation and power (telemetry is ingested, not yet read: S3). This run's image (driver
+  580.178.04, CUDA 12090) is not the image of the `runner` block or of M07: no timing is compared across them.
+- Commit: 29a77d7 (ingested runs, evidence), records in the next commit
+- Next: M15 S3 (metrics from the 12 cells) ; human action: none required; ISSUE-51 if the default (a) should change
