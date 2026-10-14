@@ -1479,5 +1479,5 @@
 - Issues: none opened or closed
 - Deviations from spec: none
 - Not verified: other token encodings than the four measured; lines longer than 2000 characters are cut.
-- Commit: see git log (M18 S5)
+- Commit: 015c1c9
 - Next: M18 S6 (Architecture view: S0→S10 / R1→R5 flow and the leakage table) ; human action: none
