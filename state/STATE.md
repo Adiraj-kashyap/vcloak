@@ -3,13 +3,13 @@
 ```yaml
 project: v-cloak
 kit_version: 1.0
-last_session: 49
+last_session: 50
 last_session_date: 2026-10-14
 current_module: M15
 current_step: S2
-status: IN_PROGRESS           # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
+status: BLOCKED_HUMAN         # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
 next_unit: M15
-last_checkpoint: 2026-10-14 session 49: M15 S1 done (bench/run_e2e.py, ADR-026, local correctness cells); next: M15 S2 prep (ISSUE-49)
+last_checkpoint: 2026-10-14 session 50: M15 S2 prep done, job 20261014-065041_M15 packed (ISSUE-50); next: ingest it, then S3
 quick_mode_default: false
 local:                      # the laptop (no GPU) — filled by M00 S7
   os: "Windows-11-10.0.26200-SP0"
@@ -33,7 +33,7 @@ runner:                     # the free remote GPU — filled from the ingested M
   peak_bw_gbs: 320.064
   last_session_id: "20261012-135251"
 gpu_job:                    # set by the gpu-job skill
-  pending: null
+  pending: 20261014-065041_M15
   last_ingested: 20261013-224820_M08_ncu
 ```
 
@@ -56,7 +56,7 @@ gpu_job:                    # set by the gpu-job skill
 | M12 | Client SDK & CLI | Abhishek | M11 | no | DONE | S4 | 1 |
 | M13 | Frontend: chat + server view | Abhishek | M12 | no | DONE | S6 | 5 |
 | M14 | Security evaluation (E0–E2, anon set) | Abhishek | M08, M10 | no | DONE | S7 | 6 |
-| M15 | End-to-end performance (E6) | Divyansh | M10, M11 | no | IN_PROGRESS | S2 | 1 |
+| M15 | End-to-end performance (E6) | Divyansh | M10, M11 | no | BLOCKED_HUMAN | S2 | 2 |
 | M16 | Results export | Abhishek | M07, M08, M14 | no | DONE | S4 | 2 |
 | M18 | Frontend: dashboard, experiments, logs | Abhishek | M13, M14 | no | NOT_STARTED | S1 | 0 |
 | M17 | Final audit & demo (Review 3 close-out) | Team | all required | no | NOT_STARTED | S1 | 0 |
@@ -132,4 +132,9 @@ Keep this file under 120 lines: one or two lines per note, the detail lives in t
   31 of 35 rows agree, 2 differ on the oracle side (ISSUE-41). Occupancy above CAND_K at W300 and at 1000 users: ISSUE-43.
 - M15 (ADR-026): `python bench/run_e2e.py --mode vcloak|baseline --users U` is one cell; it starts the service
   itself (never `--compare`), sessions on, `ack: stored`, no WebSocket. Samples count by their scheduled time. A
-  numpy cell is a correctness run: no metric, never indexed. S2 parameters and runner needs: ISSUE-49.
+  numpy cell is a correctness run: no metric, never indexed.
+- ADR-027 (the owner): two-party conversations only, declared scope; every population states "two users per
+  conversation"; groups are future work (docs/REFINEMENTS.md, kept by M20). M15 cells: 10/50/200 users at 0.15
+  messages per user per second (at 0.2 the 200-user cell can exceed CAND_K), SLOTS 256, two repetitions:
+  `python bench/run_e2e_cells.py`. No statement about 1000 users end to end. Never shrink, drop or retry a cell:
+  report which and why to the owner first. Cell run names stay under 43 characters (check_secrets).

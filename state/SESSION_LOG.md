@@ -1235,3 +1235,38 @@
   telemetry, CPU utilisation and DB size (S2). The token refresh path ran once by hand (limit forced), not in a test.
 - Commit: 4fc9008 (code, tests, evidence), records in the next commit
 - Next: M15 S2 (prep: job spec, telemetry, cell driver, pack) ; human action: ISSUE-49 if the proposals should change
+
+## Session 50 — 2026-10-14 — M15 S2 (prep): the cells, telemetry, job packed; scope and load decisions recorded — owner:Divyansh
+- Steps: S2 prep (status after: BLOCKED_HUMAN, current_step S2, gpu_job.pending 20261014-065041_M15)
+- Did: recorded the owner's two decisions (ADR-027: two-party conversations only as declared scope; cells at
+  10, 50 and 200 users) in ai/DECISIONS.md, the Amendments of M15, M20 and M22 and docs/REFINEMENTS.md (group
+  conversations as future work). Built S2: `bench/run_e2e_cells.py` (2 modes x users x 2 repetitions, modes back
+  to back, one PostgreSQL schema per cell), `vcloak.bench.hostload` (CPU utilisation, DB size, power source),
+  NVML at 10 Hz around every cell, `bench/jobs/M15.json` (Kaggle, 4 vCPU), psutil in requirements-gpu.txt.
+- Result: no measurement. The driver and both modes run locally against PostgreSQL on the numpy backend at 10,
+  50 and 200 users: every counted send acknowledged and read back. Correctness only, no number of it is a result.
+- Finding before packing: at the proposed 0.2 messages per user per second the 200-user schedule can exceed
+  CAND_K (136 rows in one bucket-window, two buckets of 5 conversations); the owner chose 0.15 (bound 106).
+  Arithmetic on the schedule, not a measurement.
+- Evidence: runs/20261014-062714_M15_s2_checks (pytest_all.txt 2169 passed 675 skipped, ruff.txt, check_*.txt, export_check.txt,
+  bucket_bound.py/.txt); runs/20261014-063452_M15_e2e_cells_quick and runs/20261014-063858_M15_e2e_cells_quick
+  with their 6 cells; gpujobs/out/20261014-065041_M15
+- Metrics added: none (no GPU run)
+- Decisions: ADR-027, all three parts by the owner. By the agent: one schema per cell, dropped first; modes
+  back to back, baseline first; CPU sampled at 2 Hz (the module gives no rate); samplers cover setup, warm-up
+  and drain, `measured_unix` marks the interval; `runner_required: kaggle`, 4 vCPU; `stack_up` stops the job if
+  PostgreSQL cannot be installed; cell run names shortened.
+- Issues: closed ISSUE-49 (c64ec32); opened ISSUE-50 (GPU JOB READY)
+- Deviations from spec: users 10/50/200 instead of 10/100/1000 (ADR-027). No design chapter exists yet (M22 not
+  started), so the scope is in ADR-027 and an M22 amendment that Ch.3 must carry, not in a chapter. No anonymity
+  figure exists either: the pairing is stated by the S6 table, its JSON (`mapping`) and section 4.S of the notes,
+  pinned by tests/unit/test_bench_report_security.py; nothing had to change. Five local run dirs of this session
+  (numpy, rate 0.2, never committed) were deleted: their names read as key-like to check_secrets and the rate
+  was superseded; the same cells were re-run. psutil was installed in the local venv. No capture-evidence run:
+  web/, results/ and the metrics index did not change. Commit by named paths, not `git add -A`:
+  review/publication/ stays untracked as before.
+- Not verified: anything on a CUDA device; runner_stack.py on Kaggle; whether the service and one generator
+  process keep up with 200 users (the laptop numpy run did not answer the reads at the asked rate); the runtime
+  of the job; NVML sampling (no NVML here: the code path is the M07 sampler).
+- Commit: c64ec32 (code, tests, evidence, ADR), records in the next commit
+- Next: M15 S2 ingest ; human action: ISSUE-50 (run job 20261014-065041_M15 on Kaggle, put the results in gpujobs/inbox/)

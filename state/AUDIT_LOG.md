@@ -1482,3 +1482,27 @@ The module checklist needs the S2 runs: A1 and A3 are not applicable yet.
 Notes:
 - RUN is runs/20261014-015940_M15_s1_checks.
 - RUN/export_check.txt: 0 files would change (bench/ and src/ changed, results did not).
+
+## Audit — session 50 — 2026-10-14 — M15 S2 prep (GPU JOB READY gate, module BLOCKED_HUMAN) — RESULT: PASS (step), module not audited
+The module checklist needs the ingested runs: A1 and A3 are read at the ingest.
+| Check | Result | Evidence |
+|---|---|---|
+| A1 both modes under identical conditions | N/A | no measured run yet. Prepared: one seed and schedule for every cell, modes back to back, an empty schema per cell, power source and versions in every summary (tests/unit/test_bench_e2e_cells.py) |
+| A2 warm-up excluded consistently | PASS | unchanged rule (`e2e.measured`); the samplers run longer than the measured interval and `measured_unix` marks it |
+| A3 repetitions within 15% or UNSTABLE | N/A | S3, after the ingest |
+| G1 | PASS | RUN/pytest_all.txt (2169 passed, 675 skipped, numpy backend) |
+| G2 | PASS | RUN/check_metrics.txt (829 rows, 0 problems); the numbers written this session (136, 106, 104 of 240) are arithmetic of RUN/bucket_bound.txt and are called that wherever they appear |
+| G2b | PASS | no metric: every summary.json of this session lists none (numpy) |
+| G3 | PASS | RUN/check_oblivious.txt (11 files, 0 findings); no kernel changed |
+| G4 | PASS | RUN/check_secrets.txt (0 key-like runs) after the cell run names were shortened; the bound uses the public development key and prints no key |
+| G5 | N/A | no GPU twin |
+| G6 | N/A | results/e2e and the notes section are due in S3/S4; bench/run_e2e.py exists |
+| G7 | PASS | c64ec32 and the records commit, owner Divyansh; review/publication/ stays untracked |
+| G8 | PASS | STATE: session 50, M15 BLOCKED_HUMAN at S2, sessions 2, gpu_job.pending 20261014-065041_M15 |
+| G9 | PASS | SESSION_LOG session 50, this entry, ISSUE-49 closed, ISSUE-50 opened, ADR-027 |
+| G10 | PASS | 9 manifests of this session valid; the quick matrix was run twice (before and after the rename), same outcome |
+Notes:
+- RUN is runs/20261014-062714_M15_s2_checks.
+- Hard rule 8: ai/ was changed only by ADR-027 and by Amendments sections (M15, M20, M22).
+- The job was packed from c64ec32; the records commit changes state/ and scripts/secrets_allowlist.json only, which
+  are not in the bundle.

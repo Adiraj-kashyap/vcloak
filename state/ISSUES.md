@@ -1551,7 +1551,7 @@ Resolution (2026-10-14, session 48, 0856c6e; decisions of the owner in the sessi
   PAPER_UPDATES section 5).
 - Point 4: httpx and matplotlib are in the install line of pc_runner/SETUP.txt. Not verified on the PC.
 
-### ISSUE-49 [OPEN] M15 S2: parameters of the cells that the module does not fix, and what the runner still needs
+### ISSUE-49 [CLOSED c64ec32] M15 S2: parameters of the cells that the module does not fix, and what the runner still needs
 BLOCKS: none (S2 takes the proposals below unless the owner says otherwise)   SEVERITY: medium   OPENED: 2026-10-14 session 49
 Decisions for the owner (Divyansh). Each changes what the E6 numbers mean, so none is taken silently:
 1. Send rate per user. The module says "Poisson send rate per user" without a value. Proposal: 0.2 messages/s
@@ -1575,3 +1575,54 @@ requirements-gpu.txt); the DB size; the driver over modes x users x 2 repetition
 Not verified in S1: the generator at 100 or 1000 users (largest local cell: 10 users); anything on a CUDA device
 or on PostgreSQL; whether one generator process can offer 200 messages/s with a DPoP signature per request
 without being the bottleneck itself (the summary records `send_lag_ms` for that).
+Closed session 50 (the owner's decisions, ADR-027):
+- Population: 10, 50 and 200 users, two per conversation, in place of 10, 100 and 1000. No cell at 1000 users, so
+  point 3 (reads above CAND_K at 1000 users) does not arise; 1000 users is not measured end to end.
+- 1. Rate: 0.15 messages per user per second, not the 0.2 proposed. Found while preparing S2 and put to the owner
+  before packing: a conversation's bucket is fixed, 100 conversations in 64 buckets put 5 into each of two
+  buckets, and at 0.2 the schedule of seed 15 can put 136 rows into one bucket-window (CAND_K 128), in 104 of
+  240 alignments of the window; at 0.15 the bound is 106 and no alignment exceeds it (runs/20261014-062714_M15_s2_checks/bucket_bound.txt:
+  arithmetic on the schedule, not a measurement). Offered: 1.5, 7.5 and 30 messages per second.
+- 2. SLOTS 256, 4. poll 500 ms, 5. `ack: stored`: the proposals, unchanged (the owner did not object).
+- What the runner needed is built: bench/jobs/M15.json (Kaggle, 4 vCPU), PostgreSQL through
+  scripts/runner_stack.py, NVML at 10 Hz, CPU utilisation (psutil, added to requirements-gpu.txt), DB size, the
+  driver bench/run_e2e_cells.py. The job is ISSUE-50.
+- Still not verified, and not verifiable on the laptop: whether one generator process and one engine thread keep
+  up with 200 users (400 reads per second asked for). On the numpy backend the 200-user cell acknowledged and
+  read back every send but answered far fewer reads than asked (runs/20261014-064033_M15_vcloak_u200_r1_quick:
+  a correctness run, no number of it is a result). On the T4 that is what the cell measures; `send_lag_ms`
+  and the read count are in every summary so S3 can tell a slow service from a slow generator.
+
+### ISSUE-50 [OPEN] HUMAN ACTION REQUIRED — GPU JOB READY: the M15 end-to-end cells (job 20261014-065041_M15)
+BLOCKS: M15   SEVERITY: high   OPENED: 2026-10-14 session 50
+Why: S2 of M15 is the measurement itself: V-cloak and the baseline under load on the T4 with PostgreSQL behind the
+service. Nothing of E6 exists until this job is ingested.
+Do this:
+```
+GPU JOB READY — 20261014-065041_M15              (runtime not measured; plan for about 45 to 60 minutes)
+
+1. Open https://www.kaggle.com  ->  Create > New Notebook > File > Import Notebook
+   Pick:  colab/VCloak_GPU_Runner.ipynb
+2. Settings > Accelerator > GPU T4 x2                    <- easy to miss
+3. Settings > Internet > On                              <- this job installs PostgreSQL with apt-get
+4. + Add Input > Upload, pick:  gpujobs/out/20261014-065041_M15/job.zip
+5. Run Cell 1. It must print a GPU name (Tesla T4).
+6. Run Cell 2 as it is (Kaggle unpacks the upload into a folder; the cell finds the job by itself).
+7. Run Cell 3 and keep the tab open. It prints one line per cell, 12 cells:
+   "cell  1/12  r1 u10  baseline exit 0  OK ..."
+   If it prints "This job needs 4 vCPU" or "must run on kaggle": nothing was run. Tell me what it printed;
+   do not move the job to Colab.
+   If it stops at stack_up: PostgreSQL could not be installed (step 3). Turn the internet on and run Cell 3 again.
+8. Take results_20261014-065041_M15.zip from the Output panel and put it in:  gpujobs/inbox/
+9. New session, type: continue
+```
+What it runs: 2 modes x 10, 50 and 200 users x 2 repetitions = 12 cells, each 20 s warm-up + 120 s, 0.15 messages
+per user per second, two users per conversation, SLOTS 256, sessions on, `ack: stored`.
+Known risks, none a defect of the job:
+- Kaggle has given this project 4 vCPU and 2 vCPU sessions. With 2 vCPU the job refuses, and the choice goes back
+  to the owner.
+- scripts/runner_stack.py has installed PostgreSQL on Colab (M14); it has not run on Kaggle before.
+- If a cell fails or cannot keep up, the job records it and runs the next one. Nothing is shrunk or retried:
+  bring the bundle back as it is and the reading goes to the owner (ADR-027).
+Confirm by running: `ls gpujobs/inbox/` shows results_20261014-065041_M15.zip
+Then type: continue
