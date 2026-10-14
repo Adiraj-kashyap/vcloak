@@ -1550,3 +1550,28 @@ Resolution (2026-10-14, session 48, 0856c6e; decisions of the owner in the sessi
 - Wording: every generated place that reports ncu now states both platforms (4.O.2, 4.O.5, 4.O.6, 4.S,
   PAPER_UPDATES section 5).
 - Point 4: httpx and matplotlib are in the install line of pc_runner/SETUP.txt. Not verified on the PC.
+
+### ISSUE-49 [OPEN] M15 S2: parameters of the cells that the module does not fix, and what the runner still needs
+BLOCKS: none (S2 takes the proposals below unless the owner says otherwise)   SEVERITY: medium   OPENED: 2026-10-14 session 49
+Decisions for the owner (Divyansh). Each changes what the E6 numbers mean, so none is taken silently:
+1. Send rate per user. The module says "Poisson send rate per user" without a value. Proposal: 0.2 messages/s
+   (the default of bench/run_e2e.py): 2, 20 and 200 messages/s offered at 10, 100 and 1000 users.
+2. SLOTS. The service default is 64 (development); 65536 is excluded (ISSUE-12: M15 gives no verdict for that
+   size). At 200 messages/s an epoch of 200 ms receives 40 on average, so 64 slots will overflow in bursts.
+   Proposal: one value for all cells and both modes, 256, named beside every number.
+3. Reads at 1000 users. With the defaults (WINDOW_S 60, BUCKETS 64, CAND_K 128) a window holds about 12000
+   messages at 200 messages/s, about 187 per bucket: above CAND_K, so `POST /v1/read` answers 503
+   candidate_overflow (ADR-014, ISSUE-43) and the submit-to-readable latency of that cell would be mostly
+   missing. This is arithmetic from the public parameters, not a measurement. Options: (a) keep the defaults
+   and report the failed reads as the finding; (b) size BUCKETS or CAND_K for the cell and name the values.
+   Proposal: (a) for the default layout plus one sized cell (b) at 1000 users, reported side by side.
+4. Poll interval of the readers: 500 ms (default). It quantises submit-to-readable and is itself load: 2 reads
+   per user per second, each a GPU open of CAND_K rows in V-cloak mode. Proposal: keep 500 ms, state it.
+5. Acknowledgement: `stored` in both modes (default), so submit-to-ack is "durable" in both (ISSUE-23).
+What S2 still needs before a job can be packed: a job spec bench/jobs/M15.json with `runner_required` and
+`cpu_count_required` (ADR-024); PostgreSQL on the runner (ADR-008; the M14 S6 job has the pattern); the 10 Hz NVML
+sampler and CPU utilisation around the cell (psutil is not installed on the laptop and is not in
+requirements-gpu.txt); the DB size; the driver over modes x users x 2 repetitions. Not started.
+Not verified in S1: the generator at 100 or 1000 users (largest local cell: 10 users); anything on a CUDA device
+or on PostgreSQL; whether one generator process can offer 200 messages/s with a DPoP signature per request
+without being the bottleneck itself (the summary records `send_lag_ms` for that).

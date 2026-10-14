@@ -1209,3 +1209,29 @@
   SETUP.txt on the PC
 - Commit: 0856c6e (code, results, evidence), records in the next commit
 - Next: M15 S1 ; human action: none
+
+## Session 49 — 2026-10-14 — M15 S1: end-to-end load generator — owner:Divyansh
+- Steps: S1 (status after: IN_PROGRESS, current_step S2). Same conversation as session 48: the owner asked for
+  M15 to be started after ISSUE-48.
+- Did: `vcloak.bench.e2e` (pairs, per-user Poisson schedule fixed by the seed, warm-up rule, statistics) and
+  `bench/run_e2e.py` (one cell: starts the service as a child process, registers and logs in every user with its
+  own DPoP key, open-loop sends, one reader per user, samples.csv and summary.json); ADR-026; 7 unit tests and
+  an integration test of both modes against the real service.
+- Result: both modes run end to end on the laptop with sessions on: every counted send acknowledged with 201
+  and read back by the peer, both modes get the same schedule, warm-up sends recorded and not counted. These are
+  numpy runs with the in-memory store: correctness of the generator only, no latency of them is a result.
+- Evidence: runs/20261014-015841_M15_e2e_baseline_u10, runs/20261014-015857_M15_e2e_vcloak_u10 (local cells);
+  runs/20261014-015940_M15_s1_checks (read_cells.py/.txt, pytest_all.txt 2158 passed 675 skipped, ruff.txt,
+  check_*.txt, export_check.txt)
+- Metrics added: none (no GPU run; `summary.json` offers no metric on the numpy backend)
+- Decisions: ADR-026 (the generator starts the service and raises only the account rate limits: 5 registrations
+  per address per hour cannot set up even 10 users). Samples are counted by scheduled time. Defaults proposed,
+  not decided: ISSUE-49.
+- Issues: opened ISSUE-49 (S2 parameters; reads at 1000 users exceed CAND_K with the default layout, by arithmetic)
+- Deviations from spec: hard rule 5 (one unit per session): two units in one conversation, at the owner's
+  explicit request, each with its own records and commits. No capture-evidence run: web/, results/ and the
+  metrics index did not change in this unit. The module's human gate (AC power) does not apply to S1.
+- Not verified: 100 and 1000 users; PostgreSQL; a CUDA device; the generator's own capacity at 200 messages/s;
+  telemetry, CPU utilisation and DB size (S2). The token refresh path ran once by hand (limit forced), not in a test.
+- Commit: 4fc9008 (code, tests, evidence), records in the next commit
+- Next: M15 S2 (prep: job spec, telemetry, cell driver, pack) ; human action: ISSUE-49 if the proposals should change

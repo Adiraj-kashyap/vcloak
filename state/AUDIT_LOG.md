@@ -1460,3 +1460,25 @@ Notes:
 - The SASS listing used for the cross-check is the sm_75 nvcc build; the profiled code is the nvrtc build for cc 8.6.
   The generated text says so. The in-run hardware counter is the second, same-platform indication.
 - No job is pending, so the change to src/vcloak/bench and scripts/ makes no bundle stale.
+
+## Audit — session 49 — 2026-10-14 — M15 S1 (checkpoint, module IN_PROGRESS) — RESULT: PASS (step), module not audited
+The module checklist needs the S2 runs: A1 and A3 are not applicable yet.
+| Check | Result | Evidence |
+|---|---|---|
+| A1 both modes under identical conditions | N/A | no measured run yet; the schedule is the same for both modes (RUN/read_cells.txt, tests/unit/test_bench_e2e.py) |
+| A2 warm-up excluded consistently | PASS | by scheduled time, in one function (`e2e.measured`); RUN/read_cells.txt: 33 warm-up sends per cell, 0 counted; unit test |
+| A3 repetitions within 15% or UNSTABLE | N/A | S2/S3 |
+| G1 | PASS | RUN/pytest_all.txt (2158 passed, 675 skipped, numpy backend; the skips are the GPU and database tests) |
+| G2 | PASS | RUN/check_metrics.txt (829 rows, 0 problems); no number was added to any doc or table |
+| G2b | PASS | no metric: the two cells are numpy runs and their summary.json lists none (RUN/read_cells.txt) |
+| G3 | PASS | RUN/check_oblivious.txt (11 files, 0 findings); no kernel changed |
+| G4 | PASS | RUN/check_secrets.txt (2139 files, 0 key-like runs); the service runs with the public dev key, accounts are test accounts of the run |
+| G5 | N/A | no GPU twin |
+| G6 | N/A | of the deliverables only bench/run_e2e.py is due in S1; it exists |
+| G7 | PASS | 4fc9008 and the records commit, owner Divyansh; review/publication/ stays untracked as before |
+| G8 | PASS | STATE: session 49, M15 IN_PROGRESS at S2, sessions 1, next_unit M15 |
+| G9 | PASS | SESSION_LOG session 49, this entry, ISSUE-49 opened, ADR-026 |
+| G10 | PASS | three manifests valid (git sha, seed, command, env); the cell commands were run twice in a scratch folder before, same outcome |
+Notes:
+- RUN is runs/20261014-015940_M15_s1_checks.
+- RUN/export_check.txt: 0 files would change (bench/ and src/ changed, results did not).

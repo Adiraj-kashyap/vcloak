@@ -3,13 +3,13 @@
 ```yaml
 project: v-cloak
 kit_version: 1.0
-last_session: 48
+last_session: 49
 last_session_date: 2026-10-14
 current_module: M15
-current_step: S1
-status: NOT_STARTED           # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
+current_step: S2
+status: IN_PROGRESS           # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
 next_unit: M15
-last_checkpoint: 2026-10-14 session 48: ISSUE-48 closed (the PC ncu result has its own table, control first; bitonic_pairs_global NOT_MEASURED, ANN-5); next: M15 S1
+last_checkpoint: 2026-10-14 session 49: M15 S1 done (bench/run_e2e.py, ADR-026, local correctness cells); next: M15 S2 prep (ISSUE-49)
 quick_mode_default: false
 local:                      # the laptop (no GPU) — filled by M00 S7
   os: "Windows-11-10.0.26200-SP0"
@@ -56,7 +56,7 @@ gpu_job:                    # set by the gpu-job skill
 | M12 | Client SDK & CLI | Abhishek | M11 | no | DONE | S4 | 1 |
 | M13 | Frontend: chat + server view | Abhishek | M12 | no | DONE | S6 | 5 |
 | M14 | Security evaluation (E0–E2, anon set) | Abhishek | M08, M10 | no | DONE | S7 | 6 |
-| M15 | End-to-end performance (E6) | Divyansh | M10, M11 | no | NOT_STARTED | S1 | 0 |
+| M15 | End-to-end performance (E6) | Divyansh | M10, M11 | no | IN_PROGRESS | S2 | 1 |
 | M16 | Results export | Abhishek | M07, M08, M14 | no | DONE | S4 | 2 |
 | M18 | Frontend: dashboard, experiments, logs | Abhishek | M13, M14 | no | NOT_STARTED | S1 | 0 |
 | M17 | Final audit & demo (Review 3 close-out) | Team | all required | no | NOT_STARTED | S1 | 0 |
@@ -130,3 +130,6 @@ Keep this file under 120 lines: one or two lines per note, the detail lives in t
   (jobs 20261013-105517_M14 and 20261013-125843_M14_s6, two Colab sessions). results/security and section 4.S are
   generated (line 2 of runs/20261013-171026_M16_prefixes/report_command.txt). Never write "the GPU matches the oracle":
   31 of 35 rows agree, 2 differ on the oracle side (ISSUE-41). Occupancy above CAND_K at W300 and at 1000 users: ISSUE-43.
+- M15 (ADR-026): `python bench/run_e2e.py --mode vcloak|baseline --users U` is one cell; it starts the service
+  itself (never `--compare`), sessions on, `ack: stored`, no WebSocket. Samples count by their scheduled time. A
+  numpy cell is a correctness run: no metric, never indexed. S2 parameters and runner needs: ISSUE-49.
