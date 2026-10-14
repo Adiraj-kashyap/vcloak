@@ -1481,3 +1481,26 @@
 - Not verified: other token encodings than the four measured; lines longer than 2000 characters are cut.
 - Commit: 015c1c9
 - Next: M18 S6 (Architecture view: S0→S10 / R1→R5 flow and the leakage table) ; human action: none
+
+## Session 59 — 2026-10-14 — M18 S6: the Architecture view from generated data — owner:Abhishek
+- Steps: S6 (status after: IN_PROGRESS, current_step S6b)
+- Did: `export_dashboard.py` writes an `architecture` block: the S0→S10 / R1→R5 states of ai/ARCHITECTURE.md
+  section 2 with their parameters read from vcloak.config, the durable states (S9, S10), the ADR-031 sentence and an
+  11-row leakage table (PROJECT_BRIEF sections 3 and 5) whose "Measured" cells are index rows with their run
+  (S-TAU-WITHIN-W60, S-CHI2-P, S-TURNACC-W60, S-TURNACC-EPOCH) or NOT MEASURED. arch.js draws a write lane and a read
+  lane (the read starts from the stored rows), Play moves a token through the 16 states with a caption, and a live
+  line gives the server's open epoch and last stored epoch. The leak rows left demo-data.js. Capture row describes the
+  view's data; docs/DEMO.md section 4.
+- Result: Play walks all 16 states in order (RUN/check_arch_play.txt); 3 exporter tests added; both themes read.
+- Evidence: runs/20261014-112109_M18_s6_checks (pytest_all.txt, pytest_after_css.txt, check_*.txt, export_*check.txt,
+  a1_js_numbers.txt, a_terms_grep.txt, check_arch_play.{py,txt}, capture.txt), evidence/screens/
+  M18_arch_{light,dark}_20261014.png (S3 pair in evidence/superseded/)
+- Metrics added: none
+- Decisions: by the agent: the S3 text says "TLS in deployment (the dev server is plain HTTP on localhost)"; the old
+  view's flat "TLS 1.3" was not true of the dev server. "Order across windows" is visible and carries the W60 turn
+  accuracy with the 1 − f/2 explanation of section 4.S.3.
+- Issues: none opened or closed
+- Deviations from spec: none
+- Not verified: the view at phone width (the SVG scrolls sideways at 760 px minimum, as before).
+- Commit: (next)
+- Next: M18 S6b (paper-ready figure export) ; human action: none

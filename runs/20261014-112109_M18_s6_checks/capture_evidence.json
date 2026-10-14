@@ -1,0 +1,91 @@
+{
+ "module": "M18",
+ "run": "runs/20261014-112109_M18_s6_checks (git c1ed2e8, dirty)",
+ "date": "2026-10-14",
+ "views": {
+  "arch": {
+   "state": "measured",
+   "nodes": 16,
+   "durable": [
+    "S9",
+    "S10"
+   ],
+   "leak_rows": 11,
+   "not_measured": 0,
+   "live": "Live: epoch 8959785511 open (S4), last epoch written to the store 8959785510 (S9); engine numpy on local.",
+   "files": {
+    "light": {
+     "file": "screens/M18_arch_light_20261014.png",
+     "width": 1440,
+     "height": 1782,
+     "bytes": 215998,
+     "sha256": "c892328e9628586bca1d8ebb451c2dc4085af188035bf14980d292820ab25c8b"
+    },
+    "dark": {
+     "file": "screens/M18_arch_dark_20261014.png",
+     "width": 1440,
+     "height": 1782,
+     "bytes": 220982,
+     "sha256": "e667ee66e0d22e65cecf909834974ffde1b57e30953e48cd005b871ccb1d9a0f"
+    }
+   }
+  }
+ },
+ "checks": {
+  "the page is live, in dev mode, with a mode switch": true,
+  "arch: the view was the one on screen": true,
+  "no exception, console error or blocked request in the page": true
+ },
+ "serve_argv": [
+  "--dev",
+  "--compare",
+  "--sessions",
+  "--store",
+  "sqlite",
+  "--window-s",
+  "5",
+  "--epoch-ms",
+  "200"
+ ],
+ "viewport": [
+  1440,
+  900
+ ],
+ "browser": "Chrome/154.0.8037.98",
+ "live_ready": true,
+ "conn": "live · dev",
+ "stats_live": {
+  "mode": "vcloak",
+  "dev": true,
+  "sessions": true,
+  "win": 358391420,
+  "window_s": 5,
+  "epoch_ms": 200,
+  "slots": 64,
+  "queued": 0,
+  "epochs": 4,
+  "payload_len": 4124,
+  "switchable": true,
+  "now_ms": 1791957102697,
+  "epoch": 8959785513,
+  "last_epoch": 8959785512,
+  "last_write_ms": 18.3,
+  "gpu": {
+   "backend": "numpy",
+   "runner": "local",
+   "device": "12th Gen Intel(R) Core(TM) i7-1255U",
+   "util": null
+  }
+ },
+ "errors": [],
+ "ok": true,
+ "superseded": [],
+ "index_rows": [
+  "SCR-M18-ARCH-LIGHT",
+  "SCR-M18-ARCH-DARK"
+ ],
+ "files_written": [
+  "screens/M18_arch_light_20261014.png",
+  "screens/M18_arch_dark_20261014.png"
+ ]
+}

@@ -227,3 +227,48 @@ def test_experiment_layouts_carry_the_indexed_value_at_full_precision_and_the_re
     idx = _doctored(tmp_path, lambda ln: None if ln.startswith(f"| {mid} |") else ln)
     gone = next(x for x in ed.build(idx, ROOT)["experiments"]["attack"]["layouts"] if x["metric_id"] == mid)
     assert gone["value"] is None and "run" not in gone
+
+
+def _arch_evidence(data: dict, mid: str) -> dict:
+    return next(e for r in data["architecture"]["leak"] for e in r["evidence"] if e["metric_id"] == mid)
+
+
+def test_architecture_flow_is_the_spec_with_parameters_from_config():
+    ed = _module()
+    a = ed.build(INDEX, ROOT)["architecture"]
+    spec = ROOT.joinpath("ai", "ARCHITECTURE.md").read_text(encoding="utf-8")
+    flow = spec[spec.index("## 2. Data-state flow"):spec.index("## 3.")]
+    ids = [s["id"] for s in a["write"] + a["read"]]
+    assert ids == [f"S{i}" for i in range(11)] + [f"R{i}" for i in range(1, 6)]
+    assert all(f"{i} " in flow for i in ids)
+    assert [s["id"] for s in a["write"] + a["read"] if s["durable"]] == ["S9", "S10"]  # "Only S9 and S10 are durable"
+    assert all(s["where"] == "db" for s in a["write"] if s["durable"])
+    assert a["params"] == {p: getattr(ed.config, p) for p in ed.ARCH_PARAMS}
+    text = json.dumps(a, ensure_ascii=False)
+    assert "{" not in "".join(s["d"] for s in a["write"] + a["read"])  # every placeholder was filled
+    assert f"BLOCK = {ed.config.BLOCK} bytes" in text and f"EPOCH_MS = {ed.config.EPOCH_MS} ms" in text
+
+
+def test_architecture_leak_table_states_adr031_and_the_brief_leakage():
+    ed = _module()
+    a = ed.build(INDEX, ROOT)["architecture"]
+    adr = ROOT.joinpath("ai", "DECISIONS.md").read_text(encoding="utf-8")
+    assert " ".join(a["leak_sentence"].split()) in " ".join(adr.split())  # ADR-031 item 2, as written
+    status = {r["observable"]: r["status"] for r in a["leak"]}
+    assert status["Order of storage within a window"] == "concealed"
+    for obs in ("Full read/write access pattern", "Order across windows", "Real messages per window",
+                "Order of the newest data", "Anything a compromised live server sees"):
+        assert status[obs] == "visible", obs
+    assert status["Which rows belong to one conversation"] == "partly visible"
+    assert "grouping" not in json.dumps(a).lower()
+
+
+def test_architecture_evidence_is_the_indexed_value_or_not_measured(tmp_path):
+    ed = _module()
+    rows, _ = ed.check_metrics.parse_index(INDEX)
+    e = _arch_evidence(ed.build(INDEX, ROOT), "S-TAU-WITHIN-W60")
+    assert any(r["id"] == e["metric_id"] and r["value"] == e["raw"] and r["run_dir"] == e["run"] for r in rows)
+    mid = "S-TURNACC-W60"
+    data = ed.build(_doctored(tmp_path, lambda ln: None if ln.startswith(f"| {mid} |") else ln), ROOT)
+    assert _arch_evidence(data, mid)["value"] is None
+    assert [m["metric_id"] for m in data["missing"]].count(mid) == 1

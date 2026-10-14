@@ -1,0 +1,20 @@
+1:/* arch.js — the data-state flow, drawn as SVG, with a message animating through it (M18 S6).
+4: * leakage table of ai/PROJECT_BRIEF.md sections 3 and 5 under the ADR-031 sentence. No value is typed here. */
+8:  var NS = "http://www.w3.org/2000/svg";
+33:    var bw = 150, bh = 58, gx = 26, gy = 46, top = 30, cols = 6;
+46:    return { pos: pos, order: order, W: cols * (bw + gx), H: top + rows * (bh + gy) - gy + 14, top: top,
+71:    svg.style.minWidth = "760px";
+73:    defs.innerHTML = "<marker id='arrow' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='6' markerHeight='6' " +
+74:                     "orient='auto-start-reverse'><path d='M0 0 L10 5 L0 10 z' fill='var(--muted)'/></marker>";
+77:    svg.appendChild(el("text", { x: 13, y: 18, "class": "lane" }, "WRITE PATH"));
+78:    svg.appendChild(el("text", { x: 13, y: L.top + L.wrows * (L.bh + L.gy) - 12, "class": "lane" }, "READ PATH"));
+87:                            stroke: STROKE[s.where], "stroke-width": s.durable ? 2 : 1.2 });
+89:      g.appendChild(el("text", { "class": "t", x: n.x + 10, y: n.y + 22, fill: dark ? "#fff" : "var(--ink)" }, id));
+90:      g.appendChild(el("text", { x: n.x + 10, y: n.y + 41, fill: dark ? "#fff" : "var(--ink-2)" }, s.t));
+91:      if (s.durable) g.appendChild(el("text", { x: n.x + n.w - 10, y: n.y + 22, "text-anchor": "end",
+92:                                                 fill: "#fff", "font-size": "10" }, "on disk"));
+107:    var dot = el("circle", { r: 7, "class": "flowmsg", cx: -20, cy: -20 });
+127:    var ids = L.order, i = 0, step = reduced() ? 900 : 700;
+132:        n.rect.setAttribute("stroke-width", n.s.durable ? 2 : 1.2);
+137:        dot.setAttribute("cx", -20); dot.setAttribute("cy", -20);
+208:    }, 2000);

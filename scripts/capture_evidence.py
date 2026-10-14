@@ -323,8 +323,14 @@ def view_state(page: Any, view: str) -> dict[str, Any]:
         return {"state": "seed" if demo else "measured", "demo_lines": demo,
                 "lines": page.evaluate("document.getElementById('logBox').children.length"),
                 "note": page.evaluate("document.getElementById('logNote').textContent")}
-    # the architecture view is a drawing: it holds no result, so it is filed with the samples
-    return {"state": "seed", "static": True}
+    # M18 S6: the flow and the leakage table come from the architecture block of the same dashboard.json; the only
+    # values in it are the index values of the leakage table's "Measured" column
+    arch = page.evaluate("""({nodes: document.querySelectorAll('#flow .flownode').length,
+        durable: [...document.querySelectorAll('#flow .flownode.durable')].map(g => g.dataset.id),
+        leak_rows: document.querySelectorAll('#leakTable tbody tr').length,
+        not_measured: [...document.querySelectorAll('#leakTable .ev b')].filter(b => b.textContent === 'NOT MEASURED').length,
+        live: document.getElementById('flowLive').textContent})""")
+    return {"state": from_dash, **arch}
 
 
 def describe_chat(mode: str, chat: dict[str, Any], backend: str) -> str:
@@ -346,7 +352,11 @@ def describe_chat(mode: str, chat: dict[str, Any], backend: str) -> str:
 
 def describe_view(view: str, info: dict[str, Any]) -> str:
     if view == "arch":
-        return f"{PLAIN_VIEWS[view]}: the data-state flow and the leakage table, a drawing with no data in it"
+        return (f"{PLAIN_VIEWS[view]}: the data-state flow ({info['nodes']} states, durable: "
+                f"{', '.join(info['durable'])}) and the leakage table ({info['leak_rows']} rows under the ADR-031 "
+                f"sentence), drawn from the architecture block of dashboard.json (parameters from config.py; the "
+                f"measured column from the index, {info['not_measured']} NOT MEASURED); the page reads: "
+                f"\"{info['live']}\"")
     if view == "experiments" and info.get("live"):
         m = info.get("match") or {}
         return (f"{PLAIN_VIEWS[view]} after a live run of the attack on layout {info['layout']} through "

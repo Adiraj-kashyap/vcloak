@@ -187,3 +187,20 @@ copy of `state/` as a careless log line would, and finds none of them in what is
 misses a random token is in runs/20261014-105859_M18_s5_checks/redaction_rate.txt.
 Without `--dev`, the view says the server does not serve its logs; in the page opened from a file it shows example
 lines and says they are examples.
+
+## 4. Where a message goes (M18 S6)
+Open **Architecture** and press **Play**. A dot walks the write path S0→S10 and then the read path R1→R5; the box
+under the drawing says what each state is and where it lives. Only S9 and S10, drawn dark with "on disk", are
+durable: everything before them is on the client, on the network, in host memory or in GPU memory. The dashed line
+is where a read starts: from the stored rows.
+
+What to say: the drawing is ai/ARCHITECTURE.md section 2, and its parameters (BLOCK, EPOCH_MS, SLOTS, WINDOW_S,
+BUCKETS, CAND_K, the tag size) are read from `src/vcloak/config.py` by `scripts/export_dashboard.py` into the
+`architecture` block of `web/data/dashboard.json`, so the page cannot disagree with the code. With a live server the
+line above the drawing gives the epoch the scheduler has open and the last one written to the store.
+
+The table below it is the honest part. Its first line is the ADR-031 sentence: V-cloak conceals the order of storage
+within a window, and not the access pattern or which rows belong to one conversation. Each row says concealed,
+partly visible or visible, why, and, where a measurement exists, the value from the metrics index with its run. The
+row "order across windows" carries the turn-order accuracy at W = 60 s: the attack is right on turns that cross a
+window and at chance inside one. If a measured value is missing from the index, its cell reads NOT MEASURED.

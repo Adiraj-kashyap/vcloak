@@ -1711,3 +1711,28 @@ RUN is runs/20261014-105859_M18_s5_checks.
 Notes:
 - Before this step a live server that refused the logs would have shown the demo lines as if they were the project's; now it says the logs are not served.
 - No "ORAM" or "grouping" in the changed files (RUN/a_terms_grep.txt).
+
+## Audit — M18 S6 — 2026-10-14 — session 59 — PASS (step audit; module audit at the end of M18)
+RUN is runs/20261014-112109_M18_s6_checks.
+| Item | Result | Evidence |
+|---|---|---|
+| S6 flow as SVG, a message animating, durable states highlighted, leakage table beside it | PASS | RUN/check_arch_play.txt: Play walks S0..S10 then R1..R5 in order, the caption follows each state, the token is hidden at the end, no page error; S9, S10 durable (test_architecture_flow_is_the_spec_with_parameters_from_config); leakage table under the ADR-031 sentence (test_architecture_leak_table_states_adr031_and_the_brief_leakage) |
+| A1 no result literal in web/js | PASS | RUN/a1_js_numbers.txt: arch.js literals are layout sizes, stroke widths, step times and the 2 s live poll; the leak rows left demo-data.js (now from dashboard.json) |
+| A2 values carry indexed METRIC-IDs | PASS | the four values of the leakage table are index rows with their run (test_architecture_evidence_is_the_indexed_value_or_not_measured); RUN/check_metrics.txt 895 rows, 0 problems |
+| A3 missing → NOT MEASURED | PASS | deleting S-TURNACC-W60 from a doctored index renders its cell NOT MEASURED and lists it once in `missing` (same test); without dashboard.json the view draws nothing and says so |
+| A4 logs endpoint | N/A | unchanged since S5 (tests/integration/test_logs_api.py passes in RUN/pytest_after_css.txt) |
+| A5 both themes | PASS | evidence/screens/M18_arch_{light,dark}_20261014.png, both opened and read; a first capture had faint labels in the durable boxes and the Why column in mono, fixed and recaptured (earlier S3 pair in evidence/superseded/) |
+| G1 | PASS | RUN/pytest_all.txt 2226 passed, 675 skipped (all CUDA-only), 3 tests added; RUN/pytest_after_css.txt 73 passed after the CSS and capture edits |
+| G2 / G2b | PASS | no metric added; values shown come from the index |
+| G3 | PASS | RUN/check_oblivious.txt 0 findings; no kernel changed |
+| G4 | PASS | RUN/check_secrets.txt after the evidence copies (2472 files, 0) |
+| G5 | N/A | no GPU twin |
+| G6 | PASS | scripts/export_dashboard.py (architecture block), web/js/arch.js, web/index.html, web/css/app.css, web/data/demo-data.js, web/data/dashboard.json, scripts/capture_evidence.py, tests/unit/test_export_dashboard.py, docs/DEMO.md section 4 |
+| G7 | PASS | the session commit, owner Abhishek |
+| G8 | PASS | STATE: session 59, M18 at S6b, sessions 6 |
+| G9 | PASS | SESSION_LOG session 59, this entry; no issue opened or closed |
+| G10 | PASS | export_dashboard --check current (RUN/export_check.txt); export_results --check 0 would change; RUN/check_arch_play.py reruns the S6 check |
+Notes:
+- The old view drew S10 → R1 as if one followed the other and typed its texts in JS; the flow now has a write and a read lane and every parameter comes from config.py.
+- Leak rows are worded from PROJECT_BRIEF section 5 and ADR-031; "order across windows" names 1 − f/2 from docs/REPORT_CH4_NOTES.md section 4.S.3.
+- No "ORAM", "grouping", "unbreakable" or "constant time" in web/ (RUN/a_terms_grep.txt).

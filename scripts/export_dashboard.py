@@ -83,6 +83,71 @@ KERNEL_SERIES = (("GPU shuffle kernel (fused bitonic)", "K-BITONIC-FUSED-MS-2^{e
                  ("CPU bitonic network (numba)", "CPU-BITONIC-NUMBA-MS-2^{e}", 2),
                  ("CPU lexsort (not oblivious)", "CPU-LEXSORT-MS-2^{e}", 3))
 
+# M18 S6: the architecture view. The flow is ai/ARCHITECTURE.md section 2 ("must stay true in code"); every
+# parameter is read from vcloak.config, never typed. `where`: client | net | host | vram | db (durable).
+ARCH_PARAMS = ("EPOCH_MS", "SLOTS_DEV", "SLOTS_BENCH", "WINDOW_S", "BUCKETS", "CAND_K", "BLOCK", "TAG_BITS")
+ARCH_WRITE = (
+    ("S0", "plaintext + seq", "client", "The message and its sequence number, on the sender's device."),
+    ("S1", "padded block", "client", "Padded to BLOCK = {BLOCK} bytes, so the length of a message is not visible."),
+    ("S2", "ciphertext", "client", "AES-256-GCM under K_content, a key only the two clients hold."),
+    ("S3", "in transit", "net", "Sent with a DPoP proof bound to the device key when sessions are on; TLS in "
+                                "deployment (the dev server is plain HTTP on localhost)."),
+    ("S4", "queued in epoch", "host", "Waits for its epoch of EPOCH_MS = {EPOCH_MS} ms to close; an epoch is never "
+                                      "extended. A crash here loses the message: only ack \"stored\" is durable."),
+    ("S5", "padded batch", "host", "Padded with dummies to a fixed SLOTS per epoch ({SLOTS_DEV} in development, "
+                                   "{SLOTS_BENCH} in the benchmarks)."),
+    ("S6", "tagged", "vram", "A {TAG_BITS}-bit ChaCha20 tag per slot under K_tag, nonce = the epoch."),
+    ("S7", "permuted", "vram", "Bitonic sort by tag: the oblivious shuffle itself."),
+    ("S8", "compacted", "vram", "Dummies removed by an oblivious sort; the permuted order of the real rows is kept."),
+    ("S9", "stored row", "db", "row_id (random UUID), bucket, win, seq_enc, payload. Durable: this is what a "
+                               "snapshot of the store holds."),
+    ("S10", "window re-shuffled", "db", "When its window of WINDOW_S = {WINDOW_S} s closes, the window is rewritten "
+                                        "under a fresh permutation. Durable."),
+)
+ARCH_READ = (
+    ("R1", "candidates", "vram", "Exactly CAND_K = {CAND_K} rows of one (bucket, window) are fetched, whatever the "
+                                 "conversation holds; above CAND_K the read refuses (CandidateOverflow)."),
+    ("R2", "seq opened", "vram", "Only seq_enc is opened (AEAD under K_seq), and only in GPU memory."),
+    ("R3", "order restored", "vram", "Bitonic sort on (miss, seq, slot) puts the conversation back in order."),
+    ("R4", "ordered ciphertexts", "net", "Returned to the client, still encrypted under K_content."),
+    ("R5", "plaintext in order", "client", "Decrypted on the recipient's device."),
+)
+ARCH_DURABLE = ("S9", "S10")
+# ADR-031 item 2, as written: the boundary of the claim wherever the non-claim appears.
+LEAK_SENTENCE = ("V-cloak conceals the order in which messages were stored within a window. It does not conceal the "
+                 "full read/write access pattern, and it does not conceal which rows belong to the same "
+                 "conversation: bucket tags reveal partial conversation identity, and window ids and per-window "
+                 "message counts are visible.")
+# (observable, status, why, evidence). status: concealed | partly visible | visible. The list is
+# ai/PROJECT_BRIEF.md sections 3 and 5. Evidence: (metric id, label, scale, digits, unit); the values come from
+# the index, and a missing one renders NOT MEASURED.
+LEAK_ROWS = (
+    ("Message content", "concealed", "AES-256-GCM under K_content on the client; the server never holds the key.", ()),
+    ("Message length", "concealed", "Every message is padded to BLOCK = {BLOCK} bytes before encryption.", ()),
+    ("Order of storage within a window", "concealed",
+     "The claim. Permuted on the GPU every epoch and re-shuffled when the window closes. Measured with the order "
+     "attack's within-window Kendall τ (0 = no order left) and the uniformity of the permutation: tests that "
+     "did not reject, not a proof.",
+     (("S-TAU-WITHIN-W60", "Kendall τ within a window, W = 60 s", 1, 3, ""),
+      ("S-CHI2-P", "Permutation uniformity, χ² p-value", 1, 3, ""))),
+    ("Arrival rank from the row id", "concealed", "Row ids are random UUIDs: no serial id, no fine timestamp.", ()),
+    ("Sequence numbers", "concealed", "seq_enc is opened only in GPU memory, under K_seq, which never leaves it.", ()),
+    ("Which rows belong to one conversation", "partly visible",
+     "Bucket tags reveal partial conversation identity: conversations share one of BUCKETS = {BUCKETS} buckets.", ()),
+    ("Full read/write access pattern", "visible",
+     "A read fetches the CAND_K = {CAND_K} candidate rows of one bucket-window; which one is not concealed.", ()),
+    ("Order across windows", "visible",
+     "Window ids are stored (WINDOW_S = {WINDOW_S} s). The turn-order attack is right on turns that cross a "
+     "window and at chance inside one, as 1 − f/2 predicts (docs/REPORT_CH4_NOTES.md section 4.S.3).",
+     (("S-TURNACC-W60", "Turn order recovered, W = 60 s (chance = 50 %)", 100, 1, "%"),)),
+    ("Real messages per window", "visible", "Dummies are dropped before the rows are written.", ()),
+    ("Order of the newest data", "visible",
+     "Epoch-level order until its window closes and is re-shuffled.",
+     (("S-TURNACC-EPOCH", "Turn order recovered, shuffle per epoch only", 100, 1, "%"),)),
+    ("Anything a compromised live server sees", "visible",
+     "Outside the threat model: the adversary holds a snapshot of the store, not the running server.", ()),
+)
+
 
 def _rank(row: dict[str, str]) -> tuple[int, int, str, int]:
     """Preferred row of a metric id: not quick, then measured on the GPU, then the newest, then the last line."""
@@ -375,6 +440,27 @@ def latency_charts(best: dict[str, dict[str, str]], root: Path, valid: list[int]
     return out
 
 
+def architecture(best: dict[str, dict[str, str]], missing: list[dict[str, str]]) -> dict[str, Any]:
+    """The flow and the leakage table of the architecture view, parameters from vcloak.config (M18 S6)."""
+    params = {p: getattr(config, p) for p in ARCH_PARAMS}
+
+    def states(spec: tuple[tuple[str, str, str, str], ...]) -> list[dict[str, Any]]:
+        return [{"id": i, "t": t, "where": w, "d": d.format(**params), "durable": i in ARCH_DURABLE}
+                for i, t, w, d in spec]
+
+    leak = []
+    for obs, status, why, ev in LEAK_ROWS:
+        seen: list[dict[str, str]] = []
+        evidence = [tile(best, mid, label, scale, digits, unit, "M14 · python bench/run_security_eval.py --stage "
+                         "attack|uniformity", "arch", seen) for mid, label, scale, digits, unit in ev]
+        missing += [m for m in seen if m["metric_id"] not in {x["metric_id"] for x in missing}]
+        leak.append({"observable": obs, "status": status, "why": why.format(**params), "evidence": evidence})
+    return {"source": "ai/ARCHITECTURE.md section 2 (flow), ai/PROJECT_BRIEF.md sections 3 and 5 and ADR-031 "
+                      "(leakage), src/vcloak/config.py (parameters)",
+            "params": params, "write": states(ARCH_WRITE), "read": states(ARCH_READ),
+            "leak_sentence": LEAK_SENTENCE, "leak": leak}
+
+
 def provenance(best: dict[str, dict[str, str]], root: Path) -> dict[str, Any]:
     gpu = [r for r in best.values() if r["backend"] == "cupy"]
     if not gpu:
@@ -427,6 +513,7 @@ def build(index: Path, root: Path) -> dict[str, Any]:
                             "the store and no timing (ADR-023)."}],
         "framing": [gpu_framing(best, valid)],
         "experiments": {"attack": attack_experiment(best, root)},
+        "architecture": architecture(best, missing),
         "tiles": tiles,
         "charts": charts,
         "missing": missing,

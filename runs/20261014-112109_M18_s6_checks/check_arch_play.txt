@@ -1,0 +1,43 @@
+{
+ "seen": [
+  "S0",
+  "S1",
+  "S2",
+  "S3",
+  "S4",
+  "S5",
+  "S6",
+  "S7",
+  "S8",
+  "S9",
+  "S10",
+  "R1",
+  "R2",
+  "R3",
+  "R4",
+  "R5"
+ ],
+ "captions": [
+  "S0 · plaintext + seq",
+  "S1 · padded block",
+  "S2 · ciphertext",
+  "S3 · in transit",
+  "S4 · queued in epoch",
+  "S5 · padded batch",
+  "S6 · tagged",
+  "S7 · permuted",
+  "S8 · compacted",
+  "S9 · stored row",
+  "S10 · window re-shuffled",
+  "R1 · candidates",
+  "R2 · seq opened",
+  "R3 · order restored",
+  "R4 · ordered ciphertexts",
+  "R5 · plaintext in order"
+ ],
+ "dot_hidden": true,
+ "errors": [],
+ "order_is_the_flow": true,
+ "captions_follow": true
+}
+exit=0

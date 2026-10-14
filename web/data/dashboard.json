@@ -1,4 +1,269 @@
 {
+ "architecture": {
+  "leak": [
+   {
+    "evidence": [],
+    "observable": "Message content",
+    "status": "concealed",
+    "why": "AES-256-GCM under K_content on the client; the server never holds the key."
+   },
+   {
+    "evidence": [],
+    "observable": "Message length",
+    "status": "concealed",
+    "why": "Every message is padded to BLOCK = 4096 bytes before encryption."
+   },
+   {
+    "evidence": [
+     {
+      "backend": "cupy",
+      "group": "arch",
+      "headline": true,
+      "id": "t-s-tau-within-w60",
+      "label": "Kendall τ within a window, W = 60 s",
+      "metric_id": "S-TAU-WITHIN-W60",
+      "quick": false,
+      "raw": "-0.005945015707058048",
+      "run": "runs/20261013-054727_M14_security_e0e1",
+      "runner": "colab",
+      "stat": "size-weighted over rounds of 3 rows or more, seed 2026, one replay",
+      "state": "",
+      "unit": "",
+      "value": -0.006
+     },
+     {
+      "backend": "cupy",
+      "group": "arch",
+      "headline": true,
+      "id": "t-s-chi2-p",
+      "label": "Permutation uniformity, χ² p-value",
+      "metric_id": "S-CHI2-P",
+      "quick": false,
+      "raw": "0.9013404415190159",
+      "run": "runs/20261013-055417_M14_security_e2",
+      "runner": "colab",
+      "stat": "p-value, n 64, 20000 epochs",
+      "state": "",
+      "unit": "",
+      "value": 0.901
+     }
+    ],
+    "observable": "Order of storage within a window",
+    "status": "concealed",
+    "why": "The claim. Permuted on the GPU every epoch and re-shuffled when the window closes. Measured with the order attack's within-window Kendall τ (0 = no order left) and the uniformity of the permutation: tests that did not reject, not a proof."
+   },
+   {
+    "evidence": [],
+    "observable": "Arrival rank from the row id",
+    "status": "concealed",
+    "why": "Row ids are random UUIDs: no serial id, no fine timestamp."
+   },
+   {
+    "evidence": [],
+    "observable": "Sequence numbers",
+    "status": "concealed",
+    "why": "seq_enc is opened only in GPU memory, under K_seq, which never leaves it."
+   },
+   {
+    "evidence": [],
+    "observable": "Which rows belong to one conversation",
+    "status": "partly visible",
+    "why": "Bucket tags reveal partial conversation identity: conversations share one of BUCKETS = 64 buckets."
+   },
+   {
+    "evidence": [],
+    "observable": "Full read/write access pattern",
+    "status": "visible",
+    "why": "A read fetches the CAND_K = 128 candidate rows of one bucket-window; which one is not concealed."
+   },
+   {
+    "evidence": [
+     {
+      "backend": "cupy",
+      "group": "arch",
+      "headline": true,
+      "id": "t-s-turnacc-w60",
+      "label": "Turn order recovered, W = 60 s (chance = 50 %)",
+      "metric_id": "S-TURNACC-W60",
+      "quick": false,
+      "raw": "0.5560265764480495",
+      "run": "runs/20261013-054727_M14_security_e0e1",
+      "runner": "colab",
+      "stat": "seed 2026, one replay",
+      "state": "",
+      "unit": "%",
+      "value": 55.6
+     }
+    ],
+    "observable": "Order across windows",
+    "status": "visible",
+    "why": "Window ids are stored (WINDOW_S = 60 s). The turn-order attack is right on turns that cross a window and at chance inside one, as 1 − f/2 predicts (docs/REPORT_CH4_NOTES.md section 4.S.3)."
+   },
+   {
+    "evidence": [],
+    "observable": "Real messages per window",
+    "status": "visible",
+    "why": "Dummies are dropped before the rows are written."
+   },
+   {
+    "evidence": [
+     {
+      "backend": "cupy",
+      "group": "arch",
+      "headline": true,
+      "id": "t-s-turnacc-epoch",
+      "label": "Turn order recovered, shuffle per epoch only",
+      "metric_id": "S-TURNACC-EPOCH",
+      "quick": false,
+      "raw": "0.9819834508621041",
+      "run": "runs/20261013-054727_M14_security_e0e1",
+      "runner": "colab",
+      "stat": "seed 2026, one replay",
+      "state": "",
+      "unit": "%",
+      "value": 98.2
+     }
+    ],
+    "observable": "Order of the newest data",
+    "status": "visible",
+    "why": "Epoch-level order until its window closes and is re-shuffled."
+   },
+   {
+    "evidence": [],
+    "observable": "Anything a compromised live server sees",
+    "status": "visible",
+    "why": "Outside the threat model: the adversary holds a snapshot of the store, not the running server."
+   }
+  ],
+  "leak_sentence": "V-cloak conceals the order in which messages were stored within a window. It does not conceal the full read/write access pattern, and it does not conceal which rows belong to the same conversation: bucket tags reveal partial conversation identity, and window ids and per-window message counts are visible.",
+  "params": {
+   "BLOCK": 4096,
+   "BUCKETS": 64,
+   "CAND_K": 128,
+   "EPOCH_MS": 200,
+   "SLOTS_BENCH": 65536,
+   "SLOTS_DEV": 64,
+   "TAG_BITS": 128,
+   "WINDOW_S": 60
+  },
+  "read": [
+   {
+    "d": "Exactly CAND_K = 128 rows of one (bucket, window) are fetched, whatever the conversation holds; above CAND_K the read refuses (CandidateOverflow).",
+    "durable": false,
+    "id": "R1",
+    "t": "candidates",
+    "where": "vram"
+   },
+   {
+    "d": "Only seq_enc is opened (AEAD under K_seq), and only in GPU memory.",
+    "durable": false,
+    "id": "R2",
+    "t": "seq opened",
+    "where": "vram"
+   },
+   {
+    "d": "Bitonic sort on (miss, seq, slot) puts the conversation back in order.",
+    "durable": false,
+    "id": "R3",
+    "t": "order restored",
+    "where": "vram"
+   },
+   {
+    "d": "Returned to the client, still encrypted under K_content.",
+    "durable": false,
+    "id": "R4",
+    "t": "ordered ciphertexts",
+    "where": "net"
+   },
+   {
+    "d": "Decrypted on the recipient's device.",
+    "durable": false,
+    "id": "R5",
+    "t": "plaintext in order",
+    "where": "client"
+   }
+  ],
+  "source": "ai/ARCHITECTURE.md section 2 (flow), ai/PROJECT_BRIEF.md sections 3 and 5 and ADR-031 (leakage), src/vcloak/config.py (parameters)",
+  "write": [
+   {
+    "d": "The message and its sequence number, on the sender's device.",
+    "durable": false,
+    "id": "S0",
+    "t": "plaintext + seq",
+    "where": "client"
+   },
+   {
+    "d": "Padded to BLOCK = 4096 bytes, so the length of a message is not visible.",
+    "durable": false,
+    "id": "S1",
+    "t": "padded block",
+    "where": "client"
+   },
+   {
+    "d": "AES-256-GCM under K_content, a key only the two clients hold.",
+    "durable": false,
+    "id": "S2",
+    "t": "ciphertext",
+    "where": "client"
+   },
+   {
+    "d": "Sent with a DPoP proof bound to the device key when sessions are on; TLS in deployment (the dev server is plain HTTP on localhost).",
+    "durable": false,
+    "id": "S3",
+    "t": "in transit",
+    "where": "net"
+   },
+   {
+    "d": "Waits for its epoch of EPOCH_MS = 200 ms to close; an epoch is never extended. A crash here loses the message: only ack \"stored\" is durable.",
+    "durable": false,
+    "id": "S4",
+    "t": "queued in epoch",
+    "where": "host"
+   },
+   {
+    "d": "Padded with dummies to a fixed SLOTS per epoch (64 in development, 65536 in the benchmarks).",
+    "durable": false,
+    "id": "S5",
+    "t": "padded batch",
+    "where": "host"
+   },
+   {
+    "d": "A 128-bit ChaCha20 tag per slot under K_tag, nonce = the epoch.",
+    "durable": false,
+    "id": "S6",
+    "t": "tagged",
+    "where": "vram"
+   },
+   {
+    "d": "Bitonic sort by tag: the oblivious shuffle itself.",
+    "durable": false,
+    "id": "S7",
+    "t": "permuted",
+    "where": "vram"
+   },
+   {
+    "d": "Dummies removed by an oblivious sort; the permuted order of the real rows is kept.",
+    "durable": false,
+    "id": "S8",
+    "t": "compacted",
+    "where": "vram"
+   },
+   {
+    "d": "row_id (random UUID), bucket, win, seq_enc, payload. Durable: this is what a snapshot of the store holds.",
+    "durable": true,
+    "id": "S9",
+    "t": "stored row",
+    "where": "db"
+   },
+   {
+    "d": "When its window of WINDOW_S = 60 s closes, the window is rewritten under a fresh permutation. Durable.",
+    "durable": true,
+    "id": "S10",
+    "t": "window re-shuffled",
+    "where": "db"
+   }
+  ]
+ },
  "charts": [
   {
    "categories": [

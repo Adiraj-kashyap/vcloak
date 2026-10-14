@@ -1,0 +1,48 @@
+{
+  "run_id": "20261014-112109_M18_s6_checks",
+  "module": "M18",
+  "step": "S6",
+  "owner": "Abhishek",
+  "git_sha": "c1ed2e808b6d69c74839240852b1743773083d79",
+  "dirty": true,
+  "command": "pytest -q; export_dashboard --check; export_results --check; check_metrics, check_oblivious, check_secrets; A1 greps; capture_evidence --views arch",
+  "seed": 2026,
+  "quick": false,
+  "params": {},
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261014-112109",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U",
+    "cpu_count": 12
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791957069.6307974
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791957166.9889233
+  },
+  "outputs": [
+    "a1_js_numbers.txt",
+    "a_terms_grep.txt",
+    "capture.txt",
+    "capture_evidence.json",
+    "check_arch_play.py",
+    "check_arch_play.txt",
+    "check_metrics.txt",
+    "check_oblivious.txt",
+    "check_secrets.txt",
+    "export_check.txt",
+    "export_results_check.txt",
+    "pytest_after_css.txt",
+    "pytest_all.txt"
+  ],
+  "status": "OK",
+  "notes": "M18 S6 checks: architecture block of dashboard.json (flow from ARCHITECTURE section 2, parameters from config.py, leakage table under the ADR-031 sentence with index values), 3 new exporter tests, full suite, exporters --check, check_metrics/oblivious/secrets, A1 and terminology greps, Play walks all 16 states in order (check_arch_play), architecture view capture in both themes. No metric."
+}
