@@ -1522,5 +1522,5 @@
 - Issues: none opened or closed
 - Deviations from spec: none
 - Not verified: the PDFs in a LaTeX build (M22/M19 will include them); fonts other than DejaVu Sans.
-- Commit: (next)
+- Commit: ecc050a
 - Next: M18 S7 (regeneration hook) ; human action: none
