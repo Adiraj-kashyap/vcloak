@@ -1,0 +1,63 @@
+{
+  "run_id": "20261014-063858_M15_e2e_cells_quick",
+  "module": "M15",
+  "step": "S2",
+  "owner": "Divyansh",
+  "git_sha": "8cd68c2d50b718c005d83a98f29c72251e0f188f",
+  "dirty": true,
+  "command": "python bench/run_e2e_cells.py --users 200 --reps 1 --quick --out runs",
+  "seed": 15,
+  "quick": true,
+  "params": {
+    "users": [
+      200
+    ],
+    "users_per_conversation": 2,
+    "reps": 1,
+    "modes": [
+      "baseline",
+      "vcloak"
+    ],
+    "rate": 0.15,
+    "slots": 256,
+    "poll_ms": 500.0,
+    "store": "pg",
+    "ack": "stored",
+    "sessions": true,
+    "duration_s": 30.0,
+    "pause_s": 5.0,
+    "warmup": null,
+    "buckets": null,
+    "window_s": null,
+    "epoch_ms": null,
+    "cand_k": null
+  },
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261014-063857",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U",
+    "cpu_count": 12
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791940138.0981553
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791940329.6397724
+  },
+  "outputs": [
+    "bucket_bound.json",
+    "cell_baseline_u200_r1.txt",
+    "cell_vcloak_u200_r1.txt",
+    "cells.csv",
+    "summary.json"
+  ],
+  "status": "OK",
+  "notes": "numpy backend: a correctness run of the driver, never a performance result"
+}

@@ -1,0 +1,18 @@
+{
+  "title": "M15 S2 (E6): V-cloak against the unprotected baseline end to end on one machine: PostgreSQL installed and started in the runner, the service with the GPU engine behind it, a Poisson load of 10, 50 and 200 users (two per conversation, ADR-027; 0.15 messages per user per second) through the API with per-user DPoP sessions, both modes back to back, two repetitions, NVML at 10 Hz, CPU utilisation and database size around every cell",
+  "step": "S2",
+  "seed": 15,
+  "commands": [
+    {"name": "nvidia_smi", "cmd": "nvidia-smi", "timeout": 120},
+    {"name": "cpu_info", "cmd": "lscpu", "timeout": 60, "stop_on_fail": false},
+    {"name": "stack_up", "cmd": "python scripts/runner_stack.py up", "timeout": 2700},
+    {"name": "check_oblivious", "cmd": "python scripts/check_oblivious.py kernels/", "timeout": 300,
+     "stop_on_fail": false},
+    {"name": "e2e_cells", "cmd": "python bench/run_e2e_cells.py --rate 0.15 {quick} --out runs", "timeout": 7200,
+     "stop_on_fail": false},
+    {"name": "stack_status", "cmd": "python scripts/runner_stack.py status", "timeout": 120, "stop_on_fail": false},
+    {"name": "nvidia_smi_after", "cmd": "nvidia-smi", "timeout": 120, "stop_on_fail": false}
+  ],
+  "runner_required": "kaggle",
+  "cpu_count_required": 4
+}

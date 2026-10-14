@@ -1,0 +1,60 @@
+{
+  "run_id": "20261014-064033_M15_vcloak_u200_r1_quick",
+  "module": "M15",
+  "step": "S2",
+  "owner": "Divyansh",
+  "git_sha": "8cd68c2d50b718c005d83a98f29c72251e0f188f",
+  "dirty": true,
+  "command": "python bench/run_e2e.py --mode vcloak --users 200 --rep 1 --rate 0.15 --slots 256 --poll-ms 500.0 --seed 15 --store pg --out 'D:\\PJT\\vcloak\\runs' --schema e2e_vcloak_u200_r1 --quick",
+  "seed": 15,
+  "quick": true,
+  "params": {
+    "mode": "vcloak",
+    "users": 200,
+    "rate": 0.15,
+    "duration": 30.0,
+    "warmup": 20.0,
+    "drain": 5.0,
+    "ack": "stored",
+    "sessions": "on",
+    "poll_ms": 500.0,
+    "store": "pg",
+    "connections": 256,
+    "timeout": 30.0,
+    "rep": 1,
+    "schema": "e2e_vcloak_u200_r1",
+    "slots": 256,
+    "buckets": null,
+    "window_s": null,
+    "epoch_ms": null,
+    "cand_k": null,
+    "service": "child process"
+  },
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261014-064033",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U",
+    "cpu_count": 12
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791940233.3182306
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791940329.5192332
+  },
+  "outputs": [
+    "cpu.csv",
+    "samples.csv",
+    "server_log.txt",
+    "summary.json"
+  ],
+  "status": "OK",
+  "notes": "numpy backend: a correctness run of the generator, never a performance result"
+}

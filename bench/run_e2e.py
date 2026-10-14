@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""E6: one cell of the end-to-end comparison, V-cloak or the unprotected baseline, under a Poisson load (M15 S1).
+"""E6: one cell of the end-to-end comparison, V-cloak or the unprotected baseline, under a Poisson load (M15 S1, S2).
 
     python bench/run_e2e.py --mode vcloak|baseline --users 10 [--rate 0.2] [--duration 120] [--warmup 20]
                             [--ack stored|queued] [--sessions on|off] [--poll-ms 500] [--store pg|sqlite]
                             [--seed 15] [--quick] [--url http://127.0.0.1:8000] [--out runs]
                             [--slots N] [--buckets N] [--window-s N] [--epoch-ms N] [--cand-k N]
+                            [--rep N] [--schema e2e_...] [--dsn DSN]
 
 U virtual users talk in pairs (users 2i and 2i+1 share a conversation). Every user sends at the times of its own
 Poisson process (`vcloak.bench.e2e.schedule`, fixed by the seed before anything is sent, the same for both modes)
@@ -27,9 +28,17 @@ from one address, and those limits act on the account routes, not on the message
 never used. With `--url` the caller's service is measured as it is; `--sessions on` then needs limits that let U
 users register. This generator opens no WebSocket (ISSUE-27): `ws_sockets` is 0 in every summary.
 
+Around the cell (S2). `telemetry.csv`: NVML at 10 Hz (`vcloak.gpu.telemetry.Sampler`). `cpu.csv`: CPU utilisation
+of the machine, of the service process and of this generator (psutil, 2 Hz). Both start when the service is ready
+and so cover the account setup, the warm-up and the drain as well: the summary gives the Unix times of the
+measured interval (`measured_unix`), and S3 cuts the series there. `db`: the size of the cell's tables after the
+run. With `--schema e2e_...` (PostgreSQL) the cell gets a schema of its own, dropped first, so every cell starts
+on an empty store; without it the cell shares the default schema with whatever ran before. What cannot be read
+(no NVML, no psutil, the in-memory store) is recorded as unavailable with the reason.
+
 Outputs in the run dir: samples.csv (one row per scheduled send, the excluded ones marked), summary.json,
-server_log.txt. On the numpy backend the run is a correctness run of the generator: its numbers are never a
-performance result and the summary lists no metric.
+server_log.txt, telemetry.csv and cpu.csv when available. On the numpy backend the run is a correctness run of the
+generator: its numbers are never a performance result and the summary lists no metric.
 """
 from __future__ import annotations
 
@@ -54,16 +63,18 @@ import httpx  # noqa: E402
 import numpy as np  # noqa: E402
 
 from vcloak import runs  # noqa: E402
-from vcloak.bench import e2e  # noqa: E402
+from vcloak.bench import e2e, hostload  # noqa: E402
 from vcloak.bench.derive import NM  # noqa: E402
 from vcloak.client.device import DeviceKey  # noqa: E402
 from vcloak.crypto.client import PAYLOAD_LEN  # noqa: E402
+from vcloak.gpu import telemetry  # noqa: E402
 from vcloak.gpu.runtime import get_backend  # noqa: E402
 
 QUICK = {"duration": 30.0}  # ai/modules/M15: quick runs last 30 s
 SERVER_OPTS = ("slots", "buckets", "window_s", "epoch_ms", "cand_k")
 ACK_STATUS = {"stored": 201, "queued": 202}
 SETUP_PARALLEL = 8  # registrations and logins in flight: each one is an Argon2id hash on the service
+TELEMETRY_HZ = 10.0  # ai/modules/M15 S2
 LOGIN_REFRESH_AFTER_S = 60.0  # access tokens live 600 s: refresh them all when the logins took longer than this
 
 
@@ -105,6 +116,9 @@ def serve_args(a: argparse.Namespace, port: int) -> list[str]:
     out = ["--mode", a.mode, "--store", a.store, "--port", str(port), "--host", "127.0.0.1"]
     if a.sessions == "on":
         out.append("--sessions")
+    for name in ("schema", "dsn"):
+        if getattr(a, name) is not None:
+            out += ["--" + name, getattr(a, name)]
     for name in SERVER_OPTS:
         if getattr(a, name) is not None:
             out += ["--" + name.replace("_", "-"), str(getattr(a, name))]
@@ -145,9 +159,10 @@ class Cell:
         self.payload_rng = np.random.default_rng([a.seed, 0xE2E, 1])
         self.poll_s = a.poll_ms / 1000.0
         self.users: list[User] = []
+        tokens = e2e.conv_tokens(rng, a.users // 2)
         for conv, members in enumerate(e2e.pairs(a.users)):
-            token = base64.urlsafe_b64encode(rng.bytes(24)).decode()  # the form of a client conv_token (docs/API.md)
-            self.users += [User(u, conv, token, DeviceKey() if a.sessions == "on" else None) for u in members]
+            self.users += [User(u, conv, tokens[conv], DeviceKey() if a.sessions == "on" else None)
+                           for u in members]
         self.phase = rng.uniform(0.0, self.poll_s, size=a.users)  # readers do not all poll at the same instant
         self.total_s = a.warmup + a.duration
         self.sends = e2e.schedule(a.users, a.rate, self.total_s, a.seed)
@@ -157,7 +172,7 @@ class Cell:
         self.reads = 0
         self.read_errors: dict[str, int] = {}
         self.setup: dict[str, Any] = {}
-        self.t0 = 0.0
+        self.t0 = self.t0_unix = 0.0
 
     def headers(self, u: User, method: str, path: str, *, token: bool = True) -> dict[str, str]:
         if u.device is None:
@@ -264,7 +279,7 @@ class Cell:
     async def run(self) -> None:
         await self.accounts()
         stop = asyncio.Event()
-        self.t0 = time.monotonic()
+        self.t0, self.t0_unix = time.monotonic(), time.time()
         readers = [asyncio.create_task(self.reader(u, stop)) for u in self.users]
         await self.sender()
         end = time.monotonic() + self.a.drain  # the last messages still have to be written and read
@@ -324,6 +339,10 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument("--quick", action="store_true")
     ap.add_argument("--url", default=None, help="measure a running service instead of starting one")
     ap.add_argument("--out", default="runs")
+    ap.add_argument("--rep", type=int, default=1, help="repetition number of this cell (S2 runs every cell twice)")
+    ap.add_argument("--schema", default=None,
+                    help="PostgreSQL schema of this cell, e2e_...: dropped first, measured afterwards")
+    ap.add_argument("--dsn", default=None, help="PostgreSQL DSN (default: VCLOAK_PG_DSN or the development database)")
     for name in SERVER_OPTS:
         ap.add_argument("--" + name.replace("_", "-"), type=int, default=None, help="passed to the service")
     return ap
@@ -337,35 +356,55 @@ def main(argv: list[str] | None = None) -> int:
     if a.duration is None:
         a.duration = QUICK["duration"] if a.quick else 120.0
     e2e.pairs(a.users)  # refuse an odd number before anything starts
+    if a.schema is not None:
+        if a.store != "pg" or a.url:
+            build_parser().error("--schema needs --store pg and a service this script starts")
+        hostload.check_cell_schema(a.schema)
     backend = get_backend()
     command = "python bench/run_e2e.py " + " ".join(shlex.quote(x) for x in argv)
     params = {k: getattr(a, k) for k in ("mode", "users", "rate", "duration", "warmup", "drain", "ack", "sessions",
-                                         "poll_ms", "store", "connections", "timeout", *SERVER_OPTS)}
-    run_dir = runs.new_run("M15", f"e2e_{a.mode}_u{a.users}", step="S1", owner="Divyansh", command=command,
+                                         "poll_ms", "store", "connections", "timeout", "rep", "schema",
+                                         *SERVER_OPTS)}
+    # the name stays short: a run id of 43 characters or more reads as key-like to scripts/check_secrets.py
+    run_dir = runs.new_run("M15", f"{a.mode}_u{a.users}_r{a.rep}", step="S2", owner="Divyansh", command=command,
                            seed=a.seed, quick=a.quick, root=Path.cwd(), runs_dir=a.out, backend=backend,
                            params={**params, "service": "caller's (--url)" if a.url else "child process"})
     proc: subprocess.Popen[bytes] | None = None
     log = (run_dir / "server_log.txt").open("wb")
     status, notes = "OK", []
+    gpu_sampler = telemetry.Sampler(run_dir / "telemetry.csv", hz=TELEMETRY_HZ)
+    cpu_sampler: hostload.CpuSampler | None = None
+    sampled: dict[str, Any] = {}
     try:
         base = a.url.rstrip("/") if a.url else f"http://127.0.0.1:{(port := free_port())}"
+        if a.schema is not None:
+            hostload.drop_cell_schema(a.dsn, a.schema)
         if not a.url:
             child = [sys.executable, str(Path(__file__).resolve()), "--serve-child", "--bench-users", str(a.users),
                      *serve_args(a, port)]
             proc = subprocess.Popen(child, stdout=log, stderr=subprocess.STDOUT, cwd=Path.cwd())
         ready = wait_ready(base, proc, 180.0)
+        cpu_sampler = hostload.CpuSampler(run_dir / "cpu.csv", proc.pid if proc is not None else None).start()
+        gpu_sampler.start()
         cell, windows, before, after = asyncio.run(run_cell(base, a))
     except Exception as e:  # noqa: BLE001 - whatever stopped the cell is the result of the cell
         runs.finish_run(run_dir, status="FAIL", notes=f"{type(e).__name__}: {e}")
         print(f"run_e2e: FAIL - {type(e).__name__}: {e}")
         return 1
     finally:
+        sampled["telemetry"] = {**gpu_sampler.stop(), "hz": TELEMETRY_HZ}
+        if cpu_sampler is not None:
+            sampled["cpu"] = cpu_sampler.stop()
         if proc is not None:
             proc.terminate()
             with contextlib.suppress(subprocess.TimeoutExpired):
                 proc.wait(20)
         log.close()
 
+    if not sampled["telemetry"]["available"]:
+        sampled["telemetry"]["reason"] = "NVML is not available on this machine"
+    db = (hostload.db_size(a.dsn, a.schema) if a.store == "pg" and not a.url else
+          {"available": False, "reason": "the caller's service (--url)" if a.url else "in-memory store (sqlite)"})
     stats = e2e.summarise(cell.samples, a.warmup, a.duration)
     write_samples(run_dir / "samples.csv", cell, a.warmup, a.duration)
     delta = {k: after.get(k, 0) - before.get(k, 0) for k in ("epochs", "overflow", "missed")}
@@ -380,12 +419,16 @@ def main(argv: list[str] | None = None) -> int:
         notes.append(reason)
     (run_dir / "summary.json").write_text(json.dumps({
         "metrics": [],  # the E2E-* rows are derived in S3, from GPU runs only
-        "reason": reason, "mode": a.mode, "users": a.users, "conversations": a.users // 2, "ack": a.ack,
+        "reason": reason, "mode": a.mode, "users": a.users, "conversations": a.users // 2,
+        "users_per_conversation": 2, "rep": a.rep, "ack": a.ack,
         "sessions": a.sessions == "on", "ws_sockets": 0, "poll_ms": a.poll_ms, "rate_per_user_s": a.rate,
         "warmup_s": a.warmup, "duration_s": a.duration, "drain_s": a.drain, "store": a.store,
         "service": {"started_by": "caller" if a.url else "this script (child process)", "windows": windows,
                     "healthz_ready": ready, "healthz_before": before, "healthz_after": after, "delta": delta},
         "setup": cell.setup, "stats": stats,
+        "t0_unix": cell.t0_unix,
+        "measured_unix": [cell.t0_unix + a.warmup, cell.t0_unix + a.warmup + a.duration],
+        "telemetry": sampled["telemetry"], "cpu": sampled.get("cpu"), "db": db, "power": hostload.power_state(),
         "reads": {"requests": cell.reads, "errors": dict(sorted(cell.read_errors.items()))},
         "clock": "time.monotonic() in the generator process; client and service on one machine",
         "device": backend.device_info()}, indent=2) + "\n", encoding="utf-8")
@@ -402,6 +445,8 @@ def main(argv: list[str] | None = None) -> int:
           f"missing {stats['readable_missing']}  (poll {a.poll_ms:.0f} ms)")
     print(f"service     epochs {delta['epochs']}  overflow {delta['overflow']}  missed {delta['missed']}  "
           f"reads {cell.reads}  read errors {cell.read_errors or 'none'}")
+    print(f"sampled     NVML {sampled['telemetry']['samples']}  cpu {(sampled.get('cpu') or {}).get('samples', 0)}  "
+          f"db bytes {db.get('schema_bytes', db.get('database_bytes', NM))}")
     print(f"status      {status}   {'; '.join(notes)}")
     return 0 if status == "OK" else 1
 

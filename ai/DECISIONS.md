@@ -372,3 +372,34 @@ was asked for (ISSUE-23) and that no WebSocket was open (ISSUE-27: the push unde
 later step adds sockets). The report must say that the client and the service share one machine. This ADR
 changes no measured value.
 
+## ADR-027 — Scope: two-party conversations only; the M15 cells run at 10, 50 and 200 users — ACCEPTED — 2026-10-14
+Context: two things were implicit. (1) Every conversation the project has ever built or measured is a pair: the
+client derives the conversation key and token from one X25519 agreement between two parties (M02, M12), M14 S6
+pairs its users (amendment of session 40), and the M15 generator pairs users 2i and 2i+1. Nothing said that this
+is the scope rather than an accident of the test traffic. (2) M15 names 10, 100 and 1000 users; ISSUE-43 measured
+that the default layout exceeds CAND_K at 1000 users, and ISSUE-49 asked the owner which population S2 runs.
+Decision (the owner, session 50; the two parts are independent):
+1. Group size. V-cloak supports two-party conversations only. This is declared scope, stated in the design
+   chapter (Ch.3, M22) and wherever a population is reported: every anonymity-set table or figure, and every
+   end-to-end cell, states "two users per conversation" beside its user count (conversations = users / 2).
+   Group conversations are future work (`docs/REFINEMENTS.md`). No code changes: the implementation already is this.
+2. Load scale. The M15 cells are modes {baseline, vcloak} x users {10, 50, 200} x two repetitions, in place of
+   {10, 100, 1000} (quick: {10, 50}). The owner's reasons: fewer users (5 was considered) is not load: the service
+   idles, the latency is the epoch, and it would sit badly beside M14, which measured the anonymity set at up to
+   1000 users on the device; 200 was chosen as small enough to finish in one runner session and to stay inside
+   CAND_K on the default layout. A cell is never shrunk, dropped or retried by the agent: if one cannot complete,
+   the owner is told which and why first.
+Consequences: M15 makes no statement about 1000 users; the largest population with an end-to-end number is 200
+users (100 conversations), and the report must not set that beside the 1000 users of M14 S6 as if one confirmed
+the other (M14 counted a dump, M15 loads the API). The metric ids are `E2E-*-U10`, `-U50`, `-U200`.
+3. Send rate (the owner, same session, asked by the agent before the job was packed). Whether the 200-user cell
+   stays inside CAND_K depends on the rate as well as on the user count: the bucket of a conversation is fixed
+   (`PRF(conv_id) mod BUCKETS`), so 100 conversations in 64 buckets put up to 5 into one. At the 0.2 messages
+   per user per second that ISSUE-49 proposed, the schedule of seed 15 can put 136 rows into one bucket-window
+   (CAND_K 128) in two buckets; at 0.15 the bound is 106 and no bucket can exceed it
+   (runs/20261014-062714_M15_s2_checks/bucket_bound.txt: arithmetic on the schedule, the default layout and
+   the public development key, an upper bound over every alignment of the window; not a measurement). The cells
+   run at 0.15 for every user count (1.5, 7.5 and 30 messages per second offered), on the default layout that
+   M14 measured. `bench/run_e2e_cells.py` recomputes the bound of every cell before it runs (`bucket_bound.json`)
+   and a unit test pins it; the rate is recorded beside every number.
+This ADR changes no measured value.

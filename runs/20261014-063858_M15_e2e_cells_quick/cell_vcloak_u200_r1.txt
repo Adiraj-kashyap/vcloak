@@ -1,0 +1,8 @@
+run dir     D:\PJT\vcloak\runs\20261014-064033_M15_vcloak_u200_r1_quick
+cell        vcloak  users 200  ack stored  sessions on  store pg  backend numpy
+sends       scheduled 931  acked 931  errors none  (warm-up excluded: 602)
+ack ms      p50 5153.0  p95 18315.3  p99 26643.2
+readable ms p50 11088.1  p95 26930.0  p99 33511.3  missing 0  (poll 500 ms)
+service     epochs 424  overflow 0  missed 49  reads 2923  read errors none
+sampled     NVML 0  cpu 185  db bytes 9027584
+status      OK   numpy backend: a correctness run of the generator, never a performance result

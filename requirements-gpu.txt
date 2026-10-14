@@ -3,3 +3,4 @@
 cupy-cuda12x
 nvidia-ml-py
 cryptography
+psutil

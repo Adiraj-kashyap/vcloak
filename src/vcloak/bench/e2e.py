@@ -11,6 +11,7 @@ Rules that the audit of M15 reads here:
 """
 from __future__ import annotations
 
+import base64
 from collections import Counter
 from dataclasses import dataclass
 from typing import Any
@@ -103,3 +104,36 @@ def summarise(samples: list[Sample], warmup_s: float, duration_s: float) -> dict
         "excluded_warmup": sum(s.t_sched < warmup_s for s in samples),
         "excluded_after": sum(s.t_sched >= warmup_s + duration_s for s in samples),
     }
+
+
+# ---------------------------------------------------------------- the cells of S2
+
+MODES = ("baseline", "vcloak")
+
+
+def conv_tokens(rng: np.random.Generator, conversations: int) -> list[str]:
+    """One conv_token per conversation, in the form a client derives (docs/API.md): 24 random bytes, base64url."""
+    return [base64.urlsafe_b64encode(rng.bytes(24)).decode() for _ in range(conversations)]
+
+
+def cell_order(users: list[int], reps: int, modes: tuple[str, ...] = MODES) -> list[tuple[int, int, str]]:
+    """(repetition, users, mode) in the order the cells run: the modes of one user count back to back, so the
+    two sides of a comparison see the same state of the machine (A1); a repetition is a full pass."""
+    if reps < 1 or not users or not modes:
+        raise ValueError("at least one repetition, one user count and one mode")
+    return [(rep, u, mode) for rep in range(1, reps + 1) for u in users for mode in modes]
+
+
+def bucket_span_peaks(sends: list[Send], bucket_of_conv: list[int], window_s: float) -> dict[int, int]:
+    """For every bucket that receives a send: the largest number of sends that fall into one span of `window_s`
+    seconds. A window of the store is such a span whose start the wall clock fixes at run time, so this is an
+    upper bound on the rows of any bucket-window of the run, for every alignment. Arithmetic on the schedule and
+    the public layout: not a measurement."""
+    times: dict[int, list[float]] = {}
+    for s in sends:
+        times.setdefault(int(bucket_of_conv[s.conv]), []).append(s.t)
+    peaks = {}
+    for bucket, ts in times.items():
+        a = np.sort(np.asarray(ts, dtype=np.float64))
+        peaks[bucket] = int((np.searchsorted(a, a + window_s, side="left") - np.arange(a.size)).max())
+    return dict(sorted(peaks.items()))

@@ -60,3 +60,8 @@ with results that are *interpreted*, not just printed.
 3. What does your system still not protect, and what would it take to fix?
 
 ## Next: M21
+
+## Amendments
+- 2026-10-14 (session 50, ADR-027): `docs/REFINEMENTS.md` already exists with one section, "Future work: group
+  conversations", written when the owner declared the two-party scope. S3 adds the refinements C1-C* above it
+  and keeps that section; `docs/LIMITATIONS_AND_FUTURE_WORK.md` refers to it rather than restating it.

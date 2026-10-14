@@ -1,0 +1,15 @@
+rate  buckets  users  conversations  fullest_bucket_convs  max_rows_one_window  cand_k  buckets_over  convs_in_them
+0.2   64       10     5              2                     51                   128     0             0
+0.2   64       50     25             2                     58                   128     0             0
+0.2   64       200    100            5                     136                  128     2             10
+0.15  64       10     5              2                     37                   128     0             0
+0.15  64       50     25             2                     46                   128     0             0
+0.15  64       200    100            5                     106                  128     0             0
+0.1   64       10     5              2                     27                   128     0             0
+0.1   64       50     25             2                     32                   128     0             0
+0.1   64       200    100            5                     73                   128     0             0
+0.2   128      10     5              2                     51                   128     0             0
+0.2   128      50     25             2                     58                   128     0             0
+0.2   128      200    100            4                     116                  128     0             0
+users 200 rate 0.2: 5710 sends; alignments with a bucket-window above 128: 104 of 240; fullest bucket-window over all alignments: 135
+users 200 rate 0.15: 4262 sends; alignments with a bucket-window above 128: 0 of 240; fullest bucket-window over all alignments: 104

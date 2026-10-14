@@ -1,0 +1,30 @@
+[
+  {
+    "users": 10,
+    "conversations": 5,
+    "rate_per_user_s": 0.15,
+    "buckets": 64,
+    "window_s": 60,
+    "cand_k": 128,
+    "buckets_used": 4,
+    "conversations_in_fullest_bucket": 2,
+    "max_sends_in_one_window_span": 30,
+    "buckets_that_can_exceed_cand_k": 0,
+    "conversations_in_those_buckets": 0,
+    "kind": "arithmetic on the schedule, the layout and the public development key: an upper bound over every alignment of the wall-clock window, not a measurement"
+  },
+  {
+    "users": 50,
+    "conversations": 25,
+    "rate_per_user_s": 0.15,
+    "buckets": 64,
+    "window_s": 60,
+    "cand_k": 128,
+    "buckets_used": 22,
+    "conversations_in_fullest_bucket": 2,
+    "max_sends_in_one_window_span": 37,
+    "buckets_that_can_exceed_cand_k": 0,
+    "conversations_in_those_buckets": 0,
+    "kind": "arithmetic on the schedule, the layout and the public development key: an upper bound over every alignment of the wall-clock window, not a measurement"
+  }
+]

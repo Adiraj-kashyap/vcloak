@@ -1,0 +1,148 @@
+{
+  "metrics": [],
+  "reason": "numpy backend: a correctness run of the generator, never a performance result",
+  "mode": "baseline",
+  "users": 10,
+  "conversations": 5,
+  "users_per_conversation": 2,
+  "rep": 1,
+  "ack": "stored",
+  "sessions": true,
+  "ws_sockets": 0,
+  "poll_ms": 500.0,
+  "rate_per_user_s": 0.15,
+  "warmup_s": 20.0,
+  "duration_s": 30.0,
+  "drain_s": 5.0,
+  "store": "pg",
+  "service": {
+    "started_by": "this script (child process)",
+    "windows": {
+      "win": 29865664,
+      "window_s": 60,
+      "epoch_ms": 200,
+      "visible_round": "window",
+      "mode": "baseline"
+    },
+    "healthz_ready": {
+      "status": "ok",
+      "mode": "baseline",
+      "ready": true,
+      "epochs": 0,
+      "overflow": 0,
+      "missed": 0,
+      "queued": 0
+    },
+    "healthz_before": {
+      "status": "ok",
+      "mode": "baseline",
+      "ready": true,
+      "epochs": 0,
+      "overflow": 0,
+      "missed": 0,
+      "queued": 0
+    },
+    "healthz_after": {
+      "status": "ok",
+      "mode": "baseline",
+      "ready": true,
+      "epochs": 0,
+      "overflow": 0,
+      "missed": 0,
+      "queued": 0
+    },
+    "delta": {
+      "epochs": 0,
+      "overflow": 0,
+      "missed": 0
+    }
+  },
+  "setup": {
+    "sessions": true,
+    "register_s": 0.5269333999603987,
+    "login_s": 0.5030954999383539,
+    "refreshed": false,
+    "refresh_s": 0.0
+  },
+  "stats": {
+    "scheduled": 49,
+    "acked": 49,
+    "errors": {},
+    "offered_msgs_s": 1.6333333333333333,
+    "achieved_msgs_s": 1.6333333333333333,
+    "ack_ms": {
+      "n": 49,
+      "p50": 8.463099831715226,
+      "p95": 13.445060001686212,
+      "p99": 15.583955971524116,
+      "mean": 9.115695915355975,
+      "max": 15.972899971529841
+    },
+    "readable_ms": {
+      "n": 49,
+      "p50": 227.04440006054938,
+      "p95": 509.0827000793068,
+      "p99": 530.4287320468575,
+      "mean": 256.8999204204931,
+      "max": 534.403899917379
+    },
+    "readable_missing": 0,
+    "send_lag_ms": {
+      "n": 49,
+      "p50": 8.521928175554194,
+      "p95": 16.8854788679539,
+      "p99": 19.32318691805676,
+      "mean": 8.669165854731443,
+      "max": 19.75997650561112
+    },
+    "excluded_warmup": 33,
+    "excluded_after": 0
+  },
+  "t0_unix": 1791939895.8708622,
+  "measured_unix": [
+    1791939915.8708622,
+    1791939945.8708622
+  ],
+  "telemetry": {
+    "available": false,
+    "samples": 0,
+    "file": null,
+    "hz": 10.0,
+    "reason": "NVML is not available on this machine"
+  },
+  "cpu": {
+    "available": true,
+    "samples": 99,
+    "hz": 2.0,
+    "file": "cpu.csv",
+    "service_process": true
+  },
+  "db": {
+    "available": true,
+    "schema": "e2e_baseline_u10_r1",
+    "tables": 1,
+    "schema_bytes": 532480,
+    "database_bytes": 977320983
+  },
+  "power": {
+    "available": true,
+    "battery": true,
+    "power_plugged": true,
+    "percent": 100.0
+  },
+  "reads": {
+    "requests": 963,
+    "errors": {}
+  },
+  "clock": "time.monotonic() in the generator process; client and service on one machine",
+  "device": {
+    "backend": "numpy",
+    "is_gpu": false,
+    "device": "12th Gen Intel(R) Core(TM) i7-1255U",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U",
+    "cpu_count": 12,
+    "ram_gb": 15.6,
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0"
+  }
+}

@@ -90,3 +90,8 @@ submission-ready PDF that was checked), `docs/CITATION_NOTES.md`.
 3. What was your similarity score, and what did you change to get there?
 
 ## Next: M19  (publication — start it in parallel; it is calendar-bound)
+
+## Amendments
+- 2026-10-14 (session 50, ADR-027): Ch.3 (design) states as declared scope that V-cloak supports two-party
+  conversations only, and Ch.1 (scope) agrees with it. Group conversations are named as future work with the
+  reason of `docs/REFINEMENTS.md`. Every population quoted from Ch.4 keeps "two users per conversation".

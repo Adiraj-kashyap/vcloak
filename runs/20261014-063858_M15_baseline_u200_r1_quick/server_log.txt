@@ -1,0 +1,5 @@
+INFO:     Started server process [20332]
+INFO:     Waiting for application startup.
+2026-10-14T06:38:59 INFO vcloak.baseline event=started mode=baseline window_s=60
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:54157 (Press CTRL+C to quit)

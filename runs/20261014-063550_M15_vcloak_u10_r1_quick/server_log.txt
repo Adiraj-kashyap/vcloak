@@ -1,0 +1,6 @@
+INFO:     Started server process [12392]
+INFO:     Waiting for application startup.
+2026-10-14T06:35:51 INFO vcloak.service event=started backend=numpy buckets=64 cand_k=128 epoch_ms=200 mode=vcloak slots=256 visible_round=window window_s=60 windows=0
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:53834 (Press CTRL+C to quit)
+2026-10-14T06:36:00 INFO vcloak.scheduler event=window_closed rows=10 win=29865665
