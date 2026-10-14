@@ -1,0 +1,45 @@
+{
+  "run_id": "20261014-084740_M15_s4_checks",
+  "module": "M15",
+  "step": "S4",
+  "owner": "Divyansh",
+  "git_sha": "ed831e924c32b576f877b23fa052cddc1c675794",
+  "dirty": true,
+  "command": "git grep ORAM (terminology); report_e2e render (figures); pytest -q; ruff check src tests bench scripts; check_metrics, check_oblivious, check_secrets; scripts/export_results.py --check",
+  "seed": 0,
+  "quick": false,
+  "params": {},
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261014-084740",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U",
+    "cpu_count": 12
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791947860.70665
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791948406.7130544
+  },
+  "outputs": [
+    "capture_terminal.json",
+    "check_metrics.txt",
+    "check_oblivious.txt",
+    "check_secrets.txt",
+    "export_check.txt",
+    "pytest_all.txt",
+    "render.txt",
+    "rerender_and_deliverables.txt",
+    "ruff.txt",
+    "terminology_grep.txt"
+  ],
+  "status": "OK",
+  "notes": "terminology: no occurrence of ORAM in the repository (ADR-029); S4: three figures rendered from the ingested cells of job 20261014-065041_M15 through the derivation run, 10 and 50 users; all checks exit 0; numpy backend, nothing measured here"
+}

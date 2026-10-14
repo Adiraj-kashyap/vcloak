@@ -1,0 +1,19 @@
+{
+ "module": "M15",
+ "run": "runs/20261014-084740_M15_s4_checks (git ed831e9, dirty)",
+ "date": "2026-10-14",
+ "views": {},
+ "checks": {},
+ "ok": true,
+ "superseded": [],
+ "index_rows": [
+  "TERM-M15-S4-TERMINOLOGY-GREP",
+  "TERM-M15-S4-RENDER",
+  "TERM-M15-S4-PYTEST-ALL"
+ ],
+ "files_written": [
+  "terminal/M15_S4_terminology_grep.txt",
+  "terminal/M15_S4_render.txt",
+  "terminal/M15_S4_pytest_all.txt"
+ ]
+}

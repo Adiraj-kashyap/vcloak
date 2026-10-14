@@ -1,0 +1,22 @@
+# re-render: sha256 of the generated text files before and after a second render
+identical (4 files)
+# figures in results/e2e equal the copies in evidence/figures (png)
+fig_e2e_latency_cdf.png identical
+fig_e2e_throughput.png identical
+fig_e2e_gpu_util.png identical
+# deliverables
+bench/run_e2e.py
+
+results/e2e:
+e2e_cells.csv
+e2e_metrics.csv
+e2e_summary.json
+fig_e2e_gpu_util.pdf
+fig_e2e_gpu_util.png
+fig_e2e_latency_cdf.pdf
+fig_e2e_latency_cdf.png
+fig_e2e_throughput.pdf
+fig_e2e_throughput.png
+1
+# U200 in generated outputs
+4

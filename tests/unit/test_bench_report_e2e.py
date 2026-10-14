@@ -140,6 +140,57 @@ def test_a_user_count_whose_generator_was_above_one_core_is_unstable_and_in_no_t
     assert "several generator processes" in notes and "CAND_K sizing rule" in notes
 
 
+def test_figures_are_drawn_from_the_valid_cells_only(tmp_path: Path) -> None:
+    pytest.importorskip("matplotlib")
+    root = _tree(tmp_path, users=(10, 200), u200_vcloak_r2={"generator": 121.0})
+    run_dir, _ = _derive(root)
+    for d in (root / "runs").glob("*_u200_*"):  # a cell of an excluded user count is opened by no figure
+        (d / "samples.csv").unlink()
+        (d / "telemetry.csv").unlink()
+    out = root / "results" / "e2e"
+    s = report_e2e.render(run_dir, out, root / "notes.md", "ISSUE-51", root)
+    assert [f["figure"] for f in s["figures"]] == ["fig_e2e_latency_cdf", "fig_e2e_throughput", "fig_e2e_gpu_util"]
+    for f in s["figures"]:
+        assert f["users"] == [10] and not any("u200" in r for r in f["runs"])
+        assert not any("U200" in m for m in f["metric_ids"])
+        for name in f["files"]:
+            assert (out / name).stat().st_size > 0 and name in s["files"]
+        assert sorted(f["files"]) == [f"{f['figure']}.pdf", f"{f['figure']}.png"]
+    cdf = s["figures"][0]
+    assert cdf["samples"] == 4 * 10 * 2  # 4 cells, 10 sends of the measured interval, two latencies; no warm-up
+    notes = (root / "notes.md").read_text()
+    assert "## 4.E.8 Figures" in notes and "`results/e2e/fig_e2e_throughput.png`" in notes
+    assert "no line joins two user counts" in notes
+
+
+def test_an_unstable_throughput_gets_no_bar_and_missing_telemetry_is_not_measured(tmp_path: Path) -> None:
+    pytest.importorskip("matplotlib")
+    root = _tree(tmp_path)
+    run_dir, _ = _derive(root)
+    summary = json.loads((run_dir / "summary.json").read_text())
+    for m in summary["metrics"]:
+        if m["id"] == "E2E-TPUT-U50-vcloak":
+            m["value"] = UNSTABLE
+    (run_dir / "summary.json").write_text(json.dumps(summary))
+    for d in (root / "runs").glob("*_M15_vcloak_*"):
+        (d / "telemetry.csv").unlink()
+    s = report_e2e.render(run_dir, root / "results" / "e2e", root / "notes.md", root=root)
+    by = {f["figure"]: f for f in s["figures"]}
+    assert "E2E-TPUT-U50-vcloak" not in by["fig_e2e_throughput"]["metric_ids"]
+    assert "E2E-TPUT-U50-baseline" in by["fig_e2e_throughput"]["metric_ids"]
+    assert by["fig_e2e_gpu_util"]["files"] == [] and by["fig_e2e_gpu_util"]["status"] == NM
+    assert not (root / "results" / "e2e" / "fig_e2e_gpu_util.png").exists()
+    assert "**fig_e2e_gpu_util**" in (root / "notes.md").read_text() and NM in (root / "notes.md").read_text()
+
+
+def test_without_figures_render_writes_tables_only(tmp_path: Path) -> None:
+    root = _tree(tmp_path)
+    run_dir, _ = _derive(root)
+    s = report_e2e.render(run_dir, root / "results" / "e2e", root / "notes.md", root=root, figures=False)
+    assert s["figures"] == [] and not list((root / "results").glob("**/*.png"))
+    assert "Figures" not in (root / "notes.md").read_text()
+
+
 def test_notes_keep_the_rest_of_the_file_and_are_replaced_in_place(tmp_path: Path) -> None:
     root = _tree(tmp_path)
     run_dir, _ = _derive(root)

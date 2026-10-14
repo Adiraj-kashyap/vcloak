@@ -440,3 +440,36 @@ Decision:
 Consequences: check_metrics has one more rule and tests for it (tests/unit/test_bench_report_e2e.py). The exporter
 (`scripts/export_results.py`) does not yet know derivation runs: E6 values enter the paper tables when M16's
 exporter is extended, not before. This ADR changes no measured value.
+
+## ADR-029 — Terminology: V-cloak is an oblivious permutation layer, never "an ORAM" — ACCEPTED — 2026-10-14
+Context: the human (session 53) reported that the system is being described in places as "a GPU-optimised ORAM",
+and asked for a check before the paper and the report are written. That is broader than what was built. An ORAM
+hides the complete read/write access pattern of a client against the store, with a stated construction, a leakage
+bound and an overhead analysis; V-cloak makes none of these. The check (runs/20261014-084740_M15_s4_checks/
+terminology_grep.txt): "ORAM", "oblivious RAM" and "oblivious random access" occur nowhere in the repository,
+tracked or untracked, and in no commit (`git log -S ORAM`). The description in the repository is already "a
+GPU-resident oblivious-permutation layer that hides the order of stored encrypted messages" (pyproject.toml,
+src/vcloak/__init__.py, CLAUDE.md, START_HERE.md). The wording the human saw is therefore in material outside the
+repository (slides, an abstract, a form), which the agent cannot see or change.
+Decision (the human's, items 1 to 3; item 4 is the agent's reading of ai/PROJECT_BRIEF.md and is open):
+1. What V-cloak is called, everywhere it describes our own system (paper, report, abstract, deck, dashboard,
+   publication forms): "a GPU-resident oblivious permutation layer for message-order privacy". Shorter forms
+   that are allowed: "oblivious permutation layer", "oblivious shuffle layer". Never "ORAM", "GPU-optimised ORAM",
+   "ORAM-like", "oblivious storage" or "oblivious data store" for V-cloak.
+2. ORAM stays in related work only, as a line of work V-cloak is positioned against (M22 Ch.2, M20, the paper).
+3. Wherever ORAM is named, this sentence, or one that says the same, follows: "V-cloak is not an ORAM: it conceals
+   the order in which messages were stored inside a window, and it does not hide the full read/write access
+   pattern, for which it states no construction, no leakage bound and no overhead analysis."
+4. "Grouping". The human's wording says V-cloak conceals "order and grouping". ai/PROJECT_BRIEF.md section 5
+   lists partial conversation identity (shared HMAC-style buckets), the window ids and the number of real
+   messages per window as known leakage that must never be claimed otherwise, and P1 is order
+   indistinguishability inside a window. Until the owner says which grouping is meant and which measurement backs
+   it, the sentence of item 3 claims order only. A claim about grouping is written with its leakage beside it or
+   not at all.
+5. "Oblivious" keeps its meaning of P3 and ADR-023: data-oblivious execution of the kernels (access trace
+   independent of content and true order), claimed for the kernels only. The phrase "the access pattern is
+   data-independent" in seed/vcloak_oracle.py and src/vcloak/oracle/reference.py is about the comparator schedule
+   of the sorting network and stays.
+Consequences: nothing in the repository was reworded, because nothing used the term. M19, M20 and M22 apply items
+1 to 4 when they write; their audits grep the written text for "ORAM" outside related work. The human corrects the
+material outside the repository. This ADR changes no measured value.

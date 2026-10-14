@@ -1,10 +1,11 @@
-"""M15 S3 (E6): the end-to-end metrics, derived from the ingested cells, and the tables and notes made from them.
+"""M15 S3 and S4 (E6): the end-to-end metrics, derived from the ingested cells, and the tables, notes and
+figures made from them.
 
     python -m vcloak.bench.report_e2e derive --cells runs/<..._M15_e2e_cells> [--out runs]
                                              [--index state/METRICS_INDEX.md]
     python -m vcloak.bench.report_e2e render --metrics runs/<..._M15_e2e_metrics> [--out results/e2e]
                                              [--notes docs/REPORT_CH4_NOTES.md] [--issue-scale ISSUE-51]
-                                             [--issue-lost ISSUE-52]
+                                             [--issue-lost ISSUE-52] [--no-figures]
 
 `derive` reads the cells of one driver run of `bench/run_e2e_cells.py` (samples.csv, cpu.csv, telemetry.csv and
 summary.json of every cell) and writes a derivation run: `summary.json` with the E2E-* metrics and `cells.csv`
@@ -24,6 +25,11 @@ How a metric is made (ai/modules/M15, with its amendments):
   the `achieved_msgs_s` of an ingested summary counted by scheduled time and is never read.
 
 `render` copies nothing it did not find in the derivation run: a metric that is missing prints as NOT_MEASURED.
+
+The figures (S4) are drawn by `render` from the files of the valid cells named in the derivation run: the latency
+CDFs from samples.csv, the GPU utilisation from telemetry.csv, the throughput bars from the E2E-TPUT-* rows. A
+user count that is not valid is read by no figure. The user counts are categories, each in its own panel or
+group of bars: no line joins two user counts (ADR-028).
 """
 from __future__ import annotations
 
@@ -38,7 +44,20 @@ from typing import Any
 from vcloak import runs as runs_mod
 from vcloak.bench import e2e
 from vcloak.bench.derive import NM, UNSTABLE
-from vcloak.bench.report import ReportError, load_run, rel, tagged, write_csv
+from vcloak.bench.report import (
+    C1,
+    C2,
+    INK,
+    INK2,
+    MUTED,
+    ReportError,
+    _plt,
+    _save,
+    load_run,
+    rel,
+    tagged,
+    write_csv,
+)
 
 A3_GATE_PCT = 15.0  # ai/modules/M15, audit A3
 GENERATOR_CORE_LIMIT_PCT = 100.0  # ISSUE-51: above one core the single-process generator is the limit
@@ -50,6 +69,9 @@ SERIES = (("ack_ms", ""), ("readable_ms", "READABLE-"))  # (statistics key, part
 QUANTILES = ("p50", "p95", "p99")
 ADDED = ("p50", "p99")  # ai/modules/M15 S3: the added latency is stated at p50 and p99
 M15_BEGIN, M15_END = "<!-- BEGIN M15 E2E -->", "<!-- END M15 E2E -->"
+MODE_STYLE = {"baseline": ("baseline (unprotected)", C2), "vcloak": ("V-cloak", C1)}
+REP_DASH = {1: "-", 2: "--"}  # the repetitions are drawn apart, never pooled
+LATENCY_PANELS = (("ack_ms", "submit to ack"), ("readable_ms", "submit to readable"))
 CELL_COLUMNS = ("users", "users_per_conversation", "mode", "rep", "run_dir", "scheduled", "acked", "send_errors",
                 "readable_missing", "read_requests", "read_errors", "epochs", "epoch_overflow", "missed_epochs",
                 "send_lag_p99_ms", "generator_cpu_pct", "service_cpu_pct", "machine_cpu_pct", "telemetry_samples")
@@ -269,7 +291,8 @@ def _md_table(header: list[str], rows: list[list[str]]) -> list[str]:
             *("| " + " | ".join(str(x) for x in r) + " |" for r in rows)]
 
 
-def build_section(run: dict[str, Any], issue_scale: str, issue_lost: str = "no issue") -> str:
+def build_section(run: dict[str, Any], issue_scale: str, issue_lost: str = "no issue",
+                  figures: list[dict[str, Any]] | None = None, fig_dir: str = "results/e2e") -> str:
     s, prov, val = run["summary"], run["summary"]["provenance"], run["summary"]["validity"]
     c = prov["conditions"]
 
@@ -383,7 +406,15 @@ def build_section(run: dict[str, Any], issue_scale: str, issue_lost: str = "no i
           "generator processes, and the CAND_K sizing rule applied to the layouts of larger populations "
           "(`docs/REFINEMENTS.md`).",
           "- The client and the service share the CPU of one machine: the latencies include that contention.",
-          "- Two-party conversations only (ADR-027).", M15_END]
+          "- Two-party conversations only (ADR-027)."]
+    if figures:
+        L += ["", f"## 4.E.{8 if excluded else 7} Figures",
+              f"Drawn from the files of the valid cells ({pop} users, two per conversation). Each user count is a "
+              "panel or a group of bars of its own: no line joins two user counts."]
+        for f in figures:
+            where = ", ".join(f"`{fig_dir}/{x}`" for x in f["files"]) if f["files"] else f"{NM} ({f['reason']})"
+            L.append(f"- **{f['figure']}**: {f['what']}. {where}")
+    L += [M15_END]
     return "\n".join(L) + "\n"
 
 
@@ -402,8 +433,183 @@ def merge_notes(path: Path, section: str) -> None:
     path.write_text(new, encoding="utf-8")
 
 
+# ---------------------------------------------------------------- figures (S4)
+
+def figure_cells(run: dict[str, Any], root: Path) -> tuple[list[int], list[dict[str, Any]]]:
+    """The valid user counts and their cells, each with its run directory. A cell that is not an ingested cupy
+    run is refused; a cell of a user count that is not valid is not opened."""
+    s = run["summary"]
+    valid = sorted(int(u) for u, v in s["validity"].items() if v["valid"])
+    cells = []
+    for c in sorted(s["cells"], key=lambda c: (c["users"], c["mode"], c["rep"])):
+        if c["users"] not in valid:
+            continue
+        r = load_run(root / c["run_dir"])
+        if r["manifest"]["env"].get("backend") != "cupy" or "gpu_job" not in r["manifest"]:
+            raise ReportError(f"cell {r['id']} is not an ingested cupy run: {NM}, no figure is drawn")
+        cells.append({**c, "dir": r["dir"], "measured_unix": r["summary"]["measured_unix"]})
+    return valid, cells
+
+
+def _foot(fig: Any, prov: dict[str, Any], extra: str = "") -> None:
+    c = prov["conditions"]
+    lines = [*([extra] if extra else []),
+             f"two users per conversation, {c['rate_per_user_s']} messages per user per second, ack: {c['ack']}, "
+             f"SLOTS {prov['slots']}, EPOCH_MS {prov['epoch_ms']}",
+             f"{prov['gpu']}, {prov['runner']} session {prov['session_id']}, {prov['cpu_count']} vCPU"]
+    fig.text(0.01, 0.005, "\n".join(lines), fontsize=6, color=MUTED, ha="left", va="bottom", linespacing=1.3)
+
+
+def _users(u: int) -> str:
+    return f"{u} users (2 per conversation)"
+
+
+def fig_latency_cdf(plt: Any, valid: list[int], cells: list[dict[str, Any]], prov: dict[str, Any],
+                    out: Path) -> dict[str, Any]:
+    """The empirical CDF of both latencies, one row of panels per user count, one curve per cell."""
+    c = prov["conditions"]
+    fig, axes = plt.subplots(len(valid), 2, figsize=(6.8, 2.3 * len(valid) + 1.0), sharex="col", sharey=True,
+                             squeeze=False)
+    samples = 0
+    for row, u in zip(axes, valid, strict=True):
+        mine = [(x, e2e.measured(e2e.load_samples(x["dir"] / "samples.csv"), c["warmup_s"], c["duration_s"]))
+                for x in cells if x["users"] == u]
+        for ax, (key, what) in zip(row, LATENCY_PANELS, strict=True):
+            for x, m in mine:
+                vals = sorted(v for s in m if not s.error and s.ack_ms is not None
+                              and (v := getattr(s, key)) is not None)
+                if not vals:
+                    continue
+                samples += len(vals)
+                label, colour = MODE_STYLE[x["mode"]]
+                ax.step(vals, [(i + 1) / len(vals) for i in range(len(vals))], where="post", color=colour,
+                        linestyle=REP_DASH.get(x["rep"], ":"), linewidth=1.3, zorder=3,
+                        label=f"{label}, repetition {x['rep']}")
+            ax.set_xscale("log")
+            ax.set_title(f"{what}\n{_users(u)}", fontsize=8.5)
+        row[0].set_ylabel("fraction of sends")
+    for ax in axes[-1]:
+        ax.set_xlabel("latency (ms, log scale)")
+    handles, labels = axes[0][0].get_legend_handles_labels()
+    fig.legend(handles, labels, loc="upper center", ncol=2)
+    fig.tight_layout(rect=(0, 0.08, 1, 0.93))
+    _foot(fig, prov, f"acknowledged sends scheduled in the {c['duration_s']:g} s measured interval; submit to "
+                     f"readable is quantised by the {c['poll_ms']:g} ms poll")
+    files = _save(fig, out, "fig_e2e_latency_cdf")
+    plt.close(fig)
+    return {"figure": "fig_e2e_latency_cdf", "files": files, "users": valid, "samples": samples,
+            "runs": [x["run_dir"] for x in cells],
+            "metric_ids": [f"E2E-{part}{q.upper()}-U{u}-{mode}" for u in valid for mode in e2e.MODES
+                           for _, part in SERIES for q in QUANTILES],
+            "what": "empirical CDF of submit to ack and of submit to readable, per mode, user count and "
+                    "repetition, from samples.csv of each cell (measured interval)"}
+
+
+def fig_throughput(plt: Any, valid: list[int], cells: list[dict[str, Any]], metrics: list[dict[str, Any]],
+                   prov: dict[str, Any], out: Path) -> dict[str, Any]:
+    """Bars of E2E-TPUT-*, grouped by user count on a categorical axis; an UNSTABLE value gets no bar."""
+    from matplotlib.lines import Line2D
+    from matplotlib.patches import Patch
+
+    by = {m["id"]: m for m in metrics}
+    fig, ax = plt.subplots(figsize=(4.8, 3.5))
+    width, drawn = 0.36, []
+    for i, u in enumerate(valid):
+        offered = {round(x["stats"]["offered_msgs_s"], 3) for x in cells if x["users"] == u}
+        for rate in offered:
+            ax.hlines(rate, i - 0.45, i + 0.45, color=INK2, linestyle=":", linewidth=1.1, zorder=4)
+        for j, mode in enumerate(e2e.MODES):
+            mid = f"E2E-TPUT-U{u}-{mode}"
+            m, x = by.get(mid), i + (j - 0.5) * (width + 0.04)
+            if m is None or not isinstance(m["value"], (int, float)):
+                ax.text(x, 0, f" {m['value'] if m else NM}", rotation=90, ha="center", va="bottom", fontsize=7,
+                        color=MUTED)
+                continue
+            ax.bar(x, m["value"], width, color=MODE_STYLE[mode][1], zorder=3)
+            ax.plot([x] * len(m["reps"]), m["reps"], linestyle="none", marker="o", markersize=3, color=INK, zorder=5)
+            ax.annotate(f"{m['value']:g}", (x, max(m["value"], *m["reps"])), xytext=(0, 4),
+                        textcoords="offset points", ha="center", va="bottom", fontsize=7)
+            drawn.append(mid)
+    ax.set_xticks(range(len(valid)))
+    ax.set_xticklabels([f"{u} users\n(2 per conversation)" for u in valid])
+    ax.set_xlim(-0.6, len(valid) - 0.4)
+    ax.grid(axis="x", visible=False)
+    ax.set_ylabel("acknowledged messages per second")
+    ax.set_title("Throughput at the offered rate")
+    ax.legend(handles=[*(Patch(color=colour, label=label) for label, colour in MODE_STYLE.values()),
+                       Line2D([], [], color=INK2, linestyle=":", linewidth=1.1, label="offered rate"),
+                       Line2D([], [], color=INK, linestyle="none", marker="o", markersize=3, label="repetition")],
+              loc="upper left")
+    fig.tight_layout(rect=(0, 0.13, 1, 1))
+    _foot(fig, prov, "bar: mean of 2 repetitions; open loop at a fixed offered rate: not a capacity\n"
+                     "the user counts are categories, not a scale")
+    files = _save(fig, out, "fig_e2e_throughput")
+    plt.close(fig)
+    return {"figure": "fig_e2e_throughput", "files": files, "users": valid, "metric_ids": drawn,
+            "runs": [x["run_dir"] for x in cells],
+            "what": "acknowledgements that arrived in the measured interval per second, per mode and user count "
+                    "(bars, with both repetitions and the offered rate); an UNSTABLE value has no bar"}
+
+
+def fig_gpu_util(plt: Any, valid: list[int], cells: list[dict[str, Any]], prov: dict[str, Any],
+                 out: Path) -> dict[str, Any]:
+    """NVML utilisation over each cell, the measured interval marked; a panel per user count and repetition."""
+    c = prov["conditions"]
+    info = {"figure": "fig_e2e_gpu_util", "users": valid, "runs": [x["run_dir"] for x in cells],
+            "metric_ids": [f"E2E-GPUUTIL{p}-U{u}" for u in valid for p in ("", "-P95")],
+            "what": "GPU utilisation reported by NVML at 10 Hz over each cell (setup, warm-up, measured interval "
+                    "and drain), per user count and repetition, both modes, from telemetry.csv"}
+    series: dict[tuple[int, int, str], tuple[list[float], list[float]]] = {}
+    for x in cells:
+        path = x["dir"] / "telemetry.csv"
+        if not path.exists():
+            continue
+        with path.open(newline="", encoding="utf-8") as f:
+            rows = [r for r in csv.DictReader(f) if r.get("util_gpu_pct") not in (None, "")]
+        if rows:
+            lo = x["measured_unix"][0]
+            series[(x["users"], x["rep"], x["mode"])] = ([float(r["ts"]) - lo for r in rows],
+                                                        [float(r["util_gpu_pct"]) for r in rows])
+    if not any(mode == "vcloak" for _, _, mode in series):
+        return {**info, "files": [], "status": NM, "reason": "no V-cloak cell has NVML utilisation samples"}
+    reps = sorted({x["rep"] for x in cells})
+    fig, axes = plt.subplots(len(valid), len(reps), figsize=(6.8, 1.9 * len(valid) + 1.1), sharex=True, sharey=True,
+                             squeeze=False)
+    for row, u in zip(axes, valid, strict=True):
+        for ax, rep in zip(row, reps, strict=True):
+            for mode in e2e.MODES:
+                if (u, rep, mode) in series:
+                    t, y = series[(u, rep, mode)]
+                    label, colour = MODE_STYLE[mode]
+                    ax.step(t, y, where="post", color=MUTED if mode == "baseline" else colour, linewidth=0.8,
+                            zorder=3 if mode == "vcloak" else 2, label=label)
+            for edge in (0.0, c["duration_s"]):
+                ax.axvline(edge, color=INK2, linewidth=0.8, linestyle="--", zorder=2.5)
+            ax.set_title(f"{_users(u)}, repetition {rep}", fontsize=8.5)
+        row[0].set_ylabel("GPU utilisation (%)")
+    for ax in axes[-1]:
+        ax.set_xlabel("seconds since the start of the measured interval", fontsize=8)
+    axes[0][0].legend(loc="upper left")
+    fig.tight_layout(rect=(0, 0.08, 1, 1))
+    _foot(fig, prov, f"NVML, 10 Hz, whole percent; dashed: the {c['duration_s']:g} s measured interval")
+    files = _save(fig, out, "fig_e2e_gpu_util")
+    plt.close(fig)
+    return {**info, "files": files, "samples": sum(len(t) for t, _ in series.values())}
+
+
+def draw_figures(run: dict[str, Any], out: Path, root: Path) -> list[dict[str, Any]]:
+    valid, cells = figure_cells(run, root)
+    if not valid:
+        return []
+    plt, prov = _plt(), run["summary"]["provenance"]
+    return [fig_latency_cdf(plt, valid, cells, prov, out),
+            fig_throughput(plt, valid, cells, run["summary"]["metrics"], prov, out),
+            fig_gpu_util(plt, valid, cells, prov, out)]
+
+
 def render(metrics_run: str | Path, out: str | Path = "results/e2e", notes: str | Path | None = None,
-           issue_scale: str = "no issue", root: str | Path = ".", issue_lost: str = "no issue") -> dict[str, Any]:
+           issue_scale: str = "no issue", root: str | Path = ".", issue_lost: str = "no issue",
+           figures: bool = True) -> dict[str, Any]:
     root, out = Path(root), Path(out)
     run = load_run(metrics_run)
     s = run["summary"]
@@ -421,17 +627,20 @@ def render(metrics_run: str | Path, out: str | Path = "results/e2e", notes: str 
                                         "run_dir"],
               [[m["id"], users_of(m["id"]), 2, m["value"], m["unit"], m["stat"], src] for m in shown])
     write_csv(out / "e2e_cells.csv", list(CELL_COLUMNS), [cell_row(c) for c in s["cells"] if c["users"] in valid])
+    figs = draw_figures(run, out, root) if figures else []
     summary = {"provenance": s["provenance"], "metrics_run": src, "users_valid": sorted(valid),
                "users_per_conversation": 2,
                "excluded": {u: {"status": UNSTABLE, "cause": v["cause"], "cells": v["cells"], "issue": issue_scale}
                             for u, v in s["validity"].items() if not v["valid"]},
                "metrics": len(shown), "metrics_unstable": sorted(m["id"] for m in shown if m["value"] == UNSTABLE),
                "scaling": "untested: the valid user counts are not a scaling curve; no trend, no extrapolation",
-               "files": ["e2e_cells.csv", "e2e_metrics.csv", "e2e_summary.json"],
+               "figures": figs,
+               "files": sorted(["e2e_cells.csv", "e2e_metrics.csv", "e2e_summary.json",
+                                *[x for f in figs for x in f["files"]]]),
                "generated_by": "python -m vcloak.bench.report_e2e render"}
     (out / "e2e_summary.json").write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
     if notes:
-        merge_notes(Path(notes), build_section(run, issue_scale, issue_lost))
+        merge_notes(Path(notes), build_section(run, issue_scale, issue_lost, figs, rel(out, root)))
     return summary
 
 
@@ -448,6 +657,7 @@ def main(argv: list[str] | None = None) -> int:
     r.add_argument("--notes", default=None, help="merge the M15 section into these notes")
     r.add_argument("--issue-scale", default="no issue", help="issue quoted for an excluded user count")
     r.add_argument("--issue-lost", default="no issue", help="issue quoted for sends that got no answer")
+    r.add_argument("--no-figures", action="store_true", help="tables and notes only (S3)")
     a = ap.parse_args(argv)
     try:
         if a.cmd == "derive":
@@ -459,12 +669,13 @@ def main(argv: list[str] | None = None) -> int:
             for u, v in s["validity"].items():
                 print(f"  {u} users: {'valid' if v['valid'] else UNSTABLE + ' - ' + str(v['cause'])}")
             return 0
-        s = render(a.metrics, a.out, a.notes, a.issue_scale, issue_lost=a.issue_lost)
+        s = render(a.metrics, a.out, a.notes, a.issue_scale, issue_lost=a.issue_lost, figures=not a.no_figures)
     except ReportError as e:
         print(f"report_e2e: {NM} - {e}")
         return 1
     print(f"report_e2e: users {s['users_valid']} (two per conversation)  {s['metrics']} metrics, "
-          f"{len(s['metrics_unstable'])} UNSTABLE -> {a.out}; excluded {sorted(s['excluded']) or 'none'}")
+          f"{len(s['metrics_unstable'])} UNSTABLE, {sum(bool(f['files']) for f in s['figures'])} figures -> "
+          f"{a.out}; excluded {sorted(s['excluded']) or 'none'}")
     return 0
 
 
