@@ -16,6 +16,9 @@ or not earlier ones were answered. For every scheduled send one row is written:
   (default) the answer comes after the commit, so in V-cloak mode it waits for the epoch boundary by design;
 - submit -> readable: until a poll of the *peer* (`POST /v1/read` of the conversation) returns the payload. It is
   quantised by the poll interval, which is recorded beside it.
+- a send that fails without an HTTP answer (a broken connection, a timeout) is an error with the time to the
+  failure (`error_ms`), and its payload is still looked for: `errors_readable` in the summary counts the sends
+  the service stored without the generator ever getting the answer (ISSUE-51).
 
 Sends scheduled in the first `--warmup` seconds are sent and recorded, and are not counted (audit A2).
 Latencies are wall-clock differences of `time.monotonic()` in this process: the one place where the project
@@ -225,8 +228,9 @@ class Cell:
         try:
             r = await self.http.post("/v1/messages", json=body, headers=hdr)
         except httpx.HTTPError as e:
-            sample.error = type(e).__name__
-            self.pending[u.conv].pop(payload, None)
+            # no answer: whether the service stored it is not known here. The payload stays pending, so a read
+            # of the peer still resolves it (`readable_ms` beside an error: stored, never acknowledged)
+            sample.error, sample.error_ms = type(e).__name__, (time.monotonic() - t) * 1000.0
             return
         sample.status = r.status_code
         if r.status_code == ACK_STATUS[self.a.ack]:
@@ -313,12 +317,13 @@ def write_samples(path: Path, cell: Cell, warmup_s: float, duration_s: float) ->
     counted = {id(s) for s in e2e.measured(cell.samples, warmup_s, duration_s)}
     with path.open("w", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
-        w.writerow(["user", "conv", "t_sched_s", "t_submit_s", "ack_ms", "readable_ms", "status", "error", "counted"])
+        w.writerow(["user", "conv", "t_sched_s", "t_submit_s", "ack_ms", "readable_ms", "status", "error", "counted",
+                    "error_ms"])
         for s in cell.samples:
             w.writerow([s.user, s.conv, f"{s.t_sched:.6f}", "" if s.t_submit is None else f"{s.t_submit:.6f}",
                         "" if s.ack_ms is None else f"{s.ack_ms:.3f}",
                         "" if s.readable_ms is None else f"{s.readable_ms:.3f}", s.status, s.error,
-                        int(id(s) in counted)])
+                        int(id(s) in counted), "" if s.error_ms is None else f"{s.error_ms:.3f}"])
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -439,7 +444,9 @@ def main(argv: list[str] | None = None) -> int:
     print(f"cell        {a.mode}  users {a.users}  ack {a.ack}  sessions {a.sessions}  store {a.store}  "
           f"backend {backend.name}")
     print(f"sends       scheduled {stats['scheduled']}  acked {stats['acked']}  errors {stats['errors'] or 'none'}  "
-          f"(warm-up excluded: {stats['excluded_warmup']})")
+          f"(read back after an error: {stats['errors_readable']}; warm-up excluded: {stats['excluded_warmup']})")
+    print(f"msgs/s      offered {stats['offered_msgs_s']:.3f}  "
+          f"completed in the interval {stats['achieved_msgs_s']:.3f}")
     print(f"ack ms      p50 {_fmt(ack['p50'])}  p95 {_fmt(ack['p95'])}  p99 {_fmt(ack['p99'])}")
     print(f"readable ms p50 {_fmt(rd['p50'])}  p95 {_fmt(rd['p95'])}  p99 {_fmt(rd['p99'])}  "
           f"missing {stats['readable_missing']}  (poll {a.poll_ms:.0f} ms)")

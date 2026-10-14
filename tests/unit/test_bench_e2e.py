@@ -90,3 +90,45 @@ def test_the_service_is_never_started_with_compare_and_gets_the_public_parameter
     assert mod.serve_child(["--bench-users", "4", "--mode", "vcloak", "--store", "sqlite", "--compare"]) == 2
     off = mod.build_parser().parse_args(["--mode", "baseline", "--users", "2", "--sessions", "off"])
     assert "--sessions" not in mod.serve_args(off, 1)
+
+
+def test_throughput_counts_the_answers_that_arrived_in_the_interval_not_the_scheduled_sends() -> None:
+    # ISSUE-51: four sends scheduled inside a 10 s interval, three of them answered only after it ended
+    def s(t: float, ack_ms: float) -> e2e.Sample:
+        return e2e.Sample(0, 0, t, t_submit=t, ack_ms=ack_ms, readable_ms=ack_ms + 1.0, status=201)
+
+    samples = [s(1.0, 100.0), s(2.0, 9000.0), s(3.0, 8000.0), s(9.5, 600.0)]
+    out = e2e.summarise(samples, 0.0, 10.0)
+    assert out["acked"] == 4 and out["offered_msgs_s"] == 0.4
+    assert out["completed"] == 1 and out["achieved_msgs_s"] == pytest.approx(0.1)
+    # an answer that arrives inside the interval counts even when its send was scheduled in the warm-up
+    warm = [s(4.0, 2000.0), s(5.5, 100.0)]
+    assert [x.t_sched for x in e2e.completed(warm, 5.0, 10.0)] == [4.0, 5.5]
+    assert e2e.summarise(warm, 5.0, 10.0)["scheduled"] == 1
+    # a failed send and a send that never left complete nothing
+    assert e2e.completed([e2e.Sample(0, 0, 1.0, t_submit=1.0, error="ReadError", error_ms=3.0),
+                          e2e.Sample(0, 0, 1.0)], 0.0, 10.0) == []
+
+
+def test_a_send_that_failed_without_an_answer_and_was_read_back_is_reported_as_stored_unacknowledged() -> None:
+    lost = e2e.Sample(0, 0, 1.0, t_submit=1.0, error="ReadError", error_ms=40.0)
+    stored = e2e.Sample(1, 0, 2.0, t_submit=2.0, readable_ms=700.0, error="ReadError", error_ms=55.0)
+    out = e2e.summarise([lost, stored, e2e.Sample(0, 0, 3.0, t_submit=3.0, ack_ms=5.0, readable_ms=9.0, status=201)],
+                        0.0, 10.0)
+    assert out["errors"] == {"ReadError": 2} and out["errors_readable"] == 1
+    assert out["acked"] == 1 and out["readable_ms"]["n"] == 1  # the error is in no latency series
+
+
+def test_samples_csv_round_trip_and_files_without_error_ms(tmp_path: Path) -> None:
+    mod = _script()
+
+    class _Cell:
+        samples = [e2e.Sample(3, 1, 20.5, t_submit=20.6, ack_ms=12.5, readable_ms=300.25, status=201),
+                   e2e.Sample(2, 1, 21.0, t_submit=21.1, error="ReadError", error_ms=44.0),
+                   e2e.Sample(2, 1, 150.0)]
+
+    mod.write_samples(tmp_path / "samples.csv", _Cell(), 20.0, 120.0)
+    assert e2e.load_samples(tmp_path / "samples.csv") == _Cell.samples
+    old = "user,conv,t_sched_s,t_submit_s,ack_ms,readable_ms,status,error,counted\n69,34,27.4,27.5,,,0,ReadError,1\n"
+    (tmp_path / "old.csv").write_text(old, encoding="utf-8")
+    assert e2e.load_samples(tmp_path / "old.csv") == [e2e.Sample(69, 34, 27.4, t_submit=27.5, error="ReadError")]

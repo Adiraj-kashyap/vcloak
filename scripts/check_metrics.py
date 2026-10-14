@@ -11,7 +11,11 @@ Rules, per row of the index:
   4. a GPU metric (performance, side channel or device property) must have backend cupy, a `gpu_job`
      block in its manifest, and a non-local runner - unless its value is NOT_MEASURED;
   5. if the run has a summary.json listing metrics, the indexed value must equal the value in it, or be
-     NOT_MEASURED: a value may be withdrawn by a recorded decision (an ANN note of the index), never changed.
+     NOT_MEASURED: a value may be withdrawn by a recorded decision (an ANN note of the index), never changed;
+  6. a derivation run (ADR-028: a local run that only computes from device runs, with `derived_from` in its
+     manifest) is judged by what it read: every run it names must exist with a valid manifest, be backend cupy
+     with a `gpu_job` block and a non-local runner, and all of them must come from one runner session. The
+     Backend / Runner columns of its rows are those of the runs it read, and rule 4 applies to them.
 The frontend literal scan (ADR-013) is added to this script when the dashboard is wired (M13/M18).
 """
 from __future__ import annotations
@@ -66,6 +70,38 @@ def _same_value(a: object, b: str) -> bool:
         return str(a) == b
 
 
+def derived_errors(src: object, root: Path) -> list[str]:
+    """Rule 6: why the runs a derivation names cannot back a GPU metric; empty when they can."""
+    if not isinstance(src, dict) or not isinstance(src.get("runs"), list) or not src["runs"]:
+        return ["derived_from names no run"]
+    sessions, jobs = set(), set()
+    for name in src["runs"]:
+        d = root / str(name)
+        if not d.is_dir():
+            return [f"source run {name} does not exist"]
+        merrs = runs.validate_manifest(d)
+        if merrs:
+            return [f"source run {name} has an invalid manifest ({merrs[0]})"]
+        sm = runs.read_manifest(d)
+        senv = sm["env"]
+        if "derived_from" in sm:
+            return [f"source run {name} is itself a derivation"]
+        if senv["backend"] != "cupy" or "gpu_job" not in sm or senv["runner"] == "local":
+            return [f"source run {name} is backend {senv['backend']}, runner {senv['runner']}: "
+                    "not an ingested device run"]
+        if senv["backend"] != src.get("backend") or senv["runner"] != src.get("runner"):
+            return [f"source run {name} is {senv['backend']}/{senv['runner']}, derived_from says "
+                    f"{src.get('backend')}/{src.get('runner')}"]
+        sessions.add(senv["session_id"])
+        jobs.add(sm["gpu_job"].get("job_id"))
+    if len(sessions) != 1 or sessions != {src.get("session_id")}:
+        return [f"source runs come from runner sessions {sorted(map(str, sessions))}, derived_from says "
+                f"{src.get('session_id')}: never merged (ADR-024)"]
+    if jobs != {src.get("job_id")}:
+        return [f"source runs come from jobs {sorted(map(str, jobs))}, derived_from says {src.get('job_id')}"]
+    return []
+
+
 def check(index: Path, root: Path) -> list[str]:
     rows, errs = parse_index(index)
     seen: set[tuple[str, str]] = set()
@@ -85,6 +121,14 @@ def check(index: Path, root: Path) -> list[str]:
             continue
         m = runs.read_manifest(run_dir)
         env = m["env"]
+        if "derived_from" in m:
+            derr = derived_errors(m["derived_from"], root)
+            if derr:
+                errs.append(f"{where}: derivation run {r['run_dir']}: {derr[0]}")
+                continue
+            # rule 6: the row is judged by the device runs the derivation read
+            env = {**env, "backend": m["derived_from"]["backend"], "runner": m["derived_from"]["runner"]}
+            m = {**m, "gpu_job": {"job_id": m["derived_from"]["job_id"]}}
         if r["backend"] != env["backend"]:
             errs.append(f"{where}: index says backend {r['backend']}, manifest says {env['backend']}")
         if r["runner"] != env["runner"]:

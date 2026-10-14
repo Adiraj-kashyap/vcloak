@@ -54,3 +54,24 @@ hardware, with GPU utilisation sampled throughout.
     both modes, readers poll every 500 ms, `ack: stored`, sessions on (ISSUE-49). All of it is in every summary.
   - The human gate "AC power; close heavy apps" is about a local GPU. The cells run on the cloud runner
     (ADR-024: Kaggle, 4 vCPU); each summary records what the machine reports about its power source (`power`).
+- 2026-10-14 (session 52): the owner's decision on ISSUE-51 (ADR-028).
+  - The evaluated scale is 10 and 50 users (two per conversation), both modes. The 200-user cells of S2 stay in
+    the run record as UNSTABLE and are in no table or figure. Cause: the single-process generator exceeded one
+    core while the service was at 25 to 32 % of a core, so the limit was the harness, not the system. No
+    100-user cell is added; 200 is not run again.
+  - The claim: demonstrated correct and within budget at 10 and 50 concurrent users in two-party conversations.
+    Two points are not a scaling curve: no trend line, no extrapolation, no statement that the result shows how
+    the system scales. Scaling behaviour is untested and is future work; it needs a multi-process load harness
+    and the CAND_K sizing rule applied at larger layouts (`docs/REFINEMENTS.md`).
+  - S4 draws the valid user counts only, as separate points or bars: never a line through them.
+  - The presenter note "How loaded is the GPU at 1000 users?" is answered at 10 and 50 users, with the sentence
+    that larger populations are not measured end to end.
+  - S3 as built: `python -m vcloak.bench.report_e2e derive` computes the metrics on the laptop from the ingested
+    cells into a derivation run (ADR-028 (3)); `render` writes `results/e2e` and section 4.E of the notes. A
+    value is the mean of the two repetitions, UNSTABLE when they are more than 15 % apart (A3), and a value made
+    from an UNSTABLE value is UNSTABLE. Metric ids beyond the module's list: `E2E-P95-*`, `E2E-READABLE-P50|P95|
+    P99-*` (submit to readable), `E2E-ADDED-*` (V-cloak minus baseline), `E2E-GPUUTIL-P95-*`, `E2E-POWER-W-*`.
+  - `achieved_msgs_s` counts the acknowledgements that arrived inside the measured interval (it counted by
+    scheduled time before); `E2E-TPUT-*` is that, recomputed from samples.csv.
+  - The generator keeps looking for a send that failed without an HTTP answer and reports whether the peer
+    read it (`errors_readable`, `error_ms`); see ISSUE-52 for the three such sends of the 200-user cells.

@@ -7,13 +7,18 @@ Rules that the audit of M15 reads here:
 - the schedule is fixed by (users, rate, duration, seed) before anything is sent, so both modes of a cell get the
   same sends at the same offsets (A1);
 - a sample is counted by the time it was *scheduled*, never by when its answer came: `warmup_s <= t_sched <
-  warmup_s + duration_s` (A2). A slow answer cannot move a sample out of the measured interval.
+  warmup_s + duration_s` (A2). A slow answer cannot move a sample out of the measured interval;
+- the throughput is the other way round (ISSUE-51): the answers that *arrived* inside the measured interval,
+  over its length (`completed`). Counting acknowledged sends by their scheduled time returns the offered rate
+  however late the answers are, so it says nothing under a backlog.
 """
 from __future__ import annotations
 
 import base64
+import csv
 from collections import Counter
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any
 
 import numpy as np
@@ -40,6 +45,7 @@ class Sample:
     readable_ms: float | None = None  # submit -> first poll of the peer that returned the payload
     status: int = 0
     error: str = ""  # empty: acknowledged with 201 or 202
+    error_ms: float | None = None  # submit -> the failure, when the request failed without an HTTP answer
 
 
 def pairs(users: int) -> list[tuple[int, int]]:
@@ -86,6 +92,13 @@ def percentiles(values: list[float]) -> dict[str, Any]:
     return {"n": int(a.size), "p50": p50, "p95": p95, "p99": p99, "mean": float(a.mean()), "max": float(a.max())}
 
 
+def completed(samples: list[Sample], warmup_s: float, duration_s: float) -> list[Sample]:
+    """The acknowledged sends whose answer arrived inside the measured interval of the wall clock, whenever
+    they were scheduled: `warmup_s <= t_submit + ack < warmup_s + duration_s`."""
+    return [s for s in samples if not s.error and s.ack_ms is not None and s.t_submit is not None
+            and warmup_s <= s.t_submit + s.ack_ms / 1000.0 < warmup_s + duration_s]
+
+
 def summarise(samples: list[Sample], warmup_s: float, duration_s: float) -> dict[str, Any]:
     """The statistics of one cell over the measured interval. A failed submission is counted, never dropped:
     it is in `scheduled` and in `errors`, and it is in no latency series."""
@@ -93,9 +106,12 @@ def summarise(samples: list[Sample], warmup_s: float, duration_s: float) -> dict
     ok = [s for s in m if not s.error and s.ack_ms is not None]
     seen = [s for s in ok if s.readable_ms is not None]
     lag = [(s.t_submit - s.t_sched) * 1000.0 for s in m if s.t_submit is not None]
+    done = completed(samples, warmup_s, duration_s)
     return {
         "scheduled": len(m), "acked": len(ok), "errors": dict(sorted(Counter(s.error for s in m if s.error).items())),
-        "offered_msgs_s": len(m) / duration_s, "achieved_msgs_s": len(ok) / duration_s,
+        # a send that failed without an answer and that the peer read all the same: stored, never acknowledged
+        "errors_readable": sum(1 for s in m if s.error and s.readable_ms is not None),
+        "offered_msgs_s": len(m) / duration_s, "completed": len(done), "achieved_msgs_s": len(done) / duration_s,
         "ack_ms": percentiles([s.ack_ms for s in ok if s.ack_ms is not None]),
         "readable_ms": percentiles([s.readable_ms for s in seen if s.readable_ms is not None]),
         "readable_missing": len(ok) - len(seen),
@@ -104,6 +120,17 @@ def summarise(samples: list[Sample], warmup_s: float, duration_s: float) -> dict
         "excluded_warmup": sum(s.t_sched < warmup_s for s in samples),
         "excluded_after": sum(s.t_sched >= warmup_s + duration_s for s in samples),
     }
+
+
+def load_samples(path: str | Path) -> list[Sample]:
+    """The rows of a `samples.csv` written by `bench/run_e2e.py`, as samples (older files have no `error_ms`)."""
+    def num(x: str | None) -> float | None:
+        return float(x) if x else None
+
+    with Path(path).open(newline="", encoding="utf-8") as f:
+        return [Sample(int(r["user"]), int(r["conv"]), float(r["t_sched_s"]), num(r["t_submit_s"]), num(r["ack_ms"]),
+                       num(r["readable_ms"]), int(r["status"]), r["error"], num(r.get("error_ms")))
+                for r in csv.DictReader(f)]
 
 
 # ---------------------------------------------------------------- the cells of S2

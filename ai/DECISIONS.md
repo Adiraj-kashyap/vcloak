@@ -403,3 +403,40 @@ the other (M14 counted a dump, M15 loads the API). The metric ids are `E2E-*-U10
    M14 measured. `bench/run_e2e_cells.py` recomputes the bound of every cell before it runs (`bucket_bound.json`)
    and a unit test pins it; the rate is recorded beside every number.
 This ADR changes no measured value.
+
+## ADR-028 — M15 evaluated scale is 10 and 50 users; a metric derived locally from ingested runs is indexed through a derivation run — ACCEPTED — 2026-10-14
+Context: (1) ISSUE-51. The 12 cells of job 20261014-065041_M15 came back; at 200 users the single-process load
+generator used about 1.2 cores in both modes while the service process used 25 to 32 % of a core in the V-cloak
+cells, the repetitions are more than 15 % apart, and one send per V-cloak repetition failed with a broken
+connection. (2) The E2E-* metrics combine two repetitions and two modes, so they cannot be read off one cell's
+summary: S3 computes them on the laptop from the ingested files. `scripts/check_metrics.py` accepted a GPU metric
+only from a run dir whose own manifest is cupy with a `gpu_job` block, which a local computation cannot honestly be.
+Decision:
+1. Evaluated scale (the owner, session 52, "ISSUE-51: a"). The valid cells are 10 and 50 users, both modes. The
+   200-user rows stay in the run record as UNSTABLE and are in no table or figure, with the cause: the generator
+   exceeded one core while the service was at 25 to 32 % of a core, so the limit was the harness, not the system.
+   No 100-user cell is added and 200 is not run again. The claim is: V-cloak is demonstrated correct and within
+   budget at 10 and 50 concurrent users in two-party conversations. Two points are not a scaling curve: no trend
+   line, no extrapolation, no sentence that says the result shows how the system scales. Scaling behaviour is
+   untested and is future work, which needs a multi-process load harness and the CAND_K sizing rule applied at
+   larger layouts. This supersedes the "200 users" of ADR-027 (2) as the largest population with an end-to-end
+   number: it is 50 users (25 conversations). The presenter note on GPU load is answered at 10 and 50 users only.
+2. The rule that marks a user count (the agent, implementing 1): a user count is not valid when the mean CPU of
+   the generator process inside the measured interval is above 100 % of one core in any of its cells
+   (`vcloak.bench.report_e2e.GENERATOR_CORE_LIMIT_PCT`). It reads the data, so a later cell set is judged the
+   same way; on the ingested cells it marks exactly the 200-user rows.
+3. Derivation runs (the agent). A local run that only computes from device runs records them in its manifest
+   (`derived_from`: the run dirs, their backend, runner, session and job). `check_metrics.py` rule 6 judges its
+   rows by those runs: each must exist with a valid manifest, be cupy with a `gpu_job` block and a non-local
+   runner, all from one runner session and one job (ADR-024). The Backend and Runner columns of the index carry
+   the device runs' values; the derivation's own manifest stays numpy/local, as it is. A derivation of a
+   derivation is refused. The ingested summaries are never edited.
+4. Throughput (the owner). `achieved_msgs_s` counts the acknowledgements that arrived inside the measured interval
+   over its length (`vcloak.bench.e2e.completed`). The field of the 12 ingested summaries counted by scheduled
+   time: it is never read; S3 recomputes from samples.csv.
+5. A value made from an UNSTABLE value is UNSTABLE (the convention of `vcloak.bench.derive`). On the ingested
+   cells this makes the added ack p99 UNSTABLE at both user counts, because the baseline ack p99 differs between
+   its repetitions by more than 15 %.
+Consequences: check_metrics has one more rule and tests for it (tests/unit/test_bench_report_e2e.py). The exporter
+(`scripts/export_results.py`) does not yet know derivation runs: E6 values enter the paper tables when M16's
+exporter is extended, not before. This ADR changes no measured value.
