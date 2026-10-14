@@ -1,0 +1,154 @@
+{
+  "metrics": [],
+  "reason": null,
+  "mode": "vcloak",
+  "users": 10,
+  "conversations": 5,
+  "users_per_conversation": 2,
+  "rep": 2,
+  "ack": "stored",
+  "sessions": true,
+  "ws_sockets": 0,
+  "poll_ms": 500.0,
+  "rate_per_user_s": 0.15,
+  "warmup_s": 20.0,
+  "duration_s": 120.0,
+  "drain_s": 5.0,
+  "store": "pg",
+  "service": {
+    "started_by": "this script (child process)",
+    "windows": {
+      "win": 29865717,
+      "window_s": 60,
+      "epoch_ms": 200,
+      "visible_round": "window",
+      "mode": "vcloak"
+    },
+    "healthz_ready": {
+      "status": "ok",
+      "mode": "vcloak",
+      "ready": true,
+      "epochs": 0,
+      "overflow": 0,
+      "missed": 0,
+      "queued": 0
+    },
+    "healthz_before": {
+      "status": "ok",
+      "mode": "vcloak",
+      "ready": true,
+      "epochs": 0,
+      "overflow": 0,
+      "missed": 0,
+      "queued": 0
+    },
+    "healthz_after": {
+      "status": "ok",
+      "mode": "vcloak",
+      "ready": true,
+      "epochs": 704,
+      "overflow": 0,
+      "missed": 1,
+      "queued": 0
+    },
+    "delta": {
+      "epochs": 704,
+      "overflow": 0,
+      "missed": 1
+    }
+  },
+  "setup": {
+    "sessions": true,
+    "register_s": 0.8407392449998952,
+    "login_s": 0.9151795230000062,
+    "refreshed": false,
+    "refresh_s": 0.0
+  },
+  "stats": {
+    "scheduled": 169,
+    "acked": 169,
+    "errors": {},
+    "offered_msgs_s": 1.4083333333333334,
+    "achieved_msgs_s": 1.4083333333333334,
+    "ack_ms": {
+      "n": 169,
+      "p50": 104.36219899997923,
+      "p95": 199.83188099990912,
+      "p99": 205.89883756007112,
+      "mean": 108.94892957396584,
+      "max": 208.60378499992294
+    },
+    "readable_ms": {
+      "n": 169,
+      "p50": 376.9360730000244,
+      "p95": 610.1620188000197,
+      "p99": 678.7662129600355,
+      "mean": 360.41313172782367,
+      "max": 702.259814999934
+    },
+    "readable_missing": 0,
+    "send_lag_ms": {
+      "n": 169,
+      "p50": 1.128550101313408,
+      "p95": 2.3307826743689475,
+      "p99": 2.459478311114366,
+      "mean": 1.2132719565855912,
+      "max": 2.7155913773242446
+    },
+    "excluded_warmup": 33,
+    "excluded_after": 0
+  },
+  "t0_unix": 1791943081.099575,
+  "measured_unix": [
+    1791943101.099575,
+    1791943221.099575
+  ],
+  "telemetry": {
+    "available": true,
+    "samples": 1120,
+    "file": "telemetry.csv",
+    "hz": 10.0
+  },
+  "cpu": {
+    "available": true,
+    "samples": 281,
+    "hz": 2.0,
+    "file": "cpu.csv",
+    "service_process": true
+  },
+  "db": {
+    "available": true,
+    "schema": "e2e_vcloak_u10_r2",
+    "tables": 4,
+    "schema_bytes": 1343488,
+    "database_bytes": 75267095
+  },
+  "power": {
+    "available": true,
+    "battery": false,
+    "power_plugged": null
+  },
+  "reads": {
+    "requests": 2734,
+    "errors": {}
+  },
+  "clock": "time.monotonic() in the generator process; client and service on one machine",
+  "device": {
+    "backend": "cupy",
+    "is_gpu": true,
+    "device": "Tesla T4",
+    "gpu": "Tesla T4",
+    "cc": "7.5",
+    "sm_count": 40,
+    "vram_total_bytes": 15636037632,
+    "vram_free_bytes": 15312093184,
+    "mem_clock_khz": 5001000,
+    "mem_bus_width_bits": 256,
+    "peak_bw_gbs": 320.064,
+    "max_log2n": 24,
+    "cuda": "12090",
+    "cupy": "14.0.1",
+    "os": "Linux-6.18.48+-x86_64-with-glibc2.39",
+    "python": "3.13.15"
+  }
+}

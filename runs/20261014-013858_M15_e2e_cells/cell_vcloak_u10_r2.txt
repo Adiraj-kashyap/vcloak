@@ -1,0 +1,8 @@
+run dir     /kaggle/working/vcloak_job/runs/20261014-015757_M15_vcloak_u10_r2
+cell        vcloak  users 10  ack stored  sessions on  store pg  backend cupy
+sends       scheduled 169  acked 169  errors none  (warm-up excluded: 33)
+ack ms      p50 104.4  p95 199.8  p99 205.9
+readable ms p50 376.9  p95 610.2  p99 678.8  missing 0  (poll 500 ms)
+service     epochs 704  overflow 0  missed 1  reads 2734  read errors none
+sampled     NVML 1120  cpu 281  db bytes 1343488
+status      OK   

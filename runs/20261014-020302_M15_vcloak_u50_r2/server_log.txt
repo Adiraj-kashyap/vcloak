@@ -1,0 +1,12 @@
+INFO:     Started server process [60660]
+INFO:     Waiting for application startup.
+2026-10-14T02:03:04 INFO vcloak.service event=started backend=cupy buckets=64 cand_k=128 epoch_ms=200 mode=vcloak slots=256 visible_round=window window_s=60 windows=0
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:40653 (Press CTRL+C to quit)
+2026-10-14T02:04:00 INFO vcloak.scheduler event=window_closed rows=374 win=29865723
+2026-10-14T02:05:00 INFO vcloak.scheduler event=window_closed rows=449 win=29865724
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+2026-10-14T02:05:33 INFO vcloak.service event=stopped mode=vcloak ready=False
+INFO:     Application shutdown complete.
+INFO:     Finished server process [60660]

@@ -1,0 +1,8 @@
+run dir     /kaggle/working/vcloak_job/runs/20261014-020839_M15_vcloak_u200_r2
+cell        vcloak  users 200  ack stored  sessions on  store pg  backend cupy
+sends       scheduled 3660  acked 3659  errors {'ReadError': 1}  (warm-up excluded: 602)
+ack ms      p50 4243.8  p95 18430.1  p99 30342.7
+readable ms p50 10758.5  p95 32663.8  p99 44713.2  missing 0  (poll 500 ms)
+service     epochs 911  overflow 0  missed 19  reads 5872  read errors {'ReadError': 3, 'invalid_dpop_proof': 1}
+sampled     NVML 1412  cpu 363  db bytes 24698880
+status      OK   

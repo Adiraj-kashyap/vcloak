@@ -1,0 +1,97 @@
+{
+  "job_id": "20261014-065041_M15",
+  "module": "M15",
+  "step": "S2",
+  "quick": false,
+  "packed_from_git_sha": "c64ec321271a55c68228f4406a99659aa0c4856b",
+  "bundle_sha256": "fb5f864e23c14c3f2a8d3531195a815fb0b97e11b4fb3775de8ca441d6f5a83f",
+  "finished_at": "2026-10-14T02:11:49.302793+00:00",
+  "env": {
+    "collected_at": "2026-10-14T01:37:36.271101+00:00",
+    "python": "3.13.15",
+    "platform": "Linux-6.18.48+-x86_64-with-glibc2.39",
+    "backend": "cupy",
+    "runner": "kaggle",
+    "session_id": "20261014-013736",
+    "gpu": "Tesla T4",
+    "driver": "580.178.04",
+    "vram_total": "15360 MiB",
+    "compute_capability": "7.5",
+    "nvcc": "Build cuda_12.8.r12.8/compiler.35583870_0",
+    "ncu": "NVIDIA (R) Nsight Compute Command Line Profiler",
+    "cupy": "14.0.1",
+    "cuda_runtime": "12090",
+    "cpu": "Intel(R) Xeon(R) CPU @ 2.00GHz",
+    "cpu_count": "4"
+  },
+  "requirements": {
+    "file": "requirements-gpu.txt",
+    "installed": [],
+    "skipped": [
+      "cupy-cuda12x",
+      "nvidia-ml-py",
+      "cryptography",
+      "psutil"
+    ],
+    "failed": []
+  },
+  "commands": [
+    {
+      "n": 1,
+      "name": "nvidia_smi",
+      "cmd": "nvidia-smi",
+      "exit_code": 0,
+      "log": "logs/01_nvidia_smi.txt",
+      "optional": false
+    },
+    {
+      "n": 2,
+      "name": "cpu_info",
+      "cmd": "lscpu",
+      "exit_code": 0,
+      "log": "logs/02_cpu_info.txt",
+      "optional": false
+    },
+    {
+      "n": 3,
+      "name": "stack_up",
+      "cmd": "python scripts/runner_stack.py up",
+      "exit_code": 0,
+      "log": "logs/03_stack_up.txt",
+      "optional": false
+    },
+    {
+      "n": 4,
+      "name": "check_oblivious",
+      "cmd": "python scripts/check_oblivious.py kernels/",
+      "exit_code": 0,
+      "log": "logs/04_check_oblivious.txt",
+      "optional": false
+    },
+    {
+      "n": 5,
+      "name": "e2e_cells",
+      "cmd": "python bench/run_e2e_cells.py --rate 0.15 --out runs",
+      "exit_code": 0,
+      "log": "logs/05_e2e_cells.txt",
+      "optional": false
+    },
+    {
+      "n": 6,
+      "name": "stack_status",
+      "cmd": "python scripts/runner_stack.py status",
+      "exit_code": 0,
+      "log": "logs/06_stack_status.txt",
+      "optional": false
+    },
+    {
+      "n": 7,
+      "name": "nvidia_smi_after",
+      "cmd": "nvidia-smi",
+      "exit_code": 0,
+      "log": "logs/07_nvidia_smi_after.txt",
+      "optional": false
+    }
+  ],
+  "overall_exit": 0
+}

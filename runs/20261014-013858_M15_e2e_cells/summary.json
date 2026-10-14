@@ -1,0 +1,138 @@
+{
+  "metrics": [],
+  "reason": null,
+  "plan": {
+    "users": [
+      10,
+      50,
+      200
+    ],
+    "users_per_conversation": 2,
+    "reps": 2,
+    "modes": [
+      "baseline",
+      "vcloak"
+    ],
+    "rate": 0.15,
+    "slots": 256,
+    "poll_ms": 500.0,
+    "store": "pg",
+    "ack": "stored",
+    "sessions": true,
+    "duration_s": 120.0,
+    "pause_s": 5.0,
+    "warmup": null,
+    "buckets": null,
+    "window_s": null,
+    "epoch_ms": null,
+    "cand_k": null
+  },
+  "order": [
+    [
+      1,
+      10,
+      "baseline"
+    ],
+    [
+      1,
+      10,
+      "vcloak"
+    ],
+    [
+      1,
+      50,
+      "baseline"
+    ],
+    [
+      1,
+      50,
+      "vcloak"
+    ],
+    [
+      1,
+      200,
+      "baseline"
+    ],
+    [
+      1,
+      200,
+      "vcloak"
+    ],
+    [
+      2,
+      10,
+      "baseline"
+    ],
+    [
+      2,
+      10,
+      "vcloak"
+    ],
+    [
+      2,
+      50,
+      "baseline"
+    ],
+    [
+      2,
+      50,
+      "vcloak"
+    ],
+    [
+      2,
+      200,
+      "baseline"
+    ],
+    [
+      2,
+      200,
+      "vcloak"
+    ]
+  ],
+  "cells": 12,
+  "failed": [],
+  "bucket_bound": [
+    {
+      "users": 10,
+      "conversations": 5,
+      "rate_per_user_s": 0.15,
+      "buckets": 64,
+      "window_s": 60,
+      "cand_k": 128,
+      "buckets_used": 4,
+      "conversations_in_fullest_bucket": 2,
+      "max_sends_in_one_window_span": 37,
+      "buckets_that_can_exceed_cand_k": 0,
+      "conversations_in_those_buckets": 0,
+      "kind": "arithmetic on the schedule, the layout and the public development key: an upper bound over every alignment of the wall-clock window, not a measurement"
+    },
+    {
+      "users": 50,
+      "conversations": 25,
+      "rate_per_user_s": 0.15,
+      "buckets": 64,
+      "window_s": 60,
+      "cand_k": 128,
+      "buckets_used": 22,
+      "conversations_in_fullest_bucket": 2,
+      "max_sends_in_one_window_span": 46,
+      "buckets_that_can_exceed_cand_k": 0,
+      "conversations_in_those_buckets": 0,
+      "kind": "arithmetic on the schedule, the layout and the public development key: an upper bound over every alignment of the wall-clock window, not a measurement"
+    },
+    {
+      "users": 200,
+      "conversations": 100,
+      "rate_per_user_s": 0.15,
+      "buckets": 64,
+      "window_s": 60,
+      "cand_k": 128,
+      "buckets_used": 50,
+      "conversations_in_fullest_bucket": 5,
+      "max_sends_in_one_window_span": 106,
+      "buckets_that_can_exceed_cand_k": 0,
+      "conversations_in_those_buckets": 0,
+      "kind": "arithmetic on the schedule, the layout and the public development key: an upper bound over every alignment of the wall-clock window, not a measurement"
+    }
+  ]
+}
