@@ -1,0 +1,121 @@
+{
+ "module": "M18",
+ "run": "runs/20261014-100120_M18_s3_checks (git 9981260, dirty)",
+ "date": "2026-10-14",
+ "views": {
+  "dashboard": {
+   "state": "measured",
+   "dashboard": {
+    "source": "metrics-index",
+    "session": "20261014-013736",
+    "quick": false,
+    "tiles": 22,
+    "charts": 8,
+    "not_measured": 1,
+    "chip": "GENERATED"
+   },
+   "files": {
+    "light": {
+     "file": "screens/M18_dashboard_light_20261014.png",
+     "width": 1440,
+     "height": 5357,
+     "bytes": 743608,
+     "sha256": "3ec24497346ae1d0a9215109bc2ba37b06164d79fe65333fa19455c96f3f28c5"
+    },
+    "dark": {
+     "file": "screens/M18_dashboard_dark_20261014.png",
+     "width": 1440,
+     "height": 5357,
+     "bytes": 758432,
+     "sha256": "855b417764087c2cd2259c8f8842e1a86cc5377845b69c8c43ff9175db040725"
+    }
+   }
+  },
+  "arch": {
+   "state": "seed",
+   "static": true,
+   "files": {
+    "light": {
+     "file": "screens/M18_arch_light_20261014.png",
+     "width": 1440,
+     "height": 1217,
+     "bytes": 115020,
+     "sha256": "421111b77c4f04d77be2e18c3653d37aed03e6858da5a47e2e70f3345d8c2cd0"
+    },
+    "dark": {
+     "file": "screens/M18_arch_dark_20261014.png",
+     "width": 1440,
+     "height": 1217,
+     "bytes": 117855,
+     "sha256": "d3b69d3036a13c2f6c176b3c2394d7491a7177b22087aaaa71cef76bfd3aedbf"
+    }
+   }
+  }
+ },
+ "checks": {
+  "the page is live, in dev mode, with a mode switch": true,
+  "dashboard: the view was the one on screen": true,
+  "arch: the view was the one on screen": true,
+  "no exception, console error or blocked request in the page": true
+ },
+ "serve_argv": [
+  "--dev",
+  "--compare",
+  "--sessions",
+  "--store",
+  "sqlite",
+  "--window-s",
+  "5",
+  "--epoch-ms",
+  "200"
+ ],
+ "viewport": [
+  1440,
+  900
+ ],
+ "browser": "Chrome/154.0.8037.98",
+ "live_ready": true,
+ "conn": "live · dev",
+ "stats_live": {
+  "mode": "vcloak",
+  "dev": true,
+  "sessions": true,
+  "win": 358390544,
+  "window_s": 5,
+  "epoch_ms": 200,
+  "slots": 64,
+  "queued": 0,
+  "epochs": 4,
+  "payload_len": 4124,
+  "switchable": true,
+  "now_ms": 1791952721568,
+  "epoch": 8959763607,
+  "last_epoch": 8959763606,
+  "last_write_ms": 10.5,
+  "gpu": {
+   "backend": "numpy",
+   "runner": "local",
+   "device": "12th Gen Intel(R) Core(TM) i7-1255U",
+   "util": null
+  }
+ },
+ "errors": [],
+ "ok": true,
+ "superseded": [],
+ "index_rows": [
+  "SCR-M18-DASHBOARD-LIGHT",
+  "SCR-M18-DASHBOARD-DARK",
+  "SCR-M18-ARCH-LIGHT",
+  "SCR-M18-ARCH-DARK",
+  "TERM-M18-S3-PYTEST-ALL",
+  "TERM-M18-S3-EXPORT-CHECK"
+ ],
+ "files_written": [
+  "screens/M18_dashboard_light_20261014.png",
+  "screens/M18_dashboard_dark_20261014.png",
+  "screens/M18_arch_light_20261014.png",
+  "screens/M18_arch_dark_20261014.png",
+  "terminal/M18_S3_pytest_all.txt",
+  "terminal/M18_S3_export_check.txt"
+ ]
+}

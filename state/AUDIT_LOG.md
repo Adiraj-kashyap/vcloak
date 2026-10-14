@@ -1634,3 +1634,32 @@ Notes:
 - Wording (ADR-023, STATE): the dudect tiles name the kernel-level claim; "constant time" appears nowhere in the
   JSON, the exporter or dashboard.js (RUN/a1_terminology.txt, after one rewording this session). The whole-call FAIL
   is shown, never a headline. No "ORAM" in the changed files.
+
+## Audit — M18 S3 — 2026-10-14 — session 56 — PASS (step audit; module audit at the end of M18)
+RUN is runs/20261014-100120_M18_s3_checks.
+| Item | Result | Evidence |
+|---|---|---|
+| A1 no result literal in web/js | PASS | RUN/a1_js_decimals.txt: 15 decimal literals in charts.js/dashboard.js, all layout constants (paddings, tick steps, marker radius, SVG icon paths); the CDF table's percentile list (5..99) names which percentiles, not values |
+| A2 every tile/chart carries an indexed METRIC-ID | PASS | test_every_chart_names_indexed_ids_and_existing_runs (8 charts); RUN/check_metrics.txt 895 rows, 0 problems |
+| A3 missing NOT MEASURED, QUICK chip | PASS | S1/S2 doctored-index tests still pass; a doctored UNSTABLE kernel row becomes a gap (test_kernel_points_...); X-CROSSOVER-N UNSTABLE: no crossover marked, the note says NOT MEASURED |
+| A4 logs endpoint redaction | N/A | S5 |
+| A5 both themes, Table views, one y-axis | PASS | evidence/screens/M18_dashboard_{light,dark}_20261014.png (third capture of the day; S2's moved to evidence/superseded/); every non-matrix chart has a Table toggle (browser test); one y-axis everywhere; the zero label reads 0% (ISSUE-54) |
+| G1 | PASS | RUN/pytest_all.txt 2205 passed, 675 skipped (CUDA-only, same count as S2); 7 tests added. The browser chart test was rerun after the last CSS/JS change (matrix card width) and passed |
+| G2 / G2b | PASS | no metric added; every chart value is an index row or a field of the run file that row names (e1_attack.json, e2_uniformity.json, e5_matrix.json, samples.csv of the ingested E6 cells) |
+| G3 | PASS | RUN/check_oblivious.txt 0 findings; no kernel changed |
+| G4 | PASS | RUN/check_secrets.txt, after the evidence copies |
+| G5 | N/A | no GPU twin |
+| G6 | PASS | exporter, charts.js, app.css, demo-data.js leakage rows, ADR-031, alignment page, tests |
+| G7 | PASS | the session commit, owner Abhishek |
+| G8 | PASS | STATE: session 56, M18 at S4, sessions 3 |
+| G9 | PASS | SESSION_LOG session 56, this entry, ISSUE-53 closed (repository side), ISSUE-54 closed |
+| G10 | PASS | export_dashboard.py --check current (RUN/export_check.txt); export_results --check 0 would change |
+Notes:
+- Terminology (ADR-029/030/031): "grouping" appears in no file of review/, web/, scripts/, docs/ or ai/PROJECT_BRIEF.md
+  (RUN/a_grouping_grep.txt); in the diff only in ADR-031, ISSUE-53 and the test that forbids it. No "ORAM" and no
+  "constant time" added.
+- Hard rule 8: ai/ changed by ADR-031 (appended), a one-line amendment pointer under ADR-030, and one line in
+  ai/PROJECT_BRIEF.md section 3, the last two on the human's explicit instruction (ISSUE-53 answer).
+- ISSUE-12 wording: the pipeline chart shows device stages only, from the one run with the most valid sizes; host and
+  whole call are not drawn and the note says why. ISSUE-15: UNSTABLE kernel sizes are gaps, never points.
+- E6 CDFs: valid user counts only, repetitions drawn apart (never pooled), as in results/e2e.

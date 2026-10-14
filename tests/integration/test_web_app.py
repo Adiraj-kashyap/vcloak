@@ -826,3 +826,26 @@ def test_without_sessions_the_page_says_how_to_start_the_server(browser: Browser
             assert page.evaluate("document.getElementById('dumpBody').children.length") == 0  # never demo rows
         finally:
             page.close()
+
+
+@needs_browser
+def test_every_dashboard_chart_draws_from_the_generated_json(browser: Browser, server: LocalServer) -> None:
+    """M18 S3: each chart of web/data/dashboard.json draws, has its Table view, and no label is in exponent form."""
+    p = browser.page(server.base + "/app/#dashboard")
+    try:
+        p.wait_for("document.readyState === 'complete' && !!(window.VC && VC.dashboard && VC.dashboard.data()) && "
+                   "document.querySelectorAll('#charts .chartcard').length > 0", timeout=20)
+        info = p.evaluate(r"""(() => { const d = VC.dashboard.data(); const cards = [...document.querySelectorAll('#charts .chartcard')];
+            return {source: d.source, n: d.charts.length, cards: cards.length,
+                    failed: cards.filter(c => c.textContent.includes('could not be drawn')).length,
+                    drawn: cards.filter(c => c.querySelector('svg.chart, table.rows')).length,
+                    tables: cards.filter(c => c.querySelector('.tablebtn')).length,
+                    matrices: d.charts.filter(c => c.kind === 'matrix').length,
+                    exp: /\d\.\de[+-]\d/.test(document.getElementById('charts').textContent)}; })()""")
+        assert info["source"] == "metrics-index"
+        assert info["cards"] == info["n"] and info["failed"] == 0 and info["drawn"] == info["n"]
+        assert info["tables"] == info["n"] - info["matrices"]
+        assert info["exp"] is False  # ISSUE-54: a zero was labelled 0.0e+0
+        assert p.errors() == []
+    finally:
+        p.close()

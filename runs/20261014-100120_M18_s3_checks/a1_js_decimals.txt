@@ -1,0 +1,15 @@
+web/js/charts.js:34:            : Math.abs(v) >= 0.01 ? v.toFixed(3) : v.toExponential(1)) : String(v);
+web/js/charts.js:79:    var step = (norm >= 7.5 ? 10 : norm >= 3.5 ? 5 : norm >= 1.5 ? 2 : 1) * mag;
+web/js/charts.js:90:      var tx = el("text", { class: "tick", x: box.l - 8, y: y + 3.5, "text-anchor": "end" }, svg);
+web/js/charts.js:104:    var yMax = spec.yMax !== undefined ? spec.yMax : Math.max.apply(null, vals) * 1.08;
+web/js/charts.js:110:    var slotW = box.w / n, barGap = 2, pad = slotW * 0.18;
+web/js/charts.js:154:    var xMin = spec.binCenters[0] - 0.2, xMax = spec.binCenters[spec.binCenters.length - 1] + 0.2;
+web/js/charts.js:156:    var y = function (v) { return box.t + box.h - v / (maxC * 1.08) * box.h; };
+web/js/charts.js:158:    yAxis(svg, box, y, niceTicks(0, maxC * 1.08, 4), "");
+web/js/charts.js:205:      var t = el("text", { class: "tick", x: box.l - 8, y: yy + 3.5, "text-anchor": "end" }, svg);
+web/js/charts.js:231:        el("circle", { cx: X(p[0]), cy: Y(p[1]), r: 4.5, fill: seriesVar(s.slot),
+web/js/charts.js:324:    var yMax = Math.max(Math.max.apply(null, totals), spec.refLine ? spec.refLine.value : 0) * 1.12;
+web/js/charts.js:328:    var slotW = box.w / spec.categories.length, bw = slotW * 0.56;
+web/js/dashboard.js:10:    if (state === "good") return "<svg viewBox='0 0 16 16' width='12' height='12' aria-hidden='true'><path d='M6.4 11.2L3.2 8l1.1-1.1 2.1 2.1 5.3-5.3L12.8 4z' fill='currentColor'/></svg>";
+web/js/dashboard.js:11:    if (state === "crit") return "<svg viewBox='0 0 16 16' width='12' height='12' aria-hidden='true'><path d='M8 1.6l6.4 11.2H1.6zM7.2 6v3.2h1.6V6zm0 4v1.6h1.6V10z' fill='currentColor'/></svg>";
+web/js/dashboard.js:12:    return "<svg viewBox='0 0 16 16' width='12' height='12' aria-hidden='true'><circle cx='8' cy='8' r='5' fill='none' stroke='currentColor' stroke-width='1.6'/></svg>";

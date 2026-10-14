@@ -18,6 +18,7 @@ encrypted under a key that never leaves GPU memory.
   disk image, insider read access). Cannot break ChaCha20, Poly1305, AES-GCM or X25519.
 - **Out of scope:** a compromised *running* backend or GPU memory, active/malicious servers,
   network traffic analysis of the client link, TEEs and custom hardware.
+- **What is concealed, and what is not** (ADR-031, the human's wording, added 2026-10-14): "V-cloak conceals the order in which messages were stored within a window. It does not conceal the full read/write access pattern, and it does not conceal which rows belong to the same conversation: bucket tags reveal partial conversation identity, and window ids and per-window message counts are visible."
 
 ## 4. Properties
 - **P1, order indistinguishability per window.** For two sequences with the same multiset of

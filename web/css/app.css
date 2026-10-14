@@ -274,6 +274,7 @@ tr.win-open .winstate, tr.win-closing .winstate { color: var(--ink-2); border-st
 .chartcard { background: var(--surface); border: 1px solid var(--hair); border-radius: var(--r); box-shadow: var(--shadow); padding: 14px 16px 10px; }
 .chartcard header { display: flex; align-items: baseline; gap: 10px; margin-bottom: 2px; }
 .chartcard h3 { font-size: 14px; }
+.chartcard.wide { grid-column: 1 / -1; }
 .chartcard .note { color: var(--ink-2); font-size: 12.5px; margin: 4px 0 10px; }
 .chartcard .prov { font: 10.5px var(--mono); color: var(--muted); margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--grid); }
 .chartcard .tablebtn { margin-left: auto; font: 600 11.5px var(--sans); background: none; border: 1px solid var(--hair); color: var(--ink-2); border-radius: 6px; padding: 3px 9px; cursor: pointer; }

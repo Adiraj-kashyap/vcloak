@@ -1693,7 +1693,7 @@ How to settle it: any later 200-user run with the current generator reports `err
 such a send; that answers (2) in the run that shows the error. No job is asked for: the owner decided that 200
 users is not run again (ISSUE-51), so this waits for the multi-process harness of the future work.
 
-### ISSUE-53 [OPEN] HUMAN ACTION: V-cloak is called "a GPU-optimised ORAM" in material outside the repository; say what "grouping" means
+### ISSUE-53 [CLOSED] HUMAN ACTION: V-cloak is called "a GPU-optimised ORAM" in material outside the repository; say what "grouping" means
 BLOCKS: none   SEVERITY: medium   OPENED: 2026-10-14 session 53
 What was found: the repository never uses the term (runs/20261014-084740_M15_s4_checks/terminology_grep.txt: no
 occurrence in tracked files, binaries, untracked files or history). So the wording you saw is in something the
@@ -1714,8 +1714,14 @@ What you do (two things, neither blocks the build):
 Closed when: you report 1 as done and answer 2; the answer is recorded as an amendment of ADR-029.
 Update 2026-10-14 session 54: the wording of item 1 was replaced by the human's final ORAM wording (ADR-030); the
 in-repository page that uses it is review/TOPIC_ALIGNMENT.md. Items 1 (outside documents) and 2 (grouping) are open.
+Closed 2026-10-14 session 56 (repository side). Item 2 answered by the human: the word meant whether an observer of
+the store can tell which rows belong to the same conversation; that is not concealed and not a claim, and the word
+is dropped. The leakage sentence of ADR-031 is applied in ADR-030 (amendment pointer), review/TOPIC_ALIGNMENT.md
+(top, section 3, presenter note 5), ai/PROJECT_BRIEF.md section 3, the dashboard order-privacy note
+(scripts/export_dashboard.py) and the leakage table (web/data/demo-data.js). Item 1 (documents outside the
+repository) is the human's, by their statement; it is not tracked here.
 
-### ISSUE-54 [OPEN] Dashboard: a zero bar is labelled "0.0e+0%", and the GPU framing points are not rendered yet
+### ISSUE-54 [CLOSED] Dashboard: a zero bar is labelled "0.0e+0%", and the GPU framing points are not rendered yet
 BLOCKS: none   SEVERITY: low   OPENED: 2026-10-14 session 54
 What was found (evidence/screens/M18_dashboard_*_20261014.png, runs/20261014-092058_M18_s1_checks): web/js/charts.js
 formats the value 0 of E2E-GPUUTIL-U10 in exponent form on the bar label. dashboard.js does not read the new
@@ -1725,6 +1731,8 @@ Closed when: M18 S2 renders the framing above the GPU group and the excluded use
 fixes the label; checked by a new capture in both themes.
 Update 2026-10-14 session 55: S2 renders the framing above the GPU group, the group notes, and the excluded 200-user
 count with its cause (evidence/screens/M18_dashboard_{light,dark}_20261014.png, runs/20261014-093346_M18_s2_checks). The 0.0e+0% label remains: S3.
+Closed 2026-10-14 session 56: charts.js formats 0 as "0" (the bar reads 0%); a browser test asserts no label in
+exponent form; new capture in both themes (evidence/screens/M18_dashboard_{light,dark}_20261014.png, runs/20261014-100120_M18_s3_checks).
 
 ### ISSUE-55 [OPEN] Two trace tests of test_eval_security failed once inside the full suite and passed alone and on rerun
 BLOCKS: none   SEVERITY: medium   OPENED: 2026-10-14 session 55

@@ -502,3 +502,27 @@ names the family when it cites. (c) The M19/M20/M22 audits grep for "ORAM" and c
 component or is in related work.
 Consequences: review/TOPIC_ALIGNMENT.md written in session 54; ISSUE-53 item 1 now points to this sentence. No
 measured value changes.
+Amended 2026-10-14 (session 56) by ADR-031: wherever the non-claim appears, the leakage sentence of ADR-031 item 2
+states it; the word "grouping" is not used.
+
+## ADR-031 — The leakage sentence: what V-cloak conceals and what it does not; the word "grouping" is dropped; amends ADR-029 item 4 and ADR-030 — ACCEPTED — 2026-10-14
+Context: ISSUE-53 item 2 asked the human what "grouping" meant in the wording "conceals order and grouping". The
+human answered in session 56: grouping means whether an observer of the stored database can tell which rows belong
+to the same conversation. V-cloak does not conceal that, so it is not a claim.
+Decision (the human's):
+1. The word "grouping" is not used to describe V-cloak at all: a vague word next to a security claim is read as a
+   claim.
+2. Wherever the non-claim appears, the leakage is stated precisely with this sentence, as written:
+   "V-cloak conceals the order in which messages were stored within a window. It does not conceal the full
+   read/write access pattern, and it does not conceal which rows belong to the same conversation: bucket tags
+   reveal partial conversation identity, and window ids and per-window message counts are visible."
+3. It is applied here, in review/TOPIC_ALIGNMENT.md (what is not claimed, presenter notes), in the threat model
+   (ai/PROJECT_BRIEF.md section 3, by the human's instruction, an exception to the read-only rule for ai/*) and on
+   the dashboard's order-privacy note and leakage table. M19, M20 and M22 use it wherever they state the claim.
+What it replaces: ADR-029 item 4 ("order only until ISSUE-53 is answered") is settled: the claim is order within a
+window, and the sentence above is its boundary. It sits beside the ORAM sentence of ADR-030 item 2 wherever both
+appear; the ADR-030 sentence is unchanged. ADR-029 item 3's sentence was already replaced by ADR-030.
+Agent's note: the sentence is consistent with ai/PROJECT_BRIEF.md section 5, which also lists the epoch-level order
+of the newest data until its window closes; texts that list the leakage in full keep that item.
+Consequences: the repository side of ISSUE-53 is closed. Item 1 (documents outside the repository) is the human's.
+No measured value changes. Audits of M19/M20/M22 grep for "grouping" as well as "ORAM".

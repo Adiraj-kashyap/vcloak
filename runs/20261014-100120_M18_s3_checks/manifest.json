@@ -1,0 +1,47 @@
+{
+  "run_id": "20261014-100120_M18_s3_checks",
+  "module": "M18",
+  "step": "S3",
+  "owner": "Abhishek",
+  "git_sha": "99812603922d7998d7462b58c4852365e15867e3",
+  "dirty": true,
+  "command": "python scripts/export_dashboard.py [--check]; pytest -q; check_metrics, check_secrets, check_oblivious, export_results --check; A1 and terminology greps",
+  "seed": 0,
+  "quick": false,
+  "params": {},
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261014-100120",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U",
+    "cpu_count": 12
+  },
+  "outputs": [
+    "a1_js_decimals.txt",
+    "a_grouping_grep.txt",
+    "capture.txt",
+    "capture_evidence.json",
+    "check_metrics.txt",
+    "check_oblivious.txt",
+    "check_secrets.txt",
+    "dashboard.json",
+    "export_check.txt",
+    "export_results_check.txt",
+    "manifest.json",
+    "pytest_all.txt"
+  ],
+  "status": "PASS",
+  "notes": "M18 S3 checks: six charts added to the dashboard from indexed rows and the run files they name; ISSUE-53 leakage sentence applied. No metric is produced. pytest_all.txt ran before one CSS/JS change (the matrix card spans the row); the browser chart test was rerun after it and passed.",
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791952665.9438438
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791952665.9438438
+  }
+}

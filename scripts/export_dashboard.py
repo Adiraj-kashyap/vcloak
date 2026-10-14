@@ -27,6 +27,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 sys.path.insert(0, str(ROOT / "src"))
 
 import check_metrics  # noqa: E402
+import numpy as np  # noqa: E402
 
 from vcloak import config  # noqa: E402
 from vcloak.bench import dudect  # noqa: E402
@@ -77,7 +78,10 @@ DUDECT = (
 )
 ATTACK_LAYOUTS = (("BASELINE", "Arrival order"), ("EPOCH", "Per epoch"), ("W1", "W = 1 s"), ("W10", "W = 10 s"),
                   ("W60", "W = 60 s"), ("W300", "W = 300 s"))
-# Charts not built yet (M18 S3) are left out: a placeholder would render NOT MEASURED for metrics that exist.
+# (b) kernel sweep: (legend name, id pattern over the exponent e, palette slot). Labels only, no values.
+KERNEL_SERIES = (("GPU shuffle kernel (fused bitonic)", "K-BITONIC-FUSED-MS-2^{e}", 1),
+                 ("CPU bitonic network (numba)", "CPU-BITONIC-NUMBA-MS-2^{e}", 2),
+                 ("CPU lexsort (not oblivious)", "CPU-LEXSORT-MS-2^{e}", 3))
 
 
 def _rank(row: dict[str, str]) -> tuple[int, int, str, int]:
@@ -166,16 +170,21 @@ def gpu_framing(best: dict[str, dict[str, str]], valid: list[int]) -> dict[str, 
             "metric_ids": [i for i in ids if i in best]}
 
 
-def attack_chart(best: dict[str, dict[str, str]]) -> dict[str, Any]:
+def attack_chart(best: dict[str, dict[str, str]], root: Path) -> dict[str, Any]:
     ids = [f"S-TURNACC-{k}" for k, _ in ATTACK_LAYOUTS]
     rows = [best.get(i) for i in ids]
     values = [None if r is None or _num(r["value"]) is None else round(float(r["value"]) * 100, 1) for r in rows]
+    predicted = attack_prediction(root, rows)
+    series = [{"name": "Measured", "slot": 1, "values": values}]
+    if any(v is not None for v in predicted):
+        series.append({"name": "Predicted 1 − f/2", "slot": 3, "values": predicted})
     return {"id": "attack_ablation", "kind": "groupedBar", "title": "Order-recovery attack vs visible window",
             "categories": [name for _, name in ATTACK_LAYOUTS],
-            "series": [{"name": "Measured", "slot": 1, "values": values}], "unit": "%", "yMin": 0, "yMax": 100,
+            "series": series, "unit": "%", "yMin": 0, "yMax": 100,
             "refLine": {"value": 50, "label": "chance"},  # a public reference: a coin flip, not a result
             "note": "Turn-order accuracy: for two consecutive messages of a conversation, does the dump order them "
-                    "correctly? 50 % is chance.",
+                    "correctly? 50 % is chance. Predicted 1 − f/2, with f the share of turns inside one visible "
+                    "round, is the attack run's own model (e1_attack.json); arrival order has no prediction.",
             "metric_ids": ids, "runs": sorted({r["run_dir"] for r in rows if r})}
 
 
@@ -190,6 +199,160 @@ def gpu_util_chart(best: dict[str, dict[str, str]], valid: list[int]) -> dict[st
             "unit": "%", "yMin": 0, "yMax": 100,
             "note": "Two users per conversation. Categories, not a trend: no line joins two user counts (ADR-028).",
             "metric_ids": [i for i in ids if i in best], "runs": sorted({best[i]["run_dir"] for i in ids if i in best})}
+
+
+def _manifest(root: Path, run_dir: str) -> dict[str, Any]:
+    return json.loads((root / run_dir / "manifest.json").read_text(encoding="utf-8"))
+
+
+def _json(root: Path, run_dir: str, name: str) -> dict[str, Any]:
+    return json.loads((root / run_dir / name).read_text(encoding="utf-8"))
+
+
+def _chart_runs(best: dict[str, dict[str, str]], ids: list[str]) -> list[str]:
+    return sorted({best[i]["run_dir"] for i in ids if i in best})
+
+
+def attack_prediction(root: Path, rows: list[dict[str, str] | None]) -> list[Any]:
+    """1 − f/2 per layout, as the attack run wrote it (e1_attack.json of the run the measured rows come from).
+    The prediction is about shuffled rounds, so the unshuffled baseline has none."""
+    runs = {r["run_dir"] for r in rows if r}
+    if len(runs) != 1 or not (root / next(iter(runs)) / "e1_attack.json").exists():
+        return [None] * len(ATTACK_LAYOUTS)
+    lay = {x["layout"]: x for x in _json(root, runs.pop(), "e1_attack.json")["layouts"]}
+    return [None if k not in lay or lay[k].get("mode") == "baseline" else
+            round(float(lay[k]["attack"]["predicted_turn_accuracy"]) * 100, 1) for k, _ in ATTACK_LAYOUTS]
+
+
+def kernel_chart(best: dict[str, dict[str, str]], root: Path) -> dict[str, Any]:
+    """(b) The shuffle kernel against two CPU baselines, log–log. Every point comes from one runner session
+    (ADR-024); an UNSTABLE size is a gap in its line, never a point. The crossover is marked only when measured."""
+    exps = sorted({int(m.group(1)) for k in best if (m := re.fullmatch(r"K-BITONIC-FUSED-MS-2\^(\d+)", k))})
+    ids_all: list[str] = []
+    series = []
+    for name, pattern, slot in KERNEL_SERIES:
+        pts = []
+        for e in exps:
+            mid = pattern.format(e=e)
+            if mid in best:
+                ids_all.append(mid)
+            pts.append([2 ** e, _num(best[mid]["value"]) if mid in best else None])
+        series.append({"name": name, "slot": slot, "points": pts})
+    runs = _chart_runs(best, ids_all)
+    sessions = {(_manifest(root, r).get("env") or {}).get("session_id") for r in runs}
+    if len(sessions) != 1:
+        raise SystemExit(f"kernel chart: points from {len(sessions)} runner sessions, not comparable (ADR-024)")
+    cross = best.get("X-CROSSOVER-N")
+    cross_n = _num(cross["value"]) if cross else None
+    gaps = sorted({p[0] for s in series for p in s["points"] if p[1] is None})
+    note = ("Median kernel time per call, one T4 runner session. The CPU bitonic network does the same comparisons "
+            "as the GPU kernel; lexsort is the fastest CPU sort and is not oblivious.")
+    if gaps:
+        note += " Gaps are sizes whose timing was UNSTABLE on the shared runner (ISSUE-15): no point is drawn."
+    if cross_n is None:
+        note += (" Crossover: NOT MEASURED (" + (cross["value"] if cross else "no row") +
+                 (f", {cross['run_dir']}" if cross else "") + "), so no crossover is marked.")
+    return {"id": "kernel_sweep", "kind": "lineLog", "title": "Shuffle kernel vs CPU baselines",
+            "series": series, "unit": " ms", "xLabel": "slots n", "crossover": cross_n,
+            "refLine": {"value": config.EPOCH_MS, "label": f"epoch budget {config.EPOCH_MS} ms (config.EPOCH_MS)"},
+            "note": note, "metric_ids": ids_all + (["X-CROSSOVER-N"] if cross else []),
+            "runs": sorted(set(runs) | ({cross["run_dir"]} if cross else set()))}
+
+
+def pipeline_chart(rows: list[dict[str, str]], root: Path) -> dict[str, Any]:
+    """(d) The device stages of write_epoch against the epoch budget, from the one run with the most valid sizes.
+    The host stage and the whole call are not drawn: for the current code the whole call at 65536 slots is
+    unmeasured under valid conditions (ISSUE-12), and an older run's host time would be read as today's."""
+    pat = re.compile(r"P-WRITE-EPOCH-DEVICE-MS-S(\d+)")
+    by_run: dict[str, dict[int, dict[str, str]]] = {}
+    for r in rows:
+        m = pat.fullmatch(r["id"])
+        if m and r["quick"] == "no" and r["backend"] == "cupy" and r["value"] not in NO_VALUE:
+            by_run.setdefault(r["run_dir"], {})[int(m.group(1))] = r
+    run = max(by_run, key=lambda k: (len(by_run[k]), next(iter(by_run[k].values()))["date"]))
+    pts = by_run[run]
+    man = _manifest(root, run)
+    sizes = sorted(pts)
+    return {"id": "pipeline_device", "kind": "groupedBar", "title": "write_epoch device stages vs the epoch budget",
+            "categories": [f"{s} slots" for s in sizes],
+            "series": [{"name": "device stages, median", "slot": 1,
+                        "values": [round(float(pts[s]["value"]), 3) for s in sizes]}],
+            "unit": " ms", "yMin": 0, "yMax": config.EPOCH_MS * 1.1,
+            "refLine": {"value": config.EPOCH_MS, "label": f"epoch budget {config.EPOCH_MS} ms (config.EPOCH_MS)"},
+            "note": f"CUDA events, sizes whose device time was stable in run {run} ({man.get('env', {}).get('runner')}, "
+                    f"code {str(man.get('git_sha'))[:9]}); the other sizes were UNSTABLE. Host stage and whole call "
+                    "not drawn: for the current code the whole call at 65536 slots is unmeasured under valid "
+                    "conditions (ISSUE-12).",
+            "metric_ids": [f"P-WRITE-EPOCH-DEVICE-MS-S{s}" for s in sizes], "runs": [run]}
+
+
+def tau_chart(best: dict[str, dict[str, str]], root: Path) -> dict[str, Any] | None:
+    """(c) Per-epoch Kendall τ in units of its theoretical σ, from the histogram the uniformity run wrote."""
+    row = best.get("S-TAUBAND-PCT")
+    if row is None or not (root / row["run_dir"] / "e2_uniformity.json").exists():
+        return None
+    tb = _json(root, row["run_dir"], "e2_uniformity.json")["tau_band"]
+    edges, counts = tb["histogram"]["z_edges"], tb["histogram"]["counts"]
+    ids = [i for i in ("S-TAUBAND-PCT", "S-TAU-SIGMA-MEAS") if i in best]
+    return {"id": "tau_hist", "kind": "histogram", "title": "Per-epoch Kendall τ, in units of σ",
+            "binCenters": [round((a + b) / 2, 3) for a, b in zip(edges, edges[1:])], "counts": counts,
+            "band": round(tb["band_3sigma"] / tb["sigma_theory"], 6), "xLabel": "τ / σ (theoretical σ)",
+            "yLabel": "epochs",
+            "note": f"{tb['epochs']} epochs at n = {tb['n']}. Inside the ±3σ band: {row['value']} % (S-TAUBAND-PCT); "
+                    "a uniform shuffle puts about 99.7 % there. The band is the definition of the test, not a result.",
+            "metric_ids": ids, "runs": _chart_runs(best, ids)}
+
+
+def session_chart(best: dict[str, dict[str, str]], root: Path) -> dict[str, Any] | None:
+    """(e) The E5 attack matrix as a pass/fail grid, row by row from the run of SEC-E5-PASS."""
+    row = best.get("SEC-E5-PASS")
+    if row is None or not (root / row["run_dir"] / "e5_matrix.json").exists():
+        return None
+    m = _json(root, row["run_dir"], "e5_matrix.json")
+    return {"id": "session_matrix", "kind": "matrix", "title": "Session-security attack matrix (E5)",
+            "rows": [{"name": r["scenario"], "expected": r["expected"], "observed": r["observed"],
+                      "ok": bool(r["as_expected"]), "why": r.get("failed_check") or "—"} for r in m["rows"]],
+            "note": f"{row['value']} scenarios behaved as expected (SEC-E5-PASS). A rejection must fail the expected "
+                    "check: a rejection for another reason counts as a failure. Backend "
+                    f"{row['backend']}, runner {row['runner']}: this matrix tests protocol logic, not the GPU.",
+            "metric_ids": ["SEC-E5-PASS"], "runs": [row["run_dir"]]}
+
+
+def latency_charts(best: dict[str, dict[str, str]], root: Path, valid: list[int]) -> list[dict[str, Any]]:
+    """(f) The empirical CDF of submit to ack, V-cloak vs the unprotected baseline, one chart per valid user count,
+    one curve per cell: the two repetitions are drawn apart, never pooled (as in results/e2e). Each curve is given
+    at the percentiles 0..100 of the acknowledged sends scheduled in the measured interval of its cell."""
+    from vcloak.bench import e2e, report_e2e  # noqa: PLC0415 (heavy: only when E6 rows exist)
+
+    out = []
+    for u in valid:
+        ids = [f"E2E-{q}-U{u}-{mode}" for mode in e2e.MODES for q in ("P50", "P95", "P99")]
+        runs = _chart_runs(best, ids)
+        if len(runs) != 1:
+            continue
+        _, cells = report_e2e.figure_cells(report_e2e.load_run(root / runs[0]), root)
+        series = []
+        for c in [c for c in cells if c["users"] == u]:
+            s = c["dir"] / "summary.json"
+            cond = json.loads(s.read_text(encoding="utf-8"))
+            m = e2e.measured(e2e.load_samples(c["dir"] / "samples.csv"), cond["warmup_s"], cond["duration_s"])
+            vals = [x.ack_ms for x in m if not x.error and x.ack_ms is not None]
+            if not vals:
+                continue
+            qs = np.percentile(np.asarray(vals, dtype=np.float64), np.arange(101))
+            name = ("V-cloak" if c["mode"] == "vcloak" else "baseline (unprotected)") + f", repetition {c['rep']}"
+            series.append({"name": name, "slot": 1 if c["mode"] == "vcloak" else 2, "dash": c["rep"] > 1,
+                           "n": len(vals), "run": c["run_dir"],
+                           "points": [[round(float(v), 3), p / 100] for p, v in enumerate(qs)]})
+        out.append({"id": f"e2e_latency_u{u}", "kind": "cdf",
+                    "title": f"Submit to ack, {u} users (2 per conversation)", "series": series, "unit": " ms",
+                    "xLabel": "latency (ms, log scale)", "yLabel": "fraction of sends",
+                    "refLine": {"value": config.EPOCH_MS, "label": f"epoch {config.EPOCH_MS} ms"},
+                    "note": "Empirical CDF per cell, ack: stored, sends scheduled in the measured interval. Solid: "
+                            "repetition 1, dashed: repetition 2. V-cloak waits for its epoch to close; the baseline "
+                            "stores at once.",
+                    "metric_ids": [i for i in ids if i in best], "runs": runs + [s["run"] for s in series]})
+    return out
 
 
 def provenance(best: dict[str, dict[str, str]], root: Path) -> dict[str, Any]:
@@ -222,7 +385,9 @@ def build(index: Path, root: Path) -> dict[str, Any]:
     tiles += [tile(best, *spec, group="gpu", missing=missing) for spec in GPU_FIXED]
     tiles += [tile(best, *spec, group="security", missing=missing) for spec in SECURITY]
     tiles += [dudect_tile(best, mid, label, scope, missing) for mid, label, scope in DUDECT]
-    charts = [gpu_util_chart(best, valid), attack_chart(best)]
+    charts = [gpu_util_chart(best, valid), *latency_charts(best, root, valid), kernel_chart(best, root),
+              pipeline_chart(rows, root), attack_chart(best, root), tau_chart(best, root), session_chart(best, root)]
+    charts = [c for c in charts if c is not None]
     return {
         "generated_at": max(r["date"] for r in rows),
         "git_sha": None,
@@ -231,10 +396,12 @@ def build(index: Path, root: Path) -> dict[str, Any]:
         "provenance": provenance(best, root),
         "groups": [{"id": "gpu", "title": "The GPU under load", "framing": "gpu_utilisation"},
                    {"id": "security", "title": "Order privacy",
-                    "note": "Against a passive adversary holding a snapshot of the store. Still visible to that "
-                            "adversary (ai/PROJECT_BRIEF.md section 5): window ids, the number of real messages per "
-                            "window, the epoch order of the newest data until its window closes, and shared "
-                            "buckets (partial conversation identity)."},
+                    "note": "Against a passive adversary holding a snapshot of the store. V-cloak conceals the "
+                            "order in which messages were stored within a window. It does not conceal the full "
+                            "read/write access pattern, and it does not conceal which rows belong to the same "
+                            "conversation: bucket tags reveal partial conversation identity, and window ids and "
+                            "per-window message counts are visible (ADR-031). The epoch order of the newest data "
+                            "is also visible until its window closes (ai/PROJECT_BRIEF.md section 5)."},
                    {"id": "timing", "title": "Kernel timing (dudect, on the GPU runner)",
                     "note": "The claim is obliviousness of the server-side kernels against an adversary who sees "
                             "the store and no timing (ADR-023)."}],

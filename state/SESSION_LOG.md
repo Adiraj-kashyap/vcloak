@@ -1402,3 +1402,33 @@
 - Not verified: the cause of ISSUE-55.
 - Commit: see git log (M18 S2)
 - Next: M18 S3 (charts, incl. the 0.0e+0 label) ; human action: ISSUE-53
+
+## Session 56 — 2026-10-14 — ISSUE-53 answer applied; M18 S3: the dashboard charts — owner:Abhishek
+- Steps: ISSUE-53 (repository side), then S3 (status after: IN_PROGRESS, current_step S4)
+- Did: (1) the human answered ISSUE-53 item 2: "grouping" meant which rows belong to one conversation, which is not
+  concealed; the word is dropped. ADR-031 records the leakage sentence; applied under ADR-030 (pointer),
+  review/TOPIC_ALIGNMENT.md (top, section 3, presenter note 5), ai/PROJECT_BRIEF.md section 3 (by the human's
+  instruction), the dashboard order-privacy note and two rows of the leakage table. ISSUE-53 closed; documents
+  outside the repository are the human's. (2) S3: the exporter adds six charts, each from index rows or the run file
+  those rows name: E6 submit-to-ack CDFs per valid user count (repetitions apart), shuffle kernel vs CPU bitonic
+  (numba) and lexsort log-log (one runner session, UNSTABLE sizes are gaps, crossover not marked: UNSTABLE), write_epoch
+  device stages vs EPOCH_MS (host and whole call not drawn, ISSUE-12), attack ablation with the run's predicted 1 − f/2,
+  the τ/σ histogram with the ±3σ band, the E5 matrix (26 rows). charts.js: a step-CDF kind with a crosshair,
+  gaps and a reference line in lineLog, dashed series in the legend, 0 labelled "0"; the matrix spans the row. 7 tests.
+- Result: 22 tiles (unchanged), 8 charts. No number is new.
+- Evidence: runs/20261014-100120_M18_s3_checks (pytest_all.txt, export_check.txt, check_*.txt, a1_js_decimals.txt,
+  a_grouping_grep.txt, dashboard.json, capture.txt), evidence/screens/M18_{dashboard,arch}_{light,dark}_20261014.png,
+  evidence/terminal/M18_S3_*
+- Metrics added: none
+- Decisions: ADR-031 (the human). By the agent: the CDFs are given at percentiles 0..100 of each cell's acknowledged
+  sends (same samples and filter as results/e2e); the pipeline chart uses the one run with the most stable device
+  sizes (runs/20261011-215653_M07_pipeline, code c40696b9c) and shows device stages only; the prediction series is
+  read from e1_attack.json and left empty for arrival order.
+- Issues: closed ISSUE-53 (repository side), ISSUE-54
+- Deviations from spec: (d) "stage breakdown" is device vs the budget only: no per-stage (H2D, tags, sort, ...) rows are
+  indexed, and the host stage is withheld (ISSUE-12). The prototype's "τ within a round" chart is not in S3 and was not
+  built. ai/PROJECT_BRIEF.md edited on the human's instruction (hard rule 8 exception, recorded in ADR-031).
+- Not verified: the crossover (UNSTABLE in the index). Whether the device stages of the current code match the run
+  shown (it predates later changes; the note names its code).
+- Commit: see git log (M18 S3)
+- Next: M18 S4 (Experiments view: live attack through /v1/eval/attack) ; human action: none

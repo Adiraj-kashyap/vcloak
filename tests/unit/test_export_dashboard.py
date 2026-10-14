@@ -129,3 +129,82 @@ def test_groups_name_their_framing_and_the_leakage_is_stated():
     assert all(g["framing"] in framing for g in data["groups"] if "framing" in g)
     sec = next(g for g in data["groups"] if g["id"] == "security")
     assert "window ids" in sec["note"]
+
+
+# M18 S3: the charts. Each draws only indexed rows or the run files those rows name.
+S3_CHARTS = ("e2e_latency_u10", "kernel_sweep", "pipeline_device", "attack_ablation", "tau_hist", "session_matrix")
+
+
+def _chart(data: dict, cid: str) -> dict:
+    return next(c for c in data["charts"] if c["id"] == cid)
+
+
+def test_every_chart_names_indexed_ids_and_existing_runs():
+    data = _module().build(INDEX, ROOT)
+    rows, _ = _module().check_metrics.parse_index(INDEX)
+    ids = {r["id"] for r in rows}
+    for cid in S3_CHARTS:
+        assert _chart(data, cid)
+    for c in data["charts"]:
+        assert c["metric_ids"] and set(c["metric_ids"]) <= ids, c["id"]
+        assert all((ROOT / r).is_dir() for r in c["runs"]), c["id"]
+
+
+def test_the_leakage_sentence_is_stated_and_grouping_is_never_a_word():
+    sec = next(g for g in _module().build(INDEX, ROOT)["groups"] if g["id"] == "security")
+    assert "does not conceal which rows belong to the same conversation" in sec["note"]
+    assert "grouping" not in ROOT.joinpath("web", "data", "dashboard.json").read_text(encoding="utf-8").lower()
+
+
+def test_kernel_points_are_the_indexed_values_and_unstable_sizes_are_gaps(tmp_path):
+    ed = _module()
+    data = ed.build(INDEX, ROOT)
+    best = ed.pick(ed.check_metrics.parse_index(INDEX)[0])
+    k = _chart(data, "kernel_sweep")
+    for s, (_, pattern, _) in zip(k["series"], ed.KERNEL_SERIES, strict=True):
+        for n, v in s["points"]:
+            row = best.get(pattern.format(e=n.bit_length() - 1))
+            assert v == (None if row is None else ed._num(row["value"]))
+    assert k["crossover"] is None and "NOT MEASURED" in k["note"]  # X-CROSSOVER-N is UNSTABLE in the index
+
+    mid = "K-BITONIC-FUSED-MS-2^16"
+
+    def unstable(ln: str) -> str:
+        if ln.startswith(f"| {mid} |"):
+            cells = ln.split("|")
+            cells[2] = " UNSTABLE "
+            return "|".join(cells)
+        return ln
+    gpu = _chart(ed.build(_doctored(tmp_path, unstable), ROOT), "kernel_sweep")["series"][0]["points"]
+    assert [v for n, v in gpu if n == 2 ** 16] == [None]
+
+
+def test_pipeline_bars_come_from_one_run_and_never_show_host_or_whole_call():
+    ed = _module()
+    rows, _ = ed.check_metrics.parse_index(INDEX)
+    p = _chart(ed.build(INDEX, ROOT), "pipeline_device")
+    assert len(p["runs"]) == 1 and all(m.startswith("P-WRITE-EPOCH-DEVICE-MS-S") for m in p["metric_ids"])
+    for mid, v in zip(p["metric_ids"], p["series"][0]["values"], strict=True):
+        assert any(r["id"] == mid and r["run_dir"] == p["runs"][0] and round(float(r["value"]), 3) == v for r in rows)
+    assert "ISSUE-12" in p["note"] and p["refLine"]["value"] == ed.config.EPOCH_MS
+
+
+def test_latency_cdfs_draw_the_repetitions_apart_from_valid_cells_only():
+    data = _module().build(INDEX, ROOT)
+    excluded = {e["users"] for e in data["excluded"]}
+    cdfs = [c for c in data["charts"] if c["kind"] == "cdf"]
+    assert cdfs and not any(c["id"] == f"e2e_latency_u{u}" for c in cdfs for u in excluded)
+    for c in cdfs:
+        assert sorted((s["slot"], s["dash"]) for s in c["series"]) == [(1, False), (1, True), (2, False), (2, True)]
+        for s in c["series"]:
+            xs = [x for x, _ in s["points"]]
+            assert xs == sorted(xs) and s["points"][-1][1] == 1.0 and s["n"] > 0
+
+
+def test_attack_prediction_is_the_runs_own_and_absent_for_arrival_order():
+    a = _chart(_module().build(INDEX, ROOT), "attack_ablation")
+    pred = next(s for s in a["series"] if s["name"].startswith("Predicted"))
+    assert pred["values"][0] is None and all(v is not None for v in pred["values"][1:])
+    run = json.loads((ROOT / a["runs"][0] / "e1_attack.json").read_text(encoding="utf-8"))
+    w300 = next(x for x in run["layouts"] if x["layout"] == "W300")
+    assert pred["values"][-1] == round(w300["attack"]["predicted_turn_accuracy"] * 100, 1)

@@ -28,6 +28,7 @@
   function seriesVar(slot) { return "var(--s" + (((slot || 1) - 1) % 4 + 1) + ")"; }
   function fmt(v, unit) {
     if (v === null || v === undefined || (typeof v === "number" && !isFinite(v))) return "—";
+    if (v === 0) return "0" + (unit || "");
     var s = typeof v === "number" ? (Math.abs(v) >= 100 ? v.toFixed(0)
             : Math.abs(v) >= 1 ? v.toFixed(1)
             : Math.abs(v) >= 0.01 ? v.toFixed(3) : v.toExponential(1)) : String(v);
@@ -170,7 +171,7 @@
                    stroke: "var(--crit)" }, svg);
     });
     var bl = el("text", { class: "reflabel", x: x(spec.band) + 5, y: box.t + 10, fill: "var(--crit)" }, svg);
-    bl.textContent = "±3σ";
+    bl.textContent = "±" + spec.band + "σ";
 
     niceTicks(xMin, xMax, 5).forEach(function (t) {
       var tx = el("text", { class: "tick", x: x(t), y: box.t + box.h + 16, "text-anchor": "middle" }, svg);
@@ -191,6 +192,7 @@
     spec.series.forEach(function (s) {
       s.points.forEach(function (p) { xs.push(p[0]); if (p[1] > 0) ys.push(p[1]); });
     });
+    if (spec.refLine) ys.push(spec.refLine.value);
     var lx = function (v) { return Math.log10(v); };
     var xMin = lx(Math.min.apply(null, xs)), xMax = lx(Math.max.apply(null, xs));
     var yMin = Math.floor(Math.log10(Math.min.apply(null, ys))), yMax = Math.ceil(Math.log10(Math.max.apply(null, ys)));
@@ -205,11 +207,26 @@
     }
     el("line", { class: "axisline", x1: box.l, x2: box.l, y1: box.t, y2: box.t + box.h }, svg);
 
+    if (spec.refLine) {
+      var hy = Y(spec.refLine.value);
+      el("line", { class: "refline", x1: box.l, x2: box.l + box.w, y1: hy, y2: hy, stroke: "var(--crit)" }, svg);
+      var hl = el("text", { class: "reflabel", x: box.l + 4, y: hy - 6, "text-anchor": "start",
+                            fill: "var(--crit)" }, svg);
+      hl.textContent = spec.refLine.label;
+    }
+
     spec.series.forEach(function (s) {
-      var d = s.points.map(function (p, i) { return (i ? "L" : "M") + X(p[0]) + " " + Y(p[1]); }).join(" ");
+      // a point without a value (an UNSTABLE size) breaks the line: no segment is drawn across it
+      var d = "", pen = false;
+      s.points.forEach(function (p) {
+        if (p[1] === null || !(p[1] > 0)) { pen = false; return; }
+        d += (pen ? "L" : "M") + X(p[0]) + " " + Y(p[1]) + " ";
+        pen = true;
+      });
       el("path", { d: d, fill: "none", stroke: seriesVar(s.slot), "stroke-width": 2,
                    "stroke-linejoin": "round", "stroke-linecap": "round" }, svg);
       s.points.forEach(function (p) {
+        if (p[1] === null || !(p[1] > 0)) return;
         var g = el("g", { tabindex: "0" }, svg);
         el("circle", { cx: X(p[0]), cy: Y(p[1]), r: 4.5, fill: seriesVar(s.slot),
                        stroke: "var(--surface)", "stroke-width": 2 }, g);
@@ -232,6 +249,67 @@
     });
     el("line", { class: "axisline", x1: box.l, x2: box.l + box.w,
                  y1: box.t + box.h, y2: box.t + box.h }, svg);
+    if (spec.xLabel) {
+      var xl = el("text", { class: "axis-label", x: box.l + box.w / 2, y: H - 4, "text-anchor": "middle" }, svg);
+      xl.textContent = spec.xLabel;
+    }
+    return svg;
+  }
+
+  /* ── empirical CDF: log x, fraction 0..1, step curves, crosshair ── */
+  function cdfValueAt(points, x) {      // the fraction of sends at or below latency x
+    var f = 0;
+    for (var i = 0; i < points.length; i++) { if (points[i][0] <= x) f = points[i][1]; else break; }
+    return f;
+  }
+  function cdf(spec, width) {
+    var W = width, H = 270, box = { l: 52, t: 14, w: W - 68, h: H - 58 };
+    var svg = el("svg", { class: "chart", viewBox: "0 0 " + W + " " + H, role: "img",
+                          "aria-label": spec.title });
+    var xs = [];
+    spec.series.forEach(function (s) { s.points.forEach(function (p) { if (p[0] > 0) xs.push(p[0]); }); });
+    if (spec.refLine) xs.push(spec.refLine.value);
+    var xMin = Math.floor(Math.log10(Math.min.apply(null, xs))), xMax = Math.ceil(Math.log10(Math.max.apply(null, xs)));
+    var X = function (v) { return box.l + (Math.log10(Math.max(v, Math.pow(10, xMin))) - xMin) / (xMax - xMin || 1) * box.w; };
+    var Y = function (f) { return box.t + box.h - f * box.h; };
+
+    yAxis(svg, box, Y, niceTicks(0, 1, 5), "");
+    for (var p = xMin; p <= xMax; p++) {
+      var xx = X(Math.pow(10, p));
+      var t = el("text", { class: "tick", x: xx, y: box.t + box.h + 16, "text-anchor": "middle" }, svg);
+      t.textContent = Math.pow(10, p) >= 1 ? String(Math.pow(10, p)) : Math.pow(10, p).toFixed(Math.abs(p));
+    }
+    if (spec.refLine) {
+      var rx = X(spec.refLine.value);
+      el("line", { class: "refline", x1: rx, x2: rx, y1: box.t, y2: box.t + box.h }, svg);
+      var rl = el("text", { class: "reflabel", x: rx + 5, y: box.t + 11, fill: "var(--muted)" }, svg);
+      rl.textContent = spec.refLine.label;
+    }
+    spec.series.forEach(function (s) {
+      var d = "";
+      s.points.forEach(function (q, i) {
+        d += i ? "H" + X(q[0]) + " V" + Y(q[1]) + " " : "M" + X(q[0]) + " " + Y(0) + " V" + Y(q[1]) + " ";
+      });
+      el("path", { d: d, fill: "none", stroke: seriesVar(s.slot), "stroke-width": 2,
+                   "stroke-dasharray": s.dash ? "6 4" : null, "stroke-linejoin": "round" }, svg);
+    });
+    el("line", { class: "axisline", x1: box.l, x2: box.l + box.w, y1: Y(0), y2: Y(0) }, svg);
+    var xl = el("text", { class: "axis-label", x: box.l + box.w / 2, y: H - 4, "text-anchor": "middle" }, svg);
+    xl.textContent = spec.xLabel || "";
+
+    // crosshair: at the hovered latency, each curve's fraction of sends at or below it
+    var cross = el("line", { class: "refline", x1: 0, x2: 0, y1: box.t, y2: box.t + box.h, opacity: 0 }, svg);
+    var hit = el("rect", { x: box.l, y: box.t, width: box.w, height: box.h, fill: "transparent", tabindex: "0" }, svg);
+    hit.addEventListener("mousemove", function (e) {
+      var r = svg.getBoundingClientRect(), sx = (e.clientX - r.left) * W / r.width;
+      var lat = Math.pow(10, xMin + (sx - box.l) / box.w * (xMax - xMin));
+      cross.setAttribute("x1", sx); cross.setAttribute("x2", sx); cross.setAttribute("opacity", 1);
+      showTip(e, "<div><b>" + fmt(lat, spec.unit) + "</b></div>" + spec.series.map(function (s) {
+        return "<div class='tt-row'><i style='background:" + seriesVar(s.slot) + "'></i>" +
+               (cdfValueAt(s.points, lat) * 100).toFixed(0) + "% · " + s.name + "</div>";
+      }).join(""));
+    });
+    hit.addEventListener("mouseleave", function () { cross.setAttribute("opacity", 0); hideTip(); });
     return svg;
   }
 
@@ -306,6 +384,19 @@
         tr.innerHTML = "<td>" + c.toFixed(2) + "</td><td>" + spec.counts[i] + "</td>";
         body.appendChild(tr);
       });
+    } else if (spec.kind === "cdf") {
+      var qs = [5, 25, 50, 75, 95, 99];   // which percentiles the table lists; the values come from the spec
+      t.innerHTML = "<thead><tr><th>Curve</th><th>sends</th>" + qs.map(function (q) {
+        return "<th>p" + q + "</th>"; }).join("") + "</tr></thead>";
+      spec.series.forEach(function (s) {
+        var tr = document.createElement("tr");
+        tr.innerHTML = "<td style='white-space:normal;font-family:var(--sans)'>" + s.name + "</td><td>" + s.n +
+          "</td>" + qs.map(function (q) {
+            var pt = s.points.filter(function (r) { return Math.round(r[1] * 100) === q; })[0];
+            return "<td>" + (pt ? fmt(pt[0], spec.unit) : "—") + "</td>";
+          }).join("");
+        body.appendChild(tr);
+      });
     } else if (spec.kind === "lineLog") {
       t.innerHTML = "<thead><tr><th>n</th>" + spec.series.map(function (s) {
         return "<th>" + s.name + "</th>"; }).join("") + "</tr></thead>";
@@ -338,7 +429,9 @@
     var l = h("div", "legend");
     spec.series.forEach(function (s) {
       var sp = h("span", null);
-      sp.innerHTML = "<i style='background:" + seriesVar(s.slot) + "'></i>" + s.name;
+      sp.innerHTML = "<i style='background:" + seriesVar(s.slot) +
+                     (s.dash ? ";background:repeating-linear-gradient(90deg," + seriesVar(s.slot) +
+                      " 0 5px,transparent 5px 8px)" : "") + "'></i>" + s.name;
       l.appendChild(sp);
     });
     return l;
@@ -346,7 +439,7 @@
 
   /* ── card wrapper ─────────────────────────────────── */
   function card(spec) {
-    var c = h("div", "chartcard");
+    var c = h("div", spec.kind === "matrix" ? "chartcard wide" : "chartcard");   // a table needs the row
     var head = document.createElement("header");
     head.appendChild(h("h3", null, spec.title));
     c.appendChild(head);
@@ -374,6 +467,7 @@
     var width = 560;
     var svg = spec.kind === "histogram" ? histogram(spec, width)
             : spec.kind === "lineLog" ? lineLog(spec, width)
+            : spec.kind === "cdf" ? cdf(spec, width)
             : spec.kind === "stackedBar" ? stackedBar(spec, width)
             : spec.kind === "matrix" ? matrix(spec)
             : groupedBar(spec, width);

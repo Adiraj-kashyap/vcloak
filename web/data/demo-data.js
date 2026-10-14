@@ -228,7 +228,8 @@ window.VCLOAK_DEMO = {
     ["Order within a window", "no", "GPU permutation, re-shuffled when the window closes"],
     ["Primary key / arrival rank", "no", "random UUID instead of an auto-increment id"],
     ["Ordering key", "no", "lives in GPU memory; never written to disk"],
-    ["Conversation identity", "partial", "many conversations share one bucket"],
+    ["Which rows belong to one conversation", "partial", "bucket tags reveal partial conversation identity: many conversations share one bucket"],
+    ["Full read/write access pattern", "yes", "a read fetches the candidate rows of one bucket-window; not concealed"],
     ["Order across windows", "yes", "the window id is coarse but visible"],
     ["Real messages per window", "yes", "dummies are stripped before the rows are written"],
     ["Order of the newest data", "yes", "epoch-level, until that window closes"]

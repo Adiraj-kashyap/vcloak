@@ -3,13 +3,13 @@
 ```yaml
 project: v-cloak
 kit_version: 1.0
-last_session: 55
+last_session: 56
 last_session_date: 2026-10-14
 current_module: M18
-current_step: S3
+current_step: S4
 status: IN_PROGRESS           # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
 next_unit: M18
-last_checkpoint: 2026-10-14 session 55: M18 S2 done (headline tiles with provenance, dudect under ADR-023, framing rendered); next: M18 S3
+last_checkpoint: 2026-10-14 session 56: ISSUE-53 answered (ADR-031); M18 S3 done (six charts from the index and their runs); next: M18 S4
 quick_mode_default: false
 local:                      # the laptop (no GPU) — filled by M00 S7
   os: "Windows-11-10.0.26200-SP0"
@@ -58,7 +58,7 @@ gpu_job:                    # set by the gpu-job skill
 | M14 | Security evaluation (E0–E2, anon set) | Abhishek | M08, M10 | no | DONE | S7 | 6 |
 | M15 | End-to-end performance (E6) | Divyansh | M10, M11 | no | DONE | S4 | 5 |
 | M16 | Results export | Abhishek | M07, M08, M14 | no | DONE | S4 | 2 |
-| M18 | Frontend: dashboard, experiments, logs | Abhishek | M13, M14 | no | IN_PROGRESS | S3 | 2 |
+| M18 | Frontend: dashboard, experiments, logs | Abhishek | M13, M14 | no | IN_PROGRESS | S4 | 3 |
 | M17 | Final audit & demo (Review 3 close-out) | Team | all required | no | NOT_STARTED | S1 | 0 |
 | M22 | Draft report (prelim pages, Ch.1–4, similarity) | Team | M16 | no | NOT_STARTED | S1 | 0 |
 | M19 | Publication / IP submission (crit. 9) | Abhishek + team | M16 | no | NOT_STARTED | S1 | 0 |
@@ -149,11 +149,14 @@ Keep this file under 120 lines: one or two lines per note, the detail lives in t
   enter the paper tables). ISSUE-52: three unanswered sends at 200 users, cause not found. `render` also draws
   the three E6 figures (valid user counts only, never a line between user counts).
 - ADR-029 (the human): V-cloak is "a GPU-resident oblivious permutation layer for message-order privacy", never
-  an ORAM. Where ORAM is named: ADR-030 (below) replaces items 2 and 3. Claim
-  order only, not "grouping", until ISSUE-53 is answered. M19/M20/M22 audits grep their text for "ORAM".
+  an ORAM. Where ORAM is named: ADR-030 (below) replaces items 2 and 3. M19/M20/M22 audits grep their text for
+  "ORAM" and "grouping".
+- ADR-031 (the human, ISSUE-53 closed): the claim is the order of storage within a window; wherever the non-claim
+  appears, use the leakage sentence of ADR-031 item 2 as written. Never the word "grouping" for V-cloak.
 - ADR-030 (the human, final): ORAM is named only with its component: "we implement the oblivious shuffle, the
   component ORAM constructions build on" (full sentence in ADR-030; used in review/TOPIC_ALIGNMENT.md, related work,
   presenter notes). "Does not fit 200 ms" is a judgement, never a measurement. ADR-029 items 1, 4, 5 stay.
 - M18: `python scripts/export_dashboard.py [--check]` writes web/data/dashboard.json (GPU group and its framing
   first; UNSTABLE user counts in `excluded`). Never add placeholder charts: they render NOT MEASURED for measured ids.
   dudect tiles: kernel series are the claim, the whole-call FAIL stays visible and is never a headline (S2).
+  Charts (S3) read index rows or the run files they name; the pipeline chart shows device stages only (ISSUE-12).

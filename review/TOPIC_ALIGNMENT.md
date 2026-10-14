@@ -10,6 +10,12 @@ How it relates to ORAM (ADR-030, the team's final wording):
 Use that sentence as written wherever ORAM comes up: this page, related work, the presenter notes. Always name the
 component (the oblivious shuffle). Never write "part of ORAM", "ORAM-based" or "an ORAM" on their own.
 
+What it conceals, and what it does not (ADR-031, the team's wording; use it wherever the claim is stated):
+
+> V-cloak conceals the order in which messages were stored within a window. It does not conceal the full
+> read/write access pattern, and it does not conceal which rows belong to the same conversation: bucket tags
+> reveal partial conversation identity, and window ids and per-window message counts are visible.
+
 ## 1. Which ORAM component, and what we do with it
 
 Square-root and hierarchical ORAM constructions (Goldreich and Ostrovsky) keep their data in an order that the
@@ -48,9 +54,11 @@ V-cloak takes this one component and applies it to the order of stored messages:
 - No ORAM: no construction, leakage bound or overhead analysis for full access-pattern hiding.
 - That full access-pattern hiding "does not fit a 200 ms budget" is a judgement about scope. It is not a
   measurement: no ORAM was built or timed in this repository.
-- No "grouping" claim. The claim is order only, inside a window, until ISSUE-53 is answered (ADR-029 item 4).
-- Known leakage that stays: window ids, the number of real messages per window, epoch-level order of the newest data
-  until its window closes, partial conversation identity through shared buckets (ai/PROJECT_BRIEF.md section 5).
+- The claim is the order in which messages were stored, within a window. Its boundary is the sentence above, as
+  written (ADR-031): the full read/write access pattern is not concealed, and neither is which rows belong to the
+  same conversation (bucket tags reveal partial conversation identity; window ids and per-window message counts
+  are visible). Also visible until its window closes: the epoch-level order of the newest data
+  (ai/PROJECT_BRIEF.md section 5).
 - P3 (data-oblivious execution) is claimed for the kernels only. Host timing is a limitation (ADR-023). Never
   "constant time".
 
@@ -67,3 +75,7 @@ V-cloak takes this one component and applies it to the order of stored messages:
    the store instead of staying at CAND_K rows. We have not designed or measured it, and our judgement is that it
    does not fit the 200 ms epoch on a T4."
 4. If asked for the overhead of that direction: there is no number. Say so, and say that it is future work.
+5. **If asked "what exactly does it hide?"** (or when someone says it hides which messages belong together), read
+   the sentence as written: "V-cloak conceals the order in which messages were stored within a window. It does not conceal the full read/write access pattern, and it does not conceal which rows belong to the same conversation: bucket tags reveal partial conversation identity, and window ids and per-window message counts are visible."
+   Then point to the evidence for the first part only: `S-TURNACC-W300` (row 5 of the table). Never describe what
+   V-cloak conceals with a vaguer word; the conversation membership of rows is visible and is not claimed.
