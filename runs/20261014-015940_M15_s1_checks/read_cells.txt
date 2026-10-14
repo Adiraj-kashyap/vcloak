@@ -1,0 +1,6 @@
+20261014-015841_M15_e2e_baseline_u10: status OK backend numpy mode baseline ack stored sessions True ws_sockets 0 metrics offered 0
+  rows 130  counted 97  scheduled in warm-up 33 (counted among them: 0)  acked 97  errors {}  readable missing 0  epochs 0
+20261014-015857_M15_e2e_vcloak_u10: status OK backend numpy mode vcloak ack stored sessions True ws_sockets 0 metrics offered 0
+  rows 130  counted 97  scheduled in warm-up 33 (counted among them: 0)  acked 97  errors {}  readable missing 0  epochs 67
+GATE both modes got the same schedule (user, scheduled time): PASS
+GATE every counted send acknowledged and read back, warm-up excluded, no metric offered: PASS

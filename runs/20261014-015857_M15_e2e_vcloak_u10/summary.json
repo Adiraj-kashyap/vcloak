@@ -1,0 +1,114 @@
+{
+  "metrics": [],
+  "reason": "numpy backend: a correctness run of the generator, never a performance result",
+  "mode": "vcloak",
+  "users": 10,
+  "conversations": 5,
+  "ack": "stored",
+  "sessions": true,
+  "ws_sockets": 0,
+  "poll_ms": 200.0,
+  "rate_per_user_s": 1.0,
+  "warmup_s": 3.0,
+  "duration_s": 10.0,
+  "drain_s": 5.0,
+  "store": "sqlite",
+  "service": {
+    "started_by": "this script (child process)",
+    "windows": {
+      "win": 29865388,
+      "window_s": 60,
+      "epoch_ms": 200,
+      "visible_round": "window",
+      "mode": "vcloak"
+    },
+    "healthz_ready": {
+      "status": "ok",
+      "mode": "vcloak",
+      "ready": true,
+      "epochs": 2,
+      "overflow": 0,
+      "missed": 0,
+      "queued": 0
+    },
+    "healthz_before": {
+      "status": "ok",
+      "mode": "vcloak",
+      "ready": true,
+      "epochs": 3,
+      "overflow": 0,
+      "missed": 0,
+      "queued": 0
+    },
+    "healthz_after": {
+      "status": "ok",
+      "mode": "vcloak",
+      "ready": true,
+      "epochs": 70,
+      "overflow": 0,
+      "missed": 0,
+      "queued": 0
+    },
+    "delta": {
+      "epochs": 67,
+      "overflow": 0,
+      "missed": 0
+    }
+  },
+  "setup": {
+    "sessions": true,
+    "register_s": 0.511455100029707,
+    "login_s": 0.47558099986054003,
+    "refreshed": false,
+    "refresh_s": 0.0
+  },
+  "stats": {
+    "scheduled": 97,
+    "acked": 97,
+    "errors": {},
+    "offered_msgs_s": 9.7,
+    "achieved_msgs_s": 9.7,
+    "ack_ms": {
+      "n": 97,
+      "p50": 114.01510005816817,
+      "p95": 210.90083993040025,
+      "p99": 213.5365321021527,
+      "mean": 119.64985465429262,
+      "max": 213.9405000489205
+    },
+    "readable_ms": {
+      "n": 97,
+      "p50": 234.0623999480158,
+      "p95": 350.4546200390904,
+      "p99": 374.4239561166612,
+      "mean": 229.66259691057746,
+      "max": 402.0613001193851
+    },
+    "readable_missing": 0,
+    "send_lag_ms": {
+      "n": 97,
+      "p50": 4.526032730667318,
+      "p95": 15.2553153163673,
+      "p99": 16.868739666387068,
+      "mean": 6.078935431985924,
+      "max": 17.18051025420131
+    },
+    "excluded_warmup": 33,
+    "excluded_after": 0
+  },
+  "reads": {
+    "requests": 566,
+    "errors": {}
+  },
+  "clock": "time.monotonic() in the generator process; client and service on one machine",
+  "device": {
+    "backend": "numpy",
+    "is_gpu": false,
+    "device": "12th Gen Intel(R) Core(TM) i7-1255U",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U",
+    "cpu_count": 12,
+    "ram_gb": 15.6,
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0"
+  }
+}

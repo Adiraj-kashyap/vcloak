@@ -351,3 +351,24 @@ Decision:
 Consequences: `bench/jobs/M08_ncu.json` (the ncu step alone, for ISSUE-18). `bench/run_ncu.py` and `gpu_entry.py`
 start `ncu` by the path `shutil.which` resolves, because on Windows it is a .bat file. This ADR changes no
 measured value. The Windows and WSL2 paths of the kit have not been run by the project when this is written.
+
+## ADR-026 — The M15 load generator starts the measured service itself and raises only its account rate limits — ACCEPTED — 2026-10-14
+Context: M15 asks for per-user DPoP clients, 10 to 1000 of them. All virtual users of a load generator come from
+one address, and the session layer of M11 allows 5 registrations per address per hour and 20 logins per address
+per minute (ADR-017). With the stock `vcloak serve --sessions` not even the 10-user cell can be set up.
+Decision:
+1. `bench/run_e2e.py` starts the service as a child process: the app of `vcloak serve --dev` (the same
+   `cli.build_backend` and `create_app`), never with `--compare`, always on a loopback address.
+2. With sessions on, the child builds `SessionService(SessionConfig(register_ip_max=n, login_ip_max=n))` with n
+   sized for the users of the cell. Nothing else of the session layer is changed: the Argon2id cost, the proof
+   and token checks on every request, the token lifetimes and the per-account login limit are the defaults.
+3. The two raised limits act on `/v1/auth/register` and `/v1/auth/login`. Accounts are created before the run
+   starts; no latency of M15 contains an account request. The message path that is measured (proof and token
+   verification, then `/v1/messages` and `/v1/read`) is the path of the stock service.
+4. `vcloak serve` itself gets no option to raise these limits: a deployment must not be able to switch them off
+   by a flag. `--url` measures a service the caller started, as it is.
+Consequences: every M15 summary says who started the service, whether sessions were on, the acknowledgement that
+was asked for (ISSUE-23) and that no WebSocket was open (ISSUE-27: the push under load stays unmeasured unless a
+later step adds sockets). The report must say that the client and the service share one machine. This ADR
+changes no measured value.
+

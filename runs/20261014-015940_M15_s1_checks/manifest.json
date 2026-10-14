@@ -1,0 +1,43 @@
+{
+  "run_id": "20261014-015940_M15_s1_checks",
+  "module": "M15",
+  "step": "S1",
+  "owner": "Divyansh",
+  "git_sha": "2250832288bf776dc38828255ff0f2d0db3f54e4",
+  "dirty": true,
+  "command": "pytest -q; ruff check src tests bench scripts; check_metrics, check_oblivious, check_secrets; scripts/export_results.py --check; read_cells.py",
+  "seed": 0,
+  "quick": false,
+  "params": {},
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261014-015940",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U",
+    "cpu_count": 12
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791923381.134344
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791937499.7866037
+  },
+  "outputs": [
+    "check_metrics.txt",
+    "check_oblivious.txt",
+    "check_secrets.txt",
+    "export_check.txt",
+    "pytest_all.txt",
+    "read_cells.py",
+    "read_cells.txt",
+    "ruff.txt"
+  ],
+  "status": "OK",
+  "notes": "no measurement: checks of the M15 S1 load generator on the laptop (backend numpy); the two cells it reads are correctness runs, never performance results"
+}

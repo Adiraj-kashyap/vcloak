@@ -1,0 +1,114 @@
+{
+  "metrics": [],
+  "reason": "numpy backend: a correctness run of the generator, never a performance result",
+  "mode": "baseline",
+  "users": 10,
+  "conversations": 5,
+  "ack": "stored",
+  "sessions": true,
+  "ws_sockets": 0,
+  "poll_ms": 200.0,
+  "rate_per_user_s": 1.0,
+  "warmup_s": 3.0,
+  "duration_s": 10.0,
+  "drain_s": 5.0,
+  "store": "sqlite",
+  "service": {
+    "started_by": "this script (child process)",
+    "windows": {
+      "win": 29865388,
+      "window_s": 60,
+      "epoch_ms": 200,
+      "visible_round": "window",
+      "mode": "baseline"
+    },
+    "healthz_ready": {
+      "status": "ok",
+      "mode": "baseline",
+      "ready": true,
+      "epochs": 0,
+      "overflow": 0,
+      "missed": 0,
+      "queued": 0
+    },
+    "healthz_before": {
+      "status": "ok",
+      "mode": "baseline",
+      "ready": true,
+      "epochs": 0,
+      "overflow": 0,
+      "missed": 0,
+      "queued": 0
+    },
+    "healthz_after": {
+      "status": "ok",
+      "mode": "baseline",
+      "ready": true,
+      "epochs": 0,
+      "overflow": 0,
+      "missed": 0,
+      "queued": 0
+    },
+    "delta": {
+      "epochs": 0,
+      "overflow": 0,
+      "missed": 0
+    }
+  },
+  "setup": {
+    "sessions": true,
+    "register_s": 0.5218649001326412,
+    "login_s": 0.5369579000398517,
+    "refreshed": false,
+    "refresh_s": 0.0
+  },
+  "stats": {
+    "scheduled": 97,
+    "acked": 97,
+    "errors": {},
+    "offered_msgs_s": 9.7,
+    "achieved_msgs_s": 9.7,
+    "ack_ms": {
+      "n": 97,
+      "p50": 4.19760006479919,
+      "p95": 7.874639891088005,
+      "p99": 8.817787971347567,
+      "mean": 4.569568061605864,
+      "max": 9.206300135701895
+    },
+    "readable_ms": {
+      "n": 97,
+      "p50": 130.0849998369813,
+      "p95": 220.11234005913136,
+      "p99": 222.71849589422345,
+      "mean": 120.73969072662294,
+      "max": 223.6375999636948
+    },
+    "readable_missing": 0,
+    "send_lag_ms": {
+      "n": 97,
+      "p50": 6.085834326638562,
+      "p95": 15.218964964471125,
+      "p99": 16.18299674875885,
+      "mean": 7.3831548104516145,
+      "max": 16.39878703306863
+    },
+    "excluded_warmup": 33,
+    "excluded_after": 0
+  },
+  "reads": {
+    "requests": 566,
+    "errors": {}
+  },
+  "clock": "time.monotonic() in the generator process; client and service on one machine",
+  "device": {
+    "backend": "numpy",
+    "is_gpu": false,
+    "device": "12th Gen Intel(R) Core(TM) i7-1255U",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U",
+    "cpu_count": 12,
+    "ram_gb": 15.6,
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0"
+  }
+}
