@@ -1583,3 +1583,30 @@ Notes:
 - What the figures show and nobody has explained: in the 10-user V-cloak cell of repetition 2 NVML reports 0 %
   from the warm-up until about 60 s into the measured interval, then the same 0/1 % pattern as repetition 1; the
   50-user cells sit at 1 %. NVML reports whole percent, so at this load the series is at its resolution.
+
+## Audit M18 — 2026-10-14 — session 54 — result: PASS (step S1; module not DONE)
+RUN is runs/20261014-092058_M18_s1_checks. The module audit applies at the end of M18; this entry checks what S1 touches.
+| Item | Result | Evidence |
+|---|---|---|
+| A1 no result literal in web/js | PASS | web/js unchanged this session (git diff --stat empty); the only decimals in dashboard.js are SVG icon paths |
+| A2 every tile carries an indexed METRIC-ID | PASS | test_every_shown_value_is_the_indexed_value (value, raw value and run dir match an index row); RUN/check_metrics.txt 895 rows, 0 problems |
+| A3 missing renders NOT MEASURED, quick carries QUICK | PASS | tests with a doctored index: a deleted row moves to missing; a quick S-CHI2-P row is marked and not a headline. X-CROSSOVER-N (UNSTABLE) renders NOT MEASURED on the screens |
+| A4 logs endpoint redaction | N/A | S5 |
+| A5 both themes, Table views, one y-axis | PASS (partial) | evidence/screens/M18_dashboard_{light,dark}_20261014.png; both charts have a Table toggle and one y-axis. ISSUE-54 opened for the 0.0e+0 label and the unrendered framing |
+| G1 | PASS | RUN/pytest_all.txt 2195 passed, 675 skipped (the same CUDA-device skips and M02 placeholder as session 53; 6 tests added) |
+| G2 / G2b | PASS | no metric added; the exporter reads the index only |
+| G3 | PASS | RUN/check_oblivious.txt 0 findings; no kernel changed |
+| G4 | PASS | RUN/check_secrets.txt, run after the evidence copies |
+| G5 | N/A | no GPU twin |
+| G6 | PASS | scripts/export_dashboard.py, web/data/dashboard.json, tests/unit/test_export_dashboard.py, review/TOPIC_ALIGNMENT.md |
+| G7 | PASS | the session commit, owner Abhishek |
+| G8 | PASS | STATE: session 54, M18 IN_PROGRESS at S2, sessions 1 |
+| G9 | PASS | SESSION_LOG session 54, this entry, ISSUE-54 opened, ISSUE-53 updated |
+| G10 | PASS | `export_dashboard.py --check` reproduces the committed JSON (test_committed_json_is_current); RUN validates |
+Notes:
+- Terminology (ADR-029/030): RUN/terminology_grep.txt lists every "ORAM" in the tree: ai/DECISIONS.md, state/*,
+  evidence/INDEX.md (the M15 terminology proof) and review/TOPIC_ALIGNMENT.md, where every occurrence names the
+  oblivious shuffle or is the sentence of ADR-030.
+- Hard rule 8: ai/ was changed only by ADR-030 (appended).
+- Placeholder charts were removed from the export after the first capture: they rendered NOT MEASURED for metrics
+  that exist (FRONTEND section 6). The screens in evidence/ are from the second capture.

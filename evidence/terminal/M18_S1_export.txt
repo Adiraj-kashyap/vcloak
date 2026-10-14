@@ -1,0 +1,2 @@
+wrote web\data\dashboard.json
+dashboard.json is current

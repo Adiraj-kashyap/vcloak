@@ -1700,9 +1700,11 @@ occurrence in tracked files, binaries, untracked files or history). So the wordi
 agent cannot open: slides, an abstract, a proposal or a submission form.
 What you do (two things, neither blocks the build):
 1. In every such document replace the description of our system with: "a GPU-resident oblivious permutation
-   layer for message-order privacy". Keep ORAM only where related work is discussed, followed by: "V-cloak is not
-   an ORAM: it conceals the order in which messages were stored inside a window, and it does not hide the full
-   read/write access pattern, for which it states no construction, no leakage bound and no overhead analysis."
+   layer for message-order privacy". Where ORAM is named, use the sentence of ADR-030 (session 54, your final
+   wording; it replaces the "V-cloak is not an ORAM" sentence first given here): "This is a prototype. We
+   implement the oblivious shuffle, the component ORAM constructions build on, and apply it to message ordering.
+   Full access-pattern hiding is the remaining part of an ORAM and is out of scope for this prototype, because it
+   does not fit a 200 ms real-time budget on this hardware." Never "part of ORAM" without naming the component.
    If one of these documents should live in the repository (for M19 or M22), put it under review/ and say so.
 2. Answer one question. Your wording says V-cloak conceals "order and grouping". ai/PROJECT_BRIEF.md section 5
    lists partial conversation identity (shared HMAC-style buckets), window ids and the number of real messages per
@@ -1710,3 +1712,14 @@ What you do (two things, neither blocks the build):
    stored together), and is it meant as a claim? Until you answer, the paper and the report claim order only
    (ADR-029 item 4).
 Closed when: you report 1 as done and answer 2; the answer is recorded as an amendment of ADR-029.
+Update 2026-10-14 session 54: the wording of item 1 was replaced by the human's final ORAM wording (ADR-030); the
+in-repository page that uses it is review/TOPIC_ALIGNMENT.md. Items 1 (outside documents) and 2 (grouping) are open.
+
+### ISSUE-54 [OPEN] Dashboard: a zero bar is labelled "0.0e+0%", and the GPU framing points are not rendered yet
+BLOCKS: none   SEVERITY: low   OPENED: 2026-10-14 session 54
+What was found (evidence/screens/M18_dashboard_*_20261014.png, runs/20261014-092058_M18_s1_checks): web/js/charts.js
+formats the value 0 of E2E-GPUUTIL-U10 in exponent form on the bar label. dashboard.js does not read the new
+`framing`, `groups` and `excluded` fields of dashboard.json, so the GPU-utilisation framing is in the JSON but not on
+the page. Neither changes a value.
+Closed when: M18 S2 renders the framing above the GPU group and the excluded user counts with their cause, and S3
+fixes the label; checked by a new capture in both themes.

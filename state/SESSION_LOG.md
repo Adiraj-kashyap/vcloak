@@ -1358,3 +1358,28 @@
   is in results/paper or results/figures.
 - Commit: 91279c8 (code, figures, ADR), records in the next commit
 - Next: M18 S1 (table order) ; human action: ISSUE-53 (blocks nothing); `continue M19` if the publication goes first
+
+## Session 54 — 2026-10-14 — M18 S1: dashboard exporter, GPU-utilisation framing first; ORAM wording (ADR-030); topic alignment page — owner:Abhishek
+- Steps: S1 (status after: IN_PROGRESS, current_step S2)
+- Did: (1) the human's final ORAM wording recorded as ADR-030 (name the component: the oblivious shuffle; the
+  standard sentence; amends ADR-029 items 2 and 3); ISSUE-53 item 1 points to it. (2) review/TOPIC_ALIGNMENT.md:
+  the sentence, a component table (built / out of scope, each with METRIC-ID and run), how to read GPU utilisation,
+  what is not claimed, presenter notes with the answer to "what would it take to complete the ORAM?". (3) S1:
+  scripts/export_dashboard.py writes web/data/dashboard.json from the index: GPU group first (E6 utilisation,
+  power, added ack p50, overflow per valid user count; bitonic 2^16; crossover), a `framing` block with its
+  reading, security tiles, two charts, `missing` and `excluded` (200 users, ADR-028). 6 tests.
+- Result: 19 tiles, 18 with values from the index, X-CROSSOVER-N NOT MEASURED (UNSTABLE). No number is new.
+- Evidence: runs/20261014-092058_M18_s1_checks (export.txt, pytest_all.txt, check_*.txt, terminology_grep.txt, dashboard.json, capture.txt),
+  evidence/screens/M18_dashboard_{light,dark}_20261014.png, evidence/terminal/M18_S1_*
+- Metrics added: none
+- Decisions: ADR-030 (the human). By the agent: row choice per id (not quick, then cupy, then newest); UNSTABLE
+  user counts go to `excluded`, not `missing` (no rerun, ADR-027); unbuilt charts are left out, not shown as pending.
+- Issues: opened ISSUE-54 (low: 0.0e+0 label; framing not rendered); ISSUE-53 updated
+- Deviations from spec: the module names web/data/demo/dashboard.json as the prototype's shape; it is
+  web/data/demo-data.js. git_sha in the JSON is null and index_sha256 is added, so --check stays deterministic
+  across commits. "GPU-utilisation framing" was not specified anywhere in the repository: read as the GPU group and
+  its reading leading the dashboard.
+- Not verified: "full access-pattern hiding does not fit 200 ms" is a scope judgement (ADR-030 note a), never
+  measured. The ORAM component claim rests on the literature (square-root/hierarchical constructions), not a run.
+- Commit: see git log (M18 S1)
+- Next: M18 S2 (render framing, groups, excluded; headline tiles incl. dudect, stated with ADR-023) ; human action: ISSUE-53

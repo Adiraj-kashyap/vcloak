@@ -1,0 +1,55 @@
+./ai/DECISIONS.md:444:## ADR-029 — Terminology: V-cloak is an oblivious permutation layer, never "an ORAM" — ACCEPTED — 2026-10-14
+./ai/DECISIONS.md:445:Context: the human (session 53) reported that the system is being described in places as "a GPU-optimised ORAM",
+./ai/DECISIONS.md:446:and asked for a check before the paper and the report are written. That is broader than what was built. An ORAM
+./ai/DECISIONS.md:449:terminology_grep.txt): "ORAM", "oblivious RAM" and "oblivious random access" occur nowhere in the repository,
+./ai/DECISIONS.md:450:tracked or untracked, and in no commit (`git log -S ORAM`). The description in the repository is already "a
+./ai/DECISIONS.md:457:   that are allowed: "oblivious permutation layer", "oblivious shuffle layer". Never "ORAM", "GPU-optimised ORAM",
+./ai/DECISIONS.md:458:   "ORAM-like", "oblivious storage" or "oblivious data store" for V-cloak.
+./ai/DECISIONS.md:459:2. ORAM stays in related work only, as a line of work V-cloak is positioned against (M22 Ch.2, M20, the paper).
+./ai/DECISIONS.md:460:3. Wherever ORAM is named, this sentence, or one that says the same, follows: "V-cloak is not an ORAM: it conceals
+./ai/DECISIONS.md:474:1 to 4 when they write; their audits grep the written text for "ORAM" outside related work. The human corrects the
+./ai/DECISIONS.md:477:## ADR-030 — ORAM wording, final: name the component (the oblivious shuffle); amends ADR-029 items 2 and 3 — ACCEPTED — 20
+./ai/DECISIONS.md:478:Context: in session 54 the human gave the final wording for how V-cloak relates to ORAM. ADR-029 allowed ORAM in
+./ai/DECISIONS.md:479:related work only and required a "not an ORAM" sentence after it. The human's wording places V-cloak as a prototype
+./ai/DECISIONS.md:480:of one named component of an ORAM-style design, which the alignment page and the presenter notes also need.
+./ai/DECISIONS.md:482:1. The relation is stated as: a prototype implementing a component of an ORAM-style design, namely the oblivious
+./ai/DECISIONS.md:483:   shuffle that ORAM constructions are built on, applied to message ordering. The component is always named;
+./ai/DECISIONS.md:484:   "part of ORAM", "ORAM-based" or "an ORAM" without naming the component is never written.
+./ai/DECISIONS.md:486:   presenter notes: "This is a prototype. We implement the oblivious shuffle, the component ORAM constructions build
+./ai/DECISIONS.md:487:   on, and apply it to message ordering. Full access-pattern hiding is the remaining part of an ORAM and is out of
+./ai/DECISIONS.md:489:3. The presenter notes carry the follow-up "what would it take to complete the ORAM?" with a one- or two-sentence
+./ai/DECISIONS.md:493:never "an ORAM", "GPU-optimised ORAM", "ORAM-like", "oblivious storage" for V-cloak), item 4 (order only, no
+./ai/DECISIONS.md:498:measurement: no ORAM was built or timed in this repository, and every text that uses the sentence says so where it
+./ai/DECISIONS.md:499:gives evidence. (b) "the component ORAM constructions build on" is read as the reshuffle of the square-root and
+./ai/DECISIONS.md:500:hierarchical constructions (Goldreich and Ostrovsky); tree-based ORAMs (Path ORAM) do not shuffle, so related work
+./ai/DECISIONS.md:501:names the family when it cites. (c) The M19/M20/M22 audits grep for "ORAM" and check that every occurrence names the
+./evidence/INDEX.md:175:| TERM-M15-S4-TERMINOLOGY-GREP | terminal/M15_S4_terminology_grep.txt — the search for ORAM over the tracked tree, binaries,
+./review/TOPIC_ALIGNMENT.md:1:# Topic alignment: how V-cloak relates to ORAM
+./review/TOPIC_ALIGNMENT.md:4:How it relates to ORAM (ADR-030, the team's final wording):
+./review/TOPIC_ALIGNMENT.md:6:> This is a prototype. We implement the oblivious shuffle, the component ORAM constructions build on, and apply it
+./review/TOPIC_ALIGNMENT.md:7:> to message ordering. Full access-pattern hiding is the remaining part of an ORAM and is out of scope for this
+./review/TOPIC_ALIGNMENT.md:10:Use that sentence as written wherever ORAM comes up: this page, related work, the presenter notes. Always name the
+./review/TOPIC_ALIGNMENT.md:11:component (the oblivious shuffle). Never write "part of ORAM", "ORAM-based" or "an ORAM" on their own.
+./review/TOPIC_ALIGNMENT.md:13:## 1. Which ORAM component, and what we do with it
+./review/TOPIC_ALIGNMENT.md:15:Square-root and hierarchical ORAM constructions (Goldreich and Ostrovsky) keep their data in an order that the
+./review/TOPIC_ALIGNMENT.md:17:memory accesses do not depend on the data or on the permutation chosen. Tree-based ORAMs such as Path ORAM do not
+./review/TOPIC_ALIGNMENT.md:22:| ORAM-style element | In V-cloak | Status | Evidence (METRIC-ID → run) |
+./review/TOPIC_ALIGNMENT.md:48:- No ORAM: no construction, leakage bound or overhead analysis for full access-pattern hiding.
+./review/TOPIC_ALIGNMENT.md:50:  measurement: no ORAM was built or timed in this repository.
+./review/TOPIC_ALIGNMENT.md:59:1. When the topic title or a panel member says ORAM, read the standard sentence above as written. Then point to row 1
+./review/TOPIC_ALIGNMENT.md:61:2. If asked "is this an ORAM?": "No. It is the oblivious shuffle that ORAM constructions build on, applied to message
+./review/TOPIC_ALIGNMENT.md:63:3. **Likely follow-up: "What would it take to complete the ORAM?"**
+./state/AUDIT_LOG.md:1581:- Not audited because it cannot be seen from here: the material outside the repository that calls V-cloak an ORAM
+./state/ISSUES.md:1696:### ISSUE-53 [OPEN] HUMAN ACTION: V-cloak is called "a GPU-optimised ORAM" in material outside the repository; say what "groupi
+./state/ISSUES.md:1703:   layer for message-order privacy". Where ORAM is named, use the sentence of ADR-030 (session 54, your final
+./state/ISSUES.md:1704:   wording; it replaces the "V-cloak is not an ORAM" sentence first given here): "This is a prototype. We
+./state/ISSUES.md:1705:   implement the oblivious shuffle, the component ORAM constructions build on, and apply it to message ordering.
+./state/ISSUES.md:1706:   Full access-pattern hiding is the remaining part of an ORAM and is out of scope for this prototype, because it
+./state/ISSUES.md:1707:   does not fit a 200 ms real-time budget on this hardware." Never "part of ORAM" without naming the component.
+./state/ISSUES.md:1715:Update 2026-10-14 session 54: the wording of item 1 was replaced by the human's final ORAM wording (ADR-030); the
+./state/SESSION_LOG.md:1338:  "ORAM" and its long forms. No occurrence anywhere; the repository already says "GPU-resident
+./state/SESSION_LOG.md:1349:- Decisions: ADR-029 (the human: the name, ORAM in related work only, the sentence of what is not claimed; the
+./state/SESSION_LOG.md:1356:- Not verified: where V-cloak is called an ORAM (not in the repository). Why NVML reports 0 % for the first
+./state/STATE.md:12:last_checkpoint: 2026-10-14 session 53: M15 DONE (S4 figures in results/e2e, audit PASS); ADR-029 terminology (never "ORAM" for V-
+./state/STATE.md:152:  an ORAM. ORAM only in related work, followed by the sentence of what is not claimed (ADR-029 item 3). Claim
+./state/STATE.md:153:  order only, not "grouping", until ISSUE-53 is answered. M19/M20/M22 audits grep their text for "ORAM".

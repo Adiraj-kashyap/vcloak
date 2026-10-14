@@ -473,3 +473,32 @@ Decision (the human's, items 1 to 3; item 4 is the agent's reading of ai/PROJECT
 Consequences: nothing in the repository was reworded, because nothing used the term. M19, M20 and M22 apply items
 1 to 4 when they write; their audits grep the written text for "ORAM" outside related work. The human corrects the
 material outside the repository. This ADR changes no measured value.
+
+## ADR-030 — ORAM wording, final: name the component (the oblivious shuffle); amends ADR-029 items 2 and 3 — ACCEPTED — 2026-10-14
+Context: in session 54 the human gave the final wording for how V-cloak relates to ORAM. ADR-029 allowed ORAM in
+related work only and required a "not an ORAM" sentence after it. The human's wording places V-cloak as a prototype
+of one named component of an ORAM-style design, which the alignment page and the presenter notes also need.
+Decision (the human's):
+1. The relation is stated as: a prototype implementing a component of an ORAM-style design, namely the oblivious
+   shuffle that ORAM constructions are built on, applied to message ordering. The component is always named;
+   "part of ORAM", "ORAM-based" or "an ORAM" without naming the component is never written.
+2. The standard sentence, used in review/TOPIC_ALIGNMENT.md, in related work (M20, M22, the paper) and in the
+   presenter notes: "This is a prototype. We implement the oblivious shuffle, the component ORAM constructions build
+   on, and apply it to message ordering. Full access-pattern hiding is the remaining part of an ORAM and is out of
+   scope for this prototype, because it does not fit a 200 ms real-time budget on this hardware."
+3. The presenter notes carry the follow-up "what would it take to complete the ORAM?" with a one- or two-sentence
+   answer that names a concrete direction and the cost that puts it outside the budget, and claims no design that
+   was not worked out.
+What stays from ADR-029: item 1 (the name "a GPU-resident oblivious permutation layer for message-order privacy";
+never "an ORAM", "GPU-optimised ORAM", "ORAM-like", "oblivious storage" for V-cloak), item 4 (order only, no
+"grouping" claim until ISSUE-53 is answered) and item 5 (the meaning of "oblivious"). Item 2 is widened from
+related work only to related work, the alignment page and the presenter notes. Item 3's sentence is replaced by the
+sentence of item 2 above.
+Agent's notes (not the human's decision): (a) "does not fit a 200 ms budget" is a scope judgement, not a
+measurement: no ORAM was built or timed in this repository, and every text that uses the sentence says so where it
+gives evidence. (b) "the component ORAM constructions build on" is read as the reshuffle of the square-root and
+hierarchical constructions (Goldreich and Ostrovsky); tree-based ORAMs (Path ORAM) do not shuffle, so related work
+names the family when it cites. (c) The M19/M20/M22 audits grep for "ORAM" and check that every occurrence names the
+component or is in related work.
+Consequences: review/TOPIC_ALIGNMENT.md written in session 54; ISSUE-53 item 1 now points to this sentence. No
+measured value changes.

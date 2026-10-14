@@ -1,0 +1,46 @@
+{
+  "run_id": "20261014-092058_M18_s1_checks",
+  "module": "M18",
+  "step": "S1",
+  "owner": "Abhishek",
+  "git_sha": "ac98ddf80d98df61ef860f82246c444ca1a87184",
+  "dirty": true,
+  "command": "python scripts/export_dashboard.py; pytest -q",
+  "seed": 0,
+  "quick": false,
+  "params": {},
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261014-092058",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U",
+    "cpu_count": 12
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791949858.7984986
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791950291.4383695
+  },
+  "outputs": [
+    "capture.txt",
+    "capture_evidence.json",
+    "check_metrics.txt",
+    "check_oblivious.txt",
+    "check_secrets.txt",
+    "dashboard.json",
+    "export.txt",
+    "export_results_check.txt",
+    "pytest_all.txt",
+    "pytest_export_dashboard.txt",
+    "terminology_grep.txt"
+  ],
+  "status": "OK",
+  "notes": "M18 S1 exporter; ADR-030; review/TOPIC_ALIGNMENT.md; no metric"
+}
