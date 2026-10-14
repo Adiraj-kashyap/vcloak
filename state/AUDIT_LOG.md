@@ -1762,3 +1762,27 @@ Notes:
 - The first drafts had a clipped table cell and colliding category labels; the cell check was added because the page-bounds check did not see text a table cell clips. Both fixed before the capture.
 - The figures repeat the dashboard's charts; the M14/M15 figures of results/ stay the ones the exporter makes (same data, other renderer).
 - No "ORAM", "grouping", "unbreakable" or "constant time" in the new files (RUN/a_terms_grep.txt).
+
+## Audit M18 — 2026-10-14 — session 61 — result: PASS (module audit, after S7)
+RUN is runs/20261014-114240_M18_s7_checks.
+| Item | Result | Evidence |
+|---|---|---|
+| S7 `tasks.py dashboard` regenerates the JSON; the check refuses a stale one | PASS | RUN/tasks_dashboard.txt (wrote web/data/dashboard.json, git shows no change), RUN/tasks_dashboard_check.txt (dashboard.json current, paper figures current, rc 0); test_check_fails_on_a_stale_dashboard_and_on_stale_figures, test_tasks_py_runs_the_exporter |
+| A1 no result literal in web/js | PASS | RUN/a1_js_vs_results.py + .txt: every numeric literal of web/js/** compared with the 1032 distinct values dashboard.json shows; the 33 non-small matches read one by one: format thresholds (100, 0.01, 1024), layout factors (0.18, 0.56, 3.5, 0.2), HTTP 200, animation ms (700/900), DUMP_ROWS 200, verdict bands 0.9/0.6 of the attack wording, and the offline demo clock of api.js (epoch_ms 200 = the EPOCH_MS parameter, marked demo: true). None is a result; the 385 small integers (0, 1, 2, ...) are indices and sizes |
+| A2 every tile/chart carries an indexed METRIC-ID | PASS | RUN/check_metrics.txt 895 rows, 0 problems; test_every_shown_value_is_the_indexed_value (RUN/pytest_m18_a3_a4.txt) |
+| A3 missing → NOT MEASURED, quick → QUICK chip (doctored index) | PASS | RUN/pytest_m18_a3_a4.txt 38 passed (tests/unit/test_export_dashboard.py doctored-index tests, tests/unit/test_dashboard_figures.py) |
+| A4 logs endpoint redaction-tested, no raw paths | PASS | tests/integration/test_logs_api.py in RUN/pytest_m18_a3_a4.txt (passed, none skipped) |
+| A5 both themes, Table views, one y-axis | PASS | evidence/screens/M18_{dashboard,experiments,logs,arch}_{light,dark}_20261014.png (dashboard dark read again this session); web/js/charts.js header rule "one y-axis per chart" and a single axisline per chart; every chart card has a Table toggle (visible in the capture) |
+| G1 | PASS | RUN/pytest_all.txt 2233 passed, 1 skipped (`-m "not gpu"`), 0 failed |
+| G2 / G2b | PASS | RUN/check_metrics.txt; no metric added by M18 (it publishes, never creates) |
+| G3 | PASS | RUN/check_oblivious.txt 11 files, 0 findings |
+| G4 | PASS | RUN/check_secrets.txt 2515 files, 0 |
+| G5 | N/A | no GPU twin in M18 |
+| G6 | PASS | scripts/export_dashboard.py, web/data/dashboard.json, /v1/dashboard, /v1/logs, /v1/eval/attack, the four views, tests/unit/test_export_dashboard.py, tests/integration/test_logs_api.py, docs/DEMO.md, tasks.py dashboard |
+| G7 | PASS | the session commit, owner Abhishek |
+| G8 | PASS | STATE: session 61, M18 DONE at S7, sessions 8, next_unit M19 |
+| G9 | PASS | SESSION_LOG session 61, this entry; no issue opened or closed |
+| G10 | PASS | RUN/manifest.json validated; `python tasks.py dashboard --check` and RUN/export_results_check.txt (0 would change) reproduce the outcome |
+Notes:
+- ruff reports 16 findings both before and after this change (RUN/ruff_concise_head.txt, RUN/ruff_concise.txt); all are on older lines, none on the S7 code. Not an M18 gate; left for M17's re-audit.
+- The figure check compares the sidecar sha with the dashboard.json bytes in either line ending, because the S6b sidecars hash the CRLF checkout of this laptop and a clean clone may check out LF.

@@ -1,0 +1,283 @@
+E501 Line too long (126 > 120)
+   --> scripts\capture_evidence.py:383:121
+    |
+381 |         durable: [...document.querySelectorAll('#flow .flownode.durable')].map(g => g.dataset.id),
+382 |         leak_rows: document.querySelectorAll('#leakTable tbody tr').length,
+383 |         not_measured: [...document.querySelectorAll('#leakTable .ev b')].filter(b => b.textContent === 'NOT MEASURED').length,
+    |                                                                                                                         ^^^^^^
+384 |         live: document.getElementById('flowLive').textContent})""")
+385 |     return {"state": from_dash, **arch}
+    |
+
+E501 Line too long (121 > 120)
+   --> scripts\capture_evidence.py:575:121
+    |
+573 |             out["index_rows"] = [r["id"] for r in rows + fig_rows] + [r["id"] for _, r in terminal]
+574 |             out["files_written"] = ([r["file"] for r in rows]
+575 |                                     + [Path(r["file"]).with_suffix(x).as_posix() for r in fig_rows for x in FIG_SUFFIXES]
+    |                                                                                                                         ^
+576 |                                     + [r["file"] for _, r in terminal])
+    |
+
+B905 `zip()` without an explicit `strict=` parameter
+   --> scripts\dashboard_figures.py:123:18
+    |
+121 |     fig, ax = plt.subplots(figsize=(WIDTH_IN, 2.8))
+122 |     for s in spec["series"]:
+123 |         xs, ys = zip(*s["points"])
+    |                  ^^^^^^^^^^^^^^^^^
+124 |         ax.step(xs, ys, where="post", color=colour(c, s.get("slot")), ls=(0, (4, 2)) if s.get("dash") else "-",
+125 |                 label=f"{s['name']} (n = {s['n']})" if "n" in s else s["name"])
+    |
+help: Add explicit value for parameter `strict=`
+    |
+122 |     for s in spec["series"]:
+    -         xs, ys = zip(*s["points"])
+123 +         xs, ys = zip(*s["points"], strict=False)
+124 |         ax.step(xs, ys, where="post", color=colour(c, s.get("slot")), ls=(0, (4, 2)) if s.get("dash") else "-",
+    |
+note: This is an unsafe fix and may change runtime behavior
+
+E501 Line too long (121 > 120)
+   --> scripts\dashboard_figures.py:171:121
+    |
+169 |     rows = spec["rows"]
+170 |     wrap = lambda s, n: "\n".join(textwrap.wrap(str(s), n, break_on_hyphens=False)) or "—"  # noqa: E731
+171 |     outcome = [r["observed"] if r["observed"] == r["expected"] else f"expected {r['expected']}, observed {r['observed']}"
+    |                                                                                                                         ^
+172 |                for r in rows]
+173 |     body = [[wrap(r["name"], 28), wrap(o, 21), "yes" if r["ok"] else "NO"] for r, o in zip(rows, outcome)]
+    |
+
+B905 `zip()` without an explicit `strict=` parameter
+   --> scripts\dashboard_figures.py:173:88
+    |
+171 |     outcome = [r["observed"] if r["observed"] == r["expected"] else f"expected {r['expected']}, observed {r['observed']}"
+172 |                for r in rows]
+173 |     body = [[wrap(r["name"], 28), wrap(o, 21), "yes" if r["ok"] else "NO"] for r, o in zip(rows, outcome)]
+    |                                                                                        ^^^^^^^^^^^^^^^^^^
+174 |     heights = [max(cell.count("\n") + 1 for cell in row) for row in body]
+175 |     total = sum(heights) + 1
+    |
+help: Add explicit value for parameter `strict=`
+    |
+172 |                for r in rows]
+    -     body = [[wrap(r["name"], 28), wrap(o, 21), "yes" if r["ok"] else "NO"] for r, o in zip(rows, outcome)]
+173 +     body = [[wrap(r["name"], 28), wrap(o, 21), "yes" if r["ok"] else "NO"] for r, o in zip(rows, outcome, strict=False)]
+174 |     heights = [max(cell.count("\n") + 1 for cell in row) for row in body]
+    |
+note: This is an unsafe fix and may change runtime behavior
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> scripts\export_dashboard.py:31:1
+   |
+29 |   sys.path.insert(0, str(ROOT / "src"))
+30 |
+31 | / import check_metrics  # noqa: E402
+32 | | import numpy as np  # noqa: E402
+33 | |
+34 | | from vcloak import config  # noqa: E402
+35 | | from vcloak.bench import dudect  # noqa: E402
+   | |_______________________________^
+36 |
+37 |   OUT = ROOT / "web" / "data" / "dashboard.json"
+   |
+help: Organize imports
+   |
+30 |
+   - import check_metrics  # noqa: E402
+31 | import numpy as np  # noqa: E402
+32 |
+33 + import check_metrics  # noqa: E402
+34 | from vcloak import config  # noqa: E402
+   |
+
+E501 Line too long (121 > 120)
+   --> scripts\export_dashboard.py:371:121
+    |
+369 |             "unit": " ms", "yMin": 0, "yMax": config.EPOCH_MS * 1.1,
+370 |             "refLine": {"value": config.EPOCH_MS, "label": f"epoch budget {config.EPOCH_MS} ms (config.EPOCH_MS)"},
+371 |             "note": f"CUDA events, sizes whose device time was stable in run {run} ({man.get('env', {}).get('runner')}, "
+    |                                                                                                                         ^
+372 |                     f"code {str(man.get('git_sha'))[:9]}); the other sizes were UNSTABLE. Host stage and whole call "
+373 |                     "not drawn: for the current code the whole call at 65536 slots is unmeasured under valid "
+    |
+
+B905 `zip()` without an explicit `strict=` parameter
+   --> scripts\export_dashboard.py:387:62
+    |
+385 |     ids = [i for i in ("S-TAUBAND-PCT", "S-TAU-SIGMA-MEAS") if i in best]
+386 |     return {"id": "tau_hist", "kind": "histogram", "title": "Per-epoch Kendall τ, in units of σ",
+387 |             "binCenters": [round((a + b) / 2, 3) for a, b in zip(edges, edges[1:])], "counts": counts,
+    |                                                              ^^^^^^^^^^^^^^^^^^^^^
+388 |             "band": round(tb["band_3sigma"] / tb["sigma_theory"], 6), "xLabel": "τ / σ (theoretical σ)",
+389 |             "yLabel": "epochs",
+    |
+help: Add explicit value for parameter `strict=`
+    |
+386 |     return {"id": "tau_hist", "kind": "histogram", "title": "Per-epoch Kendall τ, in units of σ",
+    -             "binCenters": [round((a + b) / 2, 3) for a, b in zip(edges, edges[1:])], "counts": counts,
+387 +             "binCenters": [round((a + b) / 2, 3) for a, b in zip(edges, edges[1:], strict=False)], "counts": counts,
+388 |             "band": round(tb["band_3sigma"] / tb["sigma_theory"], 6), "xLabel": "τ / σ (theoretical σ)",
+    |
+note: This is an unsafe fix and may change runtime behavior
+
+E501 Line too long (121 > 120)
+   --> scripts\export_dashboard.py:473:121
+    |
+471 |         return {"backend": "numpy", "runner": "none", "session_id": None, "note": "No GPU run is indexed."}
+472 |     newest = max(gpu, key=lambda r: (r["date"], int(r["line"])))
+473 |     p: dict[str, Any] = {"backend": "cupy", "runner": newest["runner"], "run": newest["run_dir"], "date": newest["date"]}
+    |                                                                                                                         ^
+474 |     man = root / newest["run_dir"] / "manifest.json"
+475 |     if man.exists():
+    |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> src\vcloak\service\app.py:27:1
+   |
+25 |   them to the scheduler, which re-shuffles those that have closed with its first epoch.
+26 |   """
+27 | / from __future__ import annotations
+28 | |
+29 | | import asyncio
+30 | | import getpass
+31 | | import json
+32 | | import os
+33 | | from collections.abc import AsyncIterator, Callable
+34 | | from concurrent.futures import ThreadPoolExecutor
+35 | | from contextlib import asynccontextmanager, suppress
+36 | | from pathlib import Path
+37 | | from typing import Any, Protocol, TypeVar
+38 | |
+39 | | import numpy as np
+40 | | from fastapi import Depends, FastAPI, Request, WebSocket, WebSocketDisconnect
+41 | | from fastapi.exceptions import RequestValidationError
+42 | | from fastapi.responses import JSONResponse, Response
+43 | |
+44 | | from vcloak import config
+45 | | from vcloak.crypto import keys as keyfile
+46 | | from vcloak.crypto.client import PAYLOAD_LEN
+47 | | from vcloak.gpu import telemetry
+48 | | from vcloak.gpu.engine import GpuEngine
+49 | | from vcloak.gpu.keystore import DeviceKeyStore
+50 | | from vcloak.gpu.runtime import Backend, runner_name
+51 | | from vcloak.service.evalapi import add_eval_routes
+52 | | from vcloak.service.logsapi import add_logs_routes
+53 | | from vcloak.service.logsafe import SafeLogger, get_logger
+54 | | from vcloak.service.models import (
+55 | |     Health,
+56 | |     LoginIn,
+57 | |     MessageAccepted,
+58 | |     MessageIn,
+59 | |     PayloadError,
+60 | |     PrekeyIn,
+61 | |     PrekeyOut,
+62 | |     ReadIn,
+63 | |     ReadOut,
+64 | |     RefreshIn,
+65 | |     Registered,
+66 | |     RegisterIn,
+67 | |     TicketOut,
+68 | |     TokenOut,
+69 | |     WindowsOut,
+70 | |     conv_id_of,
+71 | |     decode_payload,
+72 | |     encode_payload,
+73 | | )
+74 | | from vcloak.service.scheduler import QUEUE_EPOCHS, Clock, EpochScheduler, NotStored, QueueFull
+75 | | from vcloak.service.session import SessionService, TokenSet, Verdict
+76 | | from vcloak.service.web import add_live_routes, mount_web
+77 | | from vcloak.storage.repo import CandidateOverflow, Repo
+   | |_______________________________________________________^
+78 |
+79 |   T = TypeVar("T")
+   |
+help: Organize imports
+   |
+51 | from vcloak.service.evalapi import add_eval_routes
+52 + from vcloak.service.logsafe import SafeLogger, get_logger
+53 | from vcloak.service.logsapi import add_logs_routes
+   - from vcloak.service.logsafe import SafeLogger, get_logger
+54 | from vcloak.service.models import (
+   |
+
+UP031 Use format specifiers instead of percent format
+  --> src\vcloak\service\logsapi.py:53:17
+   |
+51 |                 r"[^\s`'\"<>|),;\]]*"), "<path>"),
+52 |     (re.compile(r"[\w.+-]+@[\w-]+(?:\.[\w-]+)+"), "<email>"),
+53 |     (re.compile(r"(\"(?:%s)\"\s*:\s*)\"[^\"]*\"" % _NAMES, re.I), r'\1"<redacted>"'),
+   |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+54 |     (re.compile(r"(?<![\w.])((?:%s)\s*=\s*)[^\s,;)\]}]+" % _NAMES, re.I), r"\1<redacted>"),
+55 |     (re.compile(r"eyJ[\w-]{4,}\.[\w-]{4,}(?:\.[\w-]*)?"), "<token>"),
+   |
+help: Replace with format specifiers
+   |
+52 |     (re.compile(r"[\w.+-]+@[\w-]+(?:\.[\w-]+)+"), "<email>"),
+   -     (re.compile(r"(\"(?:%s)\"\s*:\s*)\"[^\"]*\"" % _NAMES, re.I), r'\1"<redacted>"'),
+53 +     (re.compile(r"(\"(?:{})\"\s*:\s*)\"[^\"]*\"".format(_NAMES), re.I), r'\1"<redacted>"'),
+54 |     (re.compile(r"(?<![\w.])((?:%s)\s*=\s*)[^\s,;)\]}]+" % _NAMES, re.I), r"\1<redacted>"),
+   |
+note: This is an unsafe fix and may change runtime behavior
+
+UP031 Use format specifiers instead of percent format
+  --> src\vcloak\service\logsapi.py:54:17
+   |
+52 |     (re.compile(r"[\w.+-]+@[\w-]+(?:\.[\w-]+)+"), "<email>"),
+53 |     (re.compile(r"(\"(?:%s)\"\s*:\s*)\"[^\"]*\"" % _NAMES, re.I), r'\1"<redacted>"'),
+54 |     (re.compile(r"(?<![\w.])((?:%s)\s*=\s*)[^\s,;)\]}]+" % _NAMES, re.I), r"\1<redacted>"),
+   |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+55 |     (re.compile(r"eyJ[\w-]{4,}\.[\w-]{4,}(?:\.[\w-]*)?"), "<token>"),
+56 |     (re.compile(r"(?<![0-9A-Za-z.])[0-9A-Fa-f]{16,}(?![0-9A-Za-z.])"), "<hex>"),  # not a decimal fraction
+   |
+help: Replace with format specifiers
+   |
+53 |     (re.compile(r"(\"(?:%s)\"\s*:\s*)\"[^\"]*\"" % _NAMES, re.I), r'\1"<redacted>"'),
+   -     (re.compile(r"(?<![\w.])((?:%s)\s*=\s*)[^\s,;)\]}]+" % _NAMES, re.I), r"\1<redacted>"),
+54 +     (re.compile(r"(?<![\w.])((?:{})\s*=\s*)[^\s,;)\]}}]+".format(_NAMES), re.I), r"\1<redacted>"),
+55 |     (re.compile(r"eyJ[\w-]{4,}\.[\w-]{4,}(?:\.[\w-]*)?"), "<token>"),
+   |
+note: This is an unsafe fix and may change runtime behavior
+
+E501 Line too long (124 > 120)
+  --> tests\integration\test_logs_api.py:97:121
+   |
+95 |                 json.dumps({"conv_token": B64_TOKEN, "bucket": str(r["bucket"]), "row_id": r["row_id"]}),
+96 |                 f"stored {r['payload_b64']} with {r['seq_enc_b64']}",
+97 |                 f"- the client sent {B64_TOKEN} and {HEX_TOKEN} for conversation {cid} ({cid.to_bytes(8, 'little').hex()})",
+   |                                                                                                                         ^^^^
+98 |                 f"- Evidence: {tmp_path}\\runs\\x and /home/someone/vcloak/runs/x, mail someone@example.org",
+99 |             ]
+   |
+
+E501 Line too long (137 > 120)
+   --> tests\integration\test_web_app.py:838:121
+    |
+836 | …ndow.VC && VC.dashboard && VC.dashboard.data()) && "
+837 | …rd').length > 0", timeout=20)
+838 | …ata(); const cards = [...document.querySelectorAll('#charts .chartcard')];
+    |                                                           ^^^^^^^^^^^^^^^^^
+839 | …: cards.length,
+840 | …ludes('could not be drawn')).length,
+    |
+
+E501 Line too long (128 > 120)
+ --> tests\unit\test_dashboard_figures.py:1:121
+  |
+1 | """M18 S6b: every chart of dashboard.json that is not pending becomes a one-column PDF + 300 dpi PNG that holds at that size."""
+  |                                                                                                                         ^^^^^^^^
+2 | from __future__ import annotations
+  |
+
+E501 Line too long (121 > 120)
+  --> tests\unit\test_export_dashboard.py:12:121
+   |
+10 | ROOT = Path(__file__).resolve().parents[2]
+11 | INDEX = ROOT / "state" / "METRICS_INDEX.md"
+12 | pytestmark = pytest.mark.skipif(not INDEX.exists(), reason="the exporter reads state/, which a job bundle does not ship")
+   |                                                                                                                         ^
+
+Found 16 errors.
+[*] 2 fixable with `--fix` (5 unsafe fixes available with `--fix --unsafe-fixes`).
+rc=1

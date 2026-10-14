@@ -272,3 +272,39 @@ def test_architecture_evidence_is_the_indexed_value_or_not_measured(tmp_path):
     data = ed.build(_doctored(tmp_path, lambda ln: None if ln.startswith(f"| {mid} |") else ln), ROOT)
     assert _arch_evidence(data, mid)["value"] is None
     assert [m["metric_id"] for m in data["missing"]].count(mid) == 1
+
+
+def _figure_setup(tmp_path: Path, ed) -> tuple[Path, Path, list[str]]:
+    out = tmp_path / "dashboard.json"
+    out.write_text(ed.render(ed.build(INDEX, ROOT)), encoding="utf-8")
+    charts = [c["id"] for c in json.loads(out.read_text(encoding="utf-8"))["charts"] if not c.get("pending")]
+    figs = tmp_path / "figures"
+    figs.mkdir()
+    sha = ed.hashlib.sha256(out.read_bytes()).hexdigest()
+    for cid in charts:
+        (figs / f"M18_dash_{cid}.json").write_text(json.dumps({"drawn_from": {"sha256": sha}}), encoding="utf-8")
+    return out, figs, charts
+
+
+def test_check_fails_on_a_stale_dashboard_and_on_stale_figures(tmp_path):
+    """M18 S7: `tasks.py dashboard --check` (M17 S1) refuses a dashboard.json or a paper figure that is not current."""
+    ed = _module()
+    out, figs, charts = _figure_setup(tmp_path, ed)
+    args = ["--check", "--out", str(out), "--figures", str(figs)]
+    assert ed.main(args) == 0
+    assert ed.stale_figures(out, figs) == []
+    out.write_bytes(out.read_bytes().replace(b"\r\n", b"\n").replace(b"\n", b"\r\n"))  # other checkout, same content
+    assert ed.stale_figures(out, figs) == []
+    (figs / f"M18_dash_{charts[0]}.json").write_text(json.dumps({"drawn_from": {"sha256": "0" * 64}}), encoding="utf-8")
+    (figs / f"M18_dash_{charts[1]}.json").unlink()
+    assert ed.stale_figures(out, figs) == [charts[0], f"{charts[1]} (no figure)"]
+    assert ed.main(args) == 1
+    out.write_text(out.read_text(encoding="utf-8").replace('"charts"', '"charts_old"', 1), encoding="utf-8")
+    assert ed.main(args) == 1
+
+
+def test_tasks_py_runs_the_exporter():
+    spec = importlib.util.spec_from_file_location("tasks", ROOT / "tasks.py")
+    tasks = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(tasks)
+    assert tasks.TASKS["dashboard"] == [[tasks.PY, "scripts/export_dashboard.py"]]

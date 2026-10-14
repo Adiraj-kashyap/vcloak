@@ -6,6 +6,8 @@
     python tasks.py check         metrics audit (G2/G2b) and its self-test
     python tasks.py pack M07      pack a GPU job        (extra args are passed through)
     python tasks.py ingest        ingest gpujobs/inbox/*.zip
+    python tasks.py dashboard     regenerate web/data/dashboard.json (M18)
+    python tasks.py dashboard --check   exit 1 if the committed dashboard.json or its paper figures are stale
 """
 from __future__ import annotations
 
@@ -22,6 +24,7 @@ TASKS: dict[str, list[list[str]]] = {
     "check": [[PY, "scripts/check_metrics.py", "--self-test"], [PY, "scripts/check_metrics.py"]],
     "pack": [[PY, "scripts/gpujob.py", "pack"]],
     "ingest": [[PY, "scripts/gpujob.py", "ingest"]],
+    "dashboard": [[PY, "scripts/export_dashboard.py"]],
 }
 
 

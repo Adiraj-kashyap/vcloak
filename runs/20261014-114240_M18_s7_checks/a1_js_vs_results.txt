@@ -1,0 +1,420 @@
+SMALL-INT web/js/api.js:83: 2  | s.at = (t0 + performance.now()) / 2;
+SMALL-INT web/js/api.js:90: 64  | return { now_ms: t, epoch_ms: 200, epoch: Math.floor(t / 200), win: 41, slots: 64,
+SMALL-INT web/js/api.js:103: 50  | return get("/v1/dump?limit=" + (limit || 50) + (windows ? "&windows=" + windows : "")).catch(functio
+SMALL-INT web/js/arch.js:33: 6  | var bw = 150, bh = 58, gx = 26, gy = 46, top = 30, cols = 6;
+SMALL-INT web/js/arch.js:38: 2  | pos[s.id] = { s: s, x: c * (bw + gx) + gx / 2, y: top + r * (bh + gy), w: bw, h: bh, lane: lane };
+SMALL-INT web/js/arch.js:42: 0  | place(a.write, 0, "write");
+SMALL-INT web/js/arch.js:52: 1  | if (Math.abs(p.y - q.y) < 1) {
+SMALL-INT web/js/arch.js:53: 2  | d = "M" + (p.x + p.w) + " " + (p.y + p.h / 2) + " L" + q.x + " " + (q.y + q.h / 2);
+SMALL-INT web/js/arch.js:53: 2  | d = "M" + (p.x + p.w) + " " + (p.y + p.h / 2) + " L" + q.x + " " + (q.y + q.h / 2);
+SMALL-INT web/js/arch.js:55: 2  | var midY = (p.y + p.h + q.y) / 2;
+SMALL-INT web/js/arch.js:56: 2  | d = "M" + (p.x + p.w / 2) + " " + (p.y + p.h) + " L" + (p.x + p.w / 2) + " " + midY +
+SMALL-INT web/js/arch.js:56: 2  | d = "M" + (p.x + p.w / 2) + " " + (p.y + p.h) + " L" + (p.x + p.w / 2) + " " + midY +
+SMALL-INT web/js/arch.js:57: 2  | " L" + (q.x + q.w / 2) + " " + midY + " L" + (q.x + q.w / 2) + " " + q.y;
+SMALL-INT web/js/arch.js:57: 2  | " L" + (q.x + q.w / 2) + " " + midY + " L" + (q.x + q.w / 2) + " " + q.y;
+SMALL-INT web/js/arch.js:67: 0  | var svg = el("svg", { viewBox: "0 0 " + L.W + " " + L.H, "class": "chart", role: "img",
+SMALL-INT web/js/arch.js:67: 0  | var svg = el("svg", { viewBox: "0 0 " + L.W + " " + L.H, "class": "chart", role: "img",
+SMALL-INT web/js/arch.js:68: 0  | "aria-label": "Data-state flow: write path " + arch.write[0].id + " to " +
+SMALL-INT web/js/arch.js:69: 1  | arch.write[arch.write.length - 1].id + ", read path " + arch.read[0].id + " to " +
+SMALL-INT web/js/arch.js:69: 0  | arch.write[arch.write.length - 1].id + ", read path " + arch.read[0].id + " to " +
+SMALL-INT web/js/arch.js:70: 1  | arch.read[arch.read.length - 1].id + "; durable states drawn dark" });
+SMALL-INT web/js/arch.js:73: 0  | defs.innerHTML = "<marker id='arrow' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='6' markerHei
+SMALL-INT web/js/arch.js:73: 0  | defs.innerHTML = "<marker id='arrow' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='6' markerHei
+SMALL-INT web/js/arch.js:73: 5  | defs.innerHTML = "<marker id='arrow' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='6' markerHei
+SMALL-INT web/js/arch.js:73: 6  | defs.innerHTML = "<marker id='arrow' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='6' markerHei
+SMALL-INT web/js/arch.js:73: 6  | defs.innerHTML = "<marker id='arrow' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='6' markerHei
+SMALL-INT web/js/arch.js:74: 0  | "orient='auto-start-reverse'><path d='M0 0 L10 5 L0 10 z' fill='var(--muted)'/></marker>";
+SMALL-INT web/js/arch.js:74: 5  | "orient='auto-start-reverse'><path d='M0 0 L10 5 L0 10 z' fill='var(--muted)'/></marker>";
+SMALL-INT web/js/arch.js:85: 0  | var g = el("g", { "class": "flownode" + (s.durable ? " durable" : ""), tabindex: "0", "data-id": id 
+SMALL-INT web/js/arch.js:86: 8  | n.rect = el("rect", { x: n.x, y: n.y, width: n.w, height: n.h, rx: 8, fill: FILL[s.where],
+SMALL-INT web/js/arch.js:87: 2  | stroke: STROKE[s.where], "stroke-width": s.durable ? 2 : 1.2 });
+SMALL-INT web/js/arch.js:90: 2  | g.appendChild(el("text", { x: n.x + 10, y: n.y + 41, fill: dark ? "#fff" : "var(--ink-2)" }, s.t));
+SMALL-INT web/js/arch.js:97: 1  | var prev = ids[i - 1];
+SMALL-INT web/js/arch.js:101: 0  | var from = L.pos[arch.write.filter(function (s) { return s.durable; })[0].id], to = L.pos[arch.read[
+SMALL-INT web/js/arch.js:101: 0  | var from = L.pos[arch.write.filter(function (s) { return s.durable; })[0].id], to = L.pos[arch.read[
+SMALL-INT web/js/arch.js:104: 2  | edges.appendChild(el("text", { x: from.x + from.w / 2 + 6, y: to.y - L.gy / 2 - 5, "class": "lane" }
+SMALL-INT web/js/arch.js:104: 6  | edges.appendChild(el("text", { x: from.x + from.w / 2 + 6, y: to.y - L.gy / 2 - 5, "class": "lane" }
+SMALL-INT web/js/arch.js:104: 2  | edges.appendChild(el("text", { x: from.x + from.w / 2 + 6, y: to.y - L.gy / 2 - 5, "class": "lane" }
+SMALL-INT web/js/arch.js:104: 5  | edges.appendChild(el("text", { x: from.x + from.w / 2 + 6, y: to.y - L.gy / 2 - 5, "class": "lane" }
+SMALL-INT web/js/arch.js:127: 0  | var ids = L.order, i = 0, step = reduced() ? 900 : 700;
+SMALL-INT web/js/arch.js:128: 2  | function centre(n) { return [n.x + n.w / 2, n.y + n.h - 2]; }
+SMALL-INT web/js/arch.js:128: 2  | function centre(n) { return [n.x + n.w / 2, n.y + n.h - 2]; }
+SMALL-INT web/js/arch.js:132: 2  | n.rect.setAttribute("stroke-width", n.s.durable ? 2 : 1.2);
+SMALL-INT web/js/arch.js:142: 3  | n.rect.setAttribute("stroke-width", 3);
+SMALL-INT web/js/arch.js:143: 0  | dot.setAttribute("cx", c[0]); dot.setAttribute("cy", c[1]);
+SMALL-INT web/js/arch.js:143: 1  | dot.setAttribute("cx", c[0]); dot.setAttribute("cy", c[1]);
+SMALL-INT web/js/arch.js:173: 0  | tr.innerHTML = "<td>" + VC.esc(r.observable) + "</td><td class='" + st[0] + "'>" + st[1] + " " + VC.
+SMALL-INT web/js/arch.js:173: 1  | tr.innerHTML = "<td>" + VC.esc(r.observable) + "</td><td class='" + st[0] + "'>" + st[1] + " " + VC.
+SMALL-INT web/js/arch.js:202: 0  | if (arch) caption(arch.write[0].id);
+SMALL-INT web/js/charts.js:28: 1  | function seriesVar(slot) { return "var(--s" + (((slot || 1) - 1) % 4 + 1) + ")"; }
+SMALL-INT web/js/charts.js:28: 1  | function seriesVar(slot) { return "var(--s" + (((slot || 1) - 1) % 4 + 1) + ")"; }
+SMALL-INT web/js/charts.js:28: 4  | function seriesVar(slot) { return "var(--s" + (((slot || 1) - 1) % 4 + 1) + ")"; }
+SMALL-INT web/js/charts.js:28: 1  | function seriesVar(slot) { return "var(--s" + (((slot || 1) - 1) % 4 + 1) + ")"; }
+SMALL-INT web/js/charts.js:31: 0  | if (v === 0) return "0" + (unit || "");
+SMALL-INT web/js/charts.js:31: 0  | if (v === 0) return "0" + (unit || "");
+SMALL-INT web/js/charts.js:32: 0  | var s = typeof v === "number" ? (Math.abs(v) >= 100 ? v.toFixed(0)
+SMALL-INT web/js/charts.js:33: 1  | : Math.abs(v) >= 1 ? v.toFixed(1)
+SMALL-INT web/js/charts.js:33: 1  | : Math.abs(v) >= 1 ? v.toFixed(1)
+SMALL-INT web/js/charts.js:34: 3  | : Math.abs(v) >= 0.01 ? v.toFixed(3) : v.toExponential(1)) : String(v);
+SMALL-INT web/js/charts.js:34: 1  | : Math.abs(v) >= 0.01 ? v.toFixed(3) : v.toExponential(1)) : String(v);
+SMALL-INT web/js/charts.js:39: 0  | if (v === 0) return "0" + (unit || "");
+SMALL-INT web/js/charts.js:39: 0  | if (v === 0) return "0" + (unit || "");
+SMALL-INT web/js/charts.js:40: 0  | var dec = 0;
+SMALL-INT web/js/charts.js:41: 1  | if (step !== undefined && step < 1) dec = Math.min(4, Math.max(0, Math.ceil(-Math.log10(step))));
+SMALL-INT web/js/charts.js:41: 4  | if (step !== undefined && step < 1) dec = Math.min(4, Math.max(0, Math.ceil(-Math.log10(step))));
+SMALL-INT web/js/charts.js:41: 0  | if (step !== undefined && step < 1) dec = Math.min(4, Math.max(0, Math.ceil(-Math.log10(step))));
+SMALL-INT web/js/charts.js:42: 1  | else if (Math.abs(v) < 1) dec = 2;
+SMALL-INT web/js/charts.js:42: 2  | else if (Math.abs(v) < 1) dec = 2;
+SMALL-INT web/js/charts.js:53: 1  | t.style.opacity = "1";
+SMALL-INT web/js/charts.js:56: 8  | if (x + w > innerWidth - 8) x = evt.clientX - w - pad;
+SMALL-INT web/js/charts.js:57: 8  | if (y + hgt > innerHeight - 8) y = evt.clientY - hgt - pad;
+SMALL-INT web/js/charts.js:60: 0  | function hideTip() { var t = tipEl(); if (t) t.style.opacity = "0"; }
+SMALL-INT web/js/charts.js:67: 2  | showTip({ clientX: r.left + r.width / 2, clientY: r.top }, html);
+SMALL-INT web/js/charts.js:75: 0  | if (span <= 0) return [min];
+SMALL-INT web/js/charts.js:76: 5  | var raw = span / (count || 5);
+SMALL-INT web/js/charts.js:79: 5  | var step = (norm >= 7.5 ? 10 : norm >= 3.5 ? 5 : norm >= 1.5 ? 2 : 1) * mag;
+SMALL-INT web/js/charts.js:79: 2  | var step = (norm >= 7.5 ? 10 : norm >= 3.5 ? 5 : norm >= 1.5 ? 2 : 1) * mag;
+SMALL-INT web/js/charts.js:79: 1  | var step = (norm >= 7.5 ? 10 : norm >= 3.5 ? 5 : norm >= 1.5 ? 2 : 1) * mag;
+SMALL-INT web/js/charts.js:86: 1  | var step = ticks.length > 1 ? Math.abs(ticks[1] - ticks[0]) : undefined;
+SMALL-INT web/js/charts.js:86: 1  | var step = ticks.length > 1 ? Math.abs(ticks[1] - ticks[0]) : undefined;
+SMALL-INT web/js/charts.js:86: 0  | var step = ticks.length > 1 ? Math.abs(ticks[1] - ticks[0]) : undefined;
+SMALL-INT web/js/charts.js:90: 8  | var tx = el("text", { class: "tick", x: box.l - 8, y: y + 3.5, "text-anchor": "end" }, svg);
+SMALL-INT web/js/charts.js:99: 0  | var svg = el("svg", { class: "chart", viewBox: "0 0 " + W + " " + H, role: "img",
+SMALL-INT web/js/charts.js:99: 0  | var svg = el("svg", { class: "chart", viewBox: "0 0 " + W + " " + H, role: "img",
+SMALL-INT web/js/charts.js:103: 0  | var yMin = spec.yMin !== undefined ? spec.yMin : Math.min(0, Math.min.apply(null, vals));
+SMALL-INT web/js/charts.js:107: 5  | yAxis(svg, box, y, niceTicks(yMin, yMax, 5), spec.unit);
+SMALL-INT web/js/charts.js:110: 2  | var slotW = box.w / n, barGap = 2, pad = slotW * 0.18;
+SMALL-INT web/js/charts.js:111: 2  | var bw = (slotW - pad * 2 - barGap * (ns - 1)) / ns;
+SMALL-INT web/js/charts.js:111: 1  | var bw = (slotW - pad * 2 - barGap * (ns - 1)) / ns;
+SMALL-INT web/js/charts.js:118: 1  | var top = y(v), hgt = Math.max(1, y(yMin) - top);
+SMALL-INT web/js/charts.js:119: 0  | var g = el("g", { tabindex: "0", role: "listitem" }, svg);
+SMALL-INT web/js/charts.js:120: 4  | el("rect", { x: x, y: top, width: bw, height: hgt, rx: 4, ry: 4,
+SMALL-INT web/js/charts.js:120: 4  | el("rect", { x: x, y: top, width: bw, height: hgt, rx: 4, ry: 4,
+SMALL-INT web/js/charts.js:123: 5  | el("rect", { x: x, y: top + hgt - 5, width: bw, height: 5, fill: seriesVar(s.slot) }, g);
+SMALL-INT web/js/charts.js:123: 5  | el("rect", { x: x, y: top + hgt - 5, width: bw, height: 5, fill: seriesVar(s.slot) }, g);
+SMALL-INT web/js/charts.js:126: 0  | if (si === 0) {   // label one series only; a second row of labels collides
+SMALL-INT web/js/charts.js:127: 2  | var lt = el("text", { class: "dlabel", x: x + bw / 2, y: top - 6, "text-anchor": "middle" }, svg);
+SMALL-INT web/js/charts.js:127: 6  | var lt = el("text", { class: "dlabel", x: x + bw / 2, y: top - 6, "text-anchor": "middle" }, svg);
+SMALL-INT web/js/charts.js:131: 2  | var ct = el("text", { class: "tick", x: box.l + ci * slotW + slotW / 2,
+SMALL-INT web/js/charts.js:139: 4  | var rl = el("text", { class: "reflabel", x: box.l + 4, y: ry - 6, "text-anchor": "start",
+SMALL-INT web/js/charts.js:139: 6  | var rl = el("text", { class: "reflabel", x: box.l + 4, y: ry - 6, "text-anchor": "start",
+SMALL-INT web/js/charts.js:150: 64  | var W = width, H = 250, box = { l: 48, t: 14, w: W - 64, h: H - 56 };
+SMALL-INT web/js/charts.js:151: 0  | var svg = el("svg", { class: "chart", viewBox: "0 0 " + W + " " + H, role: "img",
+SMALL-INT web/js/charts.js:151: 0  | var svg = el("svg", { class: "chart", viewBox: "0 0 " + W + " " + H, role: "img",
+SMALL-INT web/js/charts.js:154: 0  | var xMin = spec.binCenters[0] - 0.2, xMax = spec.binCenters[spec.binCenters.length - 1] + 0.2;
+SMALL-INT web/js/charts.js:154: 1  | var xMin = spec.binCenters[0] - 0.2, xMax = spec.binCenters[spec.binCenters.length - 1] + 0.2;
+SMALL-INT web/js/charts.js:158: 0  | yAxis(svg, box, y, niceTicks(0, maxC * 1.08, 4), "");
+SMALL-INT web/js/charts.js:158: 4  | yAxis(svg, box, y, niceTicks(0, maxC * 1.08, 4), "");
+SMALL-INT web/js/charts.js:160: 2  | var bw = Math.max(2, box.w / spec.binCenters.length - 2);
+SMALL-INT web/js/charts.js:160: 2  | var bw = Math.max(2, box.w / spec.binCenters.length - 2);
+SMALL-INT web/js/charts.js:163: 0  | var g = el("g", { tabindex: "0" }, svg);
+SMALL-INT web/js/charts.js:164: 2  | el("rect", { x: x(c) - bw / 2, y: y(v), width: bw, height: y(0) - y(v), rx: 3,
+SMALL-INT web/js/charts.js:164: 0  | el("rect", { x: x(c) - bw / 2, y: y(v), width: bw, height: y(0) - y(v), rx: 3,
+SMALL-INT web/js/charts.js:164: 3  | el("rect", { x: x(c) - bw / 2, y: y(v), width: bw, height: y(0) - y(v), rx: 3,
+SMALL-INT web/js/charts.js:166: 2  | hoverable(g, "<b>" + v + "</b> epochs<div>τ/σ ≈ " + c.toFixed(2) + "</div>");
+SMALL-INT web/js/charts.js:173: 5  | var bl = el("text", { class: "reflabel", x: x(spec.band) + 5, y: box.t + 10, fill: "var(--crit)" }, 
+SMALL-INT web/js/charts.js:176: 5  | niceTicks(xMin, xMax, 5).forEach(function (t) {
+SMALL-INT web/js/charts.js:180: 0  | el("line", { class: "axisline", x1: box.l, x2: box.l + box.w, y1: y(0), y2: y(0) }, svg);
+SMALL-INT web/js/charts.js:180: 0  | el("line", { class: "axisline", x1: box.l, x2: box.l + box.w, y1: y(0), y2: y(0) }, svg);
+SMALL-INT web/js/charts.js:181: 2  | var xl = el("text", { class: "axis-label", x: box.l + box.w / 2, y: H - 4, "text-anchor": "middle" }
+SMALL-INT web/js/charts.js:181: 4  | var xl = el("text", { class: "axis-label", x: box.l + box.w / 2, y: H - 4, "text-anchor": "middle" }
+SMALL-INT web/js/charts.js:189: 0  | var svg = el("svg", { class: "chart", viewBox: "0 0 " + W + " " + H, role: "img",
+SMALL-INT web/js/charts.js:189: 0  | var svg = el("svg", { class: "chart", viewBox: "0 0 " + W + " " + H, role: "img",
+SMALL-INT web/js/charts.js:193: 0  | s.points.forEach(function (p) { xs.push(p[0]); if (p[1] > 0) ys.push(p[1]); });
+SMALL-INT web/js/charts.js:193: 1  | s.points.forEach(function (p) { xs.push(p[0]); if (p[1] > 0) ys.push(p[1]); });
+SMALL-INT web/js/charts.js:193: 0  | s.points.forEach(function (p) { xs.push(p[0]); if (p[1] > 0) ys.push(p[1]); });
+SMALL-INT web/js/charts.js:193: 1  | s.points.forEach(function (p) { xs.push(p[0]); if (p[1] > 0) ys.push(p[1]); });
+SMALL-INT web/js/charts.js:199: 1  | var X = function (v) { return box.l + (lx(v) - xMin) / (xMax - xMin || 1) * box.w; };
+SMALL-INT web/js/charts.js:200: 1  | var Y = function (v) { return box.t + box.h - (Math.log10(v) - yMin) / (yMax - yMin || 1) * box.h; }
+SMALL-INT web/js/charts.js:205: 8  | var t = el("text", { class: "tick", x: box.l - 8, y: yy + 3.5, "text-anchor": "end" }, svg);
+SMALL-INT web/js/charts.js:206: 1  | t.textContent = Math.pow(10, p) >= 1 ? String(Math.pow(10, p)) : Math.pow(10, p).toFixed(Math.abs(p)
+SMALL-INT web/js/charts.js:213: 4  | var hl = el("text", { class: "reflabel", x: box.l + 4, y: hy - 6, "text-anchor": "start",
+SMALL-INT web/js/charts.js:213: 6  | var hl = el("text", { class: "reflabel", x: box.l + 4, y: hy - 6, "text-anchor": "start",
+SMALL-INT web/js/charts.js:222: 1  | if (p[1] === null || !(p[1] > 0)) { pen = false; return; }
+SMALL-INT web/js/charts.js:222: 1  | if (p[1] === null || !(p[1] > 0)) { pen = false; return; }
+SMALL-INT web/js/charts.js:222: 0  | if (p[1] === null || !(p[1] > 0)) { pen = false; return; }
+SMALL-INT web/js/charts.js:223: 0  | d += (pen ? "L" : "M") + X(p[0]) + " " + Y(p[1]) + " ";
+SMALL-INT web/js/charts.js:223: 1  | d += (pen ? "L" : "M") + X(p[0]) + " " + Y(p[1]) + " ";
+SMALL-INT web/js/charts.js:226: 2  | el("path", { d: d, fill: "none", stroke: seriesVar(s.slot), "stroke-width": 2,
+SMALL-INT web/js/charts.js:229: 1  | if (p[1] === null || !(p[1] > 0)) return;
+SMALL-INT web/js/charts.js:229: 1  | if (p[1] === null || !(p[1] > 0)) return;
+SMALL-INT web/js/charts.js:229: 0  | if (p[1] === null || !(p[1] > 0)) return;
+SMALL-INT web/js/charts.js:230: 0  | var g = el("g", { tabindex: "0" }, svg);
+SMALL-INT web/js/charts.js:231: 0  | el("circle", { cx: X(p[0]), cy: Y(p[1]), r: 4.5, fill: seriesVar(s.slot),
+SMALL-INT web/js/charts.js:231: 1  | el("circle", { cx: X(p[0]), cy: Y(p[1]), r: 4.5, fill: seriesVar(s.slot),
+SMALL-INT web/js/charts.js:232: 2  | stroke: "var(--surface)", "stroke-width": 2 }, g);
+SMALL-INT web/js/charts.js:234: 1  | fmt(p[1], spec.unit) + "</b></div><div>" + s.name + " · n = " + p[0].toLocaleString() + "</div>");
+SMALL-INT web/js/charts.js:234: 0  | fmt(p[1], spec.unit) + "</b></div><div>" + s.name + " · n = " + p[0].toLocaleString() + "</div>");
+SMALL-INT web/js/charts.js:241: 5  | var cl = el("text", { class: "reflabel", x: cx + 5, y: box.t + 11, fill: "var(--muted)" }, svg);
+SMALL-INT web/js/charts.js:246: 2  | if (arr.length > 7 && i % 2) return;
+SMALL-INT web/js/charts.js:248: 2  | t.textContent = v >= 1024 ? "2^" + Math.round(Math.log2(v)) : String(v);
+SMALL-INT web/js/charts.js:253: 2  | var xl = el("text", { class: "axis-label", x: box.l + box.w / 2, y: H - 4, "text-anchor": "middle" }
+SMALL-INT web/js/charts.js:253: 4  | var xl = el("text", { class: "axis-label", x: box.l + box.w / 2, y: H - 4, "text-anchor": "middle" }
+SMALL-INT web/js/charts.js:261: 0  | var f = 0;
+SMALL-INT web/js/charts.js:262: 0  | for (var i = 0; i < points.length; i++) { if (points[i][0] <= x) f = points[i][1]; else break; }
+SMALL-INT web/js/charts.js:262: 0  | for (var i = 0; i < points.length; i++) { if (points[i][0] <= x) f = points[i][1]; else break; }
+SMALL-INT web/js/charts.js:262: 1  | for (var i = 0; i < points.length; i++) { if (points[i][0] <= x) f = points[i][1]; else break; }
+SMALL-INT web/js/charts.js:267: 0  | var svg = el("svg", { class: "chart", viewBox: "0 0 " + W + " " + H, role: "img",
+SMALL-INT web/js/charts.js:267: 0  | var svg = el("svg", { class: "chart", viewBox: "0 0 " + W + " " + H, role: "img",
+SMALL-INT web/js/charts.js:270: 0  | spec.series.forEach(function (s) { s.points.forEach(function (p) { if (p[0] > 0) xs.push(p[0]); }); 
+SMALL-INT web/js/charts.js:270: 0  | spec.series.forEach(function (s) { s.points.forEach(function (p) { if (p[0] > 0) xs.push(p[0]); }); 
+SMALL-INT web/js/charts.js:270: 0  | spec.series.forEach(function (s) { s.points.forEach(function (p) { if (p[0] > 0) xs.push(p[0]); }); 
+SMALL-INT web/js/charts.js:273: 1  | var X = function (v) { return box.l + (Math.log10(Math.max(v, Math.pow(10, xMin))) - xMin) / (xMax -
+SMALL-INT web/js/charts.js:276: 0  | yAxis(svg, box, Y, niceTicks(0, 1, 5), "");
+SMALL-INT web/js/charts.js:276: 1  | yAxis(svg, box, Y, niceTicks(0, 1, 5), "");
+SMALL-INT web/js/charts.js:276: 5  | yAxis(svg, box, Y, niceTicks(0, 1, 5), "");
+SMALL-INT web/js/charts.js:280: 1  | t.textContent = Math.pow(10, p) >= 1 ? String(Math.pow(10, p)) : Math.pow(10, p).toFixed(Math.abs(p)
+SMALL-INT web/js/charts.js:285: 5  | var rl = el("text", { class: "reflabel", x: rx + 5, y: box.t + 11, fill: "var(--muted)" }, svg);
+SMALL-INT web/js/charts.js:291: 0  | d += i ? "H" + X(q[0]) + " V" + Y(q[1]) + " " : "M" + X(q[0]) + " " + Y(0) + " V" + Y(q[1]) + " ";
+SMALL-INT web/js/charts.js:291: 1  | d += i ? "H" + X(q[0]) + " V" + Y(q[1]) + " " : "M" + X(q[0]) + " " + Y(0) + " V" + Y(q[1]) + " ";
+SMALL-INT web/js/charts.js:291: 0  | d += i ? "H" + X(q[0]) + " V" + Y(q[1]) + " " : "M" + X(q[0]) + " " + Y(0) + " V" + Y(q[1]) + " ";
+SMALL-INT web/js/charts.js:291: 0  | d += i ? "H" + X(q[0]) + " V" + Y(q[1]) + " " : "M" + X(q[0]) + " " + Y(0) + " V" + Y(q[1]) + " ";
+SMALL-INT web/js/charts.js:291: 1  | d += i ? "H" + X(q[0]) + " V" + Y(q[1]) + " " : "M" + X(q[0]) + " " + Y(0) + " V" + Y(q[1]) + " ";
+SMALL-INT web/js/charts.js:293: 2  | el("path", { d: d, fill: "none", stroke: seriesVar(s.slot), "stroke-width": 2,
+SMALL-INT web/js/charts.js:294: 6  | "stroke-dasharray": s.dash ? "6 4" : null, "stroke-linejoin": "round" }, svg);
+SMALL-INT web/js/charts.js:294: 4  | "stroke-dasharray": s.dash ? "6 4" : null, "stroke-linejoin": "round" }, svg);
+SMALL-INT web/js/charts.js:296: 0  | el("line", { class: "axisline", x1: box.l, x2: box.l + box.w, y1: Y(0), y2: Y(0) }, svg);
+SMALL-INT web/js/charts.js:296: 0  | el("line", { class: "axisline", x1: box.l, x2: box.l + box.w, y1: Y(0), y2: Y(0) }, svg);
+SMALL-INT web/js/charts.js:297: 2  | var xl = el("text", { class: "axis-label", x: box.l + box.w / 2, y: H - 4, "text-anchor": "middle" }
+SMALL-INT web/js/charts.js:297: 4  | var xl = el("text", { class: "axis-label", x: box.l + box.w / 2, y: H - 4, "text-anchor": "middle" }
+SMALL-INT web/js/charts.js:301: 0  | var cross = el("line", { class: "refline", x1: 0, x2: 0, y1: box.t, y2: box.t + box.h, opacity: 0 },
+SMALL-INT web/js/charts.js:301: 0  | var cross = el("line", { class: "refline", x1: 0, x2: 0, y1: box.t, y2: box.t + box.h, opacity: 0 },
+SMALL-INT web/js/charts.js:301: 0  | var cross = el("line", { class: "refline", x1: 0, x2: 0, y1: box.t, y2: box.t + box.h, opacity: 0 },
+SMALL-INT web/js/charts.js:302: 0  | var hit = el("rect", { x: box.l, y: box.t, width: box.w, height: box.h, fill: "transparent", tabinde
+SMALL-INT web/js/charts.js:306: 1  | cross.setAttribute("x1", sx); cross.setAttribute("x2", sx); cross.setAttribute("opacity", 1);
+SMALL-INT web/js/charts.js:309: 0  | (cdfValueAt(s.points, lat) * 100).toFixed(0) + "% · " + s.name + "</div>";
+SMALL-INT web/js/charts.js:312: 0  | hit.addEventListener("mouseleave", function () { cross.setAttribute("opacity", 0); hideTip(); });
+SMALL-INT web/js/charts.js:319: 0  | var svg = el("svg", { class: "chart", viewBox: "0 0 " + W + " " + H, role: "img",
+SMALL-INT web/js/charts.js:319: 0  | var svg = el("svg", { class: "chart", viewBox: "0 0 " + W + " " + H, role: "img",
+SMALL-INT web/js/charts.js:322: 0  | return spec.series.reduce(function (a, s) { return a + (s.values[ci] || 0); }, 0);
+SMALL-INT web/js/charts.js:322: 0  | return spec.series.reduce(function (a, s) { return a + (s.values[ci] || 0); }, 0);
+SMALL-INT web/js/charts.js:324: 0  | var yMax = Math.max(Math.max.apply(null, totals), spec.refLine ? spec.refLine.value : 0) * 1.12;
+SMALL-INT web/js/charts.js:326: 0  | yAxis(svg, box, y, niceTicks(0, yMax, 5), spec.unit);
+SMALL-INT web/js/charts.js:326: 5  | yAxis(svg, box, y, niceTicks(0, yMax, 5), spec.unit);
+SMALL-INT web/js/charts.js:330: 0  | var acc = 0, x = box.l + ci * slotW + (slotW - bw) / 2;
+SMALL-INT web/js/charts.js:330: 2  | var acc = 0, x = box.l + ci * slotW + (slotW - bw) / 2;
+SMALL-INT web/js/charts.js:332: 0  | var v = s.values[ci] || 0; if (!v) return;
+SMALL-INT web/js/charts.js:334: 0  | var g = el("g", { tabindex: "0" }, svg);
+SMALL-INT web/js/charts.js:335: 1  | el("rect", { x: x, y: top, width: bw, height: Math.max(1, bot - top - 2),
+SMALL-INT web/js/charts.js:335: 2  | el("rect", { x: x, y: top, width: bw, height: Math.max(1, bot - top - 2),
+SMALL-INT web/js/charts.js:336: 1  | rx: si === spec.series.length - 1 ? 4 : 0, fill: seriesVar(s.slot) }, g);
+SMALL-INT web/js/charts.js:336: 4  | rx: si === spec.series.length - 1 ? 4 : 0, fill: seriesVar(s.slot) }, g);
+SMALL-INT web/js/charts.js:336: 0  | rx: si === spec.series.length - 1 ? 4 : 0, fill: seriesVar(s.slot) }, g);
+SMALL-INT web/js/charts.js:341: 2  | var lt = el("text", { class: "dlabel", x: x + bw / 2, y: y(acc) - 6, "text-anchor": "middle" }, svg)
+SMALL-INT web/js/charts.js:341: 6  | var lt = el("text", { class: "dlabel", x: x + bw / 2, y: y(acc) - 6, "text-anchor": "middle" }, svg)
+SMALL-INT web/js/charts.js:343: 2  | var ct = el("text", { class: "tick", x: box.l + ci * slotW + slotW / 2,
+SMALL-INT web/js/charts.js:350: 5  | var rl = el("text", { class: "reflabel", x: box.l + box.w, y: ry - 5, "text-anchor": "end", fill: "v
+SMALL-INT web/js/charts.js:353: 0  | el("line", { class: "axisline", x1: box.l, x2: box.l + box.w, y1: y(0), y2: y(0) }, svg);
+SMALL-INT web/js/charts.js:353: 0  | el("line", { class: "axisline", x1: box.l, x2: box.l + box.w, y1: y(0), y2: y(0) }, svg);
+SMALL-INT web/js/charts.js:384: 2  | tr.innerHTML = "<td>" + c.toFixed(2) + "</td><td>" + spec.counts[i] + "</td>";
+SMALL-INT web/js/charts.js:388: 5  | var qs = [5, 25, 50, 75, 95, 99];   // which percentiles the table lists; the values come from the s
+SMALL-INT web/js/charts.js:388: 50  | var qs = [5, 25, 50, 75, 95, 99];   // which percentiles the table lists; the values come from the s
+SMALL-INT web/js/charts.js:395: 1  | var pt = s.points.filter(function (r) { return Math.round(r[1] * 100) === q; })[0];
+SMALL-INT web/js/charts.js:395: 0  | var pt = s.points.filter(function (r) { return Math.round(r[1] * 100) === q; })[0];
+SMALL-INT web/js/charts.js:396: 0  | return "<td>" + (pt ? fmt(pt[0], spec.unit) : "—") + "</td>";
+SMALL-INT web/js/charts.js:404: 0  | spec.series.forEach(function (s) { s.points.forEach(function (p) { xs[p[0]] = 1; }); });
+SMALL-INT web/js/charts.js:404: 1  | spec.series.forEach(function (s) { s.points.forEach(function (p) { xs[p[0]] = 1; }); });
+SMALL-INT web/js/charts.js:408: 0  | var p = s.points.filter(function (q) { return q[0] === xv; })[0];
+SMALL-INT web/js/charts.js:408: 0  | var p = s.points.filter(function (q) { return q[0] === xv; })[0];
+SMALL-INT web/js/charts.js:409: 1  | return "<td>" + (p ? fmt(p[1], spec.unit) : "—") + "</td>";
+SMALL-INT web/js/charts.js:428: 2  | if (!spec.series || spec.series.length < 2) return null;
+SMALL-INT web/js/charts.js:434: 0  | " 0 5px,transparent 5px 8px)" : "") + "'></i>" + s.name;
+SMALL-INT web/js/charts.js:490: 0  | if (spec.metric_ids) prov.push(spec.metric_ids.slice(0, 4).join(", ") + (spec.metric_ids.length > 4 
+SMALL-INT web/js/charts.js:490: 4  | if (spec.metric_ids) prov.push(spec.metric_ids.slice(0, 4).join(", ") + (spec.metric_ids.length > 4 
+SMALL-INT web/js/charts.js:490: 4  | if (spec.metric_ids) prov.push(spec.metric_ids.slice(0, 4).join(", ") + (spec.metric_ids.length > 4 
+SMALL-INT web/js/chat.js:21: 0  | var seq = { A: 0, B: 0 };
+SMALL-INT web/js/chat.js:21: 0  | var seq = { A: 0, B: 0 };
+SMALL-INT web/js/chat.js:43: 0  | convo.push({ user: user, text: text, seq: seq[user]++, ts: now.toTimeString().slice(0, 8) });
+SMALL-INT web/js/chat.js:43: 8  | convo.push({ user: user, text: text, seq: seq[user]++, ts: now.toTimeString().slice(0, 8) });
+SMALL-INT web/js/chat.js:94: 4  | return cr.store(name, { username: (u === "A" ? "alice_" : "bob_") + cr.hex(cr.random(4)),
+SMALL-INT web/js/chat.js:101: 0  | panes[u] = { client: client, messages: [], pending: [], shown: 0, halted: "", alert: "" };
+SMALL-INT web/js/chat.js:117: 0  | k.textContent = c.username + " · ES256 jkt " + c.device.jkt.slice(0, 6) + "…";
+SMALL-INT web/js/chat.js:117: 6  | k.textContent = c.username + " · ES256 jkt " + c.device.jkt.slice(0, 6) + "…";
+SMALL-INT web/js/chat.js:216: 0  | function shortId(s) { return String(s).length > 13 ? String(s).slice(0, 8) + "…" : String(s); }
+SMALL-INT web/js/chat.js:216: 8  | function shortId(s) { return String(s).length > 13 ? String(s).slice(0, 8) + "…" : String(s); }
+SMALL-INT web/js/chat.js:226: 0  | for (var i = from; i < to; i++) out += ("0" + raw.charCodeAt(i).toString(16)).slice(-2);
+SMALL-INT web/js/chat.js:226: 2  | for (var i = from; i < to; i++) out += ("0" + raw.charCodeAt(i).toString(16)).slice(-2);
+SMALL-INT web/js/chat.js:229: 6  | return raw.length <= 6 ? hex(0, raw.length) : hex(0, 4) + "…" + hex(raw.length - 2, raw.length) + " 
+SMALL-INT web/js/chat.js:229: 0  | return raw.length <= 6 ? hex(0, raw.length) : hex(0, 4) + "…" + hex(raw.length - 2, raw.length) + " 
+SMALL-INT web/js/chat.js:229: 0  | return raw.length <= 6 ? hex(0, raw.length) : hex(0, 4) + "…" + hex(raw.length - 2, raw.length) + " 
+SMALL-INT web/js/chat.js:229: 4  | return raw.length <= 6 ? hex(0, raw.length) : hex(0, 4) + "…" + hex(raw.length - 2, raw.length) + " 
+SMALL-INT web/js/chat.js:229: 2  | return raw.length <= 6 ? hex(0, raw.length) : hex(0, 4) + "…" + hex(raw.length - 2, raw.length) + " 
+SMALL-INT web/js/chat.js:245: 1  | map[unpad(m.stored)] = { n: i + 1, who: m.mine ? best.u : other, number: m.number };
+SMALL-INT web/js/chat.js:333: 1  | tr.appendChild(VC.el("td", "", String(i + 1)));
+SMALL-INT web/js/chat.js:355: 2  | ? Math.max(2, Math.min(64, Math.ceil(DUMP_SPAN_S / VC.state.windowS))) : 0;
+SMALL-INT web/js/chat.js:355: 64  | ? Math.max(2, Math.min(64, Math.ceil(DUMP_SPAN_S / VC.state.windowS))) : 0;
+SMALL-INT web/js/chat.js:355: 0  | ? Math.max(2, Math.min(64, Math.ceil(DUMP_SPAN_S / VC.state.windowS))) : 0;
+SMALL-INT web/js/chat.js:371: 1  | if (i < clients.length) return clients[i].exclusive(function () { return held(i + 1); });
+SMALL-INT web/js/chat.js:385: 0  | switching = held(0).then(done, function (e) {
+SMALL-INT web/js/chat.js:448: 0  | convo.push({ user: m[0], text: m[1], seq: seq[m[0]]++,
+SMALL-INT web/js/chat.js:448: 1  | convo.push({ user: m[0], text: m[1], seq: seq[m[0]]++,
+SMALL-INT web/js/chat.js:448: 0  | convo.push({ user: m[0], text: m[1], seq: seq[m[0]]++,
+SMALL-INT web/js/chat.js:449: 4  | ts: new Date(Date.now() - (4 - i) * 42000).toTimeString().slice(0, 8) });
+SMALL-INT web/js/chat.js:449: 0  | ts: new Date(Date.now() - (4 - i) * 42000).toTimeString().slice(0, 8) });
+SMALL-INT web/js/chat.js:449: 8  | ts: new Date(Date.now() - (4 - i) * 42000).toTimeString().slice(0, 8) });
+SMALL-INT web/js/client.js:23: 5  | var SEND_ATTEMPTS = 5;
+SMALL-INT web/js/client.js:41: 0  | return (isFinite(s) ? Math.min(Math.max(s, 0), 5) : 1) * 1000;
+SMALL-INT web/js/client.js:41: 5  | return (isFinite(s) ? Math.min(Math.max(s, 0), 5) : 1) * 1000;
+SMALL-INT web/js/client.js:41: 1  | return (isFinite(s) ? Math.min(Math.max(s, 0), 5) : 1) * 1000;
+SMALL-INT web/js/client.js:52: 0  | this._expiresAt = 0;
+SMALL-INT web/js/client.js:125: 0  | self.refreshes = (self.refreshes || 0) + 1;
+SMALL-INT web/js/client.js:125: 1  | self.refreshes = (self.refreshes || 0) + 1;
+SMALL-INT web/js/client.js:211: 8  | conv.session = cr.random(8);
+SMALL-INT web/js/client.js:213: 0  | conv.number = 0;            // own messages confirmed as stored
+SMALL-INT web/js/client.js:219: 0  | conv.repeats = 0;
+SMALL-INT web/js/client.js:232: 0  | if (left === 0) {
+SMALL-INT web/js/client.js:239: 1  | return sleep(retryAfter(r)).then(function () { return attempt(left - 1); });
+SMALL-INT web/js/client.js:241: 1  | if (r.status === 504) { last = "ack_timeout"; return attempt(left - 1); }   // outcome unknown
+SMALL-INT web/js/client.js:246: 1  | return attempt(left - 1);
+SMALL-INT web/js/client.js:257: 1  | conv.number += 1;
+SMALL-INT web/js/client.js:304: 1  | conv.next[key] = m.number + 1;
+SMALL-INT web/js/client.js:307: 1  | if (m.number === expected) { conv.next[key] = expected + 1; return true; }
+SMALL-INT web/js/client.js:335: 0  | var payloads = fetched[win], done = conv.consumed[win] || 0;
+SMALL-INT web/js/client.js:347: 1  | conv.repeats += 1;
+SMALL-INT web/js/client.js:358: 1  | while (conv.cursor < current - 1) {   // a window two behind the open one gets no more rows
+SMALL-INT web/js/client.js:360: 1  | conv.cursor += 1;
+SMALL-INT web/js/crypto.js:22: 1  | var HEADER_LEN = 18;            // version(1) sender(1) session(8) number(LE64)
+SMALL-INT web/js/crypto.js:22: 1  | var HEADER_LEN = 18;            // version(1) sender(1) session(8) number(LE64)
+SMALL-INT web/js/crypto.js:22: 8  | var HEADER_LEN = 18;            // version(1) sender(1) session(8) number(LE64)
+SMALL-INT web/js/crypto.js:23: 1  | var VERSION = 1;
+SMALL-INT web/js/crypto.js:33: 0  | var n = 0, i, off = 0;
+SMALL-INT web/js/crypto.js:33: 0  | var n = 0, i, off = 0;
+SMALL-INT web/js/crypto.js:34: 0  | for (i = 0; i < arguments.length; i++) n += arguments[i].length;
+SMALL-INT web/js/crypto.js:36: 0  | for (i = 0; i < arguments.length; i++) { out.set(arguments[i], off); off += arguments[i].length; }
+SMALL-INT web/js/crypto.js:41: 0  | for (i = 0; i < bytes.length; i += 0x8000) s += String.fromCharCode.apply(null, bytes.subarray(i, i 
+SMALL-INT web/js/crypto.js:45: 4  | if (typeof s !== "string" || s.length % 4 !== 0 || !/^[A-Za-z0-9+/]*={0,2}$/.test(s)) throw new Erro
+SMALL-INT web/js/crypto.js:45: 0  | if (typeof s !== "string" || s.length % 4 !== 0 || !/^[A-Za-z0-9+/]*={0,2}$/.test(s)) throw new Erro
+SMALL-INT web/js/crypto.js:45: 0  | if (typeof s !== "string" || s.length % 4 !== 0 || !/^[A-Za-z0-9+/]*={0,2}$/.test(s)) throw new Erro
+SMALL-INT web/js/crypto.js:45: 2  | if (typeof s !== "string" || s.length % 4 !== 0 || !/^[A-Za-z0-9+/]*={0,2}$/.test(s)) throw new Erro
+SMALL-INT web/js/crypto.js:47: 0  | for (i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+SMALL-INT web/js/crypto.js:53: 0  | for (i = 0; i < bytes.length; i++) s += (bytes[i] < 16 ? "0" : "") + bytes[i].toString(16);
+SMALL-INT web/js/crypto.js:53: 0  | for (i = 0; i < bytes.length; i++) s += (bytes[i] < 16 ? "0" : "") + bytes[i].toString(16);
+SMALL-INT web/js/crypto.js:59: 0  | for (i = 0; i < n; i++) if (a[i] !== b[i]) return a[i] < b[i] ? -1 : 1;
+SMALL-INT web/js/crypto.js:59: 1  | for (i = 0; i < n; i++) if (a[i] !== b[i]) return a[i] < b[i] ? -1 : 1;
+SMALL-INT web/js/crypto.js:59: 1  | for (i = 0; i < n; i++) if (a[i] !== b[i]) return a[i] < b[i] ? -1 : 1;
+SMALL-INT web/js/crypto.js:60: 0  | return a.length === b.length ? 0 : (a.length < b.length ? -1 : 1);
+SMALL-INT web/js/crypto.js:60: 1  | return a.length === b.length ? 0 : (a.length < b.length ? -1 : 1);
+SMALL-INT web/js/crypto.js:60: 1  | return a.length === b.length ? 0 : (a.length < b.length ? -1 : 1);
+SMALL-INT web/js/crypto.js:67: 0  | return subtle.deriveBits({ name: "HKDF", hash: "SHA-256", salt: new Uint8Array(0), info: info }, k, 
+SMALL-INT web/js/crypto.js:67: 8  | return subtle.deriveBits({ name: "HKDF", hash: "SHA-256", salt: new Uint8Array(0), info: info }, k, 
+SMALL-INT web/js/crypto.js:78: 1  | try { req = global.indexedDB.open("vcloak", 1); } catch (e) { resolve(null); return; }
+SMALL-INT web/js/crypto.js:167: 0  | var lo = compare(a, b) <= 0 ? a : b, hi = lo === a ? b : a;
+SMALL-INT web/js/crypto.js:168: 4  | var len = new Uint8Array(4);
+SMALL-INT web/js/crypto.js:169: 0  | new DataView(len.buffer).setUint32(0, context.length, true);
+SMALL-INT web/js/crypto.js:176: 0  | if (compare(prekey.public, peerPublic) === 0) return Promise.reject(new Error("both ends hold the sa
+SMALL-INT web/js/crypto.js:179: 0  | var conv = { block: block, role: compare(prekey.public, peerPublic) < 0 ? 0 : 1 };
+SMALL-INT web/js/crypto.js:179: 0  | var conv = { block: block, role: compare(prekey.public, peerPublic) < 0 ? 0 : 1 };
+SMALL-INT web/js/crypto.js:179: 1  | var conv = { block: block, role: compare(prekey.public, peerPublic) < 0 ? 0 : 1 };
+SMALL-INT web/js/crypto.js:184: 0  | return hkdf(s, concat(utf8(INFO_CONTENT), t), 32).then(function (k) { s.fill(0); return k; });
+SMALL-INT web/js/crypto.js:191: 0  | k.fill(0);
+SMALL-INT web/js/crypto.js:192: 0  | conv.key = r[0];
+SMALL-INT web/js/crypto.js:193: 1  | conv.token = b64u(r[1]);
+SMALL-INT web/js/crypto.js:197: 0  | for (i = 0; i < 15; i++) n = (n << 8n) | BigInt(r[2][i]);
+SMALL-INT web/js/crypto.js:197: 15  | for (i = 0; i < 15; i++) n = (n << 8n) | BigInt(r[2][i]);
+SMALL-INT web/js/crypto.js:197: 2  | for (i = 0; i < 15; i++) n = (n << 8n) | BigInt(r[2][i]);
+SMALL-INT web/js/crypto.js:198: 0  | var digits = (n % (10n ** 30n)).toString().padStart(30, "0");
+SMALL-INT web/js/crypto.js:199: 5  | conv.fingerprint = digits.match(/.{5}/g).join(" ");
+SMALL-INT web/js/crypto.js:206: 1  | function maxText(block) { return block - 1 - HEADER_LEN; }
+SMALL-INT web/js/crypto.js:211: 8  | return Promise.reject(new Error("a message holds at most " + maxText(conv.block) + " bytes of UTF-8,
+SMALL-INT web/js/crypto.js:213: 00  | var padded = new Uint8Array(conv.block);     // header | text | 0x80 | 00…  — always `block` bytes
+SMALL-INT web/js/crypto.js:215: 0  | padded[0] = VERSION;
+SMALL-INT web/js/crypto.js:216: 1  | padded[1] = conv.role;
+SMALL-INT web/js/crypto.js:217: 2  | padded.set(session, 2);
+SMALL-INT web/js/crypto.js:222: 8  | return subtle.encrypt({ name: "AES-GCM", iv: nonce, additionalData: conv.aad, tagLength: TAG_LEN * 8
+SMALL-INT web/js/crypto.js:230: 0  | return subtle.decrypt({ name: "AES-GCM", iv: payload.subarray(0, NONCE_LEN), additionalData: conv.aa
+SMALL-INT web/js/crypto.js:230: 8  | return subtle.decrypt({ name: "AES-GCM", iv: payload.subarray(0, NONCE_LEN), additionalData: conv.aa
+SMALL-INT web/js/crypto.js:235: 1  | var end = padded.length - 1;
+SMALL-INT web/js/crypto.js:236: 0  | while (end >= 0 && padded[end] === 0) end--;
+SMALL-INT web/js/crypto.js:236: 0  | while (end >= 0 && padded[end] === 0) end--;
+SMALL-INT web/js/crypto.js:237: 0  | if (padded.length !== conv.block || end < 0 || padded[end] !== PAD_MARK) throw fail("tamper", "bad p
+SMALL-INT web/js/crypto.js:239: 0  | if (padded[0] !== VERSION || padded[1] > 1) throw fail("protocol", "a message header of another vers
+SMALL-INT web/js/crypto.js:239: 1  | if (padded[0] !== VERSION || padded[1] > 1) throw fail("protocol", "a message header of another vers
+SMALL-INT web/js/crypto.js:239: 1  | if (padded[0] !== VERSION || padded[1] > 1) throw fail("protocol", "a message header of another vers
+SMALL-INT web/js/crypto.js:243: 8  | try { text = new TextDecoder("utf-8", { fatal: true }).decode(padded.subarray(HEADER_LEN, end)); }
+SMALL-INT web/js/crypto.js:244: 8  | catch (e) { throw fail("protocol", "a message that is not UTF-8"); }
+SMALL-INT web/js/crypto.js:245: 1  | return { sender: padded[1], session: hex(padded.subarray(2, 10)), number: Number(number), text: text
+SMALL-INT web/js/crypto.js:245: 2  | return { sender: padded[1], session: hex(padded.subarray(2, 10)), number: Number(number), text: text
+SMALL-INT web/js/dashboard.js:10: 0  | if (state === "good") return "<svg viewBox='0 0 16 16' width='12' height='12' aria-hidden='true'><pa
+SMALL-INT web/js/dashboard.js:10: 0  | if (state === "good") return "<svg viewBox='0 0 16 16' width='12' height='12' aria-hidden='true'><pa
+SMALL-INT web/js/dashboard.js:10: 5  | if (state === "good") return "<svg viewBox='0 0 16 16' width='12' height='12' aria-hidden='true'><pa
+SMALL-INT web/js/dashboard.js:11: 0  | if (state === "crit") return "<svg viewBox='0 0 16 16' width='12' height='12' aria-hidden='true'><pa
+SMALL-INT web/js/dashboard.js:11: 0  | if (state === "crit") return "<svg viewBox='0 0 16 16' width='12' height='12' aria-hidden='true'><pa
+SMALL-INT web/js/dashboard.js:11: 1  | if (state === "crit") return "<svg viewBox='0 0 16 16' width='12' height='12' aria-hidden='true'><pa
+SMALL-INT web/js/dashboard.js:12: 0  | return "<svg viewBox='0 0 16 16' width='12' height='12' aria-hidden='true'><circle cx='8' cy='8' r='
+SMALL-INT web/js/dashboard.js:12: 0  | return "<svg viewBox='0 0 16 16' width='12' height='12' aria-hidden='true'><circle cx='8' cy='8' r='
+SMALL-INT web/js/dashboard.js:12: 8  | return "<svg viewBox='0 0 16 16' width='12' height='12' aria-hidden='true'><circle cx='8' cy='8' r='
+SMALL-INT web/js/dashboard.js:12: 8  | return "<svg viewBox='0 0 16 16' width='12' height='12' aria-hidden='true'><circle cx='8' cy='8' r='
+SMALL-INT web/js/dashboard.js:12: 5  | return "<svg viewBox='0 0 16 16' width='12' height='12' aria-hidden='true'><circle cx='8' cy='8' r='
+SMALL-INT web/js/dashboard.js:55: 0  | "<span>generated: <b>" + esc((data.generated_at || "—").slice(0, 10)) + "</b></span>" +
+SMALL-INT web/js/dashboard.js:56: 0  | "<span>commit: <b>" + esc((data.git_sha || "—").slice(0, 7)) + "</b></span>" +
+SMALL-INT web/js/experiments.js:16: 0  | var runToken = 0;
+SMALL-INT web/js/experiments.js:26: 0  | return e.layouts.filter(function (x) { return x.layout === layout; })[0] || null;
+SMALL-INT web/js/experiments.js:34: 1  | function pct(x) { return (x * 100).toFixed(1) + "%"; }
+SMALL-INT web/js/experiments.js:41: 2  | w.innerHTML = "<div class='track'><div class='fill' style='width:" + (acc * 100).toFixed(2) + "%'></
+SMALL-INT web/js/experiments.js:42: 50  | "<div class='chance' style='left:50%'><span>chance 50%</span></div></div>";
+SMALL-INT web/js/experiments.js:42: 50  | "<div class='chance' style='left:50%'><span>chance 50%</span></div></div>";
+SMALL-INT web/js/experiments.js:52: 50  | "<div class='v'>" + pct(acc) + "</div><div class='k'>" + esc(verdict) + " · 50% = coin flip</div>";
+SMALL-INT web/js/experiments.js:111: 1  | c.title = "physical position " + (r.pos + 1);
+SMALL-INT web/js/experiments.js:119: 1  | cells[k].classList.add(r.rank === r.pos + 1 ? "inplace" : "moved");
+SMALL-INT web/js/experiments.js:132: 1  | var c = el("div", "seqcell", String(i + 1));
+SMALL-INT web/js/experiments.js:153: 0  | var k = 0;
+SMALL-INT web/js/experiments.js:168: 0  | var smp = r.sample || { turns: [], turns_total: 0, round: null };
+SMALL-INT web/js/experiments.js:173: 0  | var n = Math.max(smp.turns.length, smp.round ? smp.round.rows.length : 0);
+SMALL-INT web/js/experiments.js:178: 1  | (r.predicted_turn_accuracy !== null ? " (the run's own prediction 1 − f/2: " + pct(r.predicted_turn_
+SMALL-INT web/js/experiments.js:178: 2  | (r.predicted_turn_accuracy !== null ? " (the run's own prediction 1 − f/2: " + pct(r.predicted_turn_
+SMALL-INT web/js/experiments.js:209: 0  | "<div class='v small'>" + esc(String(s.elapsed_s || 0)) + " s</div>" +
+SMALL-INT web/js/experiments.js:231: 0  | for (var i = 0; i < N; i++) hits.push(i < nHit);
+SMALL-INT web/js/experiments.js:233: 1  | for (var a = N - 1; a > 0; a--) {
+SMALL-INT web/js/experiments.js:233: 0  | for (var a = N - 1; a > 0; a--) {
+SMALL-INT web/js/experiments.js:235: 1  | var b = Math.floor(s / 2147483648 * (a + 1)), t = hits[a];
+SMALL-INT web/js/experiments.js:292: 0  | var ch = (d.charts || []).filter(function (c) { return c.id === "attack_ablation"; })[0];
+SMALL-INT web/js/experiments.js:310: 0  | for (var i = 0; i < N; i++) row.appendChild(el("div", "seqcell", String(i + 1)));
+SMALL-INT web/js/experiments.js:310: 1  | for (var i = 0; i < N; i++) row.appendChild(el("div", "seqcell", String(i + 1)));
+SMALL-INT web/js/experiments.js:314: 50  | "<div class='k'>not run yet · 50% would be a coin flip</div></div>";
+SMALL-INT web/js/logs.js:9: 1  | if (/^#{1,3}\s/.test(line)) return "ln-h";
+SMALL-INT web/js/logs.js:9: 3  | if (/^#{1,3}\s/.test(line)) return "ln-h";
+SMALL-INT web/js/logs.js:20: 0  | var out = lastLines.filter(function (l) { return !q || l.toLowerCase().indexOf(q.toLowerCase()) >= 0
+SMALL-INT web/js/logs.js:23: 1  | if (rx) safe = safe.replace(rx, "<mark>$1</mark>");
+SMALL-INT web/js/main.js:22: 50  | var POLL_MS = 1000, PAINT_MS = 50, STALE_MS = 3000;
+SMALL-INT web/js/main.js:59: 0  | var epochs = s.epoch !== undefined && s.epoch !== null && s.epoch_ms > 0;
+SMALL-INT web/js/main.js:70: 0  | if (b) { b.textContent = label[0]; b.parentNode.title = label[1]; }
+SMALL-INT web/js/main.js:70: 1  | if (b) { b.textContent = label[0]; b.parentNode.title = label[1]; }
+SMALL-INT web/js/main.js:75: 0  | if (bar) bar.style.width = (epochs && s.slots ? Math.min(100, (s.queued / s.slots) * 100) : 0) + "%"
+SMALL-INT web/js/main.js:112: 60  | setTimeout(function () { VC.experiments.init(); }, 60);
+SMALL-INT web/js/main.js:117: 1  | var want = (location.hash || "#chat").slice(1);
+SMALL-INT web/js/main.js:118: 0  | switchView(["chat", "dashboard", "experiments", "logs", "arch"].indexOf(want) >= 0 ? want : "chat");
+1032 distinct shown values; 385 small integers listed above for reading
+HIT web/js/api.js:90: 200  | return { now_ms: t, epoch_ms: 200, epoch: Math.floor(t / 200), win: 41, slots: 64,
+HIT web/js/api.js:90: 200  | return { now_ms: t, epoch_ms: 200, epoch: Math.floor(t / 200), win: 41, slots: 64,
+HIT web/js/api.js:91: 200  | queued: Math.floor((t / 200) % 7), mode: VC.state.mode,
+HIT web/js/api.js:132: 200  | if (r.status !== 200 || !r.body || !r.body.mode) {
+HIT web/js/arch.js:127: 900  | var ids = L.order, i = 0, step = reduced() ? 900 : 700;
+HIT web/js/charts.js:32: 100  | var s = typeof v === "number" ? (Math.abs(v) >= 100 ? v.toFixed(0)
+HIT web/js/charts.js:34: 0.01  | : Math.abs(v) >= 0.01 ? v.toFixed(3) : v.toExponential(1)) : String(v);
+HIT web/js/charts.js:79: 3.5  | var step = (norm >= 7.5 ? 10 : norm >= 3.5 ? 5 : norm >= 1.5 ? 2 : 1) * mag;
+HIT web/js/charts.js:79: 1.5  | var step = (norm >= 7.5 ? 10 : norm >= 3.5 ? 5 : norm >= 1.5 ? 2 : 1) * mag;
+HIT web/js/charts.js:90: 3.5  | var tx = el("text", { class: "tick", x: box.l - 8, y: y + 3.5, "text-anchor": "end" }, svg);
+HIT web/js/charts.js:110: 0.18  | var slotW = box.w / n, barGap = 2, pad = slotW * 0.18;
+HIT web/js/charts.js:154: 0.2  | var xMin = spec.binCenters[0] - 0.2, xMax = spec.binCenters[spec.binCenters.length - 1] + 0.2;
+HIT web/js/charts.js:154: 0.2  | var xMin = spec.binCenters[0] - 0.2, xMax = spec.binCenters[spec.binCenters.length - 1] + 0.2;
+HIT web/js/charts.js:205: 3.5  | var t = el("text", { class: "tick", x: box.l - 8, y: yy + 3.5, "text-anchor": "end" }, svg);
+HIT web/js/charts.js:248: 1024  | t.textContent = v >= 1024 ? "2^" + Math.round(Math.log2(v)) : String(v);
+HIT web/js/charts.js:309: 100  | (cdfValueAt(s.points, lat) * 100).toFixed(0) + "% · " + s.name + "</div>";
+HIT web/js/charts.js:328: 0.56  | var slotW = box.w / spec.categories.length, bw = slotW * 0.56;
+HIT web/js/charts.js:395: 100  | var pt = s.points.filter(function (r) { return Math.round(r[1] * 100) === q; })[0];
+HIT web/js/chat.js:212: 200  | var DUMP_ROWS = 200;
+HIT web/js/client.js:91: 200  | if (r.status !== 200) throw apiError(r);
+HIT web/js/client.js:123: 200  | if (r.status !== 200) self._access = "";
+HIT web/js/client.js:185: 200  | if (r.status !== 200) throw apiError(r);
+HIT web/js/client.js:195: 200  | if (r.status !== 200) throw apiError(r);
+HIT web/js/client.js:282: 200  | if (r.status !== 200) throw apiError(r);
+HIT web/js/dashboard.js:10: 5.3  | if (state === "good") return "<svg viewBox='0 0 16 16' width='12' height='12' aria-hidden='true'><pa
+HIT web/js/dashboard.js:57: 100  | (p.note ? "<span class='muted' style='flex-basis:100%'>" + esc(p.note) + "</span>" : "");
+HIT web/js/experiments.js:34: 100  | function pct(x) { return (x * 100).toFixed(1) + "%"; }
+HIT web/js/experiments.js:41: 100  | w.innerHTML = "<div class='track'><div class='fill' style='width:" + (acc * 100).toFixed(2) + "%'></
+HIT web/js/experiments.js:48: 0.9  | var verdict = acc > 0.9 ? "the order is recovered" : acc > 0.6 ? "partly recovered" : "close to a co
+HIT web/js/experiments.js:48: 0.6  | var verdict = acc > 0.9 ? "the order is recovered" : acc > 0.6 ? "partly recovered" : "close to a co
+HIT web/js/experiments.js:190: 200  | var s = ans && ans.status === 200 ? ans.body : null;
+HIT web/js/main.js:75: 100  | if (bar) bar.style.width = (epochs && s.slots ? Math.min(100, (s.queued / s.slots) * 100) : 0) + "%"
+HIT web/js/main.js:75: 100  | if (bar) bar.style.width = (epochs && s.slots ? Math.min(100, (s.queued / s.slots) * 100) : 0) + "%"
+A1: 33 literal(s) equal a shown result value (non-small) -> READ EACH

@@ -1,0 +1,44 @@
+{
+  "run_id": "20261014-114240_M18_s7_checks",
+  "module": "M18",
+  "step": "S7",
+  "owner": "Abhishek",
+  "git_sha": "d53ec112563ed687d7cd5c48ec04bcafb953ad46",
+  "dirty": true,
+  "command": "python tasks.py dashboard --check; pytest; ruff; check_metrics; check_secrets",
+  "seed": 0,
+  "quick": false,
+  "params": {},
+  "env": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.0",
+    "backend": "numpy",
+    "runner": "local",
+    "session_id": "20261014-114239",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-1255U",
+    "cpu_count": 12
+  },
+  "telemetry_start": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791958360.2076077
+  },
+  "telemetry_end": {
+    "available": false,
+    "reason": "NVML not available (no NVIDIA GPU or pynvml missing)",
+    "ts": 1791958762.3648713
+  },
+  "outputs": [
+    "check_metrics.txt",
+    "check_secrets.txt",
+    "export_results_check.txt",
+    "pytest_all.txt",
+    "ruff.txt",
+    "ruff_concise.txt",
+    "ruff_concise_head.txt",
+    "tasks_dashboard.txt",
+    "tasks_dashboard_check.txt"
+  ],
+  "status": "OK",
+  "notes": "M18 S7: tasks.py dashboard [--check]; --check also refuses stale S6b figures (eol-insensitive sha). dashboard+figures current, 2233 passed, check_metrics/check_secrets/export_results --check PASS; ruff 16 findings before and after (pre-existing, none on new lines)"
+}

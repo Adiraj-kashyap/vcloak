@@ -2,7 +2,9 @@
 """M18: write web/data/dashboard.json from state/METRICS_INDEX.md and runs/. No number is typed here (ADR-013).
 
     python scripts/export_dashboard.py            # write web/data/dashboard.json
-    python scripts/export_dashboard.py --check    # write nothing; exit 1 if the file on disk would change
+    python scripts/export_dashboard.py --check    # write nothing; exit 1 if the file on disk would change, or if
+                                                  # a paper figure (S6b) was drawn from another dashboard.json
+    python tasks.py dashboard [--check]           # the same, through the task runner (M18 S7, M17 S1)
 
 Rules (ai/modules/M18 S1, ai/FRONTEND.md section 4):
   - every tile names a METRIC-ID and the run dir of the index row it shows;
@@ -33,6 +35,8 @@ from vcloak import config  # noqa: E402
 from vcloak.bench import dudect  # noqa: E402
 
 OUT = ROOT / "web" / "data" / "dashboard.json"
+FIGURES = ROOT / "evidence" / "figures"
+FIGURES_HOW = "python scripts/capture_evidence.py --module M18 --views none --figures"
 NO_VALUE = ("UNSTABLE", check_metrics.NOT_MEASURED)
 E2E_HOW = "M15 · python bench/run_e2e_cells.py on the GPU runner, then python -m vcloak.bench.report_e2e derive"
 UNSTABLE_E6 = "UNSTABLE by cause: the load generator ran above one core (ADR-028); no rerun (ADR-027)"
@@ -525,18 +529,41 @@ def render(data: dict[str, Any]) -> str:
     return json.dumps(data, indent=1, ensure_ascii=False, sort_keys=True) + "\n"
 
 
+def stale_figures(out: Path, fig_dir: Path = FIGURES) -> list[str]:
+    """Charts whose paper figure (S6b sidecar) is missing or was drawn from a dashboard.json other than `out`."""
+    # the sidecar hashes the bytes on disk, and git may check the file out with CRLF or LF: accept either form
+    lf = out.read_bytes().replace(b"\r\n", b"\n")
+    shas = {hashlib.sha256(lf).hexdigest(), hashlib.sha256(lf.replace(b"\n", b"\r\n")).hexdigest()}
+    charts = json.loads(out.read_text(encoding="utf-8"))["charts"]
+    stale = []
+    for c in charts:
+        if c.get("pending"):
+            continue
+        side = fig_dir / f"M18_dash_{c['id']}.json"
+        drawn = json.loads(side.read_text(encoding="utf-8"))["drawn_from"]["sha256"] if side.exists() else None
+        if drawn not in shas:
+            stale.append(c["id"] if drawn else f"{c['id']} (no figure)")
+    return stale
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--index", type=Path, default=ROOT / "state" / "METRICS_INDEX.md")
     ap.add_argument("--root", type=Path, default=ROOT)
     ap.add_argument("--out", type=Path, default=OUT)
     ap.add_argument("--check", action="store_true")
+    ap.add_argument("--figures", type=Path, default=FIGURES, help="where --check looks for the S6b sidecars")
     a = ap.parse_args(argv)
     text = render(build(a.index, a.root))
     if a.check:
         same = a.out.exists() and a.out.read_text(encoding="utf-8") == text
         print("dashboard.json is current" if same else f"dashboard.json is STALE: run {Path(__file__).name}")
-        return 0 if same else 1
+        if not same:
+            return 1
+        stale = stale_figures(a.out, a.figures)
+        print("paper figures are current" if not stale else
+              f"paper figures are STALE ({', '.join(stale)}): run {FIGURES_HOW}")
+        return 0 if not stale else 1
     a.out.parent.mkdir(parents=True, exist_ok=True)
     a.out.write_text(text, encoding="utf-8")
     print(f"wrote {a.out.relative_to(ROOT) if a.out.is_relative_to(ROOT) else a.out}")

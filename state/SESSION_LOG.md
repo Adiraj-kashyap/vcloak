@@ -1524,3 +1524,21 @@
 - Not verified: the PDFs in a LaTeX build (M22/M19 will include them); fonts other than DejaVu Sans.
 - Commit: ecc050a
 - Next: M18 S7 (regeneration hook) ; human action: none
+
+## Session 61 — 2026-10-14 — M18 S7: regeneration hook; M18 module audit — owner:Abhishek
+- Steps: S7 (status after: DONE)
+- Did: `python tasks.py dashboard` runs scripts/export_dashboard.py; `python tasks.py dashboard --check` (the command
+  M17 S1 runs on its clean clone) exits 1 when the committed web/data/dashboard.json differs from a fresh build, and
+  now also when a paper figure of S6b is missing or its sidecar names another dashboard.json (sha compared in either
+  line ending, since a clone may check the file out LF). Module audit A1–A5 + G1–G10 run; A1 by a new script that
+  compares every numeric literal of web/js with every value dashboard.json shows.
+- Result: dashboard.json and the 8 figures current; regeneration leaves the file unchanged; 2 tests added; M18 DONE.
+- Evidence: runs/20261014-114240_M18_s7_checks (tasks_dashboard*.txt, pytest_all.txt, pytest_m18_a3_a4.txt,
+  a1_js_vs_results.{py,txt}, check_*.txt, export_results_check.txt, ruff_concise*.txt)
+- Metrics added: none
+- Decisions: by the agent: the stale-figure check lives in export_dashboard --check (one command for M17), not in tasks.py.
+- Issues: none opened or closed
+- Deviations from spec: none (the M17 repro script does not exist yet; it calls `tasks.py dashboard --check`)
+- Not verified: the check on an actual LF clone (M17 S1 does the clean clone); ruff's 16 older findings untouched.
+- Commit: PENDING
+- Next: M19 (calendar-bound, highest priority per STATE notes) ; human action: none

@@ -1,0 +1,16 @@
+scripts\capture_evidence.py:383:121: E501 Line too long (126 > 120)
+scripts\capture_evidence.py:575:121: E501 Line too long (121 > 120)
+scripts\dashboard_figures.py:123:18: B905 `zip()` without an explicit `strict=` parameter
+scripts\dashboard_figures.py:171:121: E501 Line too long (121 > 120)
+scripts\dashboard_figures.py:173:88: B905 `zip()` without an explicit `strict=` parameter
+scripts\export_dashboard.py:31:1: I001 [*] Import block is un-sorted or un-formatted
+scripts\export_dashboard.py:371:121: E501 Line too long (121 > 120)
+scripts\export_dashboard.py:387:62: B905 `zip()` without an explicit `strict=` parameter
+scripts\export_dashboard.py:473:121: E501 Line too long (121 > 120)
+src\vcloak\service\app.py:27:1: I001 [*] Import block is un-sorted or un-formatted
+src\vcloak\service\logsapi.py:53:17: UP031 Use format specifiers instead of percent format
+src\vcloak\service\logsapi.py:54:17: UP031 Use format specifiers instead of percent format
+tests\integration\test_logs_api.py:97:121: E501 Line too long (124 > 120)
+tests\integration\test_web_app.py:838:121: E501 Line too long (137 > 120)
+tests\unit\test_dashboard_figures.py:1:121: E501 Line too long (128 > 120)
+tests\unit\test_export_dashboard.py:12:121: E501 Line too long (121 > 120)
