@@ -49,6 +49,7 @@ from vcloak.gpu.engine import GpuEngine
 from vcloak.gpu.keystore import DeviceKeyStore
 from vcloak.gpu.runtime import Backend, runner_name
 from vcloak.service.evalapi import add_eval_routes
+from vcloak.service.logsapi import add_logs_routes
 from vcloak.service.logsafe import SafeLogger, get_logger
 from vcloak.service.models import (
     Health,
@@ -412,9 +413,9 @@ NO_STORE = {"Cache-Control": "no-store"}
 
 def create_app(backend: ServiceBackend, *, payload_len: int = PAYLOAD_LEN,
                sessions: SessionService | None = None, dev: bool = False,
-               web_dir: Path | None | bool = None) -> FastAPI:
+               web_dir: Path | None | bool = None, state_dir: Path | None = None) -> FastAPI:
     """`dev` is what `--dev` means to the page (M13). `web_dir`: the directory served at /app (default: the
-    repository's web/), or False for no page."""
+    repository's web/), or False for no page. `state_dir`: what the Logs view tails (default: state/)."""
     log = get_logger("api")
     hub = SocketHub(backend, sessions) if sessions is not None else None
     if hub is not None and sessions is not None:
@@ -517,6 +518,7 @@ def create_app(backend: ServiceBackend, *, payload_len: int = PAYLOAD_LEN,
         _add_socket_routes(app, sessions, hub, verify)
     add_live_routes(app, backend, dev=dev, sessions=sessions is not None, payload_len=payload_len)
     add_eval_routes(app, dev=dev)
+    add_logs_routes(app, dev=dev, state_dir=state_dir)
     if web_dir is not False:
         mount_web(app, None if web_dir is None or web_dir is True else web_dir, dev=dev)
     return app

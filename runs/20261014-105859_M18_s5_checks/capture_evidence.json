@@ -1,0 +1,88 @@
+{
+ "module": "M18",
+ "run": "runs/20261014-105859_M18_s5_checks (git f94f637, dirty)",
+ "date": "2026-10-14",
+ "views": {
+  "logs": {
+   "state": "measured",
+   "demo_lines": false,
+   "lines": 500,
+   "note": "The last 500 of 1461 lines, through the server's redaction.",
+   "files": {
+    "light": {
+     "file": "screens/M18_logs_light_20261014.png",
+     "width": 1440,
+     "height": 989,
+     "bytes": 202822,
+     "sha256": "68b8d094aa0bb4156a8518d8aff97be144c3553e37dd9619a14ec02c8fa28802"
+    },
+    "dark": {
+     "file": "screens/M18_logs_dark_20261014.png",
+     "width": 1440,
+     "height": 989,
+     "bytes": 206895,
+     "sha256": "e8044565e8997dbb98ccb43a8510405b44ee324f2147ca056cf38759521a85d6"
+    }
+   }
+  }
+ },
+ "checks": {
+  "the page is live, in dev mode, with a mode switch": true,
+  "logs: the view was the one on screen": true,
+  "no exception, console error or blocked request in the page": true
+ },
+ "serve_argv": [
+  "--dev",
+  "--compare",
+  "--sessions",
+  "--store",
+  "sqlite",
+  "--window-s",
+  "5",
+  "--epoch-ms",
+  "200"
+ ],
+ "viewport": [
+  1440,
+  900
+ ],
+ "browser": "Chrome/154.0.8037.98",
+ "live_ready": true,
+ "conn": "live · dev",
+ "stats_live": {
+  "mode": "vcloak",
+  "dev": true,
+  "sessions": true,
+  "win": 358391249,
+  "window_s": 5,
+  "epoch_ms": 200,
+  "slots": 64,
+  "queued": 0,
+  "epochs": 5,
+  "payload_len": 4124,
+  "switchable": true,
+  "now_ms": 1791956248832,
+  "epoch": 8959781244,
+  "last_epoch": 8959781243,
+  "last_write_ms": 18.6,
+  "gpu": {
+   "backend": "numpy",
+   "runner": "local",
+   "device": "12th Gen Intel(R) Core(TM) i7-1255U",
+   "util": null
+  }
+ },
+ "errors": [],
+ "ok": true,
+ "superseded": [],
+ "index_rows": [
+  "SCR-M18-LOGS-LIGHT",
+  "SCR-M18-LOGS-DARK",
+  "TERM-M18-S5-REDACTION-RATE"
+ ],
+ "files_written": [
+  "screens/M18_logs_light_20261014.png",
+  "screens/M18_logs_dark_20261014.png",
+  "terminal/M18_S5_redaction_rate.txt"
+ ]
+}

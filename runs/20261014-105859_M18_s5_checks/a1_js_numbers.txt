@@ -1,0 +1,5 @@
+9:    if (/^#{1,3}\s/.test(line)) return "ln-h";
+20:    var out = lastLines.filter(function (l) { return !q || l.toLowerCase().indexOf(q.toLowerCase()) >= 0; })
+23:        if (rx) safe = safe.replace(rx, "<mark>$1</mark>");
+46:    VC.api.logs(kind, 500).then(function (r) {
+66:      if (this.checked) timer = setInterval(load, 4000);

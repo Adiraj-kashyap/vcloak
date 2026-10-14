@@ -169,3 +169,21 @@ Checking it before the review: `python scripts/check_live_attack.py` runs all si
 and fails unless each is identical to the stored value (first run: runs/20261014-102648_M18_s4_live_attack).
 Without `--dev` or from `file://`, the view shows the stored value with its provenance and an illustration that says
 it is one.
+
+## 3. The project's own logs (M18 S5)
+
+With the same `serve --dev`, open **Logs**. The four tabs are the session log, the audit log, the metrics index and
+the issues of `state/`, tailed through `GET /v1/logs?kind=session|audit|metrics|issues&tail=N` (dev only, 403
+otherwise). **Follow** re-reads the tail every few seconds; the filter box marks matching lines.
+
+What to say: the route takes one of four names, never a path, and every line passes the server's redaction first
+(`src/vcloak/service/logsapi.py`): absolute file paths, e-mail addresses, `name=value` for conversation ids, tokens,
+buckets, sequence and row ids, and token-shaped strings are replaced. The line above the log says how many lines of
+the tail had something replaced. The redaction is a second layer: the files are written under the secret scan (G4)
+and the service's own log goes through the allow-list of `logsafe`.
+
+The proof is `tests/integration/test_logs_api.py`: it drives traffic, writes every value that traffic produced into a
+copy of `state/` as a careless log line would, and finds none of them in what is served. How often the token rule
+misses a random token is in runs/20261014-105859_M18_s5_checks/redaction_rate.txt.
+Without `--dev`, the view says the server does not serve its logs; in the page opened from a file it shows example
+lines and says they are examples.

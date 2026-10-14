@@ -27,9 +27,25 @@
     if (document.getElementById("followSwitch").checked) box.scrollTop = box.scrollHeight;
   }
 
+  /* where the lines came from, in words: the page never shows demo lines as the project's own */
+  function note(r) {
+    var el = document.getElementById("logNote");
+    if (r.unavailable) {
+      el.textContent = "This server does not serve its logs (they are offered with --dev only).";
+    } else if (r.demo) {
+      el.textContent = "Demo mode: example lines, not this project's log. Start the service with --dev to tail state/.";
+    } else if (r.missing) {
+      el.textContent = "The server has no " + r.kind + " log to serve.";
+    } else {
+      el.textContent = "The last " + r.lines.length + " of " + r.total + " lines, through the server's redaction" +
+        (r.redacted ? " (" + r.redacted + " lines had a path, an address, an id or a token replaced)." : ".");
+    }
+  }
+
   function load() {
     VC.api.logs(kind, 500).then(function (r) {
       lastLines = r.lines || [];
+      note(r);
       paint();
     });
   }

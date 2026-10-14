@@ -339,6 +339,7 @@ svg.chart .hit { fill: transparent; cursor: crosshair; }
 .attacknote { padding: 0 16px 14px; margin: 0; }
 
 /* ── logs ───────────────────────────────────────────── */
+#logNote { color: var(--ink-2); font-size: 12.5px; margin: 10px 16px 0; }
 .logbox {
   margin: 0; padding: 14px 16px; max-height: 60vh; overflow: auto;
   font: 12.5px/1.65 var(--mono); white-space: pre-wrap; word-break: break-word; color: var(--ink-2);

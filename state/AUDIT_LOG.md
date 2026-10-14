@@ -1687,3 +1687,27 @@ RUN is runs/20261014-103214_M18_s4_checks. LIVE is runs/20261014-102648_M18_s4_l
 Notes:
 - The M14 eval tests (50) pass after the move of the layout runner; M14 output is unchanged (the bench re-exports the names).
 - No "ORAM" or "grouping" in the changed files (RUN/a_terms_grep.txt).
+
+## Audit — M18 S5 — 2026-10-14 — session 58 — PASS (step audit; module audit at the end of M18)
+RUN is runs/20261014-105859_M18_s5_checks.
+| Item | Result | Evidence |
+|---|---|---|
+| S5 check: redaction test drives traffic and greps the served output | PASS | tests/integration/test_logs_api.py (12 passed): 12 messages of two conversations (hex and browser-form tokens) stored; every token, conversation id and its hex, payload and sealed sequence of the dump, and `bucket=`/`row_id=`/`seq=` in key=value and JSON form, plus an absolute path and an address, appended to all four files of a copy of state/; none of them in any served kind |
+| A1 no result literal in web/js | PASS | RUN/a1_js_numbers.txt: logs.js literals are a heading regex, the 500-line tail and the 4 s follow interval; the api.js change has none |
+| A2 tiles/charts carry indexed METRIC-IDs | PASS | no tile or chart changed; RUN/check_metrics.txt 895 rows, 0 problems |
+| A3 missing → NOT MEASURED | PASS | unchanged since S4; a missing state file is answered `missing: true` and the page says so, never demo lines (test_a_missing_file_is_said_not_invented) |
+| A4 logs endpoint redaction-tested; raw paths not served | PASS | `kind` is one of four names (a path or file name is 422), the answer carries the kind only; absolute paths become `<path>` (test_the_real_state_files_are_served_redacted: no absolute path or address in any real file as served). The base64 rule is a heuristic: RUN/redaction_rate.txt gives its misses on 20000 random tokens per form (the test pins at most 1 in 1000 for the browser form; hex tokens and conversation ids 0) |
+| A5 both themes | PASS | evidence/screens/M18_logs_{light,dark}_20261014.png (light opened and read: the note "The last 500 of 1461 lines, through the server's redaction." above the live session log) |
+| G1 | PASS | RUN/pytest_all.txt 2223 passed, 675 skipped (CUDA-only, as in S4), 12 tests added; 81 related tests rerun after the last test docstring edit |
+| G2 / G2b | PASS | no metric added; the miss counts are a check of the redaction, not a V-cloak result, and are not indexed |
+| G3 | PASS | RUN/check_oblivious.txt 0 findings; no kernel changed |
+| G4 | PASS | RUN/check_secrets.txt after the evidence copies (2456 files, 0) |
+| G5 | N/A | no GPU twin |
+| G6 | PASS | src/vcloak/service/logsapi.py, app.py (route and `state_dir`), web/js/logs.js, api.js, index.html, app.css, scripts/capture_evidence.py (logs note in the row), tests/integration/test_logs_api.py, docs/DEMO.md section 3 |
+| G7 | PASS | the session commit, owner Abhishek |
+| G8 | PASS | STATE: session 58, M18 at S6, sessions 5 |
+| G9 | PASS | SESSION_LOG session 58, this entry; no issue opened or closed |
+| G10 | PASS | export_dashboard --check current; export_results --check 0 would change |
+Notes:
+- Before this step a live server that refused the logs would have shown the demo lines as if they were the project's; now it says the logs are not served.
+- No "ORAM" or "grouping" in the changed files (RUN/a_terms_grep.txt).

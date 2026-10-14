@@ -318,9 +318,11 @@ def view_state(page: Any, view: str) -> dict[str, Any]:
                 "layout": page.evaluate("document.getElementById('expW').value"),
                 "dashboard_source": dash and dash["source"]}
     if view == "logs":
+        # M18 S5: live, the lines are state/ through the server's redaction, and the note above them says so
         demo = page.evaluate("VC.api.logs('session', 5).then(r => !!r.demo)")
         return {"state": "seed" if demo else "measured", "demo_lines": demo,
-                "lines": page.evaluate("document.getElementById('logBox').children.length")}
+                "lines": page.evaluate("document.getElementById('logBox').children.length"),
+                "note": page.evaluate("document.getElementById('logNote').textContent")}
     # the architecture view is a drawing: it holds no result, so it is filed with the samples
     return {"state": "seed", "static": True}
 
@@ -350,6 +352,9 @@ def describe_view(view: str, info: dict[str, Any]) -> str:
         return (f"{PLAIN_VIEWS[view]} after a live run of the attack on layout {info['layout']} through "
                 f"/v1/eval/attack (numpy backend, new SQLite store), compared with the stored value: "
                 f"{'identical' if m.get('identical') else 'NOT identical'}")
+    if view == "logs" and not info.get("demo_lines"):
+        return (f"{PLAIN_VIEWS[view]} tailing state/SESSION_LOG.md through /v1/logs and its redaction; "
+                f"the page reads: \"{info.get('note')}\"")
     if info["state"] == "seed":
         return (f"{PLAIN_VIEWS[view]} as the page shows it with the bundled sample data (SEED DATA): "
                 "the interface, never a result")

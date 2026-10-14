@@ -1,0 +1,2 @@
+dashboard.json is current
+exit=0

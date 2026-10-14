@@ -1459,3 +1459,25 @@
 - Not verified: the endpoint while the service is under chat load (the replay shares the process's CPU).
 - Commit: cdd7560
 - Next: M18 S5 (Logs view, /v1/logs with the allow-list) ; human action: none
+
+## Session 58 — 2026-10-14 — M18 S5: the Logs view, `/v1/logs` through redaction — owner:Abhishek
+- Steps: S5 (status after: IN_PROGRESS, current_step S6)
+- Did: `GET /v1/logs?kind=session|audit|metrics|issues&tail=N` (dev only; src/vcloak/service/logsapi.py): `kind` is a
+  name bound to one state/ file, never a path; every line passes `redact_line` (absolute paths, addresses,
+  `name=value`/JSON for conversation ids, tokens, buckets, seq and row ids, credentials, JWTs, hex runs of 16+,
+  token-shaped base64 runs unless every piece is word-shaped). The answer gives the total and how many lines changed.
+  `create_app(state_dir=...)` for tests. The page shows a line saying where the lines came from; a live server that
+  refuses no longer gets demo lines in their place. The capture row quotes that line. docs/DEMO.md section 3.
+- Result: the redaction test passes: no traffic value planted in a copy of state/ is served; the real files lose only
+  absolute paths (45 lines) and one address. Misses of the token rule on random tokens: RUN/redaction_rate.txt.
+- Evidence: runs/20261014-105859_M18_s5_checks (pytest_all.txt, check_*.txt, export_*check.txt, a1_js_numbers.txt,
+  a_terms_grep.txt, redaction_rate.{py,txt}, capture.txt), evidence/screens/M18_logs_{light,dark}_20261014.png,
+  evidence/terminal/M18_S5_redaction_rate.txt
+- Metrics added: none
+- Decisions: by the agent: dev only like /v1/dump and /v1/eval/attack; the redaction rules and their word-shape
+  exception were tuned on the real state/ files and random tokens (both recorded in redaction_rate.txt).
+- Issues: none opened or closed
+- Deviations from spec: none
+- Not verified: other token encodings than the four measured; lines longer than 2000 characters are cut.
+- Commit: see git log (M18 S5)
+- Next: M18 S6 (Architecture view: S0→S10 / R1→R5 flow and the leakage table) ; human action: none

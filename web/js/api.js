@@ -115,7 +115,9 @@
 
     logs: function (kind, tail) {
       return get("/v1/logs?kind=" + kind + "&tail=" + (tail || 400)).catch(function () {
-        return { lines: (DEMO.logs && DEMO.logs[kind]) || ["(no log data in demo mode)"] , demo: true };
+        /* a live server that does not hand out its logs (no --dev): say so, never show demo lines in their place */
+        if (VC.state.live) return { lines: [], unavailable: true };
+        return { lines: (DEMO.logs && DEMO.logs[kind]) || [], demo: true };
       });
     },
 

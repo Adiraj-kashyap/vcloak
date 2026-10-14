@@ -1,0 +1,5 @@
+PASS  the page is live, in dev mode, with a mode switch
+PASS  logs: the view was the one on screen
+PASS  no exception, console error or blocked request in the page
+3 files, 3 index rows; record: runs/20261014-105859_M18_s5_checks/capture_evidence.json
+exit=0

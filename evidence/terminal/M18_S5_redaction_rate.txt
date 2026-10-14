@@ -1,0 +1,12 @@
+token form | tokens | served unredacted
+browser conv_token, 24 bytes base64url | 20000 | 13
+16 bytes base64url | 20000 | 95
+32 bytes base64 | 20000 | 0
+hex, 16 bytes | 20000 | 0
+
+state file | lines | lines changed | lines with <b64> | lines with <hex>
+session | 1461 | 1 | 0 | 0
+audit | 1689 | 1 | 0 | 0
+metrics | 979 | 0 | 0 | 0
+issues | 1746 | 44 | 0 | 0
+exit=0

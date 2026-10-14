@@ -1,0 +1,2 @@
+check_metrics: 895 metric rows, 0 problems -> PASS
+exit=0
