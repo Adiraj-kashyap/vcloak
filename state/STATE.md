@@ -3,13 +3,13 @@
 ```yaml
 project: v-cloak
 kit_version: 1.0
-last_session: 52
+last_session: 53
 last_session_date: 2026-10-14
-current_module: M15
-current_step: S4
-status: IN_PROGRESS           # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
-next_unit: M15
-last_checkpoint: 2026-10-14 session 52: M15 S3 done, 66 E2E rows indexed (runs/20261014-081645_M15_e2e_metrics); valid scale 10 and 50 users, 200 UNSTABLE (ISSUE-51 closed, ADR-028); next: S4 plots
+current_module: M18
+current_step: S1
+status: NOT_STARTED           # NOT_STARTED | IN_PROGRESS | AUDIT_PENDING | AUDIT_FAILED | DONE | BLOCKED_HUMAN | BLOCKED_TECH
+next_unit: M18
+last_checkpoint: 2026-10-14 session 53: M15 DONE (S4 figures in results/e2e, audit PASS); ADR-029 terminology (never "ORAM" for V-cloak), ISSUE-53 open for the human; next: M18
 quick_mode_default: false
 local:                      # the laptop (no GPU) — filled by M00 S7
   os: "Windows-11-10.0.26200-SP0"
@@ -56,7 +56,7 @@ gpu_job:                    # set by the gpu-job skill
 | M12 | Client SDK & CLI | Abhishek | M11 | no | DONE | S4 | 1 |
 | M13 | Frontend: chat + server view | Abhishek | M12 | no | DONE | S6 | 5 |
 | M14 | Security evaluation (E0–E2, anon set) | Abhishek | M08, M10 | no | DONE | S7 | 6 |
-| M15 | End-to-end performance (E6) | Divyansh | M10, M11 | no | IN_PROGRESS | S4 | 4 |
+| M15 | End-to-end performance (E6) | Divyansh | M10, M11 | no | DONE | S4 | 5 |
 | M16 | Results export | Abhishek | M07, M08, M14 | no | DONE | S4 | 2 |
 | M18 | Frontend: dashboard, experiments, logs | Abhishek | M13, M14 | no | NOT_STARTED | S1 | 0 |
 | M17 | Final audit & demo (Review 3 close-out) | Team | all required | no | NOT_STARTED | S1 | 0 |
@@ -146,4 +146,8 @@ Keep this file under 120 lines: one or two lines per note, the detail lives in t
   rows live in the derivation run runs/20261014-081645_M15_e2e_metrics (check_metrics rule 6). Added ack p99 is
   UNSTABLE at both counts (baseline p99 repetitions apart): never quote it. "Within budget" = no epoch overflow;
   say the missed boundaries beside it. The exporter does not know derivation runs yet (M16 work before E6 values
-  enter the paper tables). ISSUE-52: three unanswered sends at 200 users, cause not found.
+  enter the paper tables). ISSUE-52: three unanswered sends at 200 users, cause not found. `render` also draws
+  the three E6 figures (valid user counts only, never a line between user counts).
+- ADR-029 (the human): V-cloak is "a GPU-resident oblivious permutation layer for message-order privacy", never
+  an ORAM. ORAM only in related work, followed by the sentence of what is not claimed (ADR-029 item 3). Claim
+  order only, not "grouping", until ISSUE-53 is answered. M19/M20/M22 audits grep their text for "ORAM".

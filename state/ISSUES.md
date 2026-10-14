@@ -1692,3 +1692,21 @@ learning it, which would give a duplicate when a client retries, (3) the one `in
 How to settle it: any later 200-user run with the current generator reports `errors_readable` and `error_ms` for
 such a send; that answers (2) in the run that shows the error. No job is asked for: the owner decided that 200
 users is not run again (ISSUE-51), so this waits for the multi-process harness of the future work.
+
+### ISSUE-53 [OPEN] HUMAN ACTION: V-cloak is called "a GPU-optimised ORAM" in material outside the repository; say what "grouping" means
+BLOCKS: none   SEVERITY: medium   OPENED: 2026-10-14 session 53
+What was found: the repository never uses the term (runs/20261014-084740_M15_s4_checks/terminology_grep.txt: no
+occurrence in tracked files, binaries, untracked files or history). So the wording you saw is in something the
+agent cannot open: slides, an abstract, a proposal or a submission form.
+What you do (two things, neither blocks the build):
+1. In every such document replace the description of our system with: "a GPU-resident oblivious permutation
+   layer for message-order privacy". Keep ORAM only where related work is discussed, followed by: "V-cloak is not
+   an ORAM: it conceals the order in which messages were stored inside a window, and it does not hide the full
+   read/write access pattern, for which it states no construction, no leakage bound and no overhead analysis."
+   If one of these documents should live in the repository (for M19 or M22), put it under review/ and say so.
+2. Answer one question. Your wording says V-cloak conceals "order and grouping". ai/PROJECT_BRIEF.md section 5
+   lists partial conversation identity (shared HMAC-style buckets), window ids and the number of real messages per
+   window as known leakage. Which grouping do you mean (which messages belong to one conversation, or which were
+   stored together), and is it meant as a claim? Until you answer, the paper and the report claim order only
+   (ADR-029 item 4).
+Closed when: you report 1 as done and answer 2; the answer is recorded as an amendment of ADR-029.

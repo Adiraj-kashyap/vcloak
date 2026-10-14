@@ -1331,3 +1331,30 @@
   schemas have 5 tables. The exporter does not read derivation runs: no E6 value is in results/paper yet.
 - Commit: ff4f587 (code, ADR, amendment), records in the next commit
 - Next: M15 S4 (plots: valid user counts only, no line through them) ; human action: none required
+
+## Session 53 — 2026-10-14 — M15 S4: figures of E6; terminology check (ADR-029); M15 DONE — owner:Divyansh
+- Steps: S4 (status after: DONE, gpu_job.pending null)
+- Did: (1) terminology, asked by the human before S4: searched the tree, binaries, untracked files and history for
+  "ORAM" and its long forms. No occurrence anywhere; the repository already says "GPU-resident
+  oblivious-permutation layer". Nothing was reworded. Recorded the wording rule and the sentence of what is not
+  claimed as ADR-029. (2) S4: `report_e2e render` now draws three figures from the valid cells named by the
+  derivation run: latency CDFs (per mode, user count and repetition), throughput bars on a categorical axis,
+  GPU utilisation over each cell. Section 4.E.8 of the notes lists them. Three tests added.
+- Result: three figures for 10 and 50 users (two per conversation); the 200-user cells are opened by no figure;
+  no line joins two user counts. No number is new. Module audit PASS.
+- Evidence: runs/20261014-084740_M15_s4_checks (terminology_grep.txt, render.txt, pytest_all.txt, check_*.txt,
+  export_check.txt, rerender_and_deliverables.txt), results/e2e/fig_e2e_*.png|pdf,
+  evidence/figures/M15_fig_e2e_*, evidence/terminal/M15_S4_*
+- Metrics added: none
+- Decisions: ADR-029 (the human: the name, ORAM in related work only, the sentence of what is not claimed; the
+  agent: "grouping" is left out of that sentence until the owner answers, see ISSUE-53)
+- Issues: opened ISSUE-53 (human: correct the wording outside the repository; say what "grouping" means)
+- Deviations from spec: two things in one session, at the human's request (the terminology check, then S4).
+  The throughput figure also shows the offered rate and both repetitions; the GPU timeline also shows the
+  baseline cells. Figures were copied to evidence/figures by hand with index rows (capture_evidence.py copies
+  screens and terminal files only).
+- Not verified: where V-cloak is called an ORAM (not in the repository). Why NVML reports 0 % for the first
+  half of the 10-user repetition 2 cell. The exporter still does not read derivation runs: no E6 value or figure
+  is in results/paper or results/figures.
+- Commit: 91279c8 (code, figures, ADR), records in the next commit
+- Next: M18 S1 (table order) ; human action: ISSUE-53 (blocks nothing); `continue M19` if the publication goes first

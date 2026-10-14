@@ -1554,3 +1554,32 @@ Notes:
 - Hard rule 8: ai/ was changed only by ADR-028 and the Amendments of M15.
 - The cause recorded for the 200-user rows is the owner's reading. What the files add: the seconds were spent before
   the scheduler queue. They do not separate the generator from the HTTP layer of the service (ISSUE-51, closing note).
+
+## Audit M15 — 2026-10-14 — session 53 — result: PASS
+The module audit, after S4. RUN is runs/20261014-084740_M15_s4_checks, DER is runs/20261014-081645_M15_e2e_metrics.
+| Item | Result | Evidence |
+|---|---|---|
+| A1 both modes under identical conditions | PASS | unchanged since session 52: `report_e2e derive` refuses anything but one environment, one set of conditions and one job (DER/manifest.json `derived_from`, 13 sources). S4 opens only cells named by DER and refuses one that is not an ingested cupy run (`figure_cells`) |
+| A2 warm-up excluded consistently | PASS | the CDFs use `e2e.measured` with the warm-up and duration of DER, the same selection as the tables (test_figures_are_drawn_from_the_valid_cells_only counts the samples: no warm-up send). The GPU timeline shows the whole cell on purpose and marks the measured interval |
+| A3 repetitions within 15% or UNSTABLE | PASS | DER/summary.json, as audited in session 52. S4 draws no UNSTABLE value: the 200-user cells are opened by no figure, an UNSTABLE throughput gets no bar (two tests), and the CDFs show the two repetitions as two curves, never pooled |
+| G1 | PASS | RUN/pytest_all.txt (2189 passed, 675 skipped: the same 674 CUDA-device skips and the M02 placeholder as session 52, no database skip; 3 tests added) |
+| G2 | PASS | RUN/check_metrics.txt (895 rows, 0 problems; no row added). The values printed on the throughput bars are the E2E-TPUT rows of DER; RUN/export_check.txt: 0 would change |
+| G2b | PASS | no metric added; every figure reads only ingested cupy cells of job 20261014-065041_M15 |
+| G3 | PASS | RUN/check_oblivious.txt (0 findings); no kernel changed |
+| G4 | PASS | RUN/check_secrets.txt (2358 files, 0 key-like runs), run again after the evidence copies |
+| G5 | N/A | no GPU twin |
+| G6 | PASS | RUN/rerender_and_deliverables.txt: bench/run_e2e.py, results/e2e/*.csv, *.json, *.png (and *.pdf), section 4.E of docs/REPORT_CH4_NOTES.md with 4.E.8 Figures |
+| G7 | PASS | 91279c8 (code, figures, ADR-029) and the records commit, owner Divyansh; review/publication/ stays untracked |
+| G8 | PASS | STATE: session 53, M15 DONE at S4, sessions 5, next_unit M18, gpu_job.pending null |
+| G9 | PASS | SESSION_LOG session 53, this entry, ISSUE-53 opened |
+| G10 | PASS | RUN/rerender_and_deliverables.txt: a second `report_e2e render` reproduces the four generated text files byte for byte; RUN validates (`new_run.py --validate`) |
+Notes:
+- Figures are a view of indexed data: no new number. evidence/figures holds byte-identical copies (RUN, cmp).
+- Two things were done in this session at the human's request: the terminology check (ADR-029) and S4. The
+  terminology check changed no module and no measured value.
+- Hard rule 8: ai/ was changed only by ADR-029.
+- Not audited because it cannot be seen from here: the material outside the repository that calls V-cloak an ORAM
+  (ISSUE-53).
+- What the figures show and nobody has explained: in the 10-user V-cloak cell of repetition 2 NVML reports 0 %
+  from the warm-up until about 60 s into the measured interval, then the same 0/1 % pattern as repetition 1; the
+  50-user cells sit at 1 %. NVML reports whole percent, so at this load the series is at its resolution.
