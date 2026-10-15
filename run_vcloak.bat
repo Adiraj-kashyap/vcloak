@@ -48,7 +48,7 @@ echo.
 REM open the browser a few seconds after the server starts
 start "" /b powershell -NoProfile -Command "Start-Sleep -Seconds 4; Start-Process 'http://127.0.0.1:%PORT%/app/'"
 
-"%PY%" -m vcloak.cli serve --dev --compare %STORE% --port %PORT%
+"%PY%" -m vcloak.cli serve --dev --compare --sessions --window-s 5 %STORE% --port %PORT%
 
 echo.
 echo V-cloak stopped.

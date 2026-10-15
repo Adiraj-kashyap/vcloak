@@ -1,4 +1,4 @@
-﻿# V-cloak bootstrap (Windows / PowerShell)
+# V-cloak bootstrap (Windows / PowerShell)
 #
 #   Right-click this file -> "Run with PowerShell",
 #   or in a terminal inside the vcloak folder:   powershell -ExecutionPolicy Bypass -File setup\bootstrap.ps1
@@ -60,6 +60,7 @@ Say "Installing Python packages (a few minutes the first time)"
 & $vpy -m pip install --quiet `
     numpy scipy cryptography argon2-cffi pytest ruff matplotlib pandas `
     fastapi uvicorn httpx websockets "psycopg[binary]"
+& $vpy -m pip install -e . --quiet
 # CuPy is deliberately NOT installed: it needs an NVIDIA GPU. The CUDA work runs on
 # the free Colab/Kaggle runner instead — see ai/GPU_RUNNER.md.
 
